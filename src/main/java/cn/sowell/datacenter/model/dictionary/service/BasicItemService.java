@@ -1,0 +1,67 @@
+package cn.sowell.datacenter.model.dictionary.service;
+
+import java.util.List;
+
+import com.alibaba.fastjson.JSONObject;
+
+import cn.sowell.copframe.dto.page.PageInfo;
+import cn.sowell.datacenter.model.demo.criteria.DemoCriteria;
+import cn.sowell.datacenter.model.demo.pojo.PlainDemo;
+import cn.sowell.datacenter.model.dictionary.criteria.BasicItemCriteria;
+import cn.sowell.datacenter.model.dictionary.pojo.BasicItem;
+
+public interface BasicItemService {
+
+	/**
+	 * 根据条件对象查询分页
+	 * @param criteria
+	 * @param pageInfo
+	 * @return
+	 */
+	List<BasicItem> queryList(BasicItemCriteria criteria);
+
+	/**
+	 * 创建一个BasicItem对象
+	 * @param BasicItem
+	 */
+	void create(BasicItem basicItem);
+
+	
+	BasicItem getBasicItem(String id);
+
+	/**
+	 * 更新一个BasicItem对象
+	 * @param demo
+	 */
+	void update(BasicItem basicItem);
+
+	/**
+	 * 从数据库中删除一个BasicItem对象
+	 * @param id
+	 */
+	void delete(String id);
+	
+	/**
+	 * 改变状态值为过期or正常， 传过来实体：则实体下面所有的数据项都过期or正常
+	 * 传过来重复类型： 则重复类型下面所有的都过期or正常
+	 * 传过来普通属性 ： 则普通属性过期or正常
+	 */
+	void savePastDue(BasicItem basicItem, Integer status);
+	
+	/**
+	 * 根据实体id， 获取多值属性， 普通属性的json数据和本实体的关系
+	 * @param parentId
+	 * @return
+	 */
+	public JSONObject getAttrByPid(String parentId);
+	
+	void saveOrUpdate(Object obj);
+
+	/**
+	 * 
+	 * @param parent  父亲id
+	 * @param groupName   分组名称
+	 * @return
+	 */
+	List getAttrByPidGroupName(String parent, String groupName);
+}

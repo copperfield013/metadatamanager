@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:task="http://www.springframework.org/schema/task"
+	xsi:schemaLocation="http://www.springframework.org/schema/mvc 
+		http://www.springframework.org/schema/mvc/spring-mvc-4.3.xsd 
+		http://www.springframework.org/schema/beans 
+		http://www.springframework.org/schema/beans/spring-beans-4.3.xsd 
+		http://www.springframework.org/schema/context 
+		http://www.springframework.org/schema/context/spring-context-4.3.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.3.xsd
+        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.3.xsd
+        http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-4.3.xsd">
+
+	<import resource="spring-mvc.xml" />
+
+<!-- 	<context:component-scan base-package="com.abc" /> -->
+
+	<!-- dao自动扫描 -->
+	<context:component-scan base-package="cn.sowell.datacenter.model.*.dao.impl" />
+	<!-- serivce自动扫描 -->
+	<context:component-scan base-package="cn.sowell.datacenter.model.*.service.impl" />
+	<!-- controller自动扫描(自动注入) -->
+	<context:component-scan base-package="cn.sowell.datacenter.*.controller.*" />
+
+	<import resource="spring-security.xml" />
+
+	<bean
+		class="cn.sowell.copframe.spring.propTranslator.PropertyValueTranslatorSet">
+		<property name="translatorSet">
+			<set>
+				<bean
+					class="cn.sowell.copframe.spring.propTranslator.translator.DatePropertyValueTranlator" />
+			</set>
+		</property>
+	</bean>
+
+	<bean class="cn.sowell.copframe.dao.utils.NormalOperateDaoImpl" />
+
+
+	<mvc:interceptors>
+		<!-- 用于在请求中设置一些常用的变量 -->
+		<bean
+			class="cn.sowell.datacenter.common.interceptor.CommonRequestAttributeSetInterceptor" />
+	</mvc:interceptors>
+
+	<task:annotation-driven /> <!-- 定时器开关 -->
+
+</beans>

@@ -1,0 +1,313 @@
+/* .inforpage-wrap {
+	height: 100%;
+	width: 100%;
+	overflow:hidden;
+}
+ul,li {
+	list-style:none;
+	padding: 0;
+	margin: 0;
+}
+.zinput {
+	padding:0;
+	margin:0;
+	box-sizing: border-box;
+}
+.zlabel {
+	padding: 0;
+	margin:0;
+}
+.zclear:after {
+	content: "";
+	display:block;
+	clear:both;
+}
+
+.search-part {
+	background-color: #ffffff;
+	width: 100%;
+	height : 184px;
+	overflow-y:auto;
+	overflow-x:hidden;
+}
+.dragline {
+	position: absolute;
+	display: block;
+	width: 100%;
+	height:10px;
+	background-color: #ffffff;
+	opacity:0;
+	top: 0;
+	cursor: row-resize;
+	z-index : 1010;
+}
+
+.zpage-title {
+	padding-left: 20px;
+	font-size: 16px;
+	color: #0f5acf;
+	margin: 0;
+	background-color: #ffffff;
+	line-height: 1;
+}
+
+div.tab-content {
+	padding: 0;
+}
+
+.smartForm {
+	padding: 0 20px;
+}
+.zform-group {
+	height: 40px;
+	color: #656565;
+	font-size: 0;
+	line-height: 40px;
+}
+.zitem-list .colon {
+	font-size: 14px;
+	padding: 0 10px;
+	display: table-cell;
+	vertical-align: middle;
+}
+.zpage-body .colon {
+	display: table-cell;
+    font-size: 14px;
+    vertical-align: middle;
+    padding: 0 10px;
+}
+.infor-search {
+	font-size:14px;
+}
+.search-inforbox {
+	
+}
+.smartForm.search #saveSmartForm {
+	display: none;
+}
+.smartForm.edit #editSmartForm {
+	display: none;
+}
+.zpage-body.search #saveIntegratedForm {
+	display: none;
+}
+.zpage-body.edit #editIntegratedForm {
+	display: none;
+}
+#editSmartForm,
+#saveSmartForm,
+#editIntegratedForm,
+#saveIntegratedForm {
+	display:block;
+	float:right;
+	width: 60px;
+	text-align:center;
+	height: 30px;
+	line-height: 30px;
+	background-color: #126def;
+	font-size: 16px;
+	color: #ffffff;
+	border-radius: 3px;
+}
+#editIntegratedForm,
+#saveIntegratedForm  {
+	margin: 20px 0 10px 0;
+}
+.cloneBox {
+	padding-bottom: 20px;
+	padding-left: 40px;
+	font-size:14px;
+	color: #656565;
+}
+.zitem-list {
+	padding-left: 40px;
+	display: inline-block;
+}
+.zlabel.list-label {
+    width: 4em;
+    text-align: right;
+    font-size: 14px;
+    display: table-cell;
+    vertical-align: middle;
+}
+.zinfor-input-wrap {
+	font-size: 14px;
+    display: table-cell;
+    vertical-align: middle;
+    width: 300px;
+}
+.zpage-body {
+	width: 100%;
+	background-color: #ffffff;
+	color: #656565;
+	font-size : 14px;
+	overflow:hidden;
+	top: 240px;
+	bottom:0;
+	position: absolute;
+}
+.zpage-body .zitem-list {
+	padding: 5px 0 5px 10px;
+	display: inline-block;
+	width: 100%;
+}
+.zpage-menuview {
+	padding-left: 20px;
+	padding-right: 10px;
+    position: absolute;
+    left: 0; 
+    top: 0;
+    bottom:0;
+    border-right: 2px solid #d9d9d9; 
+    height: 100%;
+    overflow-x: hidden;
+    overflow-y: auto;
+    width: 120px;
+}
+.zpage-menuview li {
+	line-height: 1; 
+	padding: 8px 0;
+	text-align:center; 	
+	cursor: pointer;
+	position: relative;
+}
+
+.zpage-menuview li.active {
+	color: #126def;
+}
+.zpage-menuview li.active:after {
+	content: "";
+	position: absolute;
+	top: 0;
+	right: -12px;
+	height: 100%;
+	width: 2px; 
+	background-color: #126def;
+}
+.zpage-menubody {
+    position: absolute;
+    overflow-x: hidden;
+    overflow-y: auto;
+    left: 120px;
+    right: 0;
+    bottom: 0;
+    top: 0;
+}
+.integratedForm-button {
+	border-top: 2px solid #4b90f3;
+	position: absolute;
+    width: 100%;
+    top: 0;
+    padding-right:20px;
+    background-color: #ffffff;
+}
+.menu-wrap {
+	position: absolute;
+    top: 60px;
+    bottom: 0;
+    width: 100%;
+    overflow: hidden;
+}
+.zinput.list-input {
+	width: 100%;
+    border-radius: 3px;
+    padding-left: 10px;
+    height: 36px;
+    border-radius: 3px !important;
+    font-size: 14px;
+    background-color: #ffffff !important;
+    color: #656565;
+    border: 1px solid #d9d9d9;
+}
+.zpage-body.search .zinput.list-input,
+.smartForm.search .zinput.list-input {
+	display:none;
+}
+.zpage-body.edit .zinput.list-input,
+.smartForm.edit .zinput.list-input {
+	display:inline-block;
+}
+.zinput.list-input:focus,
+.zinput.list-input:hover {
+	border-color: #126def;
+}
+
+�Զ���ȫ��ʽ
+.search-inforbox {
+	display: inline-block;
+	position: relative;
+	margin-left: 10px;
+}
+.search-helpbox {
+	position: absolute;
+    top: 39px;
+    width: 100%;
+    font-size: 14px;
+    background: #ffffff;
+    z-index: 9;
+}
+.search-helpbox li {
+	border-left: 1px solid #d9d9d9;
+	border-right: 1px solid #d9d9d9;
+	padding: 0 10px;
+	color: #4b90f3;
+	height: 24px;
+	line-height: 24px;
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow:ellipsis;
+}
+.search-helpbox li:first-child {
+	border-top: 1px solid #d9d9d9;
+}
+.search-helpbox li:last-child {
+	border-bottom: 1px solid #d9d9d9;
+}
+.search-helpbox li.ct {
+	background-color: #ECF6FD;
+}
+.zitem-group {
+	padding: 10px 0;
+	position: relative;
+}
+.zitem-group-line {
+	position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 90px;
+    height: 2px;
+    background-color: #126def;
+}
+�鿴ģʽ������ģʽ��ͬ��ʽ
+.smartForm.search .selection-container {
+	display:none;
+}
+.smartForm.edit .list-value {
+	display:none;
+}
+.smartForm.edit .selection-container {
+	display: block;
+}
+.zpage-body.search .selection-container {
+	display:none;
+}
+.zpage-body.edit .selection-container {
+	display:block;
+}
+.zpage-body.edit .list-value {
+	display:none;
+}
+ .selection-container {
+    	position:static !important;
+    }
+@media (min-width: 1100px){
+	.zitem-list {
+		width: 45%;
+		display: inline-block;
+	}
+	.zpage-body .zitem-list{
+		width: 45%;
+		display: inline-block;
+		padding-right: 0;
+	}
+} */

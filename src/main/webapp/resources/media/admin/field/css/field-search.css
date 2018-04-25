@@ -1,0 +1,208 @@
+@CHARSET "UTF-8";
+
+.field-search{
+	font-size: 14px;
+}
+
+div.fieldpicker-container ul.nav li.array-field>a{
+	background-color: #9F79EE !important;
+}
+
+/***********自动完成样式Start*****************/
+/*****************************************/
+
+.field-search .typeahead {
+	background-color: #fff;
+}
+
+.field-search .typeahead:focus {
+	border: 2px solid #0097cf;
+}
+
+.field-search .tt-query {
+	-webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+	-moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+	box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+}
+
+.field-search .tt-hint {
+	color: #999
+}
+
+.field-search .tt-menu {
+	width: 100%;
+	margin: 0;
+	padding: 8px 0;
+	background-color: #fff;
+	border: 1px solid #ccc;
+	-webkit-box-shadow: 0 5px 10px rgba(0, 0, 0, .2);
+	-moz-box-shadow: 0 5px 10px rgba(0, 0, 0, .2);
+	box-shadow: 0 5px 10px rgba(0, 0, 0, .2);
+}
+
+.field-search .tt-suggestion {
+	padding: 3px 16px;
+	line-height: 1.3em;
+	margin: 0;
+}
+
+.field-search .tt-suggestion:hover {
+	cursor: pointer;
+	color: #fff;
+	background-color: #0097cf;
+}
+
+.field-search .tt-suggestion.tt-cursor {
+	color: #fff;
+	background-color: #0097cf;
+}
+
+.field-search .tt-suggestion p {
+	margin: 0;
+}
+
+.field-search .gist {
+	font-size: 14px;
+}
+
+.field-search #custom-templates .empty-message {
+	padding: 5px 10px;
+	text-align: center;
+}
+
+.field-search #multiple-datasets .league-name {
+	margin: 0 20px 5px 20px;
+	padding: 3px 0;
+	border-bottom: 1px solid #ccc;
+}
+
+.field-search #scrollable-dropdown-menu .tt-menu {
+	max-height: 150px;
+	overflow-y: auto;
+}
+
+.field-search #rtl-support .tt-menu {
+	text-align: right;
+}
+/*****************************************/
+/***********自动完成样式End*******************/
+
+
+.field-search {
+    width: 15em;
+    display: inline-block;
+    line-height: 34px;
+}
+.field-search .search-input-wrapper {
+    display: inline-block;
+    width: 100%;
+}
+.field-search .search-input-wrapper>span{
+	width: 100%;
+}
+.field-search .search-input-wrapper .input-xs {
+    padding-left: 26px;
+    padding-right: 26px;
+}
+
+.field-search i.field-picker-button {
+    left: initial;
+    right: 0;
+    cursor: pointer;
+    font-size: 17px;
+}
+.field-search i.field-picker-button:HOVER {
+	color: #388E8E !important;
+}
+
+.field-search div.fieldpicker-container {
+    position: absolute;
+    right: -20px;
+    bottom: -15em;
+    top: 35px;
+    z-index: 9999;
+    display: none;
+    width: 420px;
+}
+
+.field-search .fieldpicker-container .nav-tabs.nav-justified {
+    display: flex;
+    flex-direction: row;
+}
+.field-search .fieldpicker-container .nav-tabs.nav-justified>li {
+    display: block;
+    height: 30px;
+    line-height: 30px;
+    border-right: 1px solid #dcdcdc;
+    border-bottom: 1px solid #dcdcdc;
+    width: 110px;
+}
+
+.field-search .fieldpicker-container .nav-tabs.nav-justified>li>a {
+    height: 29px;
+    word-break: keep-all;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: inline-block;
+    line-height: 30px;
+    border-top: none;
+    background-color: #fafafa;
+    margin-top: 0;
+    width: 109px;
+    padding: 0;
+}
+
+.field-search .fieldpicker-container .nav-tabs.nav-justified>li.active>a{
+	background-color: #fff;
+	height: 32px;
+}
+.field-search .fieldpicker-container .nav-tabs.nav-justified>li.dropdown>a{
+    width: 90px;
+}
+.field-search .fieldpicker-container a.dropdown-toggle {
+	text-align: center;
+}
+.field-search .fieldpicker-container a.dropdown-toggle>span {
+    word-break: keep-all;
+    max-width: 3em;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    display: inline-block;
+}
+.field-search .fieldpicker-container a.dropdown-toggle:AFTER{
+	content: "\f0dd";
+    vertical-align: top;
+    line-height: 25px;
+}
+.field-search .fieldpicker-container li.dropdown ul.dropdown-menu li>a {
+    width: 170px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.field-search a.fieldpicker-field-item {
+    border: 1px solid #c2c2c2;
+    padding: 2px 9px;
+    margin: 0 5px;
+    word-break: keep-all;
+    color: #00C5CD;
+}
+.field-search a.fieldpicker-field-item:hover {
+    border: 1px solid #a0a0a0;
+    color: 	#009ACD;
+}
+.field-search .fieldpicker-field-container {
+    width: 100%;
+    min-height: 100%;
+    word-break: keep-all;
+    word-wrap: break-word;
+}
+.field-search .fieldpicker-container .tab-content {
+    padding: 5px 10px;
+}
+
+.field-search a.disabled.fieldpicker-field-item {
+    color: #ccc !important;
+}

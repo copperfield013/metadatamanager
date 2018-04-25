@@ -1,0 +1,316 @@
+@CHARSET "UTF-8";
+div#peopledata-detail-tmpl-31dc8145a14747868f6a2654bd3992d0 {
+    position: relative;
+    min-height: 95%;
+}
+.peopledata-detail-tmpl .title-operate i {
+    font-size: 23px;
+    color: #888;
+}
+
+.peopledata-detail-tmpl .title-operate i:hover {
+    color: #000;
+}
+
+.peopledata-detail-tmpl .title-operate {
+    position: absolute;
+    display: inline-block;
+    top: 0;
+    vertical-align: middle;
+    height: 40px;
+    line-height: 40px;
+}
+
+.peopledata-detail-tmpl .history-container.title-operate {
+    right: 6em;
+}
+
+.peopledata-detail-tmpl .template-container.title-operate {
+    right: 3em;
+}
+.peopledata-detail-tmpl div#errors {
+    width: 300px;
+    height: 200px;
+    position: absolute;
+    border: 3px solid #ccc;
+    top: 30px;
+    left: 100px;
+    background: #fff;
+    padding: 20px 10px;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+div#timeline-area {
+	display: block;
+    position: absolute;
+    right: 30px;
+    top: 30px;
+    z-index: 9999;
+    bottom: 20px;
+    width: 500px;
+    background-color: #0c173e;
+    border: 1px;
+    border-style: dotted;
+    overflow-x: hidden;
+    overflow-y: auto;
+    border-radius: 7px;
+    padding: 10px;
+}
+div#timeline-area .timeline-wrapper {
+    position: absolute;
+    left: 10px;
+    right: -20px;
+    bottom: 0;
+    top: 0;
+    overflow-y: scroll;
+    padding-right: 10px;
+}
+div#timeline-area .show-more-history{
+	color: #fff;
+}
+
+
+.peopledata-detail-tmpl .widget-caption{
+	font-size: 1.3em;
+}
+.peopledata-detail-tmpl .movable, .peopledata-detail-tmpl .movable label{
+}
+.peopledata-detail-tmpl .field-container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    min-height: 60px;
+}
+.peopledata-detail-tmpl .field-item , .peopledata-detail-tmpl .field-item-placeholder{
+    width: 50%;
+    margin-left: 0;
+    margin-right: 0;
+    line-height: 3.5em;
+    min-height: 3.5em;
+    font-size: 1.1em;
+    float: left;
+    border-bottom: 1px solid #ddd;
+    position: relative;
+    margin: 7px 0;
+}
+.peopledata-detail-tmpl .field-item-placeholder.dbcol{
+	width: 100% !important;
+}
+.peopledata-detail-tmpl .dbcol.field-item {
+    width: 100% !important;
+}
+.peopledata-detail-tmpl label.field-title {
+    width: 20%;
+    padding-right: 4%;
+    font-weight: bold;
+}
+.dbcol label.field-title {
+    width: 10% !important;
+    padding-right: 2% !important;
+}
+
+.peopledata-detail-tmpl .field-item-placeholder, .peopledata-detail-tmpl .group-item-placeholder{
+	background-color: #666;
+	opacity: 0.5;
+	border: 1px solid #999;
+}
+.peopledata-detail-tmpl .group-item-placeholder{
+	width: 100%;
+	height: 40px;
+}
+.peopledata-detail-tmpl .field-item>.field-title, .peopledata-detail-tmpl .field-item>.field-value{
+	display: inline-block;
+    min-height: 3.5em;
+    line-height: 3.5em;
+    padding-top: 0;
+    margin-top: 0;
+    font-size: 16px;
+    vertical-align: middle;
+    word-break: break-word;
+}
+.peopledata-detail-tmpl span.field-view {
+    line-height: 2em;
+    word-break: break-word;
+    display: inline-block;
+}
+
+.peopledata-detail-tmpl .field-value {
+    width: 70%;
+    max-height: 20em;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+.peopledata-detail-tmpl input.field-view{
+	font-size: 18px;
+	height: 2em;
+	line-height: 2em;
+}
+.peopledata-detail-tmpl .group-container{
+	margin-top: 20px;
+	padding-bottom: 50px;
+}
+.peopledata-detail-tmpl .box-holdplace{
+	background-color: #888;
+	border: 1px solid #000;
+}
+.peopledata-detail-tmpl span.group-title{
+	padding-right: 1em;
+}
+.peopledata-detail-tmpl input.group-title{
+	display: inline-block;
+    height: 1.5em;
+    font-size: 0.8em;
+    width: 10em;
+}
+.peopledata-detail-tmpl input.field-title{
+	width: 5em;
+	height: 1.4em;
+	line-height: 1.5em;
+	display: inline-block;
+	font-size: 16px;
+	text-align: right;
+}
+
+.peopledata-detail-tmpl span.field-title-d {
+    display: inline !important;
+    word-break: keep-all !important;
+    opacity: 0 !important;
+}
+.peopledata-detail-tmpl .header-row>* {
+    height: 2.5em;
+    line-height: 2.5em;
+    text-align: right;
+    margin-bottom: 0;
+    font-size: 15px !important;
+    vertical-align: middle;
+}
+
+
+
+
+div#tmpl-list {
+    position: absolute;
+    right: 2em;
+    width: 350px;
+    background-color: #fff;
+    top: 40px;
+    height: 323px;
+    border: 1px solid #ccc;
+    font-size: 17px;
+    padding: 10px 0;
+    padding-bottom: 30px;
+    overflow: hidden;
+}
+
+div#tmpl-list ul.tmpl-list-wrapper {
+    height: 100%;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    width: 370px;
+}
+#tmpl-list li {
+    list-style: none;
+    list-style-type: none;
+    height: 70px;
+    line-height: 3em;
+    border-bottom: 1px solid #eee;
+    padding: 10px 20px;
+    cursor: pointer;
+    position: relative;
+}
+#tmpl-list li:hover{
+    background-color: #FFEC8B;
+}
+
+div#tmpl-list ul.tmpl-list-wrapper {
+    padding: 0;
+    margin: 0;
+}
+
+div#tmpl-list li span.tmpl-icon {
+    font-size: 22px;
+    display: inline-block;
+    width: 45px;
+    height: 45px;
+    line-height: 45px;
+    text-align: center;
+    background-color: #6495ED;
+    color: #fff;
+    border-radius: 50%;
+    float: left;
+}
+#tmpl-list li:hover span.tmpl-icon {
+    background-color: #1E90FF;
+}
+
+
+div#tmpl-list span.tmpl-item-body {
+    display: inline-block;
+    width: 250px;
+    height: 45px;
+    margin-left: 10px;
+}
+
+#tmpl-list li:hover span.tmpl-item-body {
+    font-weight: bold;
+}
+
+div#tmpl-list span.tmpl-name {
+    height: 25px;
+    margin: 0;
+    font-size: 16px;
+    line-height: 25px;
+}
+
+div#tmpl-list span.tmpl-date {
+    height: 20px;
+    line-height: 20px;
+    font-size: 13px;
+    text-indent: 5px;
+    color: #acacac;
+}
+
+#tmpl-list li.active .tmpl-icon {
+    background-color: #ed4e2a !important;
+}
+
+#tmpl-list .tmpl-item-body>span {
+    display: inline-block;
+    width: 100%;
+    margin: 0;
+    float: left;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+#tmpl-list li.active .tmpl-item-body>span {
+    font-weight: normal !important;
+}
+
+#tmpl-list li.active {
+    cursor: initial;
+    background-color: #f8f8f8;
+}
+
+.tmpl-operate {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    text-align: right;
+    padding-right: 10px;
+    padding-bottom: 5px;
+    font-size: 20px;
+    height: 30px;
+    border-top: 1px solid #eee;
+    line-height: 30px;
+}
+.tmpl-operate i{
+	cursor: pointer;
+	color: #888;
+}
+.tmpl-operate i:HOVER{
+	color: #ccc;
+}
+

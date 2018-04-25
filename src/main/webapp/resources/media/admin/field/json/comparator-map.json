@@ -1,0 +1,146 @@
+{
+	"text"		: {
+		"comparators"		: [
+			{
+				"title"	: "包含",
+				"key"	: "t1"
+			},
+			{
+				"title"	: "开头为",
+				"key"	: "t2"
+			},
+			{
+				"title"	: "结尾为",
+				"key"	: "t3"
+			},
+			{
+				"title"	: "等于",
+				"key"	: "t4"
+			},
+			{
+				"title"	: "不包含",
+				"key"	: "t1n",
+				"class"	: "negative"
+			},
+			{
+				"title"	: "开头不为",
+				"key"	: "t2n",
+				"class"	: "negative"
+			},
+			{
+				"title"	: "结尾不为",
+				"key"	: "t3n",
+				"class"	: "negative"
+			},
+			{
+				"title"	: "不等于",
+				"key"	: "t4n",
+				"class"	: "negative"
+			}
+		]
+	},
+	"textarea"	: {
+		"comparators"		: [],
+		"ref_comparators"	: "text.*",
+		"sub_compatators"	: []
+	},
+	"select"	: {
+		"comparators"		: [
+			{
+				"title"	: "为",
+				"key"	: "s1"
+			},
+			{
+				"title"	: "不为",
+				"key"	: "s1n",
+				"class"	: "negative"
+			}
+		]
+	},
+	"multiselect": {
+		"comparators"		: [
+			{
+				"title"	: "包括",
+				"key"	: "ms1"
+			},
+			{
+				"title"	: "不包括",
+				"key"	: "ms1n",
+				"class"	: "negative"
+			}
+		]
+	},
+	"checkbox"	: {
+		"rel_comparators"	: "multiselect.*"
+	},
+	"radio"		: {
+		"ref_comparators"	: "select.*"
+	},
+	"date"		: {
+		"comparators"		: [
+			{
+				"title"	: "在",
+				"key"	: "d1"
+			},
+			{
+				"title"	: "早于",
+				"key"	: "d2"
+			},
+			{
+				"title"	: "晚于",
+				"key"	: "d3"
+			},
+			{
+				"title"	: "不在",
+				"key"	: "d1n",
+				"class"	: "negative"
+			},
+			{
+				"title"	: "不早于",
+				"key"	: "d2n",
+				"class"	: "negative"
+			},
+			{
+				"title"	: "不晚于",
+				"key"	: "d3n",
+				"class"	: "negative"
+			}
+		]
+	},
+	"time"		: {
+		"ref_comparators"	: "comparators.*"
+	},
+	"datetime"	: {
+		"ref_comparators"	: "#comparators.*"
+	},
+	"timerange"	: {
+		"comparators"		: [
+			{
+				"title"	: "在",
+				"key"	: "rn1"
+			},
+			{
+				"title"	: "不在",
+				"key"	: "rn1n",
+				"class"	: "negative"
+			}
+		]
+	},
+	"datetimerange"	: {
+		"ref_comparators"	: "comparators.*"
+	},
+	"autocomplete"	: {
+		"comparators"		: [
+			{
+				"title"	: "为",
+				"key"	: "a1"
+			},
+			{
+				"title"	: "不为",
+				"key"	: "a1n",
+				"class"	: "negative"
+			}
+		]
+	}
+	
+}
