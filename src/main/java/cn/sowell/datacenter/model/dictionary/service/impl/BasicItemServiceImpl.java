@@ -136,4 +136,22 @@ public class BasicItemServiceImpl implements BasicItemService {
 		return basicItemDao.getAttrByPidGroupName(parent, groupName);
 	}
 
+	@Override
+	public void createTabCol() {
+		
+		List queryCreTab = basicItemDao.queryCreTab();
+		
+		for (Object object : queryCreTab) {
+			basicItemDao.excuteBySql(object.toString());
+		}
+		List queryNewAddCol = basicItemDao.queryNewAddCol();
+		for (Object object : queryNewAddCol) {
+			basicItemDao.excuteBySql(object.toString());
+		}
+		List queryCreRelaTab = basicItemDao.queryCreRelaTab();
+		for (Object object : queryCreRelaTab) {
+			basicItemDao.excuteBySql(object.toString());
+		}
+	}
+
 }

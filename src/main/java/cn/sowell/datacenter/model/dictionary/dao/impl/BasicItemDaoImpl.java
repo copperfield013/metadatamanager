@@ -10,6 +10,8 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Repository;
 
+import com.mysql.jdbc.Connection;
+
 import cn.sowell.copframe.dao.deferedQuery.DeferedParamQuery;
 import cn.sowell.copframe.dao.deferedQuery.sqlFunc.WrapForCountFunction;
 import cn.sowell.copframe.dao.utils.QueryUtils;
@@ -86,6 +88,114 @@ public class BasicItemDaoImpl implements BasicItemDao {
 	@Override
 	public void saveOrUpdate(Object obj) {
 		sFactory.getCurrentSession().saveOrUpdate(obj);
+	}
+
+	@Override
+	public List queryCreTab() {
+		StringBuffer sb = new StringBuffer();
+		sb.append("SELECT ")
+			.append("concat(\"create table \", a.c_table_name,\"( `id`  bigint(20) NOT NULL AUTO_INCREMENT, ")
+			.append("`ABP0001`  varchar(32) DEFAULT NULL ,PRIMARY KEY (`id`))\") ")
+			.append("FROM ")
+			.append("(SELECT ")
+			.append("c_table_name ")
+			.append("FROM ")
+			.append("t_c_basic_item ")
+			.append("WHERE ")
+			.append("c_table_name IS NOT NULL ")
+			.append(" GROUP BY c_table_name) a ")
+			.append("LEFT JOIN ")
+			.append("(SELECT  ")
+			.append(" table_name ")
+			.append("FROM ")
+			.append("information_schema.tables t ")
+			.append("WHERE ")
+			.append("t.table_schema = '")
+			.append("datacenter")//这里获取数据库的名字
+			.append("') b ON a.c_table_name = b.table_name ")
+			.append("WHERE b.table_name IS NULL");
+		System.out.println(sb.toString());	
+		List list = sFactory.getCurrentSession().createSQLQuery(sb.toString()).list();
+		return list;
+	}
+
+	 @Override
+	public List queryNewAddCol() {
+		 StringBuffer sb = new StringBuffer();
+			sb.append("SELECT ")
+			.append("CONCAT('alter table ', ")
+			.append(" a.c_table_name, ")
+			.append("' add ', ")
+			.append("a.c_code,' ', ")
+			.append(" CASE a.c_data_type ")
+			.append(" WHEN '字符型' THEN concat('varchar(',if(a.c_data_range='枚举' ,\"32\",a.c_data_range),')') ")
+			.append(" WHEN '数字型' THEN concat('int(',if(a.c_data_range is null ,\"11\",a.c_data_range),')') ")
+			.append(" WHEN '数字型小数' THEN  concat('double(',if(a.c_data_range is null ,\"10,2\",a.c_data_range),')') ")
+			.append(" WHEN '日期型' THEN 'date' ")
+			.append(" WHEN '时间型' THEN 'datetime' ")
+			.append(" WHEN '二进制型' THEN 'blob' ")
+			.append(" END, ")
+			.append("'  default NULL ') ")
+			.append("FROM ")
+			.append("(SELECT  *  FROM  t_c_basic_item WHERE ")
+			.append(" c_data_type != '记录类型' ")
+			.append("AND c_data_type != '重复类型'")
+			.append(" AND c_data_type != '分组类型') a ")
+			.append(" LEFT JOIN ")
+			.append(" (SELECT  ")
+			.append(" col.column_name  FROM  information_schema.columns col  WHERE ")
+			.append(" table_schema = 'datacenter') b ON a.c_code = b.column_name ")
+			.append("WHERE ")
+			.append(" b.column_name IS NULL and c_table_name is not null and a.c_data_range is not null  order by a.c_code ");
+		 
+			List list = sFactory.getCurrentSession().createSQLQuery(sb.toString()).list();
+		return list;
+	}
+
+	@Override
+	public List queryCreRelaTab() {
+		StringBuffer sb = new StringBuffer();
+		sb.append("SELECT ")
+			.append(" concat(\"create table \", a.tablename,\"( `id`  bigint(20) NOT NULL AUTO_INCREMENT, ")
+			.append("`ABP0001`  varchar(32) Not NULL ,`ABC0913`  varchar(32) DEFAULT NULL ,`ABC0914`  varchar(32) DEFAULT NULL,PRIMARY KEY (`id`))\")  ")
+			.append("FROM ")
+			.append("(SELECT concat('t_',c_code,'_r1') tablename  FROM  t_c_basic_item    WHERE  c_data_type='记录类型') a  ")
+			.append(" LEFT JOIN (SELECT table_name FROM information_schema.tables t  WHERE  ")
+			.append(" t.table_schema = 'datacenter') b ON a.tablename = b.table_name  ")
+			.append("WHERE ")
+			.append("b.table_name IS NULL ");
+		
+		List list = sFactory.getCurrentSession().createSQLQuery(sb.toString()).list();
+		return list;
+	}
+
+	@Override
+	public List queryKeepTabCol() {
+		StringBuffer sb = new StringBuffer();
+		sb.append(" distinct col.column_name ")
+		.append("FROM ")
+		.append("information_schema.columns col ")
+		.append("WHERE ")
+		.append("table_schema = ''  ")
+		.append(" AND table_name IN ('t_common_classific_label' , 't_common_edit_history', ")
+		.append("'t_common_modify_status', ")
+		.append("'t_common_remarks','t_record_deleted', ")
+		.append("'t_record_cache', ")
+		.append("'t_record_code', ")
+		.append("'t_record_error', ")
+		.append("'t_record_history', ")
+		.append(" 't_record_relation', ")
+		.append("'t_record_relation_history') and column_name like 'ab%'  ")
+		.append(" union select 'ABC0915' ")
+		.append(" union select 'ABC0903'");
+		
+		List list = sFactory.getCurrentSession().createSQLQuery(sb.toString()).list();
+		return list;
+	}
+
+	@Override
+	public void excuteBySql(String sql) {
+		sFactory.getCurrentSession().createSQLQuery(sql).executeUpdate();
 	}
 
 }

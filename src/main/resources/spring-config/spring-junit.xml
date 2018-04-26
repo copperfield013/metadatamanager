@@ -18,8 +18,6 @@ http://www.springframework.org/schema/tx http://www.springframework.org/schema/t
 	<import resource="spring-core.xml"/>
 	<import resource="spring-dao.xml"/>
 	
-	<context:component-scan base-package="com.abc" />
-
 	<!-- dao自动扫描 -->
 	<context:component-scan base-package="cn.sowell.datacenter.model.*.dao.impl" />
 	<!-- serivce自动扫描 -->
@@ -27,59 +25,6 @@ http://www.springframework.org/schema/tx http://www.springframework.org/schema/t
 	
 	<bean id="junitOpenSessionInterceptor" class="org.springframework.orm.hibernate5.support.OpenSessionInterceptor" >
 		<property name="sessionFactory" ref="sessionFactory" />
-	</bean>
-	
-	<bean id="baseNodeContextConfig" class="cn.sowell.datacenter.model.abc.resolver.FusionContextConfig"  >
-		<property name="mappingName" value="baseinfoImport" />
-		<property name="module" value="people" />
-	</bean>
-	
-	<bean id="importBaseNodeContextConfig" class="cn.sowell.datacenter.model.abc.resolver.FusionContextConfig"  >
-		<property name="mappingName" value="importBase" />
-		<property name="module" value="people" />
-	</bean>
-	
-	<bean id="importHandicappedNodeContextConfig" class="cn.sowell.datacenter.model.abc.resolver.FusionContextConfig"  >
-		<property name="mappingName" value="importHandicapped" />
-		<property name="module" value="people" />
-	</bean>
-	
-	<bean id="importLowincomeNodeContextConfig" class="cn.sowell.datacenter.model.abc.resolver.FusionContextConfig"  >
-		<property name="mappingName" value="importLowincome" />
-		<property name="module" value="people" />
-	</bean>
-	
-	<bean id="importFamilyPlanningNodeContextConfig" class="cn.sowell.datacenter.model.abc.resolver.FusionContextConfig"  >
-		<property name="mappingName" value="importFamilyPlanning" />
-		<property name="module" value="people" />
-	</bean>
-	
-	<bean id="studentpartyConfig" class="cn.sowell.datacenter.model.abc.resolver.FusionContextConfig">
-		<property name="mappingName" value="studentpartyBase" />
-		<property name="module" value="student" />
-		<property name="codeAttributeName" value="peoplecode" />
-		<property name="titleAttributeName" value="姓名" />
-	</bean>
-	
-	<bean id="addressBaseContextConfig" class="cn.sowell.datacenter.model.abc.resolver.FusionContextConfig"  >
-		<property name="mappingName" value="addressBase" />
-		<property name="module" value="address" />
-		<property name="codeAttributeName" value="编码" />
-		<property name="titleAttributeName" value="地址简称" />
-	</bean>
-	
-	<bean class="cn.sowell.datacenter.model.abc.resolver.FusionContextFactoryDC">
-		<property name="configMap">
-			<map>
-				<entry key="base" value-ref="baseNodeContextConfig" />
-				<entry key="importBase" value-ref="importBaseNodeContextConfig" />
-				<entry key="importHandicapped" value-ref="importHandicappedNodeContextConfig" />
-				<entry key="importLowincome" value-ref="importLowincomeNodeContextConfig" />
-				<entry key="importFamilyPlanning" value-ref="importFamilyPlanningNodeContextConfig" />
-				<entry key="addressBase" value-ref="addressBaseContextConfig" />
-				<entry key="studentpartyBase" value-ref="studentpartyConfig" />
-			</map>
-		</property>
 	</bean>
 	
 	<bean class="cn.sowell.copframe.spring.propTranslator.PropertyValueTranslatorSet">

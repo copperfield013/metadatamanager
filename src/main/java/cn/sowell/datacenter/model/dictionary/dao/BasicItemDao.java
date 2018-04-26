@@ -57,5 +57,32 @@ public interface BasicItemDao {
 	List getAttrByPidGroupName(String parent, String groupName);
 	
 	void saveOrUpdate(Object obj);
-
+	
+	/**
+	 * -- 查询需要创建的表
+	 */
+	List queryCreTab();
+	
+	/**
+	 * -- 要新增的字段  
+	 * @return
+	 */
+	List queryNewAddCol();
+	
+	/**
+	 *  创建关系表
+	 * @return
+	 */
+	List queryCreRelaTab();
+	
+	/**
+	 * 保留的表，及列名（基本项） 
+	 */
+	List queryKeepTabCol();
+	
+	/**
+	 * 执行传进来的sql语句
+	 * @param sql
+	 */
+	void excuteBySql(String sql);
 }

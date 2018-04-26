@@ -64,4 +64,9 @@ public interface BasicItemService {
 	 * @return
 	 */
 	List getAttrByPidGroupName(String parent, String groupName);
+	
+	/**
+	 * 查询当前数据需要生成的表、字段， 并生成
+	 */
+	void createTabCol();
 }

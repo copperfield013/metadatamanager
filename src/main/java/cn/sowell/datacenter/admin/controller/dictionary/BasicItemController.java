@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Random;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
@@ -172,6 +173,7 @@ public class BasicItemController {
 	@RequestMapping("/saveStatus")
 	public AjaxPageResponse savePastDue(String id, String statusStr){
 		try {
+			
 			Integer status = Constants.USING_STATE_MAP.get(statusStr);
 			
 			BasicItem basicItem = basicItemService.getBasicItem(id);
@@ -190,5 +192,20 @@ public class BasicItemController {
 			return AjaxPageResponse.FAILD("操作失败");
 		}
 	}
+	
+	
+	//创建表
+	@ResponseBody
+	@RequestMapping("/createTab")
+	public AjaxPageResponse createTab(){
+		try {
+			basicItemService.createTabCol();
+			return AjaxPageResponse.CLOSE_AND_REFRESH_PAGE("修改成功", "basicItem_list");
+		} catch (Exception e) {
+			logger.error("操作失败", e);
+			return AjaxPageResponse.FAILD("操作失败");
+		}
+	}
+	
 
 }
