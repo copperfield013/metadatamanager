@@ -9,6 +9,8 @@ import cn.sowell.datacenter.model.demo.criteria.DemoCriteria;
 import cn.sowell.datacenter.model.demo.pojo.PlainDemo;
 import cn.sowell.datacenter.model.dictionary.criteria.BasicItemCriteria;
 import cn.sowell.datacenter.model.dictionary.pojo.BasicItem;
+import cn.sowell.datacenter.model.dictionary.pojo.DictionaryBasicItem;
+import cn.sowell.datacenter.model.dictionary.pojo.Towlevelattr;
 
 public interface BasicItemService {
 
@@ -69,4 +71,15 @@ public interface BasicItemService {
 	 * 查询当前数据需要生成的表、字段， 并生成
 	 */
 	void createTabCol();
+	
+	/**
+	 * 根据父亲的id获取孩子
+	 * @param parent
+	 * @return
+	 */
+	List<BasicItem> getDataByPId(String parent);
+
+	List<DictionaryBasicItem> getDictCode(Long id);
+
+	void createTowLevel(Towlevelattr criteria);
 }

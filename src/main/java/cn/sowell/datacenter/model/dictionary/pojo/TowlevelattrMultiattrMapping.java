@@ -1,11 +1,14 @@
 package cn.sowell.datacenter.model.dictionary.pojo;
 
+import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 @Entity
 @Table(name = "t_c_towlevelattr_multiattr_mapping")
@@ -28,6 +31,9 @@ public class TowlevelattrMultiattrMapping {
 	@Column(name = "c_value_attr")
 	private String valueAttr;// 重复类型下面的其中一个属性
 
+	@Transient  
+	 List<Towlevelattr> childList = null;
+	
 	public Long getId() {
 		return id;
 	}
@@ -67,4 +73,13 @@ public class TowlevelattrMultiattrMapping {
 	public void setValueAttr(String valueAttr) {
 		this.valueAttr = valueAttr;
 	}
+
+	public List<Towlevelattr> getChildList() {
+		return childList;
+	}
+
+	public void setChildList(List<Towlevelattr> childList) {
+		this.childList = childList;
+	}
+	
 }

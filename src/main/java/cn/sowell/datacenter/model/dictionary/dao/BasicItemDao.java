@@ -76,11 +76,6 @@ public interface BasicItemDao {
 	List queryCreRelaTab();
 	
 	/**
-	 * 保留的表，及列名（基本项） 
-	 */
-	List queryKeepTabCol();
-	
-	/**
 	 * 执行传进来的sql语句
 	 * @param sql
 	 */

@@ -88,10 +88,10 @@
     color: #307b89;
     font-size:18px;
 }
-	.common_proper, .more_proper , .entity_relation{
+	.common_proper, .more_proper , .entity_relation, .twoLevelAttr_child, .twoLevelAttr_child_show{
 		display: none;
 	}
-	.opera_comm, .opera_more_child {
+	.opera_comm, .opera_more_child, .twoLevelAttr_show {
 		display: none;
 	}
 	ul,li {
@@ -106,7 +106,7 @@
 		 <div class="entity_head">
 			<img src="media/admin/dictionary/basicItem/entity_list_icon.png" />
 			<span>实体列表</span>
-			<div id="createTab" style="float: right;font-size: 24px;"><a href="javascript:void(0)">创建表</a></div>
+			<div id="createTab" style="float: right;font-size: 24px;"><a href="javascript:void(0)">更新实体存储</a></div>
 		</div>
 		
 		<div class="entity_list">
@@ -202,10 +202,10 @@
 				<input type="hidden" name="leftRecordType" id="leftRecordType">
 				选择右实体：<select id="rightRecordType" name="rightRecordType">
 				</select><br>	
-			          左实体code:<input type="text" name="typeCode" id="typeCode"/>
-				右实体code:<input type="text" name="reverseCode" id="reverseCode"/><br>
-				左实体关系名称:<input type="text" name="leftName" id="leftName"/>
-				右实体关系名称: <input type="text" name="rightName" id="rightName"/><br>
+			          左关系code:<input type="text" name="typeCode" id="typeCode"/>
+				右关系code:<input type="text" name="reverseCode" id="reverseCode"/><br>
+				左关系名称:<input type="text" name="leftName" id="leftName"/>
+				右关系名称: <input type="text" name="rightName" id="rightName"/><br>
 				
 				<input id="relation_but_cancel" type="button" value="取消">
 				<input id="relation_but_confirm" type="button" value="确认">
@@ -278,8 +278,208 @@ seajs.use(['dialog', 'ajax'], function(Dialog, Ajax){
 		$("#add_more_child_mes").html("添加多值属性");
 		$(this).parent().parent().siblings(".opera_more_child").show();
 	});
+		
+	//点击确认， 添加一条二级属性
+	$(".more_proper").on("click", "#twoLevelAttr_but_confirm", function() {
+		var $form = $(this).parent();
+		var id = $form.children("#id").val();
+		var name = $form.children("#name").val();
+		var relatedMultiattribute = $form.children("#relatedMultiattribute").val();
+		var dictionaryAttr = $form.children("#dictionaryAttr").val();
+		var valueAttr = $form.children("#valueAttr").val();
+		
+		Ajax.ajax('admin/dictionary/basicItem/saveTwoLevelAttr',{
+			id:id,
+			name : name,
+			relatedMultiattribute:relatedMultiattribute,
+			dictionaryAttr:dictionaryAttr,
+			valueAttr:valueAttr
+		} , function(data){
+			
+		});
+		
+		$(".twoLevelAttr_show").hide();
+		var entityId = $(".common_proper").attr("parentId");
+		$(".new_add").remove();
+		enityAttr(entityId);
+	});
+		
+		//点击 添加二级属性  显示div
+	$(".more_proper").on("click", "#add_twoLevelAttr", function() {
+		var $form = $(this).parent().parent().siblings(".twoLevelAttr_show").children("#twoLevelAttr_form1");
+		
+		$form.children("#dictionaryAttr").empty();
+		 $form.children("#valueAttr").empty();
+		
+		var groupName = $form.attr("groupName");
+		var groupId = $form.attr("groupId");
+		$form.children("#name").val(groupName);
+		$form.children("#relatedMultiattribute").val(groupId);
+		
+		Ajax.ajax('admin/dictionary/basicItem/getDataByPid',{
+			id:groupId
+		} , function(data){
+			
+			var datachild = data.child;
+			var dictattr_enum = "";
+			var valuestr = "";
+			 for(var key in datachild){
+				 valuestr = valuestr + " <option value =\""+datachild[key].code+"\">"+datachild[key].cnName+"</option>";
+				if (datachild[key].dataRange == '枚举') {
+					dictattr_enum = dictattr_enum + " <option value =\""+datachild[key].code+"\">"+datachild[key].cnName+"</option>";
+				} 
+		      } 
+			 $form.children("#dictionaryAttr").append(dictattr_enum);
+			 $form.children("#valueAttr").append(valuestr);
+		});
+		
+		$("#twoLevelAttr_mes").html("");
+		$("#twoLevelAttr_mes").html("添加二级属性");
+		$(this).parent().parent().siblings(".twoLevelAttr_show").show();
+	});
+		
+	//点击  编辑二级属性  显示div
+	$(".more_proper").on("click", "#edit_twoLevelAttr", function() {
+		var $form = $(this).parent().siblings(".twoLevelAttr_show").children("#twoLevelAttr_form1");
+		var twoLevelId = $(this).attr("twoLevelId");
+		
+		Ajax.ajax('admin/dictionary/basicItem/getTwoLevelAttr',{
+			id: twoLevelId
+		} , function(data){
+			var datatmm = data.tmm;
+			$form.children("#id").val(datatmm.id);
+			$form.children("#name").val(datatmm.name);
+			$form.children("#relatedMultiattribute").val(datatmm.relatedMultiattribute);
+			
+			var moreId = datatmm.relatedMultiattribute
+			var dictionarystr = datatmm.dictionaryAttr;
+			var valueattr = datatmm.valueAttr;
+				 Ajax.ajax('admin/dictionary/basicItem/getDataByPid',{
+			            id:moreId
+			        } , function(data){
+			            
+			            var datachild = data.child;
+			            var dictattr_enum = "";
+			            var valuestr = "";
+			              for(var key in datachild){
+			                 if (datachild[key].code == valueattr) {
+			                     valuestr = valuestr + " <option selected=\"selected\" value =\""+datachild[key].code+"\">"+datachild[key].cnName+"</option>";
+			                 } else {
+			                     valuestr = valuestr + " <option value =\""+datachild[key].code+"\">"+datachild[key].cnName+"</option>";
+			                 }
+			                
+			                if (datachild[key].dataRange == '枚举') {
+			                    if (datachild[key].code == dictionarystr) {
+			                        dictattr_enum = dictattr_enum + " <option selected=\"selected\" value =\""+datachild[key].code+"\">"+datachild[key].cnName+"</option>";
+			                     } else {
+			                         dictattr_enum = dictattr_enum + " <option value =\""+datachild[key].code+"\">"+datachild[key].cnName+"</option>";
+			                     }
+			                }
+			              } 
+			              
+			          /*   for(var key in datachild){
+							 valuestr = valuestr + " <option value =\""+datachild[key].code+"\">"+datachild[key].cnName+"</option>";
+							if (datachild[key].dataRange == '枚举') {
+								dictattr_enum = dictattr_enum + " <option value =\""+datachild[key].code+"\">"+datachild[key].cnName+"</option>";
+							} 
+					      }  */
+			             $form.children("#dictionaryAttr").append(dictattr_enum);
+			             $form.children("#valueAttr").append(valuestr);
+			        });
+				
+		});
+		
+		
+		 
+		
+		
+		$("#twoLevelAttr_mes").html("");
+		$("#twoLevelAttr_mes").html("编辑二级属性");
+		$(this).parent().siblings(".twoLevelAttr_show").show();
+	});
+		
+	//点击 查看二级属性  显示div
+	$(".more_proper").on("click", "#twoLevelAttr", function() {
+		var twoLevelId = $(this).attr("twoLevelId");
+		var $twochile = $(this).parent().parent().siblings(".twoLevelAttr_child");
+		Ajax.ajax('admin/dictionary/basicItem/getTwoLevelAttr',{
+			id : twoLevelId
+		} , function(data){
+			var datatmm = data.tmm;
+			var  child = datatmm.childList;
+			$twochile.show();
+			$twochile.children("#twoLevelAttr_name").html("");
+			$twochile.children("#twoLevelAttr_name").html(datatmm.name);
+			$twochile.children("#edit_twoLevelAttr").attr("twoLevelId", datatmm.id);
+			$twochile.children(".new_add").remove();
+			var str = "";
+			for(var key in child){
+				 
+			str=str + "<div twoLevel_chil_Id=\""+child[key].id+"\" class=\"entity_attr new_add\">"
+			    		+ "<ul>"
+			    		+ "<li>"
+			    		+ "<a href=\"javascript:void(0)\">"+child[key].name+"</a>"
+			    		+ "<ul class=\"entity_ul\" entityId=\"${item.code }\" status=\"${item.usingState }\">"
+			    		+ "<li><a href=\"javascript:void(0)\" class=\"edit_entity\">编辑实体</a></li>"
+			    		+ "</ul>"
+			    		+ "</li>"
+			    		+ "</ul>"
+			    		+ "</div>"
+			} 
+			str=str + "<img mappingId=\""+datatmm.id+"\" class=\"entity_attr_img new_add\" id=\"add_twoLevelAttr_children\" alt=\"添加二级属性\" src=\"media/admin/dictionary/basicItem/addEntity_icon.png\">"
+    		 
+			$twochile.append(str);
+		});	
+	});
 	
-		//点击 添加多值属性孩子加号 显示div
+	
+	
+	//点击 确认  二级属性的孩子 
+	$(".more_proper").on("click", "#twoLevelAttr_child_but_confirm", function() {
+		
+		var $form =  $(this).parent();
+		var name = $form.children("#name").val();
+		var mappingId = $form.children("#mappingId").val();
+		var dictionaryCode = $form.children("#dictionaryCode").val();
+		Ajax.ajax('admin/dictionary/basicItem/saveTwoLevelAttrChild',{
+			name:name,
+			mappingId:mappingId,
+			dictionaryCode:dictionaryCode
+		} , function(data){
+			
+		});
+		
+		var entityId = $(".common_proper").attr("parentId");
+		$(".new_add").remove();
+		enityAttr(entityId);
+		
+	});
+	
+	
+	//点击 添加 二级属性的孩子 显示div
+	$(".more_proper").on("click", "#add_twoLevelAttr_children", function() {
+		var mappingId = $(this).attr("mappingId");
+		
+		var $form = $(".twoLevelAttr_child_show").children("#twoLevelAttr_child_form1");
+		$form.children("#mappingId").val(mappingId);
+		 $form.children("#dictionaryCode").empty();
+		Ajax.ajax('admin/dictionary/basicItem/getDictCode',{
+			id:mappingId
+		} , function(data){
+			var dictList = data.dictList;
+			var str="";
+			 for(var key in dictList){
+				 str = str + " <option value =\""+dictList[key].code+"\">"+dictList[key].name+"</option>";
+		      } 
+			
+			 $form.children("#dictionaryCode").append(str);
+		});	
+		
+		
+		$(this).parent().siblings(".twoLevelAttr_child_show").show();
+		
+	});
+		//点击 添加关系加号 显示div
 	$(".entity_relation").on("click", "#add_entity_relation", function() {
 	
 		Ajax.ajax('admin/dictionary/basicItem/entityList','' , function(data){
@@ -304,6 +504,12 @@ seajs.use(['dialog', 'ajax'], function(Dialog, Ajax){
 		
 	//点击取消 ， 取消添加实体
 	$("#entity_but_cancel").click(function(){
+		var $form1 = $(this).parent();
+        $form1.children("#code").removeAttr("readonly");
+        $form1.children("#cnName").val("");
+        $form1.children("#code").val("");
+        $form1.children("#enName").val("");
+		
 		$(".opera_entity").hide();
 	});
 	
@@ -350,6 +556,14 @@ seajs.use(['dialog', 'ajax'], function(Dialog, Ajax){
 		$(this).parent().parent().hide();
 	});
 	
+	//点击取消 ， 取消添加多值属性的孩子
+	$(".more_proper").on("click", "#twoLevelAttr_but_cancel", function() {
+		var $form1 = $(this).parent();
+		 $form1.children("#id").val("");
+        $form1.children("#dictionaryAttr").val("");
+        $form1.children("#valueAttr").val("");
+		$(this).parent().parent().hide();
+	});
 	//点击确认， 进行添加分组
 	$("#group_but_confirm").click(function(){
 		var fData = new FormData(document.querySelector("#group_opera_form1"));
@@ -379,9 +593,9 @@ seajs.use(['dialog', 'ajax'], function(Dialog, Ajax){
 		//comm_opera_form1
 		//设置隐藏元素的值
 		var parentId = $(".common_proper").attr("parentId");
-		var groupName = $(this).parent().attr("groupName");
+		var groupId = $(this).parent().attr("groupId");
 		$(this).parent().children("#comm_parent").val(parentId);
-		$(this).parent().children("#groupName").val(groupName);
+		$(this).parent().children("#groupName").val(groupId);
 		
 		var formId = $(this).parent().attr("id");
 	
@@ -501,6 +715,7 @@ seajs.use(['dialog', 'ajax'], function(Dialog, Ajax){
 		});
 	});
 	
+	
 	//给 li  注册鼠标点击事件  让自己的ul显示出来
 	var $li = $(".entity_attr>ul>li");
 	$li.click(function(){
@@ -516,6 +731,11 @@ seajs.use(['dialog', 'ajax'], function(Dialog, Ajax){
 	$(".more_proper").on("click", ".more_proper_li", function() {
 		$(this).children("ul").toggle();
 	});
+	
+/* 	//二级属性的孩子显示 ul
+	$(".more_proper").on("click", ".more_proper_li", function() {
+		$(this).children("ul").toggle();
+	}); */
 	
 	//实体关系   显示 ul
 	$(".entity_relation").on("click", ".entity_relation_li", function() {
@@ -662,7 +882,6 @@ seajs.use(['dialog', 'ajax'], function(Dialog, Ajax){
 		$(this).parent().parent().parent().parent().parent().parent().parent().siblings(".opera_comm").show();
 	});
 	
-		
 		//编辑多值属性的孩子  获取 id    
 	$(".more_proper").on("click", ".edit_more_child", function() {
 		var entityId = $(this).parent().parent().attr("entityId");
@@ -863,10 +1082,13 @@ seajs.use(['dialog', 'ajax'], function(Dialog, Ajax){
                  str=str + "<div class=\"opera_comm\" style=\"height: 200px;border: 1px solid;\">"
                  		+ "<img class=\"opera_entity_img\" src=\"media/admin/dictionary/basicItem/opera_entity_icon.png\">"
                  		+ "<div><div style=\"float: left;\"><span class=\"opera_entity_img\" id=\"add_comm_mes\"></span></div><div style=\"float: right;\">"
+                 		
                  		+ "<span class=\"col-lg-6 col-md-6 col-xs-6\">"
 	        			+ "<input id=\"is_enum\" class=\"checkbox-slider slider-icon colored-blue\" type=\"checkbox\">"	
 	        			+ "<label class=\"text\">是否枚举</label>"	
-        				+ "</span></div></div>"	
+        				+ "</span>"
+        				
+        				+"</div></div>"	
                         + "<form groupName=\""+commonArr[i].cnName+"\" groupId=\""+commonArr[i].code+"\" id=\"comm_opera_form1\" class=\"opera_entity_img\">"
                         + "<input type=\"hidden\" id=\"groupName\" name=\"groupName\" value=\"\">"
                         + "<input type=\"hidden\" id=\"comm_parent\" name=\"parent\" value=\"\">"
@@ -891,7 +1113,13 @@ seajs.use(['dialog', 'ajax'], function(Dialog, Ajax){
             for(var i=0;i<moreArr.length;i++) {
             	var str = "<div class=\"new_add\">"
             			+"<div style=\"position: relative;height: 300px; border: 1px solid;\">" 
-            			+ "<div style=\"float: left;\">"+moreArr[i].cnName+"<img id=\"edit_more\" groupId=\""+moreArr[i].code+"\" src=\"media/admin/dictionary/basicItem/edit_icon.png\">"+"</div>"
+            			+ "<div>"+moreArr[i].cnName+"<img id=\"edit_more\" groupId=\""+moreArr[i].code+"\" src=\"media/admin/dictionary/basicItem/edit_icon.png\">"
+            			if (moreArr[i].twoLevelAttr == null) {
+                        	str =str + "<div id=\"add_twoLevelAttr\" style=\"float:right;\"><a href=\"javascript:void(0)\"\">添加二级属性</a></div>"
+                        } else {
+                            str =str + "<div id=\"twoLevelAttr\" twoLevelId=\""+moreArr[i].twoLevelAttr+"\" style=\"float:right;\"><a href=\"javascript:void(0)\"\">查看二级属性</a></div>"
+                        }
+            			str =str +"</div>"
                         +"<div>";
                         
 				for(var j=0;j<moreArr[i].childList.length;j++) {
@@ -940,7 +1168,45 @@ seajs.use(['dialog', 'ajax'], function(Dialog, Ajax){
                 		+ "<input id=\"more_child_but_confirm\" type=\"button\" value=\"确认\">"
                 		+ "</form>"
                 		+ "</div>";
-                str=str + "</div>" ;   
+                //添加编辑二级属性 div		
+                str=str + "<div class=\"twoLevelAttr_show\" style=\"height: 200px;border: 1px solid;\">"
+                  		+ "<img class=\"opera_entity_img\" src=\"media/admin/dictionary/basicItem/opera_entity_icon.png\">二级属性"
+                        + "<form groupName=\""+moreArr[i].cnName+"\" groupId=\""+moreArr[i].code+"\" id=\"twoLevelAttr_form1\" class=\"opera_entity_img\">"
+                       	+ "<input type=\"hidden\" id=\"id\" name=\"id\" value=\"\">"
+                        + "name: <input type=\"text\" readonly=\"readonly\" id=\"name\" name=\"name\" value=\"\">"
+  					    + "relatedMultiattribute: <input type=\"text\" readonly=\"readonly\" id=\"relatedMultiattribute\" name=\"relatedMultiattribute\" value=\"\"><br>"                 
+                        +"dictionaryAttr： <select id=\"dictionaryAttr\" name=\"dictionaryAttr\">"
+                      
+                        + "</select>" 
+                        +"valueAttr:<select id=\"valueAttr\" name=\"valueAttr\">"
+                     
+                        + "</select>" 
+         				+ "<br> <input id=\"twoLevelAttr_but_cancel\" type=\"button\" value=\"取消\">"
+                 		+ "<input id=\"twoLevelAttr_but_confirm\" type=\"button\" value=\"确认\">"
+                 		+ "</form>"
+                 		+ "</div>";	
+                //这里是显示二级信息以及二级的孩子数据 start
+                str=str + "<div class=\"entity_list twoLevelAttr_child\">"
+    					+ "<span id=\"twoLevelAttr_name\"></span><img twoLevelId=\"\" id=\"edit_twoLevelAttr\" src=\"media/admin/dictionary/basicItem/edit_icon.png\">"
+                		
+                		+ "</div>"
+                	//end
+              //添加编辑二级属性的孩子 div		
+                str=str + "<div class=\"twoLevelAttr_child_show\" style=\"height: 200px;border: 1px solid;\">"
+                  		+ "<img class=\"opera_entity_img\" src=\"media/admin/dictionary/basicItem/opera_entity_icon.png\">添加二级属性"
+                        + "<form groupName=\""+moreArr[i].cnName+"\" groupId=\""+moreArr[i].code+"\" id=\"twoLevelAttr_child_form1\" class=\"opera_entity_img\">"
+                        + "name:<input type=\"text\" id=\"name\" name=\"name\" value=\"\">"
+  					    + "<input type=\"hidden\" id=\"mappingId\" name=\"mappingId\" value=\"\"><br>"                 
+                        +"dictionaryCode： <select id=\"dictionaryCode\" name=\"dictionaryCode\">"
+                      
+                        + "</select>" 
+                        
+         				+ "<br> <input id=\"twoLevelAttr_but_cancel\" type=\"button\" value=\"取消\">"
+                 		+ "<input id=\"twoLevelAttr_child_but_confirm\" type=\"button\" value=\"确认\">"
+                 		+ "</form>"
+                 		+ "</div>";	
+                
+                str=str + "</div>" ;  
 				  $(".more_proper").append(str);
             }
          

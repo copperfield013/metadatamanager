@@ -1,5 +1,7 @@
 package cn.sowell.datacenter.model.dictionary.dao.impl;
 
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,9 +10,8 @@ import javax.annotation.Resource;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.jdbc.Work;
 import org.springframework.stereotype.Repository;
-
-import com.mysql.jdbc.Connection;
 
 import cn.sowell.copframe.dao.deferedQuery.DeferedParamQuery;
 import cn.sowell.copframe.dao.deferedQuery.sqlFunc.WrapForCountFunction;
@@ -26,7 +27,8 @@ import cn.sowell.datacenter.model.dictionary.pojo.BasicItem;
 
 @Repository
 public class BasicItemDaoImpl implements BasicItemDao {
-
+	public static String DataBaseName;
+	
 	@Resource
 	SessionFactory sFactory;
 
@@ -92,6 +94,7 @@ public class BasicItemDaoImpl implements BasicItemDao {
 
 	@Override
 	public List queryCreTab() {
+		getDataBaseName();
 		StringBuffer sb = new StringBuffer();
 		sb.append("SELECT ")
 			.append("concat(\"create table \", a.c_table_name,\"( `id`  bigint(20) NOT NULL AUTO_INCREMENT, ")
@@ -111,7 +114,7 @@ public class BasicItemDaoImpl implements BasicItemDao {
 			.append("information_schema.tables t ")
 			.append("WHERE ")
 			.append("t.table_schema = '")
-			.append("datacenter")//这里获取数据库的名字
+			.append(DataBaseName)//这里获取数据库的名字
 			.append("') b ON a.c_table_name = b.table_name ")
 			.append("WHERE b.table_name IS NULL");
 		System.out.println(sb.toString());	
@@ -121,6 +124,7 @@ public class BasicItemDaoImpl implements BasicItemDao {
 
 	 @Override
 	public List queryNewAddCol() {
+		 getDataBaseName();
 		 StringBuffer sb = new StringBuffer();
 			sb.append("SELECT ")
 			.append("CONCAT('alter table ', ")
@@ -144,7 +148,7 @@ public class BasicItemDaoImpl implements BasicItemDao {
 			.append(" LEFT JOIN ")
 			.append(" (SELECT  ")
 			.append(" col.column_name  FROM  information_schema.columns col  WHERE ")
-			.append(" table_schema = 'datacenter') b ON a.c_code = b.column_name ")
+			.append(" table_schema = '"+DataBaseName+"') b ON a.c_code = b.column_name ")
 			.append("WHERE ")
 			.append(" b.column_name IS NULL and c_table_name is not null and a.c_data_range is not null  order by a.c_code ");
 		 
@@ -154,6 +158,7 @@ public class BasicItemDaoImpl implements BasicItemDao {
 
 	@Override
 	public List queryCreRelaTab() {
+		getDataBaseName();
 		StringBuffer sb = new StringBuffer();
 		sb.append("SELECT ")
 			.append(" concat(\"create table \", a.tablename,\"( `id`  bigint(20) NOT NULL AUTO_INCREMENT, ")
@@ -161,33 +166,9 @@ public class BasicItemDaoImpl implements BasicItemDao {
 			.append("FROM ")
 			.append("(SELECT concat('t_',c_code,'_r1') tablename  FROM  t_c_basic_item    WHERE  c_data_type='记录类型') a  ")
 			.append(" LEFT JOIN (SELECT table_name FROM information_schema.tables t  WHERE  ")
-			.append(" t.table_schema = 'datacenter') b ON a.tablename = b.table_name  ")
+			.append(" t.table_schema = '"+DataBaseName+"') b ON a.tablename = b.table_name  ")
 			.append("WHERE ")
 			.append("b.table_name IS NULL ");
-		
-		List list = sFactory.getCurrentSession().createSQLQuery(sb.toString()).list();
-		return list;
-	}
-
-	@Override
-	public List queryKeepTabCol() {
-		StringBuffer sb = new StringBuffer();
-		sb.append(" distinct col.column_name ")
-		.append("FROM ")
-		.append("information_schema.columns col ")
-		.append("WHERE ")
-		.append("table_schema = ''  ")
-		.append(" AND table_name IN ('t_common_classific_label' , 't_common_edit_history', ")
-		.append("'t_common_modify_status', ")
-		.append("'t_common_remarks','t_record_deleted', ")
-		.append("'t_record_cache', ")
-		.append("'t_record_code', ")
-		.append("'t_record_error', ")
-		.append("'t_record_history', ")
-		.append(" 't_record_relation', ")
-		.append("'t_record_relation_history') and column_name like 'ab%'  ")
-		.append(" union select 'ABC0915' ")
-		.append(" union select 'ABC0903'");
 		
 		List list = sFactory.getCurrentSession().createSQLQuery(sb.toString()).list();
 		return list;
@@ -198,4 +179,17 @@ public class BasicItemDaoImpl implements BasicItemDao {
 		sFactory.getCurrentSession().createSQLQuery(sql).executeUpdate();
 	}
 
+	/**
+	 * 获取当前链接的数据库名字
+	 */
+	private void getDataBaseName() {
+		Session ss = sFactory.getCurrentSession();
+		ss.doWork(new Work(){
+			@Override
+			public void execute(Connection connection) throws SQLException {
+				String catalog = connection.getCatalog();
+				DataBaseName = catalog;
+			}
+		});
+	}
 }

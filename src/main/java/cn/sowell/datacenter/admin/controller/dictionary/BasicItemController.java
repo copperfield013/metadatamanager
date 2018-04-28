@@ -35,7 +35,12 @@ import cn.sowell.datacenter.model.demo.pojo.PlainDemo;
 import cn.sowell.datacenter.model.demo.service.DemoService;
 import cn.sowell.datacenter.model.dictionary.criteria.BasicItemCriteria;
 import cn.sowell.datacenter.model.dictionary.pojo.BasicItem;
+import cn.sowell.datacenter.model.dictionary.pojo.DictionaryBasicItem;
+import cn.sowell.datacenter.model.dictionary.pojo.Towlevelattr;
+import cn.sowell.datacenter.model.dictionary.pojo.TowlevelattrMultiattrMapping;
 import cn.sowell.datacenter.model.dictionary.service.BasicItemService;
+import cn.sowell.datacenter.model.dictionary.service.TowlevelattrMultiattrMappingService;
+import cn.sowell.datacenter.model.dictionary.service.TowlevelattrService;
 
 @Controller
 @RequestMapping(AdminConstants.URI_DICTIONARY + "/basicItem")
@@ -43,6 +48,12 @@ public class BasicItemController {
 	
 	@Resource
 	BasicItemService basicItemService;
+	
+	@Resource
+	TowlevelattrMultiattrMappingService tmms;
+	
+	@Resource
+	TowlevelattrService towlevelattrService;
 	
 	Logger logger = Logger.getLogger(BasicItemController.class);
 	@org.springframework.web.bind.annotation.InitBinder
@@ -193,19 +204,74 @@ public class BasicItemController {
 		}
 	}
 	
-	
 	//创建表
 	@ResponseBody
 	@RequestMapping("/createTab")
 	public AjaxPageResponse createTab(){
 		try {
 			basicItemService.createTabCol();
-			return AjaxPageResponse.CLOSE_AND_REFRESH_PAGE("修改成功", "basicItem_list");
+			return AjaxPageResponse.CLOSE_AND_REFRESH_PAGE("操作成功", "basicItem_list");
 		} catch (Exception e) {
 			logger.error("操作失败", e);
 			return AjaxPageResponse.FAILD("操作失败");
 		}
 	}
 	
-
+	@ResponseBody
+	@RequestMapping("/getDataByPid")
+	public String getDataByPid(String id){
+		BasicItem basicItem = basicItemService.getBasicItem(id);
+		List<BasicItem> btList = basicItemService.getDataByPId(basicItem.getParent()+ "_" + basicItem.getCode());
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("child", btList);
+		JSONObject json = new JSONObject(map);
+		return json.toString();
+	}
+	
+	//添加一个二级属性
+	@ResponseBody
+	@RequestMapping("/saveTwoLevelAttr")
+	public void saveTwoLevelAttr(TowlevelattrMultiattrMapping tmm){
+		
+		if (tmm.getId() != null) {
+			tmms.update(tmm);
+		} else {
+			tmms.create(tmm);
+		}
+	}
+	
+	//添加一个二级属性的孩子
+		@ResponseBody
+		@RequestMapping("/saveTwoLevelAttrChild")
+		public void saveTwoLevelAttrChild(Towlevelattr criteria){
+			basicItemService.createTowLevel(criteria);
+		}
+	
+	//根据id查询一个二级属性
+	@ResponseBody
+	@RequestMapping("/getTwoLevelAttr")
+	public String getTwoLevelAttr(Long id){
+		TowlevelattrMultiattrMapping tmmObj = tmms.getTowlevelattrMultiattrMapping(id);
+		String mappingId = Long.toString(tmmObj.getId());
+		List<Towlevelattr> listByMappingId = towlevelattrService.getListByMappingId(mappingId);
+		tmmObj.setChildList(listByMappingId);
+		
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("tmm", tmmObj);
+		JSONObject json = new JSONObject(map);
+		return json.toString();
+		
+	}
+	
+		//根据twolevelId   查询出字典里面的字段
+		@ResponseBody
+		@RequestMapping("/getDictCode")
+		public String getDictCode(Long id){
+			List<DictionaryBasicItem> dictCode = basicItemService.getDictCode(id);
+			Map<String, Object> map = new HashMap<String, Object>();
+			map.put("dictList", dictCode);
+			JSONObject json = new JSONObject(map);
+			return json.toString();
+			
+		}
 }

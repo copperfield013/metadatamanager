@@ -42,4 +42,6 @@ public interface DictionaryBasicItemService {
 	 * @return
 	 */
 	List<DictionaryBasicItem> getDictBasicItemByParent(Integer parentId);
+
+	DictionaryBasicItem getBasicItemByParentAndCode(Integer dictParentId, Integer dictionaryCode);
 }

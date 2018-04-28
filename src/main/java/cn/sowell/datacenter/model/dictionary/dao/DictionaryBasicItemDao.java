@@ -54,4 +54,6 @@ public interface DictionaryBasicItemDao {
 	 * @return
 	 */
 	public Integer getCode(Integer parentId);
+
+	DictionaryBasicItem getBasicItemByParentAndCode(Integer dictParentId, Integer dictionaryCode);
 }

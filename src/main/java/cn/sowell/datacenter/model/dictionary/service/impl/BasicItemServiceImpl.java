@@ -2,6 +2,7 @@ package cn.sowell.datacenter.model.dictionary.service.impl;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -17,9 +18,15 @@ import cn.sowell.datacenter.admin.controller.dictionary.Constants;
 import cn.sowell.datacenter.model.dictionary.criteria.BasicItemCriteria;
 import cn.sowell.datacenter.model.dictionary.dao.BasicItemDao;
 import cn.sowell.datacenter.model.dictionary.pojo.BasicItem;
+import cn.sowell.datacenter.model.dictionary.pojo.DictionaryBasicItem;
 import cn.sowell.datacenter.model.dictionary.pojo.RecordRelationType;
+import cn.sowell.datacenter.model.dictionary.pojo.Towlevelattr;
+import cn.sowell.datacenter.model.dictionary.pojo.TowlevelattrMultiattrMapping;
 import cn.sowell.datacenter.model.dictionary.service.BasicItemService;
+import cn.sowell.datacenter.model.dictionary.service.DictionaryBasicItemService;
 import cn.sowell.datacenter.model.dictionary.service.RecordRelationTypeService;
+import cn.sowell.datacenter.model.dictionary.service.TowlevelattrMultiattrMappingService;
+import cn.sowell.datacenter.model.dictionary.service.TowlevelattrService;
 
 @Service
 public class BasicItemServiceImpl implements BasicItemService {
@@ -28,6 +35,14 @@ public class BasicItemServiceImpl implements BasicItemService {
 	BasicItemDao basicItemDao;
 	@Resource
 	RecordRelationTypeService recordRelationTypeService;
+	@Resource
+	TowlevelattrMultiattrMappingService tmms;
+	
+	@Resource
+	DictionaryBasicItemService dictionaryBasicItemService;
+	
+	@Resource
+	TowlevelattrService towlevelattrService;
 	
 	@Override
 	public List<BasicItem> queryList(BasicItemCriteria criteria) {
@@ -54,12 +69,21 @@ public class BasicItemServiceImpl implements BasicItemService {
 		
 		for(BasicItem bt : chilAll) {
 			if ("重复类型".equals(bt.getDataType())) {
+				//bt 是重复类型， 在这里我要判断有没有二级属性
+				TowlevelattrMultiattrMapping oneByRelaMulAttr = tmms.getOneByRelaMulAttr(bt.getCode());
+				
+				if (oneByRelaMulAttr != null) {
+					bt.setTwoLevelAttr(oneByRelaMulAttr.getId());
+				} else {
+					bt.setTwoLevelAttr(null);
+				}
+				
 				moreList.add(bt);
 				List<BasicItem> childList = basicItemDao.getDataByPId(bt.getParent() + "_"+ bt.getCode());
 				bt.setChildList(childList);
 			} else if ("分组类型".equals(bt.getDataType())) {//分组数据
 				attrList.add(bt);
-				List childList = basicItemDao.getAttrByPidGroupName(bt.getParent(), bt.getCnName());
+				List childList = basicItemDao.getAttrByPidGroupName(bt.getParent(), bt.getCode());
 				bt.setChildList(childList);
 			}
 		}
@@ -138,7 +162,7 @@ public class BasicItemServiceImpl implements BasicItemService {
 
 	@Override
 	public void createTabCol() {
-		
+		System.out.println();
 		List queryCreTab = basicItemDao.queryCreTab();
 		
 		for (Object object : queryCreTab) {
@@ -152,6 +176,41 @@ public class BasicItemServiceImpl implements BasicItemService {
 		for (Object object : queryCreRelaTab) {
 			basicItemDao.excuteBySql(object.toString());
 		}
+	}
+
+	@Override
+	public List<BasicItem> getDataByPId(String parent) {
+		return basicItemDao.getDataByPId(parent);
+	}
+
+	@Override
+	public List<DictionaryBasicItem> getDictCode(Long id) {
+		
+		TowlevelattrMultiattrMapping mapping = tmms.getTowlevelattrMultiattrMapping(id);
+		BasicItem basicItem = basicItemDao.get(BasicItem.class, mapping.getDictionaryAttr());
+		Integer dictParentId = basicItem.getDictParentId();
+		
+		List<DictionaryBasicItem> dictBItemList = dictionaryBasicItemService.getDictBasicItemByParent(dictParentId);
+		
+		List<Towlevelattr> twoLevelList = towlevelattrService.getListByMappingId(Long.toString(id));
+		
+		for (Towlevelattr two : twoLevelList) {
+			Iterator<DictionaryBasicItem> iterator = dictBItemList.iterator();
+	        while (iterator.hasNext()) {
+	        	DictionaryBasicItem dBitem = iterator.next();
+	             if (Integer.parseInt(two.getDictionaryCode()) == dBitem.getCode()) {
+	            	 dictBItemList.remove(dBitem);
+	            	 break;
+	             }
+	        }
+		}
+		
+		return dictBItemList;
+	}
+
+	@Override
+	public void createTowLevel(Towlevelattr criteria) {
+		towlevelattrService.create(criteria);
 	}
 
 }

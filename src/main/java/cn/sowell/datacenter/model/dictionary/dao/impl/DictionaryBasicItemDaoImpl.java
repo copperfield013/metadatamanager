@@ -102,6 +102,14 @@ public class DictionaryBasicItemDaoImpl implements DictionaryBasicItemDao {
 		
 		Integer code = dictBasicItemList.get(0).getCode();
 		return code+1;
+	}
+
+	@Override
+	public DictionaryBasicItem getBasicItemByParentAndCode(java.lang.Integer dictParentId,
+			java.lang.Integer dictionaryCode) {
+		Session session = sFactory.getCurrentSession();
+		String hql = "from DictionaryBasicItem where parentId=:dictParentId and code=:dictionaryCode";
+		return (DictionaryBasicItem) session.createQuery(hql).setParameter("dictParentId", dictParentId).setParameter("dictionaryCode", dictionaryCode).uniqueResult();
 	} 
 	
 }

@@ -52,4 +52,9 @@ public class DictionaryBasicItemServiceImpl implements DictionaryBasicItemServic
 		return dictionaryBasicItemDao.getDictBasicItemByParent(parentId);
 	}
 
+	@Override
+	public DictionaryBasicItem getBasicItemByParentAndCode(Integer dictParentId, Integer dictionaryCode) {
+		return dictionaryBasicItemDao.getBasicItemByParentAndCode(dictParentId, dictionaryCode);
+	}
+
 }

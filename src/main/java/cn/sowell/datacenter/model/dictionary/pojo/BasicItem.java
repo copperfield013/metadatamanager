@@ -73,7 +73,10 @@ public class BasicItem {
 	  
 	 @Transient  
 	 List<BasicItem> childList = null;
-
+	 
+	 @Transient  
+	 private Long twoLevelAttr;
+	 
 	public String getCode() {
 		return code;
 	}
@@ -193,5 +196,12 @@ public class BasicItem {
 	public void setGroupName(String groupName) {
 		this.groupName = groupName;
 	}
-	  
+
+	public Long getTwoLevelAttr() {
+		return twoLevelAttr;
+	}
+
+	public void setTwoLevelAttr(Long twoLevelAttr) {
+		this.twoLevelAttr = twoLevelAttr;
+	}
 }
