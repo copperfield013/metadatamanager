@@ -90,12 +90,13 @@ public class BasicItemController {
 	@RequestMapping("/getDataType")
 	public String getDataType(BasicItem	basicItem){
 		
-		JSONObject jobj = new JSONObject(Constants.DATA_TYPE_MAP);
-		
-		System.out.println(jobj);
+		Map<String, Object> map = Constants.DATA_TYPE_MAP;
+		map.remove("record");
+		map.remove("repeat");
+		map.remove("group");
+		JSONObject jobj = new JSONObject(map);
 		return jobj.toString();
 	}
-	
 	
 	@ResponseBody
 	@RequestMapping("/do_add")
