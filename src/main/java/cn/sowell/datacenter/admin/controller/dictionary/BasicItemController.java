@@ -102,7 +102,8 @@ public class BasicItemController {
 	@RequestMapping("/do_add")
 	public AjaxPageResponse doAdd(BasicItem	basicItem){
 		try {
-			String dataType = (String) Constants.DATA_TYPE_MAP.get(basicItem.getDataType());
+			String dataType2 = basicItem.getDataType();
+			String dataType = (String) Constants.DATA_TYPE_MAP.get(dataType2);
 			basicItem.setDataType(dataType);
 			//记录类型
 			if ("记录类型".equals(basicItem.getDataType())) {

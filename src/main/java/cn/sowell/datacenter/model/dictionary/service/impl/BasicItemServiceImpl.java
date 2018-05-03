@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import javax.annotation.Resource;
 
@@ -13,8 +12,6 @@ import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSONObject;
 
-import cn.sowell.copframe.dto.page.PageInfo;
-import cn.sowell.datacenter.admin.controller.dictionary.Constants;
 import cn.sowell.datacenter.model.dictionary.criteria.BasicItemCriteria;
 import cn.sowell.datacenter.model.dictionary.dao.BasicItemDao;
 import cn.sowell.datacenter.model.dictionary.pojo.BasicItem;
@@ -116,16 +113,16 @@ public class BasicItemServiceImpl implements BasicItemService {
 		//不管是什么类型， 自身状态都要改变
 		pastDue(basicItem, status);
 		//记录类型
-		if (Constants.DATA_TYPE_MAP.get("record").equals(basicItem.getDataType())) {
+		if ("记录类型".equals(basicItem.getDataType())) {
 			List<BasicItem> basicItemList = basicItemDao.getDataByPId(basicItem.getCode());
 			for(BasicItem bItem : basicItemList) {
 				pastDue(bItem, status);
 				
-				if (Constants.DATA_TYPE_MAP.get("repeat").equals(bItem.getDataType())) {//重复类型
+				if ("重复类型".equals(bItem.getDataType())) {//重复类型
 					repeatPastDue(bItem, status);
 				} 
 			}
-		} else if (Constants.DATA_TYPE_MAP.get("repeat").equals(basicItem.getDataType())) {//重复类型
+		} else if ("重复类型".equals(basicItem.getDataType())) {//重复类型
 			repeatPastDue(basicItem, status);
 		} 
 	}
