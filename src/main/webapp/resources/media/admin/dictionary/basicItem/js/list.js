@@ -832,6 +832,7 @@ seajs.use(['dialog', 'ajax'], function(Dialog, Ajax) {
             for (var i = 0; i < entityRela.length; i++) {
             	str = str + "<div class=\"entity_attr\">" + entityRela[i].name + "</div>"               
             }
+            $(".entity_relation_list").find(".entity_attr").not(".entity_attr_img").remove();
             $(".entity_relation_list").prepend(str);
         });
     }
