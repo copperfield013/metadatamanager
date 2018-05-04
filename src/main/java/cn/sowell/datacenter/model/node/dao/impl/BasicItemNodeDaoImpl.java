@@ -1,4 +1,4 @@
-package cn.sowell.datacenter.model.dictionary.dao.impl;
+package cn.sowell.datacenter.model.node.dao.impl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,9 +15,9 @@ import cn.sowell.copframe.dao.deferedQuery.sqlFunc.WrapForCountFunction;
 import cn.sowell.copframe.dao.utils.QueryUtils;
 import cn.sowell.copframe.dto.page.PageInfo;
 import cn.sowell.copframe.utils.FormatUtils;
-import cn.sowell.datacenter.model.dictionary.criteria.BasicItemNodeCriteria;
-import cn.sowell.datacenter.model.dictionary.dao.BasicItemNodeDao;
-import cn.sowell.datacenter.model.dictionary.pojo.BasicItemNode;
+import cn.sowell.datacenter.model.node.criteria.BasicItemNodeCriteria;
+import cn.sowell.datacenter.model.node.dao.BasicItemNodeDao;
+import cn.sowell.datacenter.model.node.pojo.BasicItemNode;
 
 @Repository
 public class BasicItemNodeDaoImpl implements BasicItemNodeDao {

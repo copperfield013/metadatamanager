@@ -1,10 +1,10 @@
-package cn.sowell.datacenter.model.dictionary.dao;
+package cn.sowell.datacenter.model.node.dao;
 
 import java.util.List;
 
 import cn.sowell.copframe.dto.page.PageInfo;
-import cn.sowell.datacenter.model.dictionary.criteria.BasicItemNodeCriteria;
-import cn.sowell.datacenter.model.dictionary.pojo.BasicItemNode;
+import cn.sowell.datacenter.model.node.criteria.BasicItemNodeCriteria;
+import cn.sowell.datacenter.model.node.pojo.BasicItemNode;
 
 public interface BasicItemNodeDao {
 	/**

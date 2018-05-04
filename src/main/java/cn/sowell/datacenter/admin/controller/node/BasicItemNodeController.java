@@ -1,4 +1,4 @@
-package cn.sowell.datacenter.admin.controller.dictionary;
+package cn.sowell.datacenter.admin.controller.node;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -18,9 +18,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import cn.sowell.copframe.dto.ajax.AjaxPageResponse;
 import cn.sowell.copframe.dto.page.PageInfo;
 import cn.sowell.datacenter.admin.controller.AdminConstants;
-import cn.sowell.datacenter.model.dictionary.criteria.BasicItemNodeCriteria;
-import cn.sowell.datacenter.model.dictionary.pojo.BasicItemNode;
-import cn.sowell.datacenter.model.dictionary.service.BasicItemNodeService;
+import cn.sowell.datacenter.model.node.criteria.BasicItemNodeCriteria;
+import cn.sowell.datacenter.model.node.pojo.BasicItemNode;
+import cn.sowell.datacenter.model.node.service.BasicItemNodeService;
 
 @Controller
 @RequestMapping(AdminConstants.URI_DICTIONARY + "/basicItemNode")

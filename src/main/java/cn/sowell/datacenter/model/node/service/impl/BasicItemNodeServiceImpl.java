@@ -1,4 +1,4 @@
-package cn.sowell.datacenter.model.dictionary.service.impl;
+package cn.sowell.datacenter.model.node.service.impl;
 
 import java.util.List;
 
@@ -7,10 +7,10 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 
 import cn.sowell.copframe.dto.page.PageInfo;
-import cn.sowell.datacenter.model.dictionary.criteria.BasicItemNodeCriteria;
-import cn.sowell.datacenter.model.dictionary.dao.BasicItemNodeDao;
-import cn.sowell.datacenter.model.dictionary.pojo.BasicItemNode;
-import cn.sowell.datacenter.model.dictionary.service.BasicItemNodeService;
+import cn.sowell.datacenter.model.node.criteria.BasicItemNodeCriteria;
+import cn.sowell.datacenter.model.node.dao.BasicItemNodeDao;
+import cn.sowell.datacenter.model.node.pojo.BasicItemNode;
+import cn.sowell.datacenter.model.node.service.BasicItemNodeService;
 
 @Service
 public class BasicItemNodeServiceImpl implements BasicItemNodeService {

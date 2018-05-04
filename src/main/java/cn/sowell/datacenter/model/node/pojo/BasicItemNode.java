@@ -1,4 +1,4 @@
-package cn.sowell.datacenter.model.dictionary.pojo;
+package cn.sowell.datacenter.model.node.pojo;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
