@@ -28,6 +28,7 @@
 <script src="media/admin/plugins/beyond/js/datetimepicker/js/bootstrap-datetimepicker.js"></script>
 <script type="text/javascript" src="media/admin/plugins/beyond/js/datetimepicker/js/locales/bootstrap-datetimepicker.zh-CN.js" charset="UTF-8"></script>
 <script src="${basePath }media/admin/plugins/timeline/jquery.eeyellow.Timeline.js"></script>
+<script src="${basePath }media/admin/plugins/layer-3.0.3/layer.js"></script>
 <!-- SeaJS -->
 <script src="${basePath }media/sea-debug.js"></script>
 <script src="${basePath }media/seajs-css-debug.js"></script>

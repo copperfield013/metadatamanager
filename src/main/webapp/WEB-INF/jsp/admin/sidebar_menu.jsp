@@ -16,5 +16,10 @@
                 <span class="menu-text">字典管理</span>
             </a>
         </li>
+        <li>
+            <a class="tab" href="admin/dictionary/dictMapping/list" target="dictMapping_list" title="字典映射列表">
+                <span class="menu-text">字典映射</span>
+            </a>
+        </li>
     </ul>
 </li>

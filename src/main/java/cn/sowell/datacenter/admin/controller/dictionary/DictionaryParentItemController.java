@@ -76,14 +76,14 @@ public class DictionaryParentItemController {
 			//手动分配主键， 分配规则待定
 			dictionaryParentItem.setId(1234);
 			dictionaryParentItemService.create(dictionaryParentItem);
-			return AjaxPageResponse.CLOSE_AND_REFRESH_PAGE("添加成功", "demo_list");
+			return AjaxPageResponse.CLOSE_AND_REFRESH_PAGE("添加成功", "dictParentItem_list");
 		} catch (Exception e) {
 			logger.error("添加失败", e);
 			return AjaxPageResponse.FAILD("添加失败");
 		}
 	}
 
-	@RequestMapping("/update")
+	@RequestMapping("/update/{id}")
 	public String update(@PathVariable Integer id, Model model){
 		DictionaryParentItem dictParentItem = dictionaryParentItemService.getDictionaryParentItem(id);
 		model.addAttribute("dictParentItem", dictParentItem);
@@ -95,7 +95,7 @@ public class DictionaryParentItemController {
 	public AjaxPageResponse doUpdate(DictionaryParentItem dictionaryParentItem){
 		try {
 			dictionaryParentItemService.update(dictionaryParentItem);
-			return AjaxPageResponse.CLOSE_AND_REFRESH_PAGE("修改成功", "demo_list");
+			return AjaxPageResponse.CLOSE_AND_REFRESH_PAGE("修改成功", "dictParentItem_list");
 		} catch (Exception e) {
 			logger.error("修改失败", e);
 			return AjaxPageResponse.FAILD("修改失败");

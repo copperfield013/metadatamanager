@@ -219,9 +219,8 @@
 seajs.use(['dialog', 'ajax'], function(Dialog, Ajax){
 	//创建表
 	$("#createTab").click(function(){
-		Ajax.ajax('admin/dictionary/basicItem/createTab','' , function(data){
-			
-		});	
+	 	Ajax.ajax('admin/dictionary/basicItem/createTab','' , function(data){
+		});
 	})
 	
 	

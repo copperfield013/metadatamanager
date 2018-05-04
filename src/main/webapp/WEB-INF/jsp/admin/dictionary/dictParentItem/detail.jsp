@@ -40,8 +40,8 @@
 						<td>${item.enName }</td>
 						<td>${item.status }</td>
 						<td>
-							<a href="admin/dictionary/dictBasicItemAlias/list?basicItemId=${item.id }" class="tab" target="dictBasicItemAlias_alias" title="管理别名">管理别名</a>
-							<a href="admin/dictionary/dictBasicItem/update/${item.id }" class="tab" target="dictBasicItem_update_${item.id }" title="修改">修改</a>
+							<a href="admin/dictionary/dictMappingAlias/list?basicItemId=${item.id }" class="tab" target="dictMappingAlias_list" title="管理别名">管理别名</a>
+							<a href="admin/dictionary/dictBasicItem/update/${item.id }" class="tab" target="dictBasicItem_update" title="修改">修改</a>
 							<a href="admin/dictionary/dictBasicItem/do_delete/${item.id }" confirm="确认删除？">删除</a>
 						</td>
 					</tr>

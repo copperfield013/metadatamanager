@@ -78,7 +78,7 @@ public class DictionaryBasicItemController {
 			DictionaryParentItem dictParentItem = dictionaryParentItemService.getDictionaryParentItem(creteria.getParentId());
 			creteria.setParentName(dictParentItem.getName());
 			dictBasicItemService.create(creteria);
-			return AjaxPageResponse.CLOSE_AND_REFRESH_PAGE("添加成功", "dictBasicItem_add");
+			return AjaxPageResponse.CLOSE_AND_REFRESH_PAGE("添加成功", "dictBasicItem_list");
 		} catch (Exception e) {
 			logger.error("添加失败", e);
 			return AjaxPageResponse.FAILD("添加失败");
@@ -102,7 +102,7 @@ public class DictionaryBasicItemController {
 			dictBasicItem.setStatus(criteria.getStatus());
 			
 			dictBasicItemService.update(dictBasicItem);
-			return AjaxPageResponse.CLOSE_AND_REFRESH_PAGE("修改成功", "demo_list");
+			return AjaxPageResponse.CLOSE_AND_REFRESH_PAGE("修改成功", "dictBasicItem_list");
 		} catch (Exception e) {
 			logger.error("修改失败", e);
 			return AjaxPageResponse.FAILD("修改失败");
