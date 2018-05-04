@@ -1,0 +1,358 @@
+#entity-wrap {
+	width: 100%;
+	height: 100%;
+	overflow-x: auto;
+	overflow-y: auto;
+}
+
+#entity-wrap ul,
+#entity-wrap p,
+#entity-wrap li {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+#entity-wrap .entity-list {		
+	padding: 3.6em 0 0 3.6em;	
+	min-width: 72em;	
+}
+#entity-wrap .entity {
+    margin-bottom: 3.6em;
+    width: 67em;
+}
+#entity-wrap .icon {
+	display: inline-block;
+	vertical-align: middle;
+	background-size: cover;
+	background-repeat: no-repeat;
+}
+
+#entity-wrap .entity_head {
+	margin-bottom: 1em;
+	font-size: 18px;
+	padding-left: 1em;
+}
+
+#entity-wrap .entity-list-img {
+	width: 1.3em;
+	height: 1.25em;
+}
+
+#entity-wrap .entity_head>span {    
+	color: #353535;
+	vertical-align: middle;
+}
+
+#entity-wrap #createTab {
+	float: right; 
+	margin-right: 1em;	
+	cursor: pointer;
+}
+
+#entity-wrap #createTab img {
+	width: 1em;
+	height: 1em;
+}
+
+#entity-wrap #createTab span {
+	vertical-align: middle;
+	font-size: 14px;
+	color: #26a69a;
+}
+
+#entity-wrap .entity_attr {
+	position: relative;
+	float: left;
+	height: 2.2em;
+	line-height: 2.2em;
+	border: 1px solid #d9d9d9;
+    padding: 0 1.1em; 
+    color: #307b89;  
+    margin: 0 0 1.8em 1.8em;   
+    cursor: pointer;  
+}
+
+#entity-wrap .entity_attr.active,
+#entity-wrap .entity_attr.pitch {
+	border-color: #26a69a;
+	color: #bdc2c1;
+}
+
+#entity-wrap .entity_attr_img {   
+	width: 6.3em;  
+	line-height: 1.9em;
+	text-align: center;	 
+}
+
+#entity-wrap .entity_attr_img img {
+	width: 1.3em;
+	heigth: 1.3em;	
+}
+
+
+#entity-wrap .opera_entity {
+    border: 1px solid #d9d9d9;   
+    display: none;
+    border-top: none;
+    padding: 1.8em 0 0 1.8em;
+    font-size: 14px;
+    color: #353535;
+}
+
+
+#entity-wrap .opera_group,
+#entity-wrap .opera_more {
+    border: 1px solid #d9d9d9;
+    display: none;    
+    padding: 1.8em 0 0 1.8em;
+    font-size: 14px;
+    color: #353535;
+    margin-bottom: 1em;
+}
+
+#entity-wrap .new_add .opera_group,
+#entity-wrap .new_add .opera_more {
+	border: none;
+}
+
+#entity-wrap .opera_entity_img {
+	width: 1.16em;
+	height: 1.22em;
+	margin-right: 0.6em;
+}
+
+#entity-wrap .opera_entity #add_entity_mes {
+	vertical-align: middle;
+}
+
+#entity-wrap .opera_entity_form {
+	margin: 1.3em 0 0 0;
+	color: #6b6b6b;	
+	text-align: left;
+	/* display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+	justify-content: space-around; */
+}
+
+#entity-wrap .opera_entity_form>div {
+	display: inline-block;
+	margin-right: 4.8em;
+	margin-bottom: 2.2em;
+}
+
+#entity-wrap .opera_entity_btn {
+	margin-bottom: 2.2em;
+	text-align: center;
+} 
+
+#entity-wrap .entity-btn-cancel,
+#entity-wrap .entity-btn-confirm {
+	display: inline-block;
+	width: 4.9em;
+	height: 2.2em;
+	line-height: 2.2em;
+	text-align: center;
+	border-radius: 2px;
+	border: 1px solid #d9d9d9;
+	cursor: pointer;
+}
+
+#entity-wrap .entity-btn-confirm {
+	background-color: #26a69a;
+	margin-left: 2.4em;
+	color: #ffffff;
+}
+
+#entity-wrap .entity_ch_head {
+	padding: 1.1em 1.3em;
+}
+
+#entity-wrap .entity_ch_head span {
+	vertical-align: middle;
+}
+
+#entity-wrap .entity_ch_head img {
+	margin-right: 0.5em;
+}
+
+#entity-wrap .entity_ch_opera {
+	float: right;
+}
+
+#entity-wrap .opera_entity_label {
+	margin-right: 0.5em;	
+}
+
+#entity-wrap .opera_entity_form input {	
+	border: none;
+	outline: none;
+	border-bottom: 1px solid #ebedf0;
+	background-color: #ffffff;
+	padding-left: 1em;
+}
+
+#entity-wrap .opera_entity_form input:focus {
+	color: #353535;
+    background-color: #fff;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+    border-color: none;    
+}
+
+#entity-wrap .entity_ul {
+    display: none;
+    position: absolute;   
+    top: 2.7em;
+    left: 0;     
+    width: 7.9em;  
+    box-shadow: 0 2px 8px rgba(0,0,0,.15); 
+    background-color: #ffffff;
+    z-index: 1;
+}
+
+#entity-wrap .entity_ul_hide {
+	display: none;
+}
+
+#entity-wrap .entity_attr.active .entity_ul {
+	display: block;	
+}
+
+#entity-wrap .entity_ul>li:first-child {
+	border-top-left-radius: 2px;
+	border-top-right-radius: 2px;
+}
+
+#entity-wrap .entity_ul>li:last-child {
+	border-bottom-left-radius: 2px;
+	border-bottom-right-radius: 2px;
+}
+
+#entity-wrap .entity_ul>li>a {
+    color: #353535;       
+    font-size: 14px;
+    padding-left: 0.7em;  
+    width: 100%;
+    height: 100%;
+    display: inline-block;  
+}
+
+#entity-wrap .entity_ul>li>a:hover {
+	background-color: #26a69a;
+	width: 100%;
+    height: 100%;
+    display: inline-block;
+    color: #ffffff;
+}
+
+#entity-wrap .entity_ul i {
+	margin-right: 0.6em;
+}
+
+#entity-wrap .entity_attr.stale.active .delete {
+	position: absolute;
+	top: -0.05em;
+	right: -0.05em;
+	width: 1.43em;
+	height: 1.3em;	
+	background-image: url('../images/delete.png');	
+} 
+
+#entity-wrap  .edit-entity {	
+	background-image: url('../images/edit.png');
+	width: 1em;
+	height: 0.93em;
+}
+
+#entity-wrap .stale-entity {	
+	background-image: url('../images/stale.png');
+	width: 0.93em;
+	height: 1em;
+}
+
+#entity-wrap .entity-attr {	
+	background-image: url('../images/entity_attr.png');
+	width: 0.93em;
+	height: 0.93em;
+}
+
+#entity-wrap .entity_ul>li>a:hover i.edit-entity {
+	background-image: url('../images/edit_active.png');
+}
+
+#entity-wrap .entity_ul>li>a:hover i.stale-entity {
+	background-image: url('../images/stale_active.png');
+}
+
+#entity-wrap .entity_ul>li>a:hover i.entity-attr {
+	background-image: url('../images/entity_attr_active.png');
+}
+
+#entity-wrap .new_add {
+	border: 1px solid #ebedf0;
+	padding: 1.8em 0 0 0;
+	font-size: 14px;
+	color: #353535;	
+	margin-bottom: 1em;
+}
+
+
+#entity-wrap .new_add_title {
+	margin-bottom: 1.2em;
+	padding-left: 1.8em;
+}
+
+#entity-wrap .new_add_title img {
+	margin-left: 0.9em;
+	width: 1em;
+	height: 1em;
+}
+#entity-wrap .new_add_title span {
+	vertical-align: middle;
+}
+
+#entity-wrap .common_proper, .more_proper , .entity_relation, .twoLevelAttr_child, .twoLevelAttr_child_show {
+    display: none;
+}
+
+#entity-wrap .opera_comm, 
+#entity-wrap .opera_more_child, 
+#entity-wrap .twoLevelAttr_show, 
+#entity-wrap .twoLevelAttr_child_show {
+    display: none;
+    padding: 1.8em 1.8em 0 1.8em;    
+    
+}
+
+#entity-wrap .opera_relation {
+	display: none;
+	padding:1.8em 1.8em 0 1.8em;
+	border: 1px solid #ebedf0;
+	border-top: none;
+}
+
+#entity-wrap .two-level-attr {
+	float: right;
+	margin-right: 1.8em;
+}
+#entity-wrap .enum-wrap {
+	float: right;
+	position: relative;
+}
+
+#entity-wrap input[type=checkbox].checkbox-slider+.text:before {
+	width: 60px;
+}
+
+#entity-wrap select {
+	margin-right: 4.8em;
+    margin-bottom: 2.2em;
+}
+
+#entity-wrap .entity_list {
+	border: 1px solid #ebedf0;
+	padding-top: 1em;
+}
