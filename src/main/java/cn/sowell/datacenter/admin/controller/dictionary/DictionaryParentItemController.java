@@ -74,7 +74,6 @@ public class DictionaryParentItemController {
 	public AjaxPageResponse doAdd(DictionaryParentItem	dictionaryParentItem){
 		try {
 			//手动分配主键， 分配规则待定
-			dictionaryParentItem.setId(1234);
 			dictionaryParentItemService.create(dictionaryParentItem);
 			return AjaxPageResponse.CLOSE_AND_REFRESH_PAGE("添加成功", "dictParentItem_list");
 		} catch (Exception e) {

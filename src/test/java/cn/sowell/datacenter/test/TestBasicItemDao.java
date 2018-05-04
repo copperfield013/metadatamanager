@@ -15,6 +15,8 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.abc.mapping.node.NodeType;
+
 import cn.sowell.datacenter.model.dictionary.pojo.BasicItem;
 import cn.sowell.datacenter.model.dictionary.service.BasicItemService;
 
@@ -31,8 +33,18 @@ public class TestBasicItemDao {
 	@Transactional
 	public void fun() {
 		System.out.println("sdf");
-		basicItemService.createTabCol();
+	//	basicItemService.createTabCol();
+		
+		
+		NodeType nodeType = NodeType.getNodeType(1);
+		
+		
+		System.out.println(nodeType.getName());
+		
 		System.out.println();
+		
+		
+		
 	}
 	
 	

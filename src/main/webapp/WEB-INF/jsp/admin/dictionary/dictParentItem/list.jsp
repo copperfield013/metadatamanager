@@ -7,10 +7,7 @@
 				<label for="name">关键字</label>
 				<input type="text" class="form-control" name="name" value="${criteria.name }" />
 			</div>
-			<!-- <div class="form-group">
-				<label class="form-control-title" for="date">日期</label>
-				<input type="text" class="form-control" id="date" name="date" readonly="readonly" css-cursor="text"  />
-			</div> -->
+			
 			<button type="submit" class="btn btn-default">查询</button>
 			<a class="btn btn-primary tab" href="admin/dictionary/dictParentItem/add" title="创建" target="dictParentItem_add" >创建</a>
 		</form>
