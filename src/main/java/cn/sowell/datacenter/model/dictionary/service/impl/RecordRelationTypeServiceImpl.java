@@ -50,10 +50,9 @@ public class RecordRelationTypeServiceImpl implements RecordRelationTypeService 
 	}
 
 	@Override
-	public void saveRelation(RecordRelationType lefRrecordType, RecordRelationType rightRrecordType) {
-		//左右关系相同则生成一条记录
-		if (lefRrecordType.getName().trim().equals(rightRrecordType.getName().trim())) {
-			lefRrecordType.setReverseCode(lefRrecordType.getTypeCode());
+	public void saveRelation(RecordRelationType lefRrecordType, RecordRelationType rightRrecordType, String symmetry) {
+		
+		if ("symmetry".equals(symmetry)) {//添加对称关系
 			dictionaryParentItemDao.insert(lefRrecordType);
 		} else {
 			dictionaryParentItemDao.insert(lefRrecordType);

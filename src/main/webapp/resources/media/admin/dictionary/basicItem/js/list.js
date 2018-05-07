@@ -217,6 +217,14 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
     });
     //点击 添加关系加号 显示div
     $(".entity_relation").on("click", ".add_entity_relation", function() {
+    	var $form = $(".opera_relation").find("#entity_relation_opera_form");
+    	
+    	$form.find('#rela_right').show();
+    	$form.find('#rela_ni_code').show();
+    	$form.find('#rela_ni_name').show();
+    	$form.find('#symmetry').val("");
+    	$form.find("#add_rela_symmetry").attr("checked",false);
+    	
         Ajax.ajax('admin/dictionary/basicItem/entityList', '', function(data) {
             var entity = data.entity;
             var str = "";
@@ -349,6 +357,22 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
         enityAttr(entityId);
     });
     
+  //添加对称关系
+    $(".entity_relation").on("click", "#add_rela_symmetry", function() {
+    	if ($(this).is(':checked')) {
+    		$(this).parent().parent().siblings('#rela_right').hide();
+    		$(this).parent().parent().siblings('#rela_ni_code').hide();
+    		$(this).parent().parent().siblings('#rela_ni_name').hide();
+    		$(this).parent().parent().siblings('#symmetry').val('symmetry');
+    	} else {
+    		$(this).parent().parent().siblings('#rela_right').show();
+    		$(this).parent().parent().siblings('#rela_ni_code').show();
+    		$(this).parent().parent().siblings('#rela_ni_name').show();
+    		$(this).parent().parent().siblings('#symmetry').val("");
+    	}
+    	
+    });
+    
     //点击确认， 进行添加关系
     $(".entity_relation").on("click", "#relation_but_confirm", function() {
         //comm_opera_form1
@@ -362,6 +386,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
         var rightName = $form.find("#rightName").val();
         var rightRecordType = $form.find("#rightRecordType").val();
         var leftRecordType = $form.find("#leftRecordType").val();
+        var symmetry = $form.find("#symmetry").val();
         Ajax.ajax('admin/dictionary/recordRelationType/doAdd', {
             typeCode: typeCode,
             reverseCode: reverseCode,
@@ -369,6 +394,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
             rightName: rightName,
             rightRecordType: rightRecordType,
             leftRecordType: leftRecordType,
+            symmetry:symmetry,
         }, function(data) {});
         $(".opera_relation").hide();
         var entityId = $(this).closest(".entity_relation").attr("entityid");

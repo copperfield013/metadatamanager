@@ -48,5 +48,5 @@ public interface RecordRelationTypeService {
 	 * @param lefRrecordType
 	 * @param rightRrecordType
 	 */
-	void saveRelation(RecordRelationType lefRrecordType, RecordRelationType rightRrecordType);
+	void saveRelation(RecordRelationType lefRrecordType, RecordRelationType rightRrecordType, String symmetry);
 }

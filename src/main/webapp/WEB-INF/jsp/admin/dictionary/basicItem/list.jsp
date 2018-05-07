@@ -133,32 +133,41 @@
 		           <div class="entity_list entity_relation_list clear-fix">
 		           		<div class="entity_attr entity_attr_img add_entity_relation">
 		           			<img alt="添加关系" src="media/admin/dictionary/basicItem/addEntity_icon.png">		           			
-		           		</div>		           		
+		           		</div>	
 		           </div>
 		          <div class="opera_relation">
 				    <img class="opera_entity_img" src="media/admin/dictionary/basicItem/opera_entity_icon.png">
 				    <span id="add_relation_mes"></span>
 				    <form id="entity_relation_opera_form" class="opera_entity_form">
 				        <input type="hidden" name="leftRecordType" id="leftRecordType">
-				        <div class="select-wrap">
+				         <input type="hidden" name="symmetry" id="symmetry">
+				        <div class="select-wrap" id="rela_right">
 				            <span class="opera_entity_label">选择右实体</span>
 				            <select id="rightRecordType" name="rightRecordType">
 				            </select>
 				        </div>
+				        
+				        <div class="col-xs-4 opera_entity_label">
+					    	<label>
+					       		 <input id="add_rela_symmetry" class="checkbox-slider slider-icon colored-blue" type="checkbox">
+					       		 <span class="text">添加对称关系</span>
+					   		</label>
+						</div>
+	
 				        <div>
-				            <span class="opera_entity_label">左关系code</span>
+				            <span class="opera_entity_label">关系code</span>
 				            <input type="text" name="typeCode" id="typeCode" />
 				        </div>
-				        <div>
-				            <span class="opera_entity_label">右关系code</span>
+				        <div id="rela_ni_code">
+				            <span class="opera_entity_label">逆向关系code</span>
 				            <input type="text" name="reverseCode" id="reverseCode" />
 				        </div>
 				        <div>
-				            <span class="opera_entity_label">左关系名称</span>
+				            <span class="opera_entity_label">关系名称</span>
 				            <input type="text" name="leftName" id="leftName" />
 				        </div>
-				        <div>
-				            <span class="opera_entity_label">左关系名称</span>
+				        <div id="rela_ni_name">
+				            <span class="opera_entity_label">逆向关系名称</span>
 				            <input type="text" name="rightName" id="rightName" />
 				        </div>
 				    </form>

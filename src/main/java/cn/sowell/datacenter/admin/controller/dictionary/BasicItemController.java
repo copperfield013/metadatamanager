@@ -266,11 +266,11 @@ public class BasicItemController {
 	}
 	
 	//添加一个二级属性的孩子
-		@ResponseBody
-		@RequestMapping("/saveTwoLevelAttrChild")
-		public void saveTwoLevelAttrChild(Towlevelattr criteria){
-			basicItemService.createTowLevel(criteria);
-		}
+	@ResponseBody
+	@RequestMapping("/saveTwoLevelAttrChild")
+	public void saveTwoLevelAttrChild(Towlevelattr criteria){
+		basicItemService.createTowLevel(criteria);
+	}
 	
 	//根据id查询一个二级属性
 	@ResponseBody
@@ -285,7 +285,6 @@ public class BasicItemController {
 		map.put("tmm", tmmObj);
 		JSONObject json = new JSONObject(map);
 		return json.toString();
-		
 	}
 	
 		//根据twolevelId   查询出字典里面的字段
