@@ -460,9 +460,9 @@ seajs.use(['dialog', 'ajax'], function(Dialog, Ajax) {
     $(".common_proper").on("click", "#is_enum", function() {
         var $form = $(".opera_comm").find("#comm_opera_form1");
         $form.find("#dictParentId").remove();
-        $form.find("#span_enum").remove();
+        $form.find("#span_enum").remove();        
         if ($(this).is(':checked')) {
-            //选中  则显示下拉列表
+            //选中  则显示下拉列表       
             Ajax.ajax('admin/dictionary/dictParentItem/getDictPitem', '', function(data) {
                 var dataArr = data.dictPitem;
                 var str = "<span id=\"span_enum\">字典序：</span><select id=\"dictParentId\" name=\"dictParentId\">";
@@ -475,12 +475,23 @@ seajs.use(['dialog', 'ajax'], function(Dialog, Ajax) {
             $form.find("#dataType").val("char").hide();
             $form.find("#dataRange").val("枚举").hide();
             $form.find("#cn_dataType").hide();
-            $form.find("#cn_dataRange").parent().hide();
+            $form.find("#cn_dataRange").hide();
         } else {
-            $form.find("#dataType").val("").show();
-            $form.find("#dataRange").val("").show();
-            $form.find("#cn_dataType").show();
-            $form.find("#cn_dataRange").parent().show();
+        	Ajax.ajax('admin/dictionary/basicItem/getDataType', '', function(data) {
+        		var str = "";
+	            for (var key in data) {
+	                if (dataType == data[key]) {
+	                    str = str + " <option selected=\"selected\" value =\"" + key + "\">" + data[key] + "</option>";
+	                } else {
+	                    str = str + " <option value =\"" + key + "\">" + data[key] + "</option>";
+	                }
+	            }
+                $form.find("#dataType").html(str);
+                $form.find("#dataType").show();
+                $form.find("#dataRange").show();
+                $form.find("#cn_dataType").show();                
+                $form.find("#cn_dataRange").show();
+            });            
         }
     });
     //如果是枚举， 则显示下拉列表  多值属性
@@ -504,10 +515,21 @@ seajs.use(['dialog', 'ajax'], function(Dialog, Ajax) {
             $form.find("#cn_dataType").hide();
             $form.find("#cn_dataRange").hide();
         } else {
-            $form.find("#dataType").val("").show();
-            $form.find("#dataRange").val("").show();
-            $form.find("#cn_dataType").show();
-            $form.find("#cn_dataRange").show();
+        	Ajax.ajax('admin/dictionary/basicItem/getDataType', '', function(data) {
+        		var str = "";
+	            for (var key in data) {
+	                if (dataType == data[key]) {
+	                    str = str + " <option selected=\"selected\" value =\"" + key + "\">" + data[key] + "</option>";
+	                } else {
+	                    str = str + " <option value =\"" + key + "\">" + data[key] + "</option>";
+	                }
+	            }
+                $form.find("#dataType").html(str);
+                $form.find("#dataType").show();
+                $form.find("#dataRange").show();
+                $form.find("#cn_dataType").show();                
+                $form.find("#cn_dataRange").show();
+            });              
         }
     });
     //编辑实体获取 id    
