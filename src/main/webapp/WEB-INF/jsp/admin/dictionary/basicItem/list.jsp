@@ -140,7 +140,7 @@
 				    <span id="add_relation_mes"></span>
 				    <form id="entity_relation_opera_form" class="opera_entity_form">
 				        <input type="hidden" name="leftRecordType" id="leftRecordType">
-				        <div>
+				        <div class="select-wrap">
 				            <span class="opera_entity_label">选择右实体</span>
 				            <select id="rightRecordType" name="rightRecordType">
 				            </select>
