@@ -10,6 +10,8 @@ import javax.persistence.Transient;
 
 import org.hibernate.annotations.GenericGenerator;
 
+import com.google.common.hash.HashCode;
+
 @Entity
 @Table(name = "t_c_basic_item")
 public class BasicItem {
@@ -204,4 +206,5 @@ public class BasicItem {
 	public void setTwoLevelAttr(Long twoLevelAttr) {
 		this.twoLevelAttr = twoLevelAttr;
 	}
+	
 }

@@ -8,7 +8,7 @@ public interface Constants {
 	/**
 	 * 数据类型
 	 */
-	 Map<String, Object> DATA_TYPE_MAP = new HashMap<String, Object>(){
+	Map<String, Object> DATA_TYPE_MAP = new HashMap<String, Object>(){
 		{
 			put("char", "字符型");
 			put("digital", "数字型");

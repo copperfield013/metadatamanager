@@ -102,8 +102,30 @@ public class BasicItemController {
 	@RequestMapping("/do_add")
 	public AjaxPageResponse doAdd(BasicItem	basicItem){
 		try {
-			String dataType2 = basicItem.getDataType();
-			String dataType = (String) Constants.DATA_TYPE_MAP.get(dataType2);
+			String dType = basicItem.getDataType();
+			
+			String dataType = "";
+			if ("char".equals(dType)) {
+				dataType = "字符型";
+			} else if ("digital".equals(dType)) {
+				dataType = "数字型";
+			}else if ("digitalDecimal".equals(dType)) {
+				dataType = "数字型小数";
+			}else if ("date".equals(dType)) {
+				dataType = "日期型";
+			}else if ("dateTime".equals(dType)) {
+				dataType = "时间型";
+			}else if ("record".equals(dType)) {
+				dataType = "记录类型";
+			}else if ("repeat".equals(dType)) {
+				dataType = "重复类型";
+			}else if ("group".equals(dType)) {
+				dataType = "分组类型";
+			}
+			
+			if ("枚举".equals(basicItem.getDataRange())) {
+				dataType = "字符型";
+			}
 			basicItem.setDataType(dataType);
 			//记录类型
 			if ("记录类型".equals(basicItem.getDataType())) {
@@ -130,6 +152,7 @@ public class BasicItemController {
 				if ("重复类型".equals(bItemPanrent.getDataType())) {//多值属性下的普通属性
 					basicItem.setParent(bItemPanrent.getParent() + "_" +bItemPanrent.getCode());
 					basicItem.setTableName(bItemPanrent.getTableName());
+					basicItem.setGroupName(bItemPanrent.getCode());
 				} else {//普通属性
 					basicItem.setTableName("t_" + basicItem.getParent() + "_" + basicItem.getGroupName());
 				}
