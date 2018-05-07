@@ -28,7 +28,8 @@ seajs.use(['dialog', 'ajax'], function(Dialog, Ajax) {
     	var $this = $(this);
     	var $newAdd = $this.closest(".new_add");
     	var $select = $newAdd.find(".opera_comm").find("#comm_opera_form1").find("#dataType");
-        $select.find().remove();
+    	$this.siblings('.entity_attr').removeClass('pitch');
+        $select.html("");
         Ajax.ajax('admin/dictionary/basicItem/getDataType', '', function(data) {
             var str = "";
             for (var key in data) {
@@ -39,13 +40,15 @@ seajs.use(['dialog', 'ajax'], function(Dialog, Ajax) {
         $newAdd.find("#code").attr("readonly", false);
         $newAdd.find("#add_comm_mes").html("");
         $newAdd.find("#add_comm_mes").html("添加属性");
+        $newAdd.find(".opera_comm").find('input').val("");
         $newAdd.find(".opera_comm").show();
     });
     //点击 添加多值属性孩子加号 显示div
     $(".more_proper").on("click", ".add_more_child", function() {
     	var $this = $(this);
     	var $newAdd = $this.closest('.new_add');
-        $newAdd.find(".opera_more_child").find("#more_child_opera_form1").find("#dataType").find().remove();
+    	$this.siblings('.entity_attr').removeClass('pitch');
+        $newAdd.find(".opera_more_child").find("#more_child_opera_form1").find("#dataType").html("");
         Ajax.ajax('admin/dictionary/basicItem/getDataType', '', function(data) {
             var str = "";
             for (var key in data) {
@@ -53,8 +56,10 @@ seajs.use(['dialog', 'ajax'], function(Dialog, Ajax) {
             }
             $(".opera_more_child").find("#more_child_opera_form1").find("#dataType").append(str);
         });
+        $newAdd.find("#code").attr("readonly", false);
         $newAdd.find("#add_more_child_mes").html("");
         $newAdd.find("#add_more_child_mes").html("添加多值属性");
+        $newAdd.find(".opera_more_child").find('input').val("");
         $newAdd.find(".opera_more_child").show();
     });
     //点击确认， 添加一条二级属性
@@ -257,7 +262,8 @@ seajs.use(['dialog', 'ajax'], function(Dialog, Ajax) {
     });
     //点击取消 ， 取消添加普通属性
     $(".common_proper").on("click", "#comm_but_cancel", function() {
-        var $form1 = $(this).closest(".opera_comm").find("form");
+        var $form1 = $(this).closest(".opera_comm").find("form");        
+        $(this).closest('.new_add').find('.entity_attr').removeClass('pitch');
         $form1.find("#code").removeAttr("readonly");
         $form1.find("#cnName").val("");
         $form1.find("#code").val("");
@@ -268,6 +274,7 @@ seajs.use(['dialog', 'ajax'], function(Dialog, Ajax) {
     //点击取消 ， 取消添加多值属性的孩子
     $(".more_proper").on("click", "#more_child_but_cancel", function() {
         var $form1 = $(this).parent();
+        $(this).closest('.new_add').find('.entity_attr').removeClass('pitch');
         $form1.find("#code").removeAttr("readonly");
         $form1.find("#cnName").val("");
         $form1.find("#code").val("");
@@ -526,12 +533,13 @@ seajs.use(['dialog', 'ajax'], function(Dialog, Ajax) {
     	var $form1 =$newAdd.find("form");
         var entityId = $this.closest('.entity_ul').attr("entityid");
         var ischecked = false;
+        $this.closest(".entity_attr").addClass('pitch').siblings(".entity_attr").removeClass('pitch');
         Ajax.ajax('admin/dictionary/basicItem/getOne', {
             id: entityId
         }, function(jsonData) {  
         	if(jsonData.dataRange == "枚举") {
         		ischecked = true;
-        	};          	
+        	};         	
             $form1.find("#code").val(jsonData.code);
             $form1.find("#code").attr("readonly", "readonly");
             $form1.find("#cnName").val(jsonData.cnName);
@@ -539,7 +547,7 @@ seajs.use(['dialog', 'ajax'], function(Dialog, Ajax) {
             $form1.find("#dataRange").val(jsonData.dataRange);
             $form1.find("#edit_dataType").val(jsonData.dataType);
             $form1.find("#edit_dictParentId").val(jsonData.dictParentId);
-            $form1.find("#dataType").find().remove();
+            $form1.find("#dataType").html("");
             if(ischecked) {
             	$newAdd.find("#is_enum").prop('checked', true);    			
     			Ajax.ajax('admin/dictionary/dictParentItem/getDictPitem', '', function(data) {
@@ -578,8 +586,8 @@ seajs.use(['dialog', 'ajax'], function(Dialog, Ajax) {
     	            }
     	            $form1.find("#span_enum").remove();
 	                $form1.find("#dictParentId").remove();
-    	            $form1.find("#dataType").val("").show();
-    	            $form1.find("#dataRange").val("").show();
+    	            $form1.find("#dataType").show();
+    	            $form1.find("#dataRange").show();
     	            $form1.find("#cn_dataType").show();
     	            $form1.find("#cn_dataRange").show();
     	            $form1.find("#dataType").append(str);
@@ -594,6 +602,7 @@ seajs.use(['dialog', 'ajax'], function(Dialog, Ajax) {
     $(".more_proper").on("click", ".edit_more_child", function() {
     	var $this = $(this);  
     	var $newAdd = $this.closest('.new_add');
+    	$this.closest(".entity_attr").addClass('pitch').siblings(".entity_attr").removeClass('pitch');
     	var $form1 = $newAdd.find('form');
         var entityId = $(this).closest('.entity_ul').attr("entityid");
         var ischecked = false;
@@ -610,7 +619,7 @@ seajs.use(['dialog', 'ajax'], function(Dialog, Ajax) {
             $form1.find("#dataRange").val(jsonData.dataRange);
             $form1.find("#edit_dataType").val(jsonData.dataType);
             $form1.find("#edit_dictParentId").val(jsonData.dictParentId);
-            $form1.find("#dataType").find().remove();  
+            $form1.find("#dataType").html("");  
     		if(ischecked) {
     			$this.closest('.new_add').find("#is_enum_more_child").prop('checked', true);    			
     			Ajax.ajax('admin/dictionary/dictParentItem/getDictPitem', '', function(data) {
@@ -647,8 +656,8 @@ seajs.use(['dialog', 'ajax'], function(Dialog, Ajax) {
     	                    str = str + " <option value =\"" + key + "\">" + data[key] + "</option>";
     	                }
     	            }
-    	            $form1.find("#dataType").val("").show();
-    	            $form1.find("#dataRange").val("").show();
+    	            $form1.find("#dataType").show();
+    	            $form1.find("#dataRange").show();
     	            $form1.find("#cn_dataType").show();
     	            $form1.find("#cn_dataRange").show();
     	            $form1.find("#span_enum").remove();

@@ -252,7 +252,7 @@
 	margin-right: 0.6em;
 }
 
-#entity-wrap .entity_attr.stale.active .delete {
+#entity-wrap .entity_attr.stale .delete {
 	position: absolute;
 	top: -0.05em;
 	right: -0.05em;
