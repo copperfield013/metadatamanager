@@ -1,4 +1,4 @@
-seajs.use(['dialog', 'ajax'], function(Dialog, Ajax) {
+seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
     //创建表
     $("#createTab").click(function() {
         Ajax.ajax('admin/dictionary/basicItem/createTab', '', function(data) {});
@@ -223,10 +223,12 @@ seajs.use(['dialog', 'ajax'], function(Dialog, Ajax) {
             for (var p in entity) { //遍历json数组时，这么写p为索引，0,1
                 str = str + "<option value=\"" + entity[p].code + "\">" + entity[p].cnName + "</option>"; 
             }
+            $(".opera_relation").find("#entity_relation_opera_form").find("#rightRecordType").html("");
             $(".opera_relation").find("#entity_relation_opera_form").find("#rightRecordType").append(str);
         });
         $("#add_relation_mes").html("");
         $("#add_relation_mes").html("添加关系");
+        $(".opera_relation").find("form").find("input").val("");
         $(".opera_relation").show();
     });
     // 点击取消  取消添加关系
@@ -370,7 +372,7 @@ seajs.use(['dialog', 'ajax'], function(Dialog, Ajax) {
         }, function(data) {});
         $(".opera_relation").hide();
         var entityId = $(this).closest(".entity_relation").attr("entityid");
-        $(this).closest('.entity_relation').find(".entity_attr").remove();
+        $(this).closest('.entity_relation').find(".entity_attr").not(".entity_attr_img").remove();
         enityAttr(entityId);
     });
     //点击确认， 进行添加多值属性的孩子
@@ -458,6 +460,7 @@ seajs.use(['dialog', 'ajax'], function(Dialog, Ajax) {
 	}); */
     //如果是枚举， 则显示下拉列表
     $(".common_proper").on("click", "#is_enum", function() {
+    	$CPF.showLoading();
         var $form = $(".opera_comm").find("#comm_opera_form1");
         $form.find("#dictParentId").remove();
         $form.find("#span_enum").remove();        
@@ -471,11 +474,12 @@ seajs.use(['dialog', 'ajax'], function(Dialog, Ajax) {
                 }
                 str = str + "</select>";
                 $form.find("#dataType").after(str);
-            });
-            $form.find("#dataType").val("char").hide();
-            $form.find("#dataRange").val("枚举").hide();
-            $form.find("#cn_dataType").hide();
-            $form.find("#cn_dataRange").hide();
+                $form.find("#dataType").val("char").hide();
+                $form.find("#dataRange").val("枚举").hide();
+                $form.find("#cn_dataType").hide();
+                $form.find("#cn_dataRange").hide();
+                $CPF.closeLoading();
+            });            
         } else {
         	Ajax.ajax('admin/dictionary/basicItem/getDataType', '', function(data) {
         		var str = "";
@@ -491,11 +495,13 @@ seajs.use(['dialog', 'ajax'], function(Dialog, Ajax) {
                 $form.find("#dataRange").show();
                 $form.find("#cn_dataType").show();                
                 $form.find("#cn_dataRange").show();
+                $CPF.closeLoading();
             });            
         }
     });
     //如果是枚举， 则显示下拉列表  多值属性
     $(".more_proper").on("click", "#is_enum_more_child", function() {
+    	$CPF.showLoading();
         var $form = $(this).closest(".opera_more_child").find("#more_child_opera_form1");
         $form.find("#dictParentId").remove();
         $form.find("#span_enum").remove();
@@ -509,11 +515,12 @@ seajs.use(['dialog', 'ajax'], function(Dialog, Ajax) {
                 }
                 str = str + "</select>";
                 $form.find("#dataType").after(str);
-            });
-            $form.find("#dataType").val("char").hide();
-            $form.find("#dataRange").val("枚举").hide();
-            $form.find("#cn_dataType").hide();
-            $form.find("#cn_dataRange").hide();
+                $form.find("#dataType").val("char").hide();
+                $form.find("#dataRange").val("枚举").hide();
+                $form.find("#cn_dataType").hide();
+                $form.find("#cn_dataRange").hide();
+                $CPF.closeLoading();
+            });            
         } else {
         	Ajax.ajax('admin/dictionary/basicItem/getDataType', '', function(data) {
         		var str = "";
@@ -529,6 +536,7 @@ seajs.use(['dialog', 'ajax'], function(Dialog, Ajax) {
                 $form.find("#dataRange").show();
                 $form.find("#cn_dataType").show();                
                 $form.find("#cn_dataRange").show();
+                $CPF.closeLoading();
             });              
         }
     });
