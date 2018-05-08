@@ -88,9 +88,35 @@ public class BasicItemDaoImpl implements BasicItemDao {
 	}
 
 	@Override
-	public void saveOrUpdate(Object obj) {
+	public void saveOrUpdate(BasicItem obj) {
+		//生成code 规则：实体code TE0001 开始  其他code规则 T00001开始
+		
+		
+		
 		sFactory.getCurrentSession().saveOrUpdate(obj);
 	}
+	
+	//实体code  生成规则
+	private String getEntityCode() {
+		String sql = "from BasicItem WHERE dataType=:dataType ORDER BY code DESC";
+		List<BasicItem> list = sFactory.getCurrentSession().createQuery(sql).setParameter("dataType", "记录类型").list();
+
+		if (list.isEmpty()) {
+			return "TE0001";
+		}
+		
+		
+		
+		return null;
+	}
+	
+	//其他code， 生成规则
+	private String getAttrCode() {
+		
+		
+		return null;
+	}
+	
 
 	@Override
 	public List queryCreTab() {

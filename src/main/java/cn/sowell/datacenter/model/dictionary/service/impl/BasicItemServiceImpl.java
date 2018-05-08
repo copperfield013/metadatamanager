@@ -148,7 +148,7 @@ public class BasicItemServiceImpl implements BasicItemService {
 	}
 
 	@Override
-	public void saveOrUpdate(Object obj) {
+	public void saveOrUpdate(BasicItem obj) {
 		basicItemDao.saveOrUpdate(obj);
 	}
 
@@ -165,6 +165,7 @@ public class BasicItemServiceImpl implements BasicItemService {
 		for (Object object : queryCreTab) {
 			basicItemDao.excuteBySql(object.toString());
 		}
+		System.out.println("");
 		List queryNewAddCol = basicItemDao.queryNewAddCol();
 		for (Object object : queryNewAddCol) {
 			basicItemDao.excuteBySql(object.toString());

@@ -122,7 +122,7 @@ public class BasicItemController {
 			}else if ("group".equals(dType)) {
 				dataType = "分组类型";
 			} else if ("枚举".equals(dType)) {
-				dataType = "枚举";
+				dataType = "字符型";
 			}
 			basicItem.setDataType(dataType);
 			//记录类型
