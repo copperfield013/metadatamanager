@@ -165,7 +165,6 @@ public class BasicItemServiceImpl implements BasicItemService {
 		for (Object object : queryCreTab) {
 			basicItemDao.excuteBySql(object.toString());
 		}
-		System.out.println("");
 		List queryNewAddCol = basicItemDao.queryNewAddCol();
 		for (Object object : queryNewAddCol) {
 			basicItemDao.excuteBySql(object.toString());

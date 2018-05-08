@@ -106,38 +106,40 @@ public class BasicItemDaoImpl implements BasicItemDao {
 		
 	}
 	
+	
+	
+	
 	//实体code  生成规则
 	private String getEntityCode() {
-		String sql = "from BasicItem WHERE dataType=:dataType ORDER BY code DESC";
-		List<BasicItem> list = sFactory.getCurrentSession().createQuery(sql).setParameter("dataType", "记录类型").list();
+		String sql = "SELECT SUBSTR(c_code, 3) aa from t_c_basic_item WHERE c_data_type='记录类型' AND c_code like 'T%' ORDER BY  CAST(aa as SIGNED ) DESC";
+		List list = sFactory.getCurrentSession().createSQLQuery(sql).list();
 
 		if (list.isEmpty()) {
-			return "TE0001";
+			return "TE001";
 		}
 		
-		String entityCode = list.get(0).getCode();
-		String codeStr = entityCode.substring(2);
-		int code = Integer.parseInt(codeStr) + 1;
+		String entityCode = (String) list.get(0);
+		int code = Integer.parseInt(entityCode) + 1;
 		String entityHead = "TE";
-        String format = String.format("%04d", code);  
+        String format = String.format("%03d", code);  
 		
 		return entityHead+format;
 	}
 	
 	//其他code， 生成规则
 	private String getAttrCode() {
-		String sql = "from BasicItem WHERE dataType!=:dataType ORDER BY code DESC";
-		List<BasicItem> list = sFactory.getCurrentSession().createQuery(sql).setParameter("dataType", "记录类型").list();
+		String sql = "SELECT SUBSTR(c_code, 2) aa from t_c_basic_item WHERE c_data_type!='记录类型' AND c_code like 'T%' ORDER BY  CAST(aa as SIGNED ) DESC";
+		
+		List list = sFactory.getCurrentSession().createSQLQuery(sql).list();
 
 		if (list.isEmpty()) {
-			return "T00001";
+			return "T0001";
 		}
 		
-		String entityCode = list.get(0).getCode();
-		String codeStr = entityCode.substring(2);
-		int code = Integer.parseInt(codeStr) + 1;
+		String entityCode = (String) list.get(0);
+		int code = Integer.parseInt(entityCode) + 1;
 		String entityHead = "T";
-        String format = String.format("%05d", code);  
+        String format = String.format("%04d", code);  
 		return entityHead+format;
 	}
 	
