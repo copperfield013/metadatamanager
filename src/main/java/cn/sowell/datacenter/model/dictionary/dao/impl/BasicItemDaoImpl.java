@@ -89,16 +89,21 @@ public class BasicItemDaoImpl implements BasicItemDao {
 
 	@Override
 	public void saveOrUpdate(BasicItem obj) {
-		//生成code 规则：实体code TE0001 开始  其他code规则 T00001开始
 		
-		String dataType = obj.getDataType();
-		
-		if ("记录类型".equals(dataType)) {
-			obj.setCode(getEntityCode());
+		if (obj.getCode()== null || !obj.getCode().startsWith("T")) {
+			//生成code 规则：实体code TE0001 开始  其他code规则 T00001开始
+			String dataType = obj.getDataType();
+			if ("记录类型".equals(dataType)) {
+				obj.setCode(getEntityCode());
+			} else {
+				obj.setCode(getAttrCode());
+			}
+			
+			sFactory.getCurrentSession().save(obj);
 		} else {
-			obj.setCode(getAttrCode());
+			sFactory.getCurrentSession().update(obj);
 		}
-		sFactory.getCurrentSession().saveOrUpdate(obj);
+		
 	}
 	
 	//实体code  生成规则

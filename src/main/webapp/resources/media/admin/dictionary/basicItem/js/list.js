@@ -1,8 +1,10 @@
 seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
     //创建表
-    $("#createTab").click(function() {
-        Ajax.ajax('admin/dictionary/basicItem/createTab', '', function(data) {});
-    })
+   $("#createTab").click(function() {
+    	//if (Dialog.confirm("点击是， 则生成数据库表，字段")) {
+    		 Ajax.ajax('admin/dictionary/basicItem/createTab', '', function(data) {});
+    	//}
+    });
     //点击 添加实体 显示div
     $("#add_entity").click(function() {
         $("#add_entity_mes").html("");
@@ -101,7 +103,12 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
         Ajax.ajax('admin/dictionary/basicItem/getDataType', '', function(data) {
             var str = "";
             for (var key in data) {
-                str = str + " <option value =\"" + key + "\">" + data[key] + "</option>";
+                if ("char" == key) {
+                	 str = str + " <option selected=\"selected\" value =\"" + key + "\">" + data[key] + "</option>";
+                } else {
+                	 str = str + " <option value =\"" + key + "\">" + data[key] + "</option>";
+                }
+                
             }    
             
             $select.append(str);
@@ -129,7 +136,11 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
         Ajax.ajax('admin/dictionary/basicItem/getDataType', '', function(data) {
             var str = "";
             for (var key in data) {
-                str = str + " <option value =\"" + key + "\">" + data[key] + "</option>";
+            	 if ("char" == key) {
+                	 str = str + " <option selected=\"selected\" value =\"" + key + "\">" + data[key] + "</option>";
+                } else {
+                	 str = str + " <option value =\"" + key + "\">" + data[key] + "</option>";
+                }
             }
             $(".opera_more_child").find("#more_child_opera_form1").find("#dataType").append(str);
         });
@@ -635,11 +646,22 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
 	            var dataType = $form1.find("#edit_dataType").val();
 	            var str = "";
 	            for (var key in data) {
-	                if (dataType == data[key]) {
-	                    str = str + " <option selected=\"selected\" value =\"" + key + "\">" + data[key] + "</option>";
-	                } else {
-	                    str = str + " <option value =\"" + key + "\">" + data[key] + "</option>";
-	                }
+	            	
+	            	if (ischecked) {
+	            		 if ("枚举" == data[key]) {
+		 	                    str = str + " <option selected=\"selected\" value =\"" + key + "\">" + data[key] + "</option>";
+		 	                } else {
+		 	                    str = str + " <option value =\"" + key + "\">" + data[key] + "</option>";
+		 	                }
+	            	} else {
+	            		 if (dataType == data[key]) {
+	 	                    str = str + " <option selected=\"selected\" value =\"" + key + "\">" + data[key] + "</option>";
+	 	                } else {
+	 	                    str = str + " <option value =\"" + key + "\">" + data[key] + "</option>";
+	 	                }
+	            	}
+	            	
+	               
 	            }
 	            
 	            $form1.find("#dataType").append(str);
@@ -704,11 +726,20 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
 	            var dataType = $form1.find("#edit_dataType").val();
 	            var str = "";
 	            for (var key in data) {
-	                if (dataType == data[key]) {
-	                    str = str + " <option selected=\"selected\" value =\"" + key + "\">" + data[key] + "</option>";
-	                } else {
-	                    str = str + " <option value =\"" + key + "\">" + data[key] + "</option>";
-	                }
+	            	
+	            	if (ischecked) {
+	            		 if ("枚举" == data[key]) {
+	 	                    str = str + " <option selected=\"selected\" value =\"" + key + "\">" + data[key] + "</option>";
+	 	                } else {
+	 	                    str = str + " <option value =\"" + key + "\">" + data[key] + "</option>";
+	 	                }
+	            	} else {
+	            		 if (dataType == data[key]) {
+	 	                    str = str + " <option selected=\"selected\" value =\"" + key + "\">" + data[key] + "</option>";
+	 	                } else {
+	 	                    str = str + " <option value =\"" + key + "\">" + data[key] + "</option>";
+	 	                }
+	            	}
 	            }
 	           
 	            $form1.find("#dataType").append(str);
