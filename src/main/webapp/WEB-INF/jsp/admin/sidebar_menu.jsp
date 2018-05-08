@@ -2,7 +2,7 @@
  <li>
     <a href="#" class="menu-dropdown">
         <i class="menu-icon fa fa-bookmark"></i>
-        <span class="menu-text">元数据管理</span>
+        <span class="menu-text">数据模型</span>
         <i></i>
     </a>
     <ul class="submenu">

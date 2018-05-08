@@ -91,8 +91,13 @@ public class BasicItemDaoImpl implements BasicItemDao {
 	public void saveOrUpdate(BasicItem obj) {
 		//生成code 规则：实体code TE0001 开始  其他code规则 T00001开始
 		
+		String dataType = obj.getDataType();
 		
-		
+		if ("记录类型".equals(dataType)) {
+			obj.setCode(getEntityCode());
+		} else {
+			obj.setCode(getAttrCode());
+		}
 		sFactory.getCurrentSession().saveOrUpdate(obj);
 	}
 	
@@ -105,19 +110,32 @@ public class BasicItemDaoImpl implements BasicItemDao {
 			return "TE0001";
 		}
 		
+		String entityCode = list.get(0).getCode();
+		String codeStr = entityCode.substring(2);
+		int code = Integer.parseInt(codeStr) + 1;
+		String entityHead = "TE";
+        String format = String.format("%04d", code);  
 		
-		
-		return null;
+		return entityHead+format;
 	}
 	
 	//其他code， 生成规则
 	private String getAttrCode() {
+		String sql = "from BasicItem WHERE dataType!=:dataType ORDER BY code DESC";
+		List<BasicItem> list = sFactory.getCurrentSession().createQuery(sql).setParameter("dataType", "记录类型").list();
+
+		if (list.isEmpty()) {
+			return "T00001";
+		}
 		
-		
-		return null;
+		String entityCode = list.get(0).getCode();
+		String codeStr = entityCode.substring(2);
+		int code = Integer.parseInt(codeStr) + 1;
+		String entityHead = "T";
+        String format = String.format("%05d", code);  
+		return entityHead+format;
 	}
 	
-
 	@Override
 	public List queryCreTab() {
 		getDataBaseName();

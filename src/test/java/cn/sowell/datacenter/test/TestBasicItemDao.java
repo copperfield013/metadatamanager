@@ -32,18 +32,13 @@ public class TestBasicItemDao {
 	@Test
 	@Transactional
 	public void fun() {
-		System.out.println("sdf");
-	//	basicItemService.createTabCol();
 		
-		
-		NodeType nodeType = NodeType.getNodeType(1);
-		
-		
-		System.out.println(nodeType.getName());
-		
-		System.out.println();
-		
-		
+		String entityCode = "TE10000";
+		String codeStr = entityCode.substring(2);
+		int code = Integer.parseInt(codeStr) + 1;
+		String m = "TE";
+        String format = String.format("%04d", code);  
+        System.out.println(m+format);
 		
 	}
 	

@@ -5,7 +5,7 @@
 	<head>
 		<base href="${basePath }" />
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-		<title>登录易+元数据管理</title>
+		<title>登录易+数据模型</title>
 		<meta http-equiv=X-UA-Compatible content="IE=edge,chrome=1">
 		<script type="text/javascript">
 			if(window.ADMIN_LOADED === true){
