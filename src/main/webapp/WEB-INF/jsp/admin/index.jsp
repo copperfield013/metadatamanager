@@ -3,7 +3,7 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title> 易+数据模型</title>
+		<title>数据建模工具</title>
 		<link rel="icon" href="favicon.ico" type="image/x-icon" />
 		<link rel="shortcut icon" href="favicon.ico" type="image/x-icon"/>
 		<jsp:include page="/WEB-INF/jsp/admin/common/admin-include.jsp"></jsp:include>
@@ -24,7 +24,7 @@
 	        <div class="navbar-inner">
 	             <div class="navbar-header pull-left">
 	                 <a href="admin/logout" class="datacenter-logo">	                   
-	                                                                        易+数据模型
+	                                                                        数据建模工具
 	                 </a>
 	             </div>
 	             <div class="sidebar-collapse" id="sidebar-collapse">

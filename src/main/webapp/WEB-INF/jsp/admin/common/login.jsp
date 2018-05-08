@@ -5,7 +5,7 @@
 	<head>
 		<base href="${basePath }" />
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-		<title>登录易+数据模型</title>
+		<title>登录数据建模工具</title>
 		<meta http-equiv=X-UA-Compatible content="IE=edge,chrome=1">
 		<script type="text/javascript">
 			if(window.ADMIN_LOADED === true){
@@ -123,10 +123,12 @@
 		<form action="admin/doLogin" method="post">
     		<div class="Z-login-container">
     			<div class="Z-loginbox">
-    	    		
+    	    		<!-- 
         			<div class="loginbox-logo">
             			<img src="media/admin/main/image/datacenter-login.png"/>
         			</div>
+        			 -->
+        			<h1>数据建模工具</h1> 
         			<div class="warn-warp">
 	        			<c:if test="${error != null }">
 		        			<p class="login-warn">
