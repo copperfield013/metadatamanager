@@ -1,9 +1,11 @@
 seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
     //创建表
    $("#createTab").click(function() {
-    	//if (Dialog.confirm("点击是， 则生成数据库表，字段")) {
-    		 Ajax.ajax('admin/dictionary/basicItem/createTab', '', function(data) {});
-    	//}
+    	Dialog.confirm("点击是， 则生成数据库表，字段", function(isYes) {
+    		if (isYes) {
+    			 Ajax.ajax('admin/dictionary/basicItem/createTab', '', function(data) {});
+    		}
+    	});
     });
     //点击 添加实体 显示div
     $("#add_entity").click(function() {
