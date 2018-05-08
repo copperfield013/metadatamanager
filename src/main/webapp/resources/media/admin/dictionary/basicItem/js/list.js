@@ -58,9 +58,9 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
     
   //选中数据类型为  枚举   触发事件
     $(".more_proper").on("change", ".enum_daType_two", function() {
-    	var options=$(".enum_daType_two option:selected");  //获取选中的项
-    	var $form = $(this).parent().parent();
-    	
+    	var options=$(this).find("option:selected");
+    	//var $form = $(".more_proper").find("#more_child_opera_form1");
+    	var $form  = $(this).parent().parent();
     	if ("枚举" == options.val()) {
     		 //如果是枚举， 则显示下拉列表
 	    	$CPF.showLoading();
@@ -872,7 +872,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
                 str = str + "<div class=\"entity_attr entity_attr_img add_more_child\">" +
 							    "<img alt=\"添加多值属性\" src=\"media/admin/dictionary/basicItem/addEntity_icon.png\">" +
 							"</div></div>"
-                str = str + "<div class=\"opera_more_child\"><img class=\"opera_entity_img\" src=\"media/admin/dictionary/basicItem/opera_entity_icon.png\"><span id=\"add_more_child_mes\"></span><form groupName=\"" + moreArr[i].cnName + "\" groupId=\"" + moreArr[i].code + "\" id=\"more_child_opera_form1\" class=\"opera_entity_form\"><input type=\"hidden\" id=\"groupName\" name=\"groupName\" value=\"\"><input type=\"hidden\" id=\"comm_parent\" name=\"parent\" value=\"\"><input type=\"hidden\" id=\"edit_dataType\" value=\"\"><input type=\"hidden\" id=\"edit_dictParentId\" value=\"\"><div><span class=\"opera_entity_label\">code</span><input type=\"text\" name=\"code\" id=\"code\"/></div><div><span class=\"opera_entity_label\">中文名称</span><input type=\"text\" name=\"cnName\" id=\"cnName\"/></div><div><span class=\"opera_entity_label\">英文名称</span><input type=\"text\" name=\"enName\" id=\"enName\"/></div><div><span class=\"opera_entity_label\" id=\"cn_dataType\">数据类型</span><select id=\"dataType\" name=\"dataType\" class=\"enum_daType_two\"></select></div><div><span class=\"opera_entity_label\" id=\"cn_dataRange\">数据长度</span><input type=\"text\" name=\"dataRange\" id=\"dataRange\" /></div></form><div class=\"opera_entity_btn\"><span class=\"entity-btn-cancel\" id=\"more_child_but_cancel\">取消</span><span class=\"entity-btn-confirm\" id=\"more_child_but_confirm\">确认</span></div></div>";                
+                str = str + "<div class=\"opera_more_child\"><img class=\"opera_entity_img\" src=\"media/admin/dictionary/basicItem/opera_entity_icon.png\"><span id=\"add_more_child_mes\"></span><form groupName=\"" + moreArr[i].cnName + "\" groupId=\"" + moreArr[i].code + "\" id=\"more_child_opera_form1\" class=\"opera_entity_form\"><input type=\"hidden\" id=\"groupName\" name=\"groupName\" value=\"\"><input type=\"hidden\" id=\"comm_parent\" name=\"parent\" value=\"\"><input type=\"hidden\" id=\"edit_dataType\" value=\"\"><input type=\"hidden\" id=\"edit_dictParentId\" value=\"\"><div><span class=\"opera_entity_label\">code</span><input type=\"text\" name=\"code\" id=\"code\"/></div><div><span class=\"opera_entity_label\">中文名称</span><input type=\"text\" name=\"cnName\" id=\"cnName\"/></div><div><span class=\"opera_entity_label\">英文名称</span><input type=\"text\" name=\"enName\" id=\"enName\"/></div><div><span class=\"opera_entity_label\" id=\"cn_dataType\">数据类型</span><select id=\"dataType\" class=\"enum_daType_two\" name=\"dataType\"></select></div><div><span class=\"opera_entity_label\" id=\"cn_dataRange\">数据长度</span><input type=\"text\" name=\"dataRange\" id=\"dataRange\" /></div></form><div class=\"opera_entity_btn\"><span class=\"entity-btn-cancel\" id=\"more_child_but_cancel\">取消</span><span class=\"entity-btn-confirm\" id=\"more_child_but_confirm\">确认</span></div></div>";                
                 //这里是显示二级信息以及二级的孩子数据 start
                 str = str + "<div class=\"entity_list twoLevelAttr_child clear-fix\"><div class=\"new_add_title\"><span id=\"twoLevelAttr_name\"></span><img twoLevelId=\"\" id=\"edit_twoLevelAttr\" src=\"media/admin/dictionary/basicItem/images/edit_ch.png\"></div><div class=\"clear-fix\"></div></div>";
                 //end
