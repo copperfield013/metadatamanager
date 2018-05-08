@@ -23,20 +23,96 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
     	$opera.find("#add_more_mes").html("添加多值属性信息");
         $opera.show();
     });
+    
+    //选中数据类型为  枚举   触发事件
+    $(".common_proper").on("change", ".enum_dataType_one", function() {
+    	var options=$(".enum_dataType_one option:selected");  //获取选中的项
+    	var $form = $(".opera_comm").find("#comm_opera_form1");
+    	if ("枚举" == options.val()) {
+    		 //如果是枚举， 则显示下拉列表
+	    	$CPF.showLoading();
+	        $form.find("#dictParentId").remove();
+	        $form.find("#span_enum").remove();        
+            //选中  则显示下拉列表       
+            Ajax.ajax('admin/dictionary/dictParentItem/getDictPitem', '', function(data) {
+                var dataArr = data.dictPitem;
+                var str = "<span id=\"span_enum\">字典序：</span><select id=\"dictParentId\" name=\"dictParentId\">";
+                for (var p in dataArr) { //遍历json数组时，这么写p为索引，0,1
+                    str = str + "<option value=\"" + dataArr[p].id + "\">" + dataArr[p].name + "</option>"; 
+                }
+                str = str + "</select>";
+                $form.find("#dataType").after(str);
+                $form.find("#dataRange").val("枚举").hide();
+                $form.find("#cn_dataRange").hide();
+                $CPF.closeLoading();
+            });            
+    	} else {
+	        $form.find("#dataRange").show();
+	        $form.find("#dataRange").val("");
+	        $form.find("#cn_dataRange").show();
+	        $form.find("#dictParentId").remove();
+	        $form.find("#span_enum").remove();    
+	        $CPF.closeLoading();
+        }
+    });
+    
+  //选中数据类型为  枚举   触发事件
+    $(".more_proper").on("change", ".enum_daType_two", function() {
+    	var options=$(".enum_daType_two option:selected");  //获取选中的项
+    	var $form = $(this).parent().parent();
+    	
+    	if ("枚举" == options.val()) {
+    		 //如果是枚举， 则显示下拉列表
+	    	$CPF.showLoading();
+	        $form.find("#dictParentId").remove();
+	        $form.find("#span_enum").remove();        
+            //选中  则显示下拉列表       
+            Ajax.ajax('admin/dictionary/dictParentItem/getDictPitem', '', function(data) {
+                var dataArr = data.dictPitem;
+                var str = "<span id=\"span_enum\">字典序：</span><select id=\"dictParentId\" name=\"dictParentId\">";
+                for (var p in dataArr) { //遍历json数组时，这么写p为索引，0,1
+                    str = str + "<option value=\"" + dataArr[p].id + "\">" + dataArr[p].name + "</option>"; 
+                }
+                str = str + "</select>";
+                $form.find("#dataType").after(str);
+                $form.find("#dataRange").val("枚举").hide();
+                $form.find("#cn_dataRange").hide();
+                $CPF.closeLoading();
+            });           
+    	} else {
+	        $form.find("#dataRange").show();
+	        $form.find("#dataRange").val("");
+	        $form.find("#cn_dataRange").show();
+	        $form.find("#dictParentId").remove();
+	        $form.find("#span_enum").remove();    
+	        $CPF.closeLoading();
+        }
+    });
+    
+    
     //点击 添加普通属性加号 显示div
     $(".common_proper").on("click", ".add_comm", function() {
     	var $this = $(this);
     	var $newAdd = $this.closest(".new_add");
-    	var $select = $newAdd.find(".opera_comm").find("#comm_opera_form1").find("#dataType");
+    	var $form = $newAdd.find(".opera_comm").find("#comm_opera_form1");
+    	var $select =  $form.find("#dataType");
     	$this.siblings('.entity_attr').removeClass('pitch');
         $select.html("");
         Ajax.ajax('admin/dictionary/basicItem/getDataType', '', function(data) {
             var str = "";
             for (var key in data) {
                 str = str + " <option value =\"" + key + "\">" + data[key] + "</option>";
-            }           
+            }    
+            
             $select.append(str);
         });
+        
+        $form.find("#dataRange").show();
+        $form.find("#dataRange").val("");
+        $form.find("#cn_dataRange").show();
+        $form.find("#dictParentId").remove();
+        $form.find("#span_enum").remove();
+        
         $newAdd.find("#code").attr("readonly", false);
         $newAdd.find("#add_comm_mes").html("");
         $newAdd.find("#add_comm_mes").html("添加属性");
@@ -48,7 +124,8 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
     	var $this = $(this);
     	var $newAdd = $this.closest('.new_add');
     	$this.siblings('.entity_attr').removeClass('pitch');
-        $newAdd.find(".opera_more_child").find("#more_child_opera_form1").find("#dataType").html("");
+    	var  $form = $newAdd.find(".opera_more_child").find("#more_child_opera_form1");
+    	$form.find("#dataType").html("");
         Ajax.ajax('admin/dictionary/basicItem/getDataType', '', function(data) {
             var str = "";
             for (var key in data) {
@@ -61,6 +138,12 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
         $newAdd.find("#add_more_child_mes").html("添加多值属性");
         $newAdd.find(".opera_more_child").find('input').val("");
         $newAdd.find(".opera_more_child").show();
+        
+        $form.find("#dataRange").show();
+        $form.find("#dataRange").val("");
+        $form.find("#cn_dataRange").show();
+        $form.find("#dictParentId").remove();
+        $form.find("#span_enum").remove(); 
     });
     //点击确认， 添加一条二级属性
     $(".more_proper").on("click", "#twoLevelAttr_but_confirm", function() {
@@ -481,91 +564,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
     $(".entity_relation").on("click", ".entity_relation_li", function() {
         $(this).find("ul").toggle();
     });
-    /* $li.mouseout(function(){
-		$(this).find("ul").hide();
-	}); */
-    //如果是枚举， 则显示下拉列表
-    $(".common_proper").on("click", "#is_enum", function() {
-    	$CPF.showLoading();
-        var $form = $(".opera_comm").find("#comm_opera_form1");
-        $form.find("#dictParentId").remove();
-        $form.find("#span_enum").remove();        
-        if ($(this).is(':checked')) {
-            //选中  则显示下拉列表       
-            Ajax.ajax('admin/dictionary/dictParentItem/getDictPitem', '', function(data) {
-                var dataArr = data.dictPitem;
-                var str = "<span id=\"span_enum\">字典序：</span><select id=\"dictParentId\" name=\"dictParentId\">";
-                for (var p in dataArr) { //遍历json数组时，这么写p为索引，0,1
-                    str = str + "<option value=\"" + dataArr[p].id + "\">" + dataArr[p].name + "</option>"; 
-                }
-                str = str + "</select>";
-                $form.find("#dataType").after(str);
-                $form.find("#dataType").val("char").hide();
-                $form.find("#dataRange").val("枚举").hide();
-                $form.find("#cn_dataType").hide();
-                $form.find("#cn_dataRange").hide();
-                $CPF.closeLoading();
-            });            
-        } else {
-        	Ajax.ajax('admin/dictionary/basicItem/getDataType', '', function(data) {
-        		var str = "";
-	            for (var key in data) {
-	                if (dataType == data[key]) {
-	                    str = str + " <option selected=\"selected\" value =\"" + key + "\">" + data[key] + "</option>";
-	                } else {
-	                    str = str + " <option value =\"" + key + "\">" + data[key] + "</option>";
-	                }
-	            }
-                $form.find("#dataType").html(str);
-                $form.find("#dataType").show();
-                $form.find("#dataRange").show();
-                $form.find("#cn_dataType").show();                
-                $form.find("#cn_dataRange").show();
-                $CPF.closeLoading();
-            });            
-        }
-    });
-    //如果是枚举， 则显示下拉列表  多值属性
-    $(".more_proper").on("click", "#is_enum_more_child", function() {
-    	$CPF.showLoading();
-        var $form = $(this).closest(".opera_more_child").find("#more_child_opera_form1");
-        $form.find("#dictParentId").remove();
-        $form.find("#span_enum").remove();
-        if ($(this).is(':checked')) {
-            //选中  则显示下拉列表
-            Ajax.ajax('admin/dictionary/dictParentItem/getDictPitem', '', function(data) {
-                var dataArr = data.dictPitem;
-                var str = "<span id=\"span_enum\">字典序：</span><select id=\"dictParentId\" name=\"dictParentId\">";
-                for (var p in dataArr) { //遍历json数组时，这么写p为索引，0,1
-                    str = str + "<option value=\"" + dataArr[p].id + "\">" + dataArr[p].name + "</option>"; 
-                }
-                str = str + "</select>";
-                $form.find("#dataType").after(str);
-                $form.find("#dataType").val("char").hide();
-                $form.find("#dataRange").val("枚举").hide();
-                $form.find("#cn_dataType").hide();
-                $form.find("#cn_dataRange").hide();
-                $CPF.closeLoading();
-            });            
-        } else {
-        	Ajax.ajax('admin/dictionary/basicItem/getDataType', '', function(data) {
-        		var str = "";
-	            for (var key in data) {
-	                if (dataType == data[key]) {
-	                    str = str + " <option selected=\"selected\" value =\"" + key + "\">" + data[key] + "</option>";
-	                } else {
-	                    str = str + " <option value =\"" + key + "\">" + data[key] + "</option>";
-	                }
-	            }
-                $form.find("#dataType").html(str);
-                $form.find("#dataType").show();
-                $form.find("#dataRange").show();
-                $form.find("#cn_dataType").show();                
-                $form.find("#cn_dataRange").show();
-                $CPF.closeLoading();
-            });              
-        }
-    });
+  
     //编辑实体获取 id    
     $(".edit_entity").click(function() {
         var entityId = $(this).parent().parent().attr("entityId");
@@ -605,7 +604,6 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
             $form1.find("#edit_dictParentId").val(jsonData.dictParentId);
             $form1.find("#dataType").html("");
             if(ischecked) {
-            	$newAdd.find("#is_enum").prop('checked', true);    			
     			Ajax.ajax('admin/dictionary/dictParentItem/getDictPitem', '', function(data) {
     	            var dataArr = data.dictPitem;    	            
     	            var dictParentId = $form1.find("#edit_dictParentId").val();
@@ -621,34 +619,32 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
     	                str = str + "</select>";
     	                $form1.find("#span_enum").remove();
     	                $form1.find("#dictParentId").remove();
-    	                $form1.find("#dataType").hide();
     	                $form1.find("#dataRange").hide();
-    	                $form1.find("#cn_dataType").hide();
     	                $form1.find("#cn_dataRange").hide();
     	                $form1.find("#dataType").after(str);
     	            }
     	        });   	
             }else {
-            	$newAdd.find("#is_enum").prop('checked', false); 
-    			Ajax.ajax('admin/dictionary/basicItem/getDataType', '', function(data) {    	            
-    	            var dataType = $form1.find("#edit_dataType").val();
-    	            var str = "";
-    	            for (var key in data) {
-    	                if (dataType == data[key]) {
-    	                    str = str + " <option selected=\"selected\" value =\"" + key + "\">" + data[key] + "</option>";
-    	                } else {
-    	                    str = str + " <option value =\"" + key + "\">" + data[key] + "</option>";
-    	                }
-    	            }
-    	            $form1.find("#span_enum").remove();
-	                $form1.find("#dictParentId").remove();
-    	            $form1.find("#dataType").show();
-    	            $form1.find("#dataRange").show();
-    	            $form1.find("#cn_dataType").show();
-    	            $form1.find("#cn_dataRange").show();
-    	            $form1.find("#dataType").append(str);
-    	        }); 	
+            	 $form1.find("#span_enum").remove();
+                 $form1.find("#dictParentId").remove();	
+                 $form1.find("#dataRange").show();
+                 $form1.find("#cn_dataRange").show();
             }
+            
+            Ajax.ajax('admin/dictionary/basicItem/getDataType', '', function(data) {    	            
+	            var dataType = $form1.find("#edit_dataType").val();
+	            var str = "";
+	            for (var key in data) {
+	                if (dataType == data[key]) {
+	                    str = str + " <option selected=\"selected\" value =\"" + key + "\">" + data[key] + "</option>";
+	                } else {
+	                    str = str + " <option value =\"" + key + "\">" + data[key] + "</option>";
+	                }
+	            }
+	            
+	            $form1.find("#dataType").append(str);
+	        });
+            
             $newAdd.find("#add_comm_mes").html("");
             $newAdd.find("#add_comm_mes").html("编辑属性");        
             $newAdd.find(".opera_comm").show();
@@ -677,7 +673,6 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
             $form1.find("#edit_dictParentId").val(jsonData.dictParentId);
             $form1.find("#dataType").html("");  
     		if(ischecked) {
-    			$this.closest('.new_add').find("#is_enum_more_child").prop('checked', true);    			
     			Ajax.ajax('admin/dictionary/dictParentItem/getDictPitem', '', function(data) {
     	            var dataArr = data.dictPitem;    	            
     	            var dictParentId = $form1.find("#edit_dictParentId").val();
@@ -691,9 +686,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
     	                    }
     	                }
     	                str = str + "</select>";
-    	                $form1.find("#dataType").hide();
     	                $form1.find("#dataRange").hide();
-    	                $form1.find("#cn_dataType").hide();
     	                $form1.find("#cn_dataRange").hide();  
     	                $form1.find("#span_enum").remove();
     	                $form1.find("#dictParentId").remove();
@@ -701,26 +694,26 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
     	            }
     	        });   	
     		}else {
-    			$this.closest('.new_add').find("#is_enum_more_child").prop('checked', false); 
-    			Ajax.ajax('admin/dictionary/basicItem/getDataType', '', function(data) {    	           
-    	            var dataType = $form1.find("#edit_dataType").val();
-    	            var str = "";
-    	            for (var key in data) {
-    	                if (dataType == data[key]) {
-    	                    str = str + " <option selected=\"selected\" value =\"" + key + "\">" + data[key] + "</option>";
-    	                } else {
-    	                    str = str + " <option value =\"" + key + "\">" + data[key] + "</option>";
-    	                }
-    	            }
-    	            $form1.find("#dataType").show();
-    	            $form1.find("#dataRange").show();
-    	            $form1.find("#cn_dataType").show();
-    	            $form1.find("#cn_dataRange").show();
-    	            $form1.find("#span_enum").remove();
-	                $form1.find("#dictParentId").remove();
-    	            $form1.find("#dataType").append(str);
-    	        }); 	
-    		}                                    
+    			 $form1.find("#span_enum").remove();
+                 $form1.find("#dictParentId").remove();
+                 $form1.find("#dataRange").show();
+ 	            $form1.find("#cn_dataRange").show();
+    		}   
+    		
+    		Ajax.ajax('admin/dictionary/basicItem/getDataType', '', function(data) {    	           
+	            var dataType = $form1.find("#edit_dataType").val();
+	            var str = "";
+	            for (var key in data) {
+	                if (dataType == data[key]) {
+	                    str = str + " <option selected=\"selected\" value =\"" + key + "\">" + data[key] + "</option>";
+	                } else {
+	                    str = str + " <option value =\"" + key + "\">" + data[key] + "</option>";
+	                }
+	            }
+	           
+	            $form1.find("#dataType").append(str);
+	        }); 	
+    		
             $("#add_more_child_mes").html("");
             $("#add_more_child_mes").html("编辑属性");
             $this.closest('.new_add').find(".opera_more_child").show();
@@ -852,7 +845,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
                 str = str + "<div class=\"entity_attr entity_attr_img add_comm\">" +
 							    "<img alt=\"添加普通属性\" src=\"media/admin/dictionary/basicItem/addEntity_icon.png\">" +
 							"</div></div>"	
-				str = str + "<div class=\"opera_comm\"><img class=\"opera_entity_img\" src=\"media/admin/dictionary/basicItem/opera_entity_icon.png\"><span id=\"add_comm_mes\"></span><div class=\"enum-wrap\"><input id=\"is_enum\" class=\"checkbox-slider slider-icon colored-blue\" type=\"checkbox\"><label class=\"text\">是否枚举</label></div><form groupName="+commonArr[i].cnName+"  groupId="+commonArr[i].code+"   id=\"comm_opera_form1\" class=\"opera_entity_form\"><input type=\"hidden\" id=\"groupName\" name=\"groupName\" value=\"\"><input type=\"hidden\" id=\"comm_parent\" name=\"parent\" value=\"\"><input type=\"hidden\" id=\"edit_dataType\" value=\"\"><input type=\"hidden\" id=\"edit_dictParentId\" value=\"\"><div><span class=\"opera_entity_label\">code</span><input type=\"text\" name=\"code\" id=\"code\" /></div><div><span class=\"opera_entity_label\">中文名称</span><input type=\"text\" name=\"cnName\" id=\"cnName\" /></div><div><span class=\"opera_entity_label\">英文名称</span><input type=\"text\" name=\"enName\" id=\"enName\" /></div><div><span class=\"opera_entity_label\" id=\"cn_dataType\">数据类型</span><select id=\"dataType\" name=\"dataType\"><option value=\"\">--请选择--</option></select></div><div><span class=\"opera_entity_label\" id=\"cn_dataRange\">数据长度</span><input type=\"text\" name=\"dataRange\" id=\"dataRange\" /></div></form><div class=\"opera_entity_btn\"><span class=\"entity-btn-cancel\" id=\"comm_but_cancel\">取消</span><span class=\"entity-btn-confirm\" id=\"comm_but_confirm\">确认</span></div></div>";
+				str = str + "<div class=\"opera_comm\"><img class=\"opera_entity_img\" src=\"media/admin/dictionary/basicItem/opera_entity_icon.png\"><span id=\"add_comm_mes\"></span><form groupName="+commonArr[i].cnName+"  groupId="+commonArr[i].code+"   id=\"comm_opera_form1\" class=\"opera_entity_form\"><input type=\"hidden\" id=\"groupName\" name=\"groupName\" value=\"\"><input type=\"hidden\" id=\"comm_parent\" name=\"parent\" value=\"\"><input type=\"hidden\" id=\"edit_dataType\" value=\"\"><input type=\"hidden\" id=\"edit_dictParentId\" value=\"\"><div><span class=\"opera_entity_label\">code</span><input type=\"text\" name=\"code\" id=\"code\" /></div><div><span class=\"opera_entity_label\">中文名称</span><input type=\"text\" name=\"cnName\" id=\"cnName\" /></div><div><span class=\"opera_entity_label\">英文名称</span><input type=\"text\" name=\"enName\" id=\"enName\" /></div><div><span class=\"opera_entity_label\" id=\"cn_dataType\">数据类型</span><select id=\"dataType\" class=\"enum_dataType_one\" name=\"dataType\"></select></div><div><span class=\"opera_entity_label\" id=\"cn_dataRange\">数据长度</span><input type=\"text\" name=\"dataRange\" id=\"dataRange\" /></div></form><div class=\"opera_entity_btn\"><span class=\"entity-btn-cancel\" id=\"comm_but_cancel\">取消</span><span class=\"entity-btn-confirm\" id=\"comm_but_confirm\">确认</span></div></div>";
                 str = str + "<div class=\"opera_group\"><img class=\"opera_entity_img\" src=\"media/admin/dictionary/basicItem/opera_entity_icon.png\"><span class=\"opera_entity_img\" id=\"add_group_mes\"></span><form id=\"group_opera_form1\" class=\"opera_entity_form\"><div><span class=\"opera_entity_label\">code</span><input type=\"text\" name=\"code\" id=\"code\" /></div><input type=\"hidden\" id=\"group_parent\" name=\"parent\" value=\"\"><input type=\"hidden\" name=\"dataType\" value=\"group\"><div><span class=\"opera_entity_label\">中文名称</span><input type=\"text\" name=\"cnName\" id=\"cnName\" /></div></form><div class=\"opera_entity_btn\"><span class=\"entity-btn-cancel\" id=\"group_but_cancel\">取消</span><span class=\"entity-btn-confirm\" id=\"group_but_confirm\">确认</span></div></div>";
                 str = str + "</div>";                
                 $(".common_proper").append(str);
@@ -879,7 +872,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
                 str = str + "<div class=\"entity_attr entity_attr_img add_more_child\">" +
 							    "<img alt=\"添加多值属性\" src=\"media/admin/dictionary/basicItem/addEntity_icon.png\">" +
 							"</div></div>"
-                str = str + "<div class=\"opera_more_child\"><img class=\"opera_entity_img\" src=\"media/admin/dictionary/basicItem/opera_entity_icon.png\"><span id=\"add_more_child_mes\"></span><div class=\"enum-wrap\"><input id=\"is_enum_more_child\" class=\"checkbox-slider slider-icon colored-blue\" type=\"checkbox\"><label class=\"text\">是否枚举</label></div><form groupName=\"" + moreArr[i].cnName + "\" groupId=\"" + moreArr[i].code + "\" id=\"more_child_opera_form1\" class=\"opera_entity_form\"><input type=\"hidden\" id=\"groupName\" name=\"groupName\" value=\"\"><input type=\"hidden\" id=\"comm_parent\" name=\"parent\" value=\"\"><input type=\"hidden\" id=\"edit_dataType\" value=\"\"><input type=\"hidden\" id=\"edit_dictParentId\" value=\"\"><div><span class=\"opera_entity_label\">code</span><input type=\"text\" name=\"code\" id=\"code\"/></div><div><span class=\"opera_entity_label\">中文名称</span><input type=\"text\" name=\"cnName\" id=\"cnName\"/></div><div><span class=\"opera_entity_label\">英文名称</span><input type=\"text\" name=\"enName\" id=\"enName\"/></div><div><span class=\"opera_entity_label\" id=\"cn_dataType\">数据类型</span><select id=\"dataType\" name=\"dataType\"><option value=\"\">--请选择--</option></select></div><div><span class=\"opera_entity_label\" id=\"cn_dataRange\">数据长度</span><input type=\"text\" name=\"dataRange\" id=\"dataRange\" /></div></form><div class=\"opera_entity_btn\"><span class=\"entity-btn-cancel\" id=\"more_child_but_cancel\">取消</span><span class=\"entity-btn-confirm\" id=\"more_child_but_confirm\">确认</span></div></div>";                
+                str = str + "<div class=\"opera_more_child\"><img class=\"opera_entity_img\" src=\"media/admin/dictionary/basicItem/opera_entity_icon.png\"><span id=\"add_more_child_mes\"></span><form groupName=\"" + moreArr[i].cnName + "\" groupId=\"" + moreArr[i].code + "\" id=\"more_child_opera_form1\" class=\"opera_entity_form\"><input type=\"hidden\" id=\"groupName\" name=\"groupName\" value=\"\"><input type=\"hidden\" id=\"comm_parent\" name=\"parent\" value=\"\"><input type=\"hidden\" id=\"edit_dataType\" value=\"\"><input type=\"hidden\" id=\"edit_dictParentId\" value=\"\"><div><span class=\"opera_entity_label\">code</span><input type=\"text\" name=\"code\" id=\"code\"/></div><div><span class=\"opera_entity_label\">中文名称</span><input type=\"text\" name=\"cnName\" id=\"cnName\"/></div><div><span class=\"opera_entity_label\">英文名称</span><input type=\"text\" name=\"enName\" id=\"enName\"/></div><div><span class=\"opera_entity_label\" id=\"cn_dataType\">数据类型</span><select id=\"dataType\" name=\"dataType\" class=\"enum_daType_two\"></select></div><div><span class=\"opera_entity_label\" id=\"cn_dataRange\">数据长度</span><input type=\"text\" name=\"dataRange\" id=\"dataRange\" /></div></form><div class=\"opera_entity_btn\"><span class=\"entity-btn-cancel\" id=\"more_child_but_cancel\">取消</span><span class=\"entity-btn-confirm\" id=\"more_child_but_confirm\">确认</span></div></div>";                
                 //这里是显示二级信息以及二级的孩子数据 start
                 str = str + "<div class=\"entity_list twoLevelAttr_child clear-fix\"><div class=\"new_add_title\"><span id=\"twoLevelAttr_name\"></span><img twoLevelId=\"\" id=\"edit_twoLevelAttr\" src=\"media/admin/dictionary/basicItem/images/edit_ch.png\"></div><div class=\"clear-fix\"></div></div>";
                 //end

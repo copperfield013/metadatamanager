@@ -121,10 +121,8 @@ public class BasicItemController {
 				dataType = "重复类型";
 			}else if ("group".equals(dType)) {
 				dataType = "分组类型";
-			}
-			
-			if ("枚举".equals(basicItem.getDataRange())) {
-				dataType = "字符型";
+			} else if ("枚举".equals(dType)) {
+				dataType = "枚举";
 			}
 			basicItem.setDataType(dataType);
 			//记录类型

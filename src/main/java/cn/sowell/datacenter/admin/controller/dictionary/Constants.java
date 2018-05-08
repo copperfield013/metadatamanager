@@ -18,6 +18,7 @@ public interface Constants {
 			put("record", "记录类型");
 			put("repeat", "重复类型");
 			put("group", "分组类型");
+			put("枚举", "枚举");
 		}
 	};
 	
