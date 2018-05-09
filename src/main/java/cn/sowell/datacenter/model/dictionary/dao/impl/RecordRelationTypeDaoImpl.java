@@ -73,4 +73,19 @@ public class RecordRelationTypeDaoImpl implements RecordRelationTypeDao {
 		return list;
 	}
 
+	@Override
+	public String getRecordRelaCode(String entityCode) {
+		String sql = "SELECT SUBSTR(type_code, locate('R',type_code)+1) aa from t_c_record_relation_type WHERE type_code like '%R%' ORDER BY  CAST(aa as SIGNED ) DESC";
+		List list = sFactory.getCurrentSession().createSQLQuery(sql).list();
+		if (list.isEmpty()) {
+			return entityCode+ "R001";
+		}
+		
+		String relaCode = (String) list.get(0);
+		int code = Integer.parseInt(relaCode) + 1;
+        String format = String.format("%03d", code);  
+		
+		return entityCode+"R"+format;
+	}
+
 }

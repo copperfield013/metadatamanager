@@ -47,4 +47,9 @@ public interface RecordRelationTypeDao {
 	 * @param pojo
 	 */
 	void delete(Object pojo);
+	
+	/**
+	 * 生成关系code的规则
+	 */
+	String getRecordRelaCode(String entityCode);
 }

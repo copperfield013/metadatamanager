@@ -53,25 +53,25 @@ public class RecordRelationTypeController {
 	
 	@ResponseBody
 	@RequestMapping("/doAdd")
-	public void doAdd(RecordRelationType recordRelationType, String leftName, String rightName, String symmetry){
-		RecordRelationType rightRrecordType = new RecordRelationType();
+	public void doAdd(String leftRecordType,String rightRecordType, String leftName, String rightName, String symmetry){
+		RecordRelationType rightObj = new RecordRelationType();
+		RecordRelationType leftObj = new RecordRelationType();
+		
+		leftObj.setName(leftName);
+		leftObj.setLeftRecordType(leftRecordType);
 		
 		if ("symmetry".equals(symmetry)) {//添加对称关系
-			recordRelationType.setName(leftName);
-			recordRelationType.setReverseCode(recordRelationType.getTypeCode());
-			recordRelationType.setRightRecordType(recordRelationType.getLeftRecordType());
+			leftObj.setRightRecordType(leftRecordType);
 		} else {
-			//生成左关系
-			recordRelationType.setName(leftName);
+			leftObj.setRightRecordType(rightRecordType);
+			
 			//生成右关系
-			rightRrecordType.setName(rightName);
-			rightRrecordType.setTypeCode(recordRelationType.getReverseCode());
-			rightRrecordType.setReverseCode(recordRelationType.getTypeCode());
-			rightRrecordType.setLeftRecordType(recordRelationType.getRightRecordType());
-			rightRrecordType.setRightRecordType(recordRelationType.getLeftRecordType());
+			rightObj.setName(rightName);
+			rightObj.setLeftRecordType(rightRecordType);
+			rightObj.setRightRecordType(leftRecordType);
 		}
 		
-		recordRelationTypeService.saveRelation(recordRelationType, rightRrecordType, symmetry);
+		recordRelationTypeService.saveRelation(leftObj, rightObj, symmetry);
 	}
 
 }

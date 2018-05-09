@@ -32,13 +32,13 @@ public class TestBasicItemDao {
 	@Test
 	@Transactional
 	public void fun() {
+		String LeftRecordRelaCode = "TE10000R999";
+		int indexOf = LeftRecordRelaCode.indexOf("R");
+		String rightRecordRelaCode = LeftRecordRelaCode.substring(indexOf+1);
 		
-		String entityCode = "TE10000";
-		String codeStr = entityCode.substring(2);
-		int code = Integer.parseInt(codeStr) + 1;
-		String m = "TE";
-        String format = String.format("%04d", code);  
-        System.out.println(m+format);
+		int code = Integer.parseInt(rightRecordRelaCode) + 1;
+        String format = String.format("%03d", code);  
+        System.out.println(format);
 		
 	}
 	

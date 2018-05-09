@@ -51,10 +51,32 @@ public class RecordRelationTypeServiceImpl implements RecordRelationTypeService 
 
 	@Override
 	public void saveRelation(RecordRelationType lefRrecordType, RecordRelationType rightRrecordType, String symmetry) {
-		
 		if ("symmetry".equals(symmetry)) {//添加对称关系
+			String recordRelaCode = dictionaryParentItemDao.getRecordRelaCode(lefRrecordType.getLeftRecordType());
+			lefRrecordType.setTypeCode(recordRelaCode);
+			lefRrecordType.setReverseCode(recordRelaCode);
 			dictionaryParentItemDao.insert(lefRrecordType);
-		} else {
+		} else {//添加不对称关系
+			String LeftRecordRelaCode = "";
+			String rightRecordRelaCode = "";
+			
+			if (lefRrecordType.getLeftRecordType().equals(rightRrecordType.getLeftRecordType())) {//实体相同的情况
+				LeftRecordRelaCode = dictionaryParentItemDao.getRecordRelaCode(lefRrecordType.getLeftRecordType());
+				int indexOf = LeftRecordRelaCode.indexOf("R");
+				String codeStr = LeftRecordRelaCode.substring(indexOf+1);
+				int code = Integer.parseInt(codeStr) + 1;
+		        String format = String.format("%03d", code);  
+				
+		        rightRecordRelaCode = lefRrecordType.getLeftRecordType() + "R" + format;
+			} else {//实体不同的情况
+				LeftRecordRelaCode = dictionaryParentItemDao.getRecordRelaCode(lefRrecordType.getLeftRecordType());
+				rightRecordRelaCode = dictionaryParentItemDao.getRecordRelaCode(rightRrecordType.getLeftRecordType());
+			}
+			
+			lefRrecordType.setTypeCode(LeftRecordRelaCode);
+			lefRrecordType.setReverseCode(rightRecordRelaCode);
+			rightRrecordType.setTypeCode(rightRecordRelaCode);
+			rightRrecordType.setReverseCode(LeftRecordRelaCode);
 			dictionaryParentItemDao.insert(lefRrecordType);
 			dictionaryParentItemDao.insert(rightRrecordType);
 		}

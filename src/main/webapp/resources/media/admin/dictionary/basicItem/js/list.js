@@ -497,16 +497,12 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
         //设置隐藏元素的值
         var entityId =$(this).closest(".entity_relation").attr("entityId");
         $form.find("#leftRecordType").val(entityId);
-        var typeCode = $form.find("#typeCode").val();
-        var reverseCode = $form.find("#reverseCode").val();
         var leftName = $form.find("#leftName").val();
         var rightName = $form.find("#rightName").val();
         var rightRecordType = $form.find("#rightRecordType").val();
         var leftRecordType = $form.find("#leftRecordType").val();
         var symmetry = $form.find("#symmetry").val();
         Ajax.ajax('admin/dictionary/recordRelationType/doAdd', {
-            typeCode: typeCode,
-            reverseCode: reverseCode,
             leftName: leftName,
             rightName: rightName,
             rightRecordType: rightRecordType,
