@@ -896,7 +896,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
             
             for (var i = 0; i < commonArr.length; i++) {
                 var str = "<div class=\"new_add clear-fix\">" + 
-                			"<div title=\"code:"+commonArr[i].code+",中文名称："+commonArr[i].cnName+"\" class=\"new_add_title\">" + "<span>" +commonArr[i].cnName+ "</span>"+ 
+                			"<div class=\"new_add_title\">" + "<span title=\"code:"+commonArr[i].code+",中文名称："+commonArr[i].cnName+"\">" +commonArr[i].cnName+ "</span>"+ 
                 			"<img id=\"edit_group\" groupId=\"" + commonArr[i].code + "\" src=\"media/admin/dictionary/basicItem/images/edit_ch.png\">" + 
                 			"</div><div class=\"clear-fix\">";                		    
                 for (var j = 0; j < commonArr[i].childList.length; j++) {                    
@@ -918,7 +918,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
             var moreArr = jsonData.moreProper; //多值属性
             for (var i = 0; i < moreArr.length; i++) {
                 var str = "<div class=\"new_add clear-fix\">" + 
-                			"<div title=\"code:"+moreArr[i].code+", 中文名称："+moreArr[i].cnName+", 英文名称："+moreArr[i].enName+", 表描述:"+moreArr[i].tableNameDescription+"\" class=\"new_add_title\">" + "<span>" + moreArr[i].cnName+ "</span>"+
+                			"<div  class=\"new_add_title\">" + "<span title=\"code:"+moreArr[i].code+", 中文名称："+moreArr[i].cnName+", 英文名称："+moreArr[i].enName+", 表描述:"+moreArr[i].tableNameDescription+"\">" + moreArr[i].cnName+ "</span>"+
                 			"<img id=\"edit_more\" groupId=\"" + moreArr[i].code + "\" src=\"media/admin/dictionary/basicItem/images/edit_ch.png\">"                			
                 if (moreArr[i].twoLevelAttr == null) {
                     str = str + "<div class=\"two-level-attr\" id=\"add_twoLevelAttr\" ><a href=\"javascript:void(0)\"\">添加二级属性</a></div>"
