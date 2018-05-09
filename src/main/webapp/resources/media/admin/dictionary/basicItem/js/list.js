@@ -28,7 +28,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
         $opera.show();
     });
     
-    //选中数据类型为  枚举   触发事件
+    //选中数据类型为  枚举   触发事件   普通属性
     $(".common_proper").on("change", ".enum_dataType_one", function() {
     	var options=$(".enum_dataType_one option:selected");  //获取选中的项
     	var $form = $(".opera_comm").find("#comm_opera_form1");
@@ -51,13 +51,25 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
                 $CPF.closeLoading();
             });            
     	} else {
-	        $form.find("#dataRange").show();
-	        $form.find("#dataRange").val("");
-	        $form.find("#cn_dataRange").show();
+    		$form.find("#cn_dataRange").show();
+    		 $form.find("#dataRange").show();
+    		 
+    		if ("digital" == options.val()) {//数字型
+    			$form.find("#dataRange").val('11');
+    		} else if ("digitalDecimal" == options.val()) {//数字型小数
+    			$form.find("#dataRange").val('10,2');
+    		} else if ("date"== options.val() || "dateTime" == options.val()) {// 日期和时间
+    			$form.find("#dataRange").val("").hide();
+    			$form.find("#cn_dataRange").hide();
+    		} else if ("char"== options.val() ) { //字符型
+    			$form.find("#dataRange").val('32');
+    		}
+	        
 	        $form.find("#dictParentId").remove();
 	        $form.find("#span_enum").remove();    
 	        $CPF.closeLoading();
         }
+    	
     });
     
   //选中数据类型为  枚举   触发事件
@@ -84,9 +96,20 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
                 $CPF.closeLoading();
             });           
     	} else {
-	        $form.find("#dataRange").show();
-	        $form.find("#dataRange").val("");
-	        $form.find("#cn_dataRange").show();
+    		 $form.find("#dataRange").show();
+ 	        $form.find("#cn_dataRange").show();
+ 	        
+    		if ("digital" == options.val()) {//数字型
+    			$form.find("#dataRange").val('11');
+    		} else if ("digitalDecimal" == options.val()) {//数字型小数
+    			$form.find("#dataRange").val('10,2');
+    		} else if ("date"== options.val() || "dateTime" == options.val()) {// 日期和时间
+    			$form.find("#dataRange").val("").hide();
+    			$form.find("#cn_dataRange").hide();
+    		} else if ("char"== options.val() ) { //字符型
+    			$form.find("#dataRange").val('32');
+    		}
+    		
 	        $form.find("#dictParentId").remove();
 	        $form.find("#span_enum").remove();    
 	        $CPF.closeLoading();
@@ -115,18 +138,17 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
             
             $select.append(str);
         });
-        
-        $form.find("#dataRange").show();
-        $form.find("#dataRange").val("");
-        $form.find("#cn_dataRange").show();
         $form.find("#dictParentId").remove();
         $form.find("#span_enum").remove();
         
-        $newAdd.find("#code").attr("readonly", false);
         $newAdd.find("#add_comm_mes").html("");
         $newAdd.find("#add_comm_mes").html("添加属性");
         $newAdd.find(".opera_comm").find('input').val("");
         $newAdd.find(".opera_comm").show();
+        
+        $form.find("#dataRange").show();
+        $form.find("#cn_dataRange").show();
+        $form.find("#dataRange").val("32");
     });
     //点击 添加多值属性孩子加号 显示div
     $(".more_proper").on("click", ".add_more_child", function() {
@@ -146,14 +168,13 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
             }
             $(".opera_more_child").find("#more_child_opera_form1").find("#dataType").append(str);
         });
-        $newAdd.find("#code").attr("readonly", false);
         $newAdd.find("#add_more_child_mes").html("");
         $newAdd.find("#add_more_child_mes").html("添加多值属性");
         $newAdd.find(".opera_more_child").find('input').val("");
         $newAdd.find(".opera_more_child").show();
         
         $form.find("#dataRange").show();
-        $form.find("#dataRange").val("");
+        $form.find("#dataRange").val("32");
         $form.find("#cn_dataRange").show();
         $form.find("#dictParentId").remove();
         $form.find("#span_enum").remove(); 
@@ -638,10 +659,16 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
     	            }
     	        });   	
             }else {
-            	 $form1.find("#span_enum").remove();
-                 $form1.find("#dictParentId").remove();	
-                 $form1.find("#dataRange").show();
-                 $form1.find("#cn_dataRange").show();
+            	$form1.find("#span_enum").remove();
+                $form1.find("#dictParentId").remove();	
+                $form1.find("#dataRange").show();
+                $form1.find("#cn_dataRange").show();
+                
+            	if ("日期型" == jsonData.dataType || "时间型" == jsonData.dataType) {
+            		$form1.find("#dataRange").val("").hide();
+	                $form1.find("#cn_dataRange").hide();
+            	} 
+            	
             }
             
             Ajax.ajax('admin/dictionary/basicItem/getDataType', '', function(data) {    	            
@@ -722,6 +749,11 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
                  $form1.find("#dictParentId").remove();
                  $form1.find("#dataRange").show();
  	            $form1.find("#cn_dataRange").show();
+ 	            
+ 	           if ("日期型" == jsonData.dataType || "时间型" == jsonData.dataType) {
+           		$form1.find("#dataRange").val("").hide();
+	                $form1.find("#cn_dataRange").hide();
+           	} 
     		}   
     		
     		Ajax.ajax('admin/dictionary/basicItem/getDataType', '', function(data) {    	           
@@ -878,7 +910,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
                 str = str + "<div class=\"entity_attr entity_attr_img add_comm\">" +
 							    "<img alt=\"添加普通属性\" src=\"media/admin/dictionary/basicItem/addEntity_icon.png\">" +
 							"</div></div>"	
-				str = str + "<div class=\"opera_comm\"><img class=\"opera_entity_img\" src=\"media/admin/dictionary/basicItem/opera_entity_icon.png\"><span id=\"add_comm_mes\"></span><form groupName="+commonArr[i].cnName+"  groupId="+commonArr[i].code+"   id=\"comm_opera_form1\" class=\"opera_entity_form\"><input type=\"hidden\" id=\"groupName\" name=\"groupName\" value=\"\"><input type=\"hidden\" id=\"comm_parent\" name=\"parent\" value=\"\"><input type=\"hidden\" id=\"edit_dataType\" value=\"\"><input type=\"hidden\" id=\"edit_dictParentId\" value=\"\"><input type=\"hidden\" name=\"code\" id=\"code\" /><div><span class=\"opera_entity_label\">中文名称</span><input type=\"text\" name=\"cnName\" id=\"cnName\" /></div><div><span class=\"opera_entity_label\">英文名称</span><input type=\"text\" name=\"enName\" id=\"enName\" /></div><div><span class=\"opera_entity_label\" id=\"cn_dataType\">数据类型</span><select id=\"dataType\" class=\"enum_dataType_one\" name=\"dataType\"></select></div><div><span class=\"opera_entity_label\" id=\"cn_dataRange\">数据长度</span><input type=\"text\" name=\"dataRange\" id=\"dataRange\" /></div></form><div class=\"opera_entity_btn\"><span class=\"entity-btn-cancel\" id=\"comm_but_cancel\">取消</span><span class=\"entity-btn-confirm\" id=\"comm_but_confirm\">确认</span></div></div>";
+				str = str + "<div class=\"opera_comm\"><img class=\"opera_entity_img\" src=\"media/admin/dictionary/basicItem/opera_entity_icon.png\"><span id=\"add_comm_mes\"></span><form groupName="+commonArr[i].cnName+"  groupId="+commonArr[i].code+"   id=\"comm_opera_form1\" class=\"opera_entity_form\"><input type=\"hidden\" id=\"groupName\" name=\"groupName\" value=\"\"><input type=\"hidden\" id=\"comm_parent\" name=\"parent\" value=\"\"><input type=\"hidden\" id=\"edit_dataType\" value=\"\"><input type=\"hidden\" id=\"edit_dictParentId\" value=\"\"><input type=\"hidden\" name=\"code\" id=\"code\" /><div><span class=\"opera_entity_label\">中文名称</span><input type=\"text\" name=\"cnName\" id=\"cnName\" /></div><div><span class=\"opera_entity_label\">英文名称</span><input type=\"text\" name=\"enName\" id=\"enName\" /></div><div><span class=\"opera_entity_label\" id=\"cn_dataType\">数据类型</span><select id=\"dataType\" class=\"enum_dataType_one\" name=\"dataType\"></select></div><div><span class=\"opera_entity_label\" id=\"cn_dataRange\">数据长度</span><input type=\"text\" name=\"dataRange\" id=\"dataRange\"></div></form><div class=\"opera_entity_btn\"><span class=\"entity-btn-cancel\" id=\"comm_but_cancel\">取消</span><span class=\"entity-btn-confirm\" id=\"comm_but_confirm\">确认</span></div></div>";
                 str = str + "<div class=\"opera_group\"><img class=\"opera_entity_img\" src=\"media/admin/dictionary/basicItem/opera_entity_icon.png\"><span class=\"opera_entity_img\" id=\"add_group_mes\"></span><form id=\"group_opera_form1\" class=\"opera_entity_form\"><input type=\"hidden\" name=\"code\" id=\"code\" /><input type=\"hidden\" id=\"group_parent\" name=\"parent\" value=\"\"><input type=\"hidden\" name=\"dataType\" value=\"group\"><div><span class=\"opera_entity_label\">中文名称</span><input type=\"text\" name=\"cnName\" id=\"cnName\" /></div></form><div class=\"opera_entity_btn\"><span class=\"entity-btn-cancel\" id=\"group_but_cancel\">取消</span><span class=\"entity-btn-confirm\" id=\"group_but_confirm\">确认</span></div></div>";
                 str = str + "</div>";                
                 $(".common_proper").append(str);
