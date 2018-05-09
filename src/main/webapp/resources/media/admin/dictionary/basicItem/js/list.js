@@ -512,6 +512,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
         $(".opera_relation").hide();
         var entityId = $(this).closest(".entity_relation").attr("entityid");
         $(this).closest('.entity_relation').find(".entity_attr").not(".entity_attr_img").remove();
+        $(".new_add").remove();
         enityAttr(entityId);
     });
     //点击确认， 进行添加多值属性的孩子
