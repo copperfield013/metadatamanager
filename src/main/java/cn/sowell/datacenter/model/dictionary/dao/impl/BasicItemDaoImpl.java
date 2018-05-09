@@ -15,12 +15,8 @@ import org.springframework.stereotype.Repository;
 
 import cn.sowell.copframe.dao.deferedQuery.DeferedParamQuery;
 import cn.sowell.copframe.dao.deferedQuery.sqlFunc.WrapForCountFunction;
-import cn.sowell.copframe.dao.utils.QueryUtils;
-import cn.sowell.copframe.dto.page.PageInfo;
 import cn.sowell.copframe.utils.FormatUtils;
 import cn.sowell.copframe.utils.TextUtils;
-import cn.sowell.datacenter.admin.controller.dictionary.Constants;
-import cn.sowell.datacenter.model.demo.pojo.PlainDemo;
 import cn.sowell.datacenter.model.dictionary.criteria.BasicItemCriteria;
 import cn.sowell.datacenter.model.dictionary.dao.BasicItemDao;
 import cn.sowell.datacenter.model.dictionary.pojo.BasicItem;
@@ -82,15 +78,14 @@ public class BasicItemDaoImpl implements BasicItemDao {
 
 	@Override
 	public List getAttrByPidGroupName(String parent, String groupName) {
-		String sql = "select new cn.sowell.datacenter.model.dictionary.pojo.BasicItem(code, cnName, dataType, usingState, groupName, parent) from BasicItem WHERE parent=:parent AND groupName=:groupName";
+		String sql = "from BasicItem WHERE parent=:parent AND groupName=:groupName";
 		List<BasicItem> list = sFactory.getCurrentSession().createQuery(sql).setParameter("parent", parent).setParameter("groupName", groupName).list();
 		return list;
 	}
 
 	@Override
 	public void saveOrUpdate(BasicItem obj) {
-		
-		if (obj.getCode()== null || !obj.getCode().startsWith("T")) {
+		if (obj.getCode()== null ||obj.getCode() == "" || obj.getCode().length()<1) {
 			//生成code 规则：实体code TE0001 开始  其他code规则 T00001开始
 			String dataType = obj.getDataType();
 			if ("记录类型".equals(dataType)) {
@@ -107,20 +102,18 @@ public class BasicItemDaoImpl implements BasicItemDao {
 	}
 	
 	
-	
-	
 	//实体code  生成规则
 	private String getEntityCode() {
-		String sql = "SELECT SUBSTR(c_code, 3) aa from t_c_basic_item WHERE c_data_type='记录类型' AND c_code like 'T%' ORDER BY  CAST(aa as SIGNED ) DESC";
+		String sql = "SELECT SUBSTR(c_code, 5) aa from t_c_basic_item WHERE c_data_type='记录类型' AND c_code like 'IBT%' ORDER BY  CAST(aa as SIGNED ) DESC";
 		List list = sFactory.getCurrentSession().createSQLQuery(sql).list();
 
 		if (list.isEmpty()) {
-			return "TE001";
+			return "IBTE001";
 		}
 		
 		String entityCode = (String) list.get(0);
 		int code = Integer.parseInt(entityCode) + 1;
-		String entityHead = "TE";
+		String entityHead = "IBTE";
         String format = String.format("%03d", code);  
 		
 		return entityHead+format;
@@ -128,17 +121,17 @@ public class BasicItemDaoImpl implements BasicItemDao {
 	
 	//其他code， 生成规则
 	private String getAttrCode() {
-		String sql = "SELECT SUBSTR(c_code, 2) aa from t_c_basic_item WHERE c_data_type!='记录类型' AND c_code like 'T%' ORDER BY  CAST(aa as SIGNED ) DESC";
+		String sql = "SELECT SUBSTR(c_code, 4) aa from t_c_basic_item WHERE c_data_type!='记录类型' AND c_code like 'IBT%' ORDER BY  CAST(aa as SIGNED ) DESC";
 		
 		List list = sFactory.getCurrentSession().createSQLQuery(sql).list();
 
 		if (list.isEmpty()) {
-			return "T0001";
+			return "IBT0001";
 		}
 		
 		String entityCode = (String) list.get(0);
 		int code = Integer.parseInt(entityCode) + 1;
-		String entityHead = "T";
+		String entityHead = "IBT";
         String format = String.format("%04d", code);  
 		return entityHead+format;
 	}
