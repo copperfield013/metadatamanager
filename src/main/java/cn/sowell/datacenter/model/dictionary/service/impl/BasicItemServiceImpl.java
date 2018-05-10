@@ -148,8 +148,8 @@ public class BasicItemServiceImpl implements BasicItemService {
 	}
 
 	@Override
-	public void saveOrUpdate(BasicItem obj) {
-		basicItemDao.saveOrUpdate(obj);
+	public void saveOrUpdate(BasicItem obj, String flag) {
+		basicItemDao.saveOrUpdate(obj, flag);
 	}
 
 	@Override

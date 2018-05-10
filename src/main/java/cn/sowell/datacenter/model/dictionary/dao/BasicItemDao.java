@@ -56,7 +56,7 @@ public interface BasicItemDao {
 	 */
 	List getAttrByPidGroupName(String parent, String groupName);
 	
-	void saveOrUpdate(BasicItem obj);
+	void saveOrUpdate(BasicItem obj, String flag);
 	
 	/**
 	 * -- 查询需要创建的表

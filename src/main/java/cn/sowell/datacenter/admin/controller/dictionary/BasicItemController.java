@@ -13,6 +13,7 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.ServletRequestDataBinder;
@@ -101,9 +102,7 @@ public class BasicItemController {
 	@ResponseBody
 	@RequestMapping("/do_add")
 	public AjaxPageResponse doAdd(BasicItem	basicItem){
-		try {
 			String dType = basicItem.getDataType();
-			
 			String dataType = "";
 			if ("char".equals(dType)) {
 				dataType = "字符型";
@@ -130,16 +129,6 @@ public class BasicItemController {
 				basicItem.setDictParentId(0);
 			} else if ("分组类型".equals(basicItem.getDataType())) {
 				basicItem.setDictParentId(0);
-				BasicItem bItem2 = basicItemService.getBasicItem(basicItem.getCode());
-				if (bItem2 != null) {
-					List<BasicItem> groupChild = basicItemService.getAttrByPidGroupName(bItem2.getParent(), bItem2.getCnName());
-					if (!groupChild.isEmpty()) {
-						for (BasicItem bt : groupChild) {
-							bt.setGroupName(basicItem.getCnName());
-							basicItemService.update(bt);
-						}
-					}
-				}
 			} else if ("重复类型".equals(basicItem.getDataType())) {
 				basicItem.setDictParentId(0);
 				basicItem.setTableName("t_" + basicItem.getParent() +"_"+ basicItem.getCode() +"_"+ basicItem.getCode());
@@ -157,21 +146,36 @@ public class BasicItemController {
 			}
 			
 			basicItem.setUsingState(1);
-			basicItemService.saveOrUpdate(basicItem);
 			
-			if ("记录类型".equals(basicItem.getDataType())) {
-				return AjaxPageResponse.CLOSE_AND_REFRESH_PAGE("修改成功", "basicItem_list");
-			} else {
-				AjaxPageResponse response = new AjaxPageResponse();
-				response.setNotice("操作成功");
-				response.setNoticeType(NoticeType.SUC);
-				return response;
+			String flag = "";
+			if (basicItem.getCode()== null ||basicItem.getCode() == "" || basicItem.getCode().length()<1) {
+				flag = "add";
 			}
 			
-		} catch (Exception e) {
-			logger.error("操作失败", e);
-			return AjaxPageResponse.FAILD("操作失败");
-		}
+			for(int i=0; i<10; i++) {
+                try {
+                	basicItemService.saveOrUpdate(basicItem, flag);
+        			
+        			if ("记录类型".equals(basicItem.getDataType())) {
+        				return AjaxPageResponse.CLOSE_AND_REFRESH_PAGE("修改成功", "basicItem_list");
+        			} else {
+        				AjaxPageResponse response = new AjaxPageResponse();
+        				response.setNotice("操作成功");
+        				response.setNoticeType(NoticeType.SUC);
+        				return response;
+        			}
+                } catch (DataIntegrityViolationException e) {
+                    if (i <9) {
+                        continue;
+                    } else {
+                        return AjaxPageResponse.FAILD("主键重复, 请重新添加");
+                    }
+                } catch (Exception e) {
+                    logger.error("操作失败", e);
+                    return AjaxPageResponse.FAILD("操作失败");
+                }
+            }
+			return null;
 	}
 
 	@ResponseBody

@@ -84,8 +84,8 @@ public class BasicItemDaoImpl implements BasicItemDao {
 	}
 
 	@Override
-	public void saveOrUpdate(BasicItem obj) {
-		if (obj.getCode()== null ||obj.getCode() == "" || obj.getCode().length()<1) {
+	public void saveOrUpdate(BasicItem obj, String flag) {
+		if ("add".equals(flag)) {
 			//生成code 规则：实体code TE0001 开始  其他code规则 T00001开始
 			String dataType = obj.getDataType();
 			if ("记录类型".equals(dataType)) {
@@ -100,7 +100,6 @@ public class BasicItemDaoImpl implements BasicItemDao {
 		}
 		
 	}
-	
 	
 	//实体code  生成规则
 	private String getEntityCode() {

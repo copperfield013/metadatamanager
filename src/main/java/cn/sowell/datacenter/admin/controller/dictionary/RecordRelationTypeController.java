@@ -11,6 +11,7 @@ import javax.annotation.Resource;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.ServletRequestDataBinder;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import cn.sowell.copframe.dto.ajax.AjaxPageResponse;
+import cn.sowell.copframe.dto.ajax.NoticeType;
 import cn.sowell.copframe.dto.page.PageInfo;
 import cn.sowell.datacenter.admin.controller.AdminConstants;
 import cn.sowell.datacenter.model.demo.criteria.DemoCriteria;
@@ -53,7 +55,7 @@ public class RecordRelationTypeController {
 	
 	@ResponseBody
 	@RequestMapping("/doAdd")
-	public void doAdd(String leftRecordType,String rightRecordType, String leftName, String rightName, String symmetry){
+	public AjaxPageResponse doAdd(String leftRecordType,String rightRecordType, String leftName, String rightName, String symmetry){
 		RecordRelationType rightObj = new RecordRelationType();
 		RecordRelationType leftObj = new RecordRelationType();
 		
@@ -71,7 +73,26 @@ public class RecordRelationTypeController {
 			rightObj.setRightRecordType(leftRecordType);
 		}
 		
-		recordRelationTypeService.saveRelation(leftObj, rightObj, symmetry);
+			for(int i=0; i<10; i++) {
+				try {
+					recordRelationTypeService.saveRelation(leftObj, rightObj, symmetry);
+					AjaxPageResponse response = new AjaxPageResponse();
+					response.setNotice("操作成功");
+					response.setNoticeType(NoticeType.SUC);
+					return response;
+				} catch (DataIntegrityViolationException e) {
+					if (i <9) {
+						continue;
+					} else {
+						return AjaxPageResponse.FAILD("主键重复, 请重新添加");
+					}
+				} catch (Exception e) {
+					logger.error("操作失败", e);
+					return AjaxPageResponse.FAILD("操作失败");
+				}
+			}
+		
+		return null;
 	}
 
 }
