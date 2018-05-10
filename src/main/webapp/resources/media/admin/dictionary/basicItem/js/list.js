@@ -295,7 +295,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
             $twochile.find(".new_add_twolc").remove();
             var str = "";
             for (var key in child) {            	
-                str = str + "<div twoLevel_chil_Id=" + child[key].id +" class='entity_attr new_add_twolc'>"+child[key].name+"<ul class='entity_ul_hide' entityId='${item.code}' status='${item.usingState}'><li><a href='javascript:void(0)' class='edit_entity'><i class='icon edit-entity'></i>编辑实体</a></li></ul><i class='icon delete'></i></div>";
+                str = str + "<div title=\"id:"+child[key].id+", 名称："+child[key].name+"\" twoLevel_chil_Id=" + child[key].id +" class='entity_attr new_add_twolc'>"+child[key].name+"<ul class='entity_ul_hide' entityId='${item.code}' status='${item.usingState}'><li><a href='javascript:void(0)' class='edit_entity'><i class='icon edit-entity'></i>编辑实体</a></li></ul><i class='icon delete'></i></div>";
             }
             str = str + "<div class=\"entity_attr new_add_twolc entity_attr_img add_comm add_twoLevelAttr_children\"><img mappingId=\"" + datatmm.id + "\" alt=\"添加二级属性\" src=\"media/admin/dictionary/basicItem/addEntity_icon.png\"></div>"
             $twochile.append(str);
@@ -515,7 +515,6 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
         var entityId = $(this).closest(".entity_relation").attr("entityid");
         $(this).closest('.entity_relation').find(".entity_attr").not(".entity_attr_img").remove();
         $(".new_add").remove();
-        alert(entityId);
         enityAttr(entityId);
     });
     //点击确认， 进行添加多值属性的孩子
