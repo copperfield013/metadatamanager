@@ -143,7 +143,7 @@ public class BasicItemController {
 					basicItem.setTableName("t_" + basicItem.getParent() + "_" + basicItem.getGroupName());
 				}
 			}
-			basicItem.setUsingState(1);
+			basicItem.setUsingState(0);
 			
 			String flag = "";
 			if (basicItem.getCode()== null ||basicItem.getCode() == "" || basicItem.getCode().length()<1) {

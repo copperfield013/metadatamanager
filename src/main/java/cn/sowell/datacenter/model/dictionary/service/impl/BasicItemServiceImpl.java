@@ -230,12 +230,13 @@ public class BasicItemServiceImpl implements BasicItemService {
 					basicItem.setUsingState(-1);
 					openSession.update(basicItem);
 					tx.commit();
+					continue;
 				}
 			}
 			
 		//查询需要更新的字段语句 
 		List queryEditCol = basicItemDao.queryEditCol();
-		Iterator iteratorE = queryNewAddCol.iterator();
+		Iterator iteratorE = queryEditCol.iterator();
 		
 		while (iteratorE.hasNext()) {
 			Object[] cur = (Object[]) iteratorE.next();
@@ -258,6 +259,8 @@ public class BasicItemServiceImpl implements BasicItemService {
 				basicItem.setUsingState(-1);
 				openSession.update(basicItem);
 				tx.commit();
+				
+				continue;
 			}
 		}	
 			

@@ -24,8 +24,10 @@ public interface Constants {
 	
 	Map<String, Integer> USING_STATE_MAP = new HashMap<String, Integer>(){
 		{
-			put("normal", 1);//正常
-			put("pastDue", 2);//过期
+			put("normal", 0);//正常
+			put("pastDue", 2);//已过期
+			put("error", -1);//-1 有错误（执行 更新实体存储时报错）
+			put("using", 1 );//1 在用 （成功执行 更新实体存储后）
 		}
 	};
 	
