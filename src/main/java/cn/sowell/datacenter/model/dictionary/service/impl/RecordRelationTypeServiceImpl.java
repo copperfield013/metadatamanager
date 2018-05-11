@@ -30,7 +30,7 @@ public class RecordRelationTypeServiceImpl implements RecordRelationTypeService 
 	}
 
 	@Override
-	public RecordRelationType getRecordRelationType(Integer id) {
+	public RecordRelationType getRecordRelationType(String id) {
 		return dictionaryParentItemDao.get(RecordRelationType.class, id);
 	}
 
@@ -40,9 +40,13 @@ public class RecordRelationTypeServiceImpl implements RecordRelationTypeService 
 	}
 
 	@Override
-	public void delete(Integer id) {
-		RecordRelationType dictParentItem = dictionaryParentItemDao.get(RecordRelationType.class, id);
-		dictionaryParentItemDao.delete(dictParentItem);
+	public void delete(String id) {
+		RecordRelationType criteria = dictionaryParentItemDao.get(RecordRelationType.class, id);
+		dictionaryParentItemDao.delete(criteria);
+		if (!criteria.getTypeCode().equals(criteria.getReverseCode())) {
+			RecordRelationType reverseObj = dictionaryParentItemDao.get(RecordRelationType.class, criteria.getReverseCode());
+			dictionaryParentItemDao.delete(reverseObj);
+		}
 	}
 
 	@Override

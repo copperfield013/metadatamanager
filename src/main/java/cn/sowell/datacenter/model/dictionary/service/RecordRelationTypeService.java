@@ -29,7 +29,7 @@ public interface RecordRelationTypeService {
 	 */
 	void create(RecordRelationType basicItem);
 
-	RecordRelationType getRecordRelationType(Integer id);
+	RecordRelationType getRecordRelationType(String id);
 
 	/**
 	 * 更新一个RecordRelationType对象
@@ -41,7 +41,7 @@ public interface RecordRelationTypeService {
 	 * 从数据库中删除一个RecordRelationType对象
 	 * @param id
 	 */
-	void delete(Integer id);
+	void delete(String id);
 
 	/**
 	 *保存关系

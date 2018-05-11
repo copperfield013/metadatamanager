@@ -95,4 +95,18 @@ public class RecordRelationTypeController {
 		return null;
 	}
 
+	@ResponseBody
+	@RequestMapping("/delete")
+	public AjaxPageResponse delete(String id){
+		try {
+			AjaxPageResponse response = new AjaxPageResponse();
+			recordRelationTypeService.delete(id);
+			response.setNotice("删除成功");
+			response.setNoticeType(NoticeType.SUC);
+			return response;
+		} catch (Exception e) {
+			logger.error("删除失败", e);
+			return AjaxPageResponse.FAILD("删除失败");
+		}
+	}
 }

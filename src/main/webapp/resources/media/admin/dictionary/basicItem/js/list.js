@@ -39,6 +39,23 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
 	   });
    });
    
+   //删除关系
+   $(".entity-list").on("click", ".delete_rela", function() {
+	   var typeCode = $(this).parent().parent().attr("typeCode");
+	   
+	   var patentId = $(this).attr("patentId");
+	   Dialog.confirm("删除可能会引起数据错误， 是否确认删除", function(isYes) {
+	   		if (isYes) {
+	   			Ajax.ajax('admin/dictionary/recordRelationType/delete', {
+	   			   id:typeCode
+	   		   }, function(data) {
+	   			$(".new_add").remove();
+	   	       enityAttr(patentId);
+	   	       });
+	   		}
+	   });
+   });
+   
     //点击 添加实体 显示div
     $("#add_entity").click(function() {
         $("#add_entity_mes").html("");
@@ -984,7 +1001,12 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
             var entityRela = jsonData.entityRela;
             var str = "";
             for (var i = 0; i < entityRela.length; i++) {
-            	str = str + "<div class=\"entity_attr\">" + entityRela[i].name + "</div>"               
+            	str = str + "<div class=\"entity_attr\">" + entityRela[i].name
+            	+"<ul class=\"entity_ul\" typeCode=\""+entityRela[i].typeCode+"\">" 
+				+"<li><a href=\"javascript:void(0)\" patentId=\""+entityRela[i].leftRecordType+"\" class=\"delete_rela\"><i class=\"icon edit-entity\"></i>删除关系</a></li>"
+				+"</ul>"
+				+"<i class=\"icon delete\"></i>"
+				+"</div>"  
             }
             $(".entity_relation_list").find(".entity_attr").not(".entity_attr_img").remove();
             $(".entity_relation_list").prepend(str);

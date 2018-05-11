@@ -52,7 +52,7 @@ public class RecordRelationTypeDaoImpl implements RecordRelationTypeDao {
 	}
 	
 	@Override
-	public <T> T get(Class<T> clazz, Integer id) {
+	public <T> T get(Class<T> clazz, String id) {
 		return sFactory.getCurrentSession().get(clazz, id);
 	}
 	

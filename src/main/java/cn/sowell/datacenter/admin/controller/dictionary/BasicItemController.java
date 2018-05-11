@@ -242,7 +242,7 @@ public class BasicItemController {
 		}
 	}
 	
-	//创建表
+		//删除实体， 属性
 		@ResponseBody
 		@RequestMapping("/delete")
 		public AjaxPageResponse delete(String id){
