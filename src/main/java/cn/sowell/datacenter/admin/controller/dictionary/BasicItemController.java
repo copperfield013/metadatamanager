@@ -131,7 +131,6 @@ public class BasicItemController {
 				basicItem.setDictParentId(0);
 			} else if ("重复类型".equals(basicItem.getDataType())) {
 				basicItem.setDictParentId(0);
-				basicItem.setTableName("t_" + basicItem.getParent() +"_"+ basicItem.getCode() +"_"+ basicItem.getCode());
 			} else {
 				// 到这儿来是普通属性  和多值属性下的普通属性
 				//它们的区别是父亲不同， 所以先求父亲    默认前端传来的都是父亲的code， 
@@ -144,7 +143,6 @@ public class BasicItemController {
 					basicItem.setTableName("t_" + basicItem.getParent() + "_" + basicItem.getGroupName());
 				}
 			}
-			
 			basicItem.setUsingState(1);
 			
 			String flag = "";

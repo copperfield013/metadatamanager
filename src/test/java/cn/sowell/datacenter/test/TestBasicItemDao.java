@@ -46,39 +46,9 @@ public class TestBasicItemDao {
 	}
 	
 	@Test
+	@Transactional
 	public void fun1() {
-		
-		String symmetry = "symmetry";
-		
-		String leftRecordType = "IBTE001";
-		String rightRecordType = "IBTE001";
-		String leftName = "111";
-		String rightName = "2222";
-		
-		RecordRelationType rightObj = new RecordRelationType();
-		RecordRelationType leftObj = new RecordRelationType();
-		
-		leftObj.setName(leftName);
-		leftObj.setLeftRecordType(leftRecordType);
-		
-		if ("symmetry".equals(symmetry)) {//添加对称关系
-			leftObj.setRightRecordType(leftRecordType);
-		} else {
-			leftObj.setRightRecordType(rightRecordType);
-			
-			//生成右关系
-			rightObj.setName(rightName);
-			rightObj.setLeftRecordType(rightRecordType);
-			rightObj.setRightRecordType(leftRecordType);
-		}
-		
-		try {
-			rrt.saveRelation(leftObj, rightObj, symmetry);
-		} catch (DataIntegrityViolationException e) {
-			rrt.saveRelation(leftObj, rightObj, symmetry);
-		}
-		
-		
+		basicItemService.createTabCol();
 	}
 	
 }

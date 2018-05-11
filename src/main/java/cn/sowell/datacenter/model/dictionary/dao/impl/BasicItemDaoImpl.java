@@ -94,6 +94,10 @@ public class BasicItemDaoImpl implements BasicItemDao {
 				obj.setCode(getAttrCode());
 			}
 			
+			if ("重复类型".equals(dataType)) {
+				obj.setTableName("t_" + obj.getParent() +"_"+ obj.getCode() +"_"+ obj.getCode());
+			}
+			
 			sFactory.getCurrentSession().save(obj);
 		} else {
 			sFactory.getCurrentSession().update(obj);
@@ -139,12 +143,12 @@ public class BasicItemDaoImpl implements BasicItemDao {
 	public List queryCreTab() {
 		getDataBaseName();
 		StringBuffer sb = new StringBuffer();
-		sb.append("SELECT ")
+		sb.append("SELECT a.c_code, ")
 			.append("concat(\"create table \", a.c_table_name,\"( `id`  bigint(20) NOT NULL AUTO_INCREMENT, ")
-			.append("`ABP0001`  varchar(32) DEFAULT NULL ,PRIMARY KEY (`id`))\") ")
+			.append("`ABP0001`  varchar(32) DEFAULT NULL ,PRIMARY KEY (`id`))\")  valstr ")
 			.append("FROM ")
 			.append("(SELECT ")
-			.append("c_table_name ")
+			.append(" c_code,  c_table_name ")
 			.append("FROM ")
 			.append("t_c_basic_item ")
 			.append("WHERE ")
@@ -169,7 +173,7 @@ public class BasicItemDaoImpl implements BasicItemDao {
 	public List queryNewAddCol() {
 		 getDataBaseName();
 		 StringBuffer sb = new StringBuffer();
-			sb.append("SELECT ")
+			sb.append("SELECT a.c_code, ")
 			.append("CONCAT('alter table ', ")
 			.append(" a.c_table_name, ")
 			.append("' add ', ")
@@ -198,7 +202,39 @@ public class BasicItemDaoImpl implements BasicItemDao {
 			List list = sFactory.getCurrentSession().createSQLQuery(sb.toString()).list();
 		return list;
 	}
-
+	 
+	@Override
+	public List queryEditCol() {
+		 getDataBaseName();
+		 StringBuffer sb = new StringBuffer();
+		 sb.append(" SELECT a.c_code,	CONCAT( ")
+		 .append(" 'alter table ',	a.c_table_name,	' CHANGE COLUMN ',	a.c_code,	' ',")
+		 .append(" a.c_code,	' ',	a.col_type,	'  default NULL ;'	)")
+		 .append(" FROM	(		SELECT			aa.c_table_name,	aa.c_code,aa.col_type")
+		 .append(" FROM	(	SELECT	a.c_code,	a.c_cn_name,	a.c_table_name,")
+		 .append(" CASE a.c_data_type	")
+		 .append(" WHEN '字符型' THEN	CONCAT(	'varchar(',	IF (a.c_data_range = '枚举',	'32',	a.c_data_range),	')'	)	")
+		 .append(" WHEN '数字型' THEN	CONCAT(	'int(',	IF (	a.c_data_range IS NULL,		'11',	a.c_data_range),')'	)")
+		 .append(" WHEN '数字型小数' THEN		CONCAT(	'double(',	IF (	a.c_data_range IS NULL,	'10,2',		a.c_data_range),')'	)")
+		 .append(" WHEN '日期型' THEN	'date'")
+		 .append(" WHEN '时间型' THEN	'datetime'")
+		 .append(" WHEN '二进制型' THEN	'blob'")
+		 .append(" END col_type	FROM	t_c_basic_item a")
+		 .append(" WHERE	a.c_code LIKE 'IBT%'")
+		 .append(" AND a.c_data_type != '分组类型'")
+		 .append(" AND a.c_data_type != '记录类型'")
+		 .append(" AND a.c_data_type != '重复类型'")
+		 .append(" 	) aa")
+		 .append(" LEFT JOIN (")
+		 .append(" SELECT	col.Column_name,	col.column_type,col.table_name	FROM")
+		 .append(" information_schema. COLUMNS col")
+		 .append(" WHERE	table_schema = '"+DataBaseName+"'	) bb ON aa.c_code = Column_name")
+		 .append(" AND aa.col_type = bb.column_type	AND aa.c_table_name = bb.table_name")
+		 .append(" WHERE	bb.column_type IS NULL	) a");
+		 List list = sFactory.getCurrentSession().createSQLQuery(sb.toString()).list();
+		 return list;
+	}
+	 
 	@Override
 	public List queryCreRelaTab() {
 		getDataBaseName();
@@ -235,4 +271,5 @@ public class BasicItemDaoImpl implements BasicItemDao {
 			}
 		});
 	}
+
 }

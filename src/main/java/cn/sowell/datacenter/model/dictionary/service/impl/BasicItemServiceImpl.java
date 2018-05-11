@@ -8,6 +8,9 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSONObject;
@@ -40,6 +43,11 @@ public class BasicItemServiceImpl implements BasicItemService {
 	
 	@Resource
 	TowlevelattrService towlevelattrService;
+	
+	@Resource
+	SessionFactory sFactory;
+	
+	
 	
 	@Override
 	public List<BasicItem> queryList(BasicItemCriteria criteria) {
@@ -159,20 +167,106 @@ public class BasicItemServiceImpl implements BasicItemService {
 
 	@Override
 	public void createTabCol() {
-		System.out.println();
-		List queryCreTab = basicItemDao.queryCreTab();
 		
-		for (Object object : queryCreTab) {
-			basicItemDao.excuteBySql(object.toString());
-		}
+		//查询需要创建的表
+		List queryCreTab = basicItemDao.queryCreTab();
+			Iterator iterator = queryCreTab.iterator();
+			
+			while (iterator.hasNext()) {
+				Object[] cur = (Object[]) iterator.next();
+				String value = (String) cur[1];
+				try {
+					basicItemDao.excuteBySql(value);
+				} catch (Exception e) {
+					Session openSession = sFactory.openSession();
+					 Transaction tx = openSession.beginTransaction();
+					String code = (String) cur[0];
+					BasicItem bt = basicItemDao.get(BasicItem.class, code);
+					if ("重复类型".equals(bt.getDataType())) {
+						bt.setUsingState(-1);
+						openSession.update(bt);				
+					} else {//  重复类型下面的孩子或者是分组类型下边的孩子
+						//他们的区别在于父亲不同， 
+						BasicItem btParent = basicItemDao.get(BasicItem.class, bt.getParent());
+						if ("记录类型".equals(btParent.getDataType())) {//bt是分组类型的孩子
+							//找到这个分组
+							BasicItem btGroup = basicItemDao.get(BasicItem.class, bt.getGroupName());
+							btGroup.setUsingState(-1);
+							openSession.update(btGroup);
+						} else { //bt是重复类型的孩子
+							//找到这个重复类型  btParent
+							btParent.setUsingState(-1);
+							openSession.update(btParent);
+						}
+					}
+						
+					tx.commit();
+					
+					continue;
+				}
+			}
+			
+		//要新增的字段 
 		List queryNewAddCol = basicItemDao.queryNewAddCol();
-		for (Object object : queryNewAddCol) {
-			basicItemDao.excuteBySql(object.toString());
-		}
+			Iterator iteratorA = queryNewAddCol.iterator();
+			
+			while (iteratorA.hasNext()) {
+				Object[] cur = (Object[]) iteratorA.next();
+				String value = (String) cur[1];
+				String code = (String) cur[0];
+				try {
+					basicItemDao.excuteBySql(value);
+					
+					Session openSession = sFactory.openSession();
+					Transaction tx = openSession.beginTransaction();
+					BasicItem bt = basicItemDao.get(BasicItem.class, code);
+					bt.setUsingState(1);
+					openSession.update(bt);
+					tx.commit();
+				} catch (Exception e) {
+					Session openSession = sFactory.openSession();
+					Transaction tx = openSession.beginTransaction();
+					BasicItem basicItem = basicItemDao.get(BasicItem.class, code);
+					basicItem.setUsingState(-1);
+					openSession.update(basicItem);
+					tx.commit();
+				}
+			}
+			
+		//查询需要更新的字段语句 
+		List queryEditCol = basicItemDao.queryEditCol();
+		Iterator iteratorE = queryNewAddCol.iterator();
+		
+		while (iteratorE.hasNext()) {
+			Object[] cur = (Object[]) iteratorE.next();
+			String value = (String) cur[1];
+			String code = (String) cur[0];
+			
+			try {
+				basicItemDao.excuteBySql(value);
+				
+				Session openSession = sFactory.openSession();
+				Transaction tx = openSession.beginTransaction();
+				BasicItem bt = basicItemDao.get(BasicItem.class, code);
+				bt.setUsingState(1);
+				openSession.update(bt);
+				tx.commit();
+			} catch (Exception e) {
+				Session openSession = sFactory.openSession();
+				Transaction tx = openSession.beginTransaction();
+				BasicItem basicItem = basicItemDao.get(BasicItem.class, code);
+				basicItem.setUsingState(-1);
+				openSession.update(basicItem);
+				tx.commit();
+			}
+		}	
+			
+		//创建关系表
 		List queryCreRelaTab = basicItemDao.queryCreRelaTab();
 		for (Object object : queryCreRelaTab) {
 			basicItemDao.excuteBySql(object.toString());
 		}
+		
 	}
 
 	@Override
