@@ -242,6 +242,36 @@ public class BasicItemController {
 		}
 	}
 	
+	//创建表
+		@ResponseBody
+		@RequestMapping("/delete")
+		public AjaxPageResponse delete(String id){
+			try {
+				AjaxPageResponse response = new AjaxPageResponse();
+				List<BasicItem> btList = basicItemService.getDataByPId(id);
+				if (!btList.isEmpty()) {
+					
+					response.setNotice("请先删除孩子");
+					response.setNoticeType(NoticeType.INFO);
+					return response;
+				} else {
+					BasicItem basicItem = basicItemService.getBasicItem(id);
+					basicItemService.delete(basicItem);
+					
+					if ("记录类型".equals(basicItem.getDataType())) {
+						return AjaxPageResponse.CLOSE_AND_REFRESH_PAGE("删除成功", "basicItem_list");
+					} else {
+						response.setNotice("删除成功");
+						response.setNoticeType(NoticeType.SUC);
+						return response;
+					}
+				}
+			} catch (Exception e) {
+				logger.error("删除失败", e);
+				return AjaxPageResponse.FAILD("删除失败");
+			}
+		}
+	
 	@ResponseBody
 	@RequestMapping("/getDataByPid")
 	public String getDataByPid(String id){

@@ -41,7 +41,7 @@ public interface BasicItemService {
 	 * 从数据库中删除一个BasicItem对象
 	 * @param id
 	 */
-	void delete(String id);
+	void delete(BasicItem basicItem);
 	
 	/**
 	 * 改变状态值为过期or正常， 传过来实体：则实体下面所有的数据项都过期or正常

@@ -2,6 +2,7 @@ package cn.sowell.datacenter.test;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.text.DecimalFormat;
 
 import javax.annotation.Resource;
 import javax.persistence.Transient;
@@ -51,4 +52,18 @@ public class TestBasicItemDao {
 		basicItemService.createTabCol();
 	}
 	
+	@Test
+	@Transactional
+	public void fun2() {
+		
+		System.out.println(Float.parseFloat("4.4") + Float.parseFloat("19.8"));
+		
+		float price=Float.parseFloat("4.4") + Float.parseFloat("19.8");
+		DecimalFormat decimalFormat=new DecimalFormat(".00");//构造方法的字符格式这里如果小数不足2位,会以0补足.
+		String p=decimalFormat.format(price);//format 返回的是字符串
+		
+		float parseFloat = Float.parseFloat(p);
+		
+		System.out.println(p);
+	}
 }

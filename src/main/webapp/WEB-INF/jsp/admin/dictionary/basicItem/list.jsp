@@ -24,6 +24,7 @@
 							<li><a href="javascript:void(0)" class="edit_entity"><i class="icon edit-entity"></i>编辑实体</a></li>
 							<li><a href="javascript:void(0)" class="change_status"><i class="icon stale-entity"></i><c:if test="${item.usingState eq '0' }">过期实体</c:if><c:if test="${item.usingState eq '2' }">解除过期</c:if></a></li>
 							<li><a href="javascript:void(0)" class="get_entity_attr"><i class="icon entity-attr"></i>实体属性</a></li>
+							<li><a href="javascript:void(0)" class="delete_entity"><i class="icon edit-entity"></i>删除实体</a></li>
 						</ul>
 						<i class="icon delete"></i>	
 					</div>			

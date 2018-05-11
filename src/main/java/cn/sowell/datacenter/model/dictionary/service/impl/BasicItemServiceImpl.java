@@ -111,8 +111,7 @@ public class BasicItemServiceImpl implements BasicItemService {
 	}
 
 	@Override
-	public void delete(String id) {
-		BasicItem basicItem = basicItemDao.get(BasicItem.class, id);
+	public void delete(BasicItem basicItem) {
 		basicItemDao.delete(basicItem);
 	}
 	

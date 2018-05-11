@@ -7,6 +7,38 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
     		}
     	});
     });
+   
+   //删除实体 
+   $(".entity-list").on("click", ".delete_entity", function() {
+	   var entityid = $(this).parent().parent().attr("entityId");
+	   Dialog.confirm("删除可能会引起数据错误， 是否确认删除", function(isYes) {
+	   		if (isYes) {
+	   			Ajax.ajax('admin/dictionary/basicItem/delete', {
+	   			   id:entityid
+	   		   }, function(data) {
+	   	           
+	   	       });
+	   		}
+	   });
+   });
+   
+   //删除属性
+   $(".entity-list").on("click", ".delete_attr", function() {
+	   var entityid = $(this).parent().parent().attr("entityId");
+	   
+	   var patentId = $(this).attr("patentId");
+	   Dialog.confirm("删除可能会引起数据错误， 是否确认删除", function(isYes) {
+	   		if (isYes) {
+	   			Ajax.ajax('admin/dictionary/basicItem/delete', {
+	   			   id:entityid
+	   		   }, function(data) {
+	   			$(".new_add").remove();
+	   	       enityAttr(patentId);
+	   	       });
+	   		}
+	   });
+   });
+   
     //点击 添加实体 显示div
     $("#add_entity").click(function() {
         $("#add_entity_mes").html("");
@@ -904,7 +936,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
                     } else if (commonArr[i].childList[j].usingState == '2') {
                         str = str + "<div title=\"code:"+commonArr[i].childList[j].code+", 中文名称:"+commonArr[i].childList[j].cnName+",  英文名称:"+commonArr[i].childList[j].enName+",数据类型："+commonArr[i].childList[j].dataType+", 数据长度："+commonArr[i].childList[j].dataRange+", 字典序："+ commonArr[i].childList[j].dictParentId  +"  \" class=\"entity_attr stale\">" + commonArr[i].childList[j].cnName + "<ul class=\"entity_ul\" entityId=\"" + commonArr[i].childList[j].code + "\" status=\"" + commonArr[i].childList[j].usingState + "\">" + "<li><a href=\"javascript:void(0)\" class=\"edit_common\"><i class=\"icon edit-entity\"></i>编辑属性</a></li>" + "<li><a href=\"javascript:void(0)\" class=\"common_change_status\"><i class=\"icon stale-entity\"></i>解除过期"
                     }
-                    str = str + "</a>" + "</li>" + "</ul>" + "<i class=\"icon delete\"></i>" + "</div>";
+                    str = str + "</a>" + "</li>" +"<li><a href=\"javascript:void(0)\" patentId=\""+commonArr[i].childList[j].parent+"\" class=\"delete_attr\"><i class=\"icon edit-entity\"></i>删除属性</a></li>"+  "</ul>" + "<i class=\"icon delete\"></i>" +"</div>";
                 }
                 str = str + "<div class=\"entity_attr entity_attr_img add_comm\">" +
 							    "<img alt=\"添加普通属性\" src=\"media/admin/dictionary/basicItem/addEntity_icon.png\">" +
@@ -931,7 +963,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
                     } else if (moreArr[i].childList[j].usingState == '2') {
                         str = str + "<div title=\"code:"+moreArr[i].childList[j].code+", 中文名称:"+moreArr[i].childList[j].cnName+",  英文名称:"+moreArr[i].childList[j].enName+",数据类型："+moreArr[i].childList[j].dataType+", 数据长度："+moreArr[i].childList[j].dataRange+", 字典序："+ moreArr[i].childList[j].dictParentId  +"  \" class=\"entity_attr stale\">" + moreArr[i].childList[j].cnName + "<ul class=\"entity_ul\" entityId=\"" + moreArr[i].childList[j].code + "\" status=\"" + moreArr[i].childList[j].usingState + "\">" + "<li><a href=\"javascript:void(0)\" class=\"edit_more_child\"><i class=\"icon edit-entity\"></i>编辑属性</a></li>" + "<li><a href=\"javascript:void(0)\" class=\"more_child_change_status\"><i class=\"icon stale-entity\"></i>解除过期"
                     }
-                    str = str + "</a></li>" + "</ul>" + "<i class=\"icon delete\"></i>"+ "</div>";
+                    str = str + "</a></li>" + "<li><a href=\"javascript:void(0)\" patentId=\""+moreArr[i].parent+"\" class=\"delete_attr\"><i class=\"icon edit-entity\"></i>删除属性</a></li>"+ "</ul>" + "<i class=\"icon delete\"></i>"+ "</div>";
                 }
                 str = str + "<div class=\"entity_attr entity_attr_img add_more_child\">" +
 							    "<img alt=\"添加多值属性\" src=\"media/admin/dictionary/basicItem/addEntity_icon.png\">" +
