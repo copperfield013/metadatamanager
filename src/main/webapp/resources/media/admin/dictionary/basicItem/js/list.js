@@ -67,6 +67,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
     	$opera = $(this).closest('.entity_ch_head').siblings('.opera_group');
     	$opera.find("#add_group_mes").html("");
     	$opera.find("#add_group_mes").html("添加分组信息");
+    	$opera.find("#group_opera_form1").find("#cnName").val("");
     	$opera.show();
     });
     //点击 添加 多值属性 自身显示div
@@ -475,8 +476,15 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
         Ajax.ajax('admin/dictionary/basicItem/do_add', fData, function(data) {});
         $(".opera_group").hide();
         var entityId = $(".common_proper").attr("parentid");
+        
+        //重新加载全部
         $(".new_add").remove();        
         enityAttr(entityId);
+        
+      /*  //重新加载部分
+        $(".common_proper").find(".new_add").remove();   
+        commAttr(entityId);*/
+        
     });
     //点击确认， 进行添加多值属性自身
     $(".more_proper").on("click", "#more_but_confirm", function() {
@@ -934,7 +942,40 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
     	}else {
     		$('.entity_attr').removeClass('active');
     	}
-    })
+    });
+    
+    //获取普通属性的ajax, entityId  是当前实体的id
+    function commAttr(entityId) {
+        Ajax.ajax('admin/dictionary/basicItem/attrByPid', {
+            parentId: entityId
+        }, function(jsonData) {
+            var commonArr = jsonData.commonProper; //普通属性
+            
+            for (var i = 0; i < commonArr.length; i++) {
+                var str = "<div class=\"new_add clear-fix\">" + 
+                			"<div class=\"new_add_title\">" + "<span title=\"code:"+commonArr[i].code+",中文名称："+commonArr[i].cnName+"\">" +commonArr[i].cnName+ "</span>"+ 
+                			"<img id=\"edit_group\" groupId=\"" + commonArr[i].code + "\" src=\"media/admin/dictionary/basicItem/images/edit_ch.png\">" + 
+                			"</div><div class=\"clear-fix\">";                		    
+                for (var j = 0; j < commonArr[i].childList.length; j++) {                    
+                    if (commonArr[i].childList[j].usingState == '0') {
+                        str = str + "<div title=\"code:"+commonArr[i].childList[j].code+", 中文名称:"+commonArr[i].childList[j].cnName+",  英文名称:"+commonArr[i].childList[j].enName+",数据类型："+commonArr[i].childList[j].dataType+", 数据长度："+commonArr[i].childList[j].dataRange+", 字典序："+ commonArr[i].childList[j].dictParentId  +"  \" class=\"entity_attr\">" + commonArr[i].childList[j].cnName + "<ul class=\"entity_ul\" entityId=\"" + commonArr[i].childList[j].code + "\" status=\"" + commonArr[i].childList[j].usingState + "\">" + "<li><a href=\"javascript:void(0)\" class=\"edit_common\"><i class=\"icon edit-entity\"></i>编辑属性</a></li>" + "<li><a href=\"javascript:void(0)\" class=\"common_change_status\"><i class=\"icon stale-entity\"></i>过期实体"
+                    } else if (commonArr[i].childList[j].usingState == '2') {
+                        str = str + "<div title=\"code:"+commonArr[i].childList[j].code+", 中文名称:"+commonArr[i].childList[j].cnName+",  英文名称:"+commonArr[i].childList[j].enName+",数据类型："+commonArr[i].childList[j].dataType+", 数据长度："+commonArr[i].childList[j].dataRange+", 字典序："+ commonArr[i].childList[j].dictParentId  +"  \" class=\"entity_attr stale\">" + commonArr[i].childList[j].cnName + "<ul class=\"entity_ul\" entityId=\"" + commonArr[i].childList[j].code + "\" status=\"" + commonArr[i].childList[j].usingState + "\">" + "<li><a href=\"javascript:void(0)\" class=\"edit_common\"><i class=\"icon edit-entity\"></i>编辑属性</a></li>" + "<li><a href=\"javascript:void(0)\" class=\"common_change_status\"><i class=\"icon stale-entity\"></i>解除过期"
+                    }
+                    str = str + "</a>" + "</li>" +"<li><a href=\"javascript:void(0)\" patentId=\""+commonArr[i].childList[j].parent+"\" class=\"delete_attr\"><i class=\"icon edit-entity\"></i>删除属性</a></li>"+  "</ul>" + "<i class=\"icon delete\"></i>" +"</div>";
+                }
+                str = str + "<div class=\"entity_attr entity_attr_img add_comm\">" +
+							    "<img alt=\"添加普通属性\" src=\"media/admin/dictionary/basicItem/addEntity_icon.png\">" +
+							"</div></div>"	
+				str = str + "<div class=\"opera_comm\"><img class=\"opera_entity_img\" src=\"media/admin/dictionary/basicItem/opera_entity_icon.png\"><span id=\"add_comm_mes\"></span><form groupName="+commonArr[i].cnName+"  groupId="+commonArr[i].code+"   id=\"comm_opera_form1\" class=\"opera_entity_form\"><input type=\"hidden\" id=\"groupName\" name=\"groupName\" value=\"\"><input type=\"hidden\" id=\"comm_parent\" name=\"parent\" value=\"\"><input type=\"hidden\" id=\"edit_dataType\" value=\"\"><input type=\"hidden\" id=\"edit_dictParentId\" value=\"\"><input type=\"hidden\" name=\"code\" id=\"code\" /><div><span class=\"opera_entity_label\">中文名称</span><input type=\"text\" name=\"cnName\" id=\"cnName\" /></div><div><span class=\"opera_entity_label\">英文名称</span><input type=\"text\" name=\"enName\" id=\"enName\" /></div><div><span class=\"opera_entity_label\" id=\"cn_dataType\">数据类型</span><select id=\"dataType\" class=\"enum_dataType_one\" name=\"dataType\"></select></div><div><span class=\"opera_entity_label\" id=\"cn_dataRange\">数据长度</span><input type=\"text\" name=\"dataRange\" id=\"dataRange\"></div></form><div class=\"opera_entity_btn\"><span class=\"entity-btn-cancel\" id=\"comm_but_cancel\">取消</span><span class=\"entity-btn-confirm\" id=\"comm_but_confirm\">确认</span></div></div>";
+                str = str + "<div class=\"opera_group\"><img class=\"opera_entity_img\" src=\"media/admin/dictionary/basicItem/opera_entity_icon.png\"><span class=\"opera_entity_img\" id=\"add_group_mes\"></span><form id=\"group_opera_form1\" class=\"opera_entity_form\"><input type=\"hidden\" name=\"code\" id=\"code\" /><input type=\"hidden\" id=\"group_parent\" name=\"parent\" value=\"\"><input type=\"hidden\" name=\"dataType\" value=\"group\"><div><span class=\"opera_entity_label\">中文名称</span><input type=\"text\" name=\"cnName\" id=\"cnName\" /></div></form><div class=\"opera_entity_btn\"><span class=\"entity-btn-cancel\" id=\"group_but_cancel\">取消</span><span class=\"entity-btn-confirm\" id=\"group_but_confirm\">确认</span></div></div>";
+                str = str + "</div>";                
+                $(".common_proper").append(str);
+            }
+          
+        });
+    }
+
     //获取实体属性的ajax
     function enityAttr(entityId) {
         Ajax.ajax('admin/dictionary/basicItem/attrByPid', {
