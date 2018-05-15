@@ -157,6 +157,28 @@ public class BasicItemServiceImpl implements BasicItemService {
 	@Override
 	public void saveOrUpdate(BasicItem obj, String flag) {
 		basicItemDao.saveOrUpdate(obj, flag);
+		//如果是重复类型， 默认生成两个孩子， 
+		if ("重复类型".equals(obj.getDataType())) {
+			BasicItem childOne = new BasicItem();//多值属性编辑时间
+				childOne.setCode(obj.getCode() + "_ED");
+				childOne.setCnName("多值属性编辑时间");
+				childOne.setDataType("时间型");
+				childOne.setTableName(obj.getTableName());
+				childOne.setParent(obj.getParent()+ "_" + obj.getCode());
+				childOne.setUsingState(0);
+				childOne.setGroupName(obj.getCode());
+			BasicItem childTwo = new BasicItem();//多值属性唯一编码
+				childTwo.setCode(obj.getCode() + "_P");
+				childTwo.setCnName("多值属性唯一编码");
+				childTwo.setDataType("字符型");
+				childTwo.setDataRange("32");
+				childTwo.setTableName(obj.getTableName());
+				childTwo.setParent(obj.getParent()+ "_" + obj.getCode());
+				childTwo.setUsingState(0);
+				childTwo.setGroupName(obj.getCode());
+			basicItemDao.insert(childOne);
+			basicItemDao.insert(childTwo);
+		}
 	}
 
 	@Override
