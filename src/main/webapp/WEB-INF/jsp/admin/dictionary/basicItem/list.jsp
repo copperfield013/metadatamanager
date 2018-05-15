@@ -2,6 +2,7 @@
 <%@ include file="/WEB-INF/jsp/common/base_empty.jsp"%>
 <link rel="stylesheet" href="media/admin/dictionary/basicItem/css/list.css">
 <script src="media/admin/dictionary/basicItem/js/list.js"></script>
+<script src="media/admin/plugins/beyond/js/select2/select2.js"></script>
 
 <div id="entity-wrap">
 	<div class="entity-list">
@@ -18,15 +19,16 @@
 			<div class="entity_list clear-fix">
 				<c:forEach items="${list }" var="item" varStatus="i">
 						<%-- <c:if test="${item.usingState eq '0' }"><div title="code:${item.code }, 中文名称:${empty item.cnName ? '-': item.cnName},  英文名称:${empty  item.enName ? '-': item.enName}" class="entity_attr"></c:if> --%>
-						<div title="code:${item.code }, 中文名称:${empty item.cnName ? '-': item.cnName},  英文名称:${empty  item.enName ? '-': item.enName}" class="entity_attr <c:if test='${item.usingState eq "2" }'>stale</c:if>">				
+						<div title="code:${item.code }, 中文名称:${empty item.cnName ? '-': item.cnName},  英文名称:${empty  item.enName ? '-': item.enName}" class="entity_attr <c:if test='${item.usingState eq "2" }'>stale</c:if><c:if test='${item.usingState eq "1" }'>inuse</c:if><c:if test='${item.usingState eq "0" }'>newadd</c:if><c:if test='${item.usingState eq "-1" }'>inerror</c:if>">				
 						${item.cnName }
 						<ul class="entity_ul" entityId="${item.code }" status="${item.usingState }">
-							<li><a href="javascript:void(0)" class="edit_entity"><i class="icon edit-entity"></i>编辑实体</a></li>
-							<li><a href="javascript:void(0)" class="change_status"><i class="icon stale-entity"></i><c:if test="${item.usingState eq '0' }">过期实体</c:if><c:if test="${item.usingState eq '2' }">解除过期</c:if></a></li>
+							<li><a href="javascript:void(0)" class="edit_entity"><i class="icon edit-entity"></i>编辑实体</a></li>							
+							<c:if test="${item.usingState eq '0' }"><li><a href="javascript:void(0)" class="change_status"><i class="icon stale-entity"></i>过期实体</a></li></c:if>
+							<c:if test="${item.usingState eq '2' }"><li><a href="javascript:void(0)" class="change_status"><i class="icon stale-entity"></i>解除过期</a></li></c:if>
 							<li><a href="javascript:void(0)" class="get_entity_attr"><i class="icon entity-attr"></i>实体属性</a></li>
 							<li><a href="javascript:void(0)" class="delete_entity"><i class="icon edit-entity"></i>删除实体</a></li>
 						</ul>
-						<i class="icon delete"></i>	
+						<i class="icon status"></i>	
 					</div>			
 				</c:forEach>		
 				<div class="entity_attr entity_attr_img" id="add_entity">
@@ -34,7 +36,7 @@
 				</div>				
 			</div>
 			<div class="opera_entity">
-				<img class="opera_entity_img" src="media/admin/dictionary/basicItem/opera_entity_icon.png">
+				<img class="opera_entity_img" src="media/admin/dictionary/basicItem/images/info.png">
 				<span id="add_entity_mes"></span>
 				<form id="entity_opera_form1" class="opera_entity_form">
 						<input type="hidden" name="code" id="code"/>
@@ -57,15 +59,15 @@
 	
 		<div class="common_proper entity" parentId="">
 		     <div class="entity_ch_head">		           
-			      <img src="media/admin/dictionary/basicItem/common_proper_title_icon.png">
+			      <img src="media/admin/dictionary/basicItem/images/common.png">
 			      <span>普通属性</span>		           	
 		          <div class="entity_ch_opera">
-		               <img id="add_group"  src="media/admin/dictionary/basicItem/add_group_icon.png">
+		               <img id="add_group"  src="media/admin/dictionary/basicItem/images/add-common.png">
 		               <span>添加分组</span>
 		          </div>
 		     </div>
 		     <div class="opera_group">
-				<img class="opera_entity_img" src="media/admin/dictionary/basicItem/opera_entity_icon.png">
+				<img class="opera_entity_img" src="media/admin/dictionary/basicItem/images/info.png">
 				<span class="opera_entity_img" id="add_group_mes"></span>
 				<form id="group_opera_form1" class="opera_entity_form">
 						<input type="hidden" name="code" id="code"/>
@@ -84,15 +86,15 @@
 		</div>
 		<div class="more_proper entity" parentId="">
 			<div class="entity_ch_head">		           
-				<img src="media/admin/dictionary/basicItem/common_proper_title_icon.png">
+				<img src="media/admin/dictionary/basicItem/images/more.png">
 				<span>多值属性</span>		           	
 				<div class="entity_ch_opera">
-					 <img id="add_more"  src="media/admin/dictionary/basicItem/add_group_icon.png">
+					 <img id="add_more"  src="media/admin/dictionary/basicItem/images/add-more.png">
 					 <span>添加多值属性</span>
 				</div>
 			</div>		          
 		    <div class="opera_more">
-				<img class="opera_entity_img" src="media/admin/dictionary/basicItem/opera_entity_icon.png">
+				<img class="opera_entity_img" src="media/admin/dictionary/basicItem/images/info.png">
 				<span class="opera_entity_img" id="add_more_mes"></span>
 				<form id="more_opera_form1" class="opera_entity_form">
 						<input type="hidden" name="code" id="code"/>
@@ -119,7 +121,7 @@
 		</div>
 		<div class="entity_relation entity" entityId="">
 		           <div class="entity_ch_head">
-				        <img src="media/admin/dictionary/basicItem/common_proper_title_icon.png">
+				        <img src="media/admin/dictionary/basicItem/images/relative.png">
 				        <span>实体关系管理</span>
 				   </div>
 		           <div class="entity_list entity_relation_list clear-fix">
@@ -128,7 +130,7 @@
 		           		</div>	
 		           </div>
 		          <div class="opera_relation">
-				    <img class="opera_entity_img" src="media/admin/dictionary/basicItem/opera_entity_icon.png">
+				    <img class="opera_entity_img" src="media/admin/dictionary/basicItem/images/info.png">
 				    <span id="add_relation_mes"></span>
 				    <form id="entity_relation_opera_form" class="opera_entity_form">
 				        <input type="hidden" name="leftRecordType" id="leftRecordType">
@@ -142,7 +144,7 @@
 						</div>
 				        <div class="select-wrap" id="rela_right">
 				            <span class="opera_entity_label">选择右实体</span>
-				            <select id="rightRecordType" name="rightRecordType">
+				            <select id="rightRecordType" name="rightRecordType" style="width:30%">
 				            </select>
 				        </div>
 				          <input type="hidden" name="typeCode" id="typeCode" />

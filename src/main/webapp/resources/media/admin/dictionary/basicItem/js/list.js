@@ -80,9 +80,10 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
     
     //选中数据类型为  枚举   触发事件   普通属性
     $(".common_proper").on("change", ".enum_dataType_one", function() {
+    	var $this = $(this);
     	var options=$(".enum_dataType_one option:selected");  //获取选中的项
-    	var $form = $(".opera_comm").find("#comm_opera_form1");
-    	if ("枚举" == options.val()) {
+    	var $form = $this.closest(".opera_comm").find("#comm_opera_form1");
+    	if ("枚举" == $this.val()) {    		
     		 //如果是枚举， 则显示下拉列表
 	    	$CPF.showLoading();
 	        $form.find("#dictParentId").remove();
@@ -94,10 +95,15 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
                 for (var p in dataArr) { //遍历json数组时，这么写p为索引，0,1
                     str = str + "<option value=\"" + dataArr[p].id + "\">" + dataArr[p].name + "</option>"; 
                 }
-                str = str + "</select>";
+                str = str + "</select>";               
                 $form.find("#dataType").after(str);
                 $form.find("#dataRange").val("枚举").hide();
-                $form.find("#cn_dataRange").hide();
+                $form.find("#cn_dataRange").hide();   
+                /*$this.closest(".select-wrap").find("#dictParentId").css({
+                	"width": "30%"
+                });                  
+                                   
+                $this.closest(".select-wrap").find("#dictParentId").select2();*/             
                 $CPF.closeLoading();
             });            
     	} else {
@@ -330,30 +336,36 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
         $(this).closest('.new_add').find(".twoLevelAttr_show").show();
     });
     //点击 查看二级属性  显示div
-    $(".more_proper").on("click", "#twoLevelAttr", function() {
+    $(".more_proper").on("click", "#twoLevelAttr", function() {    	
         var twoLevelId = $(this).attr("twoLevelId");
         var $twochile = $(this).closest(".new_add").find(".twoLevelAttr_child");
-        Ajax.ajax('admin/dictionary/basicItem/getTwoLevelAttr', {
-            id: twoLevelId
-        }, function(data) {
-            var datatmm = data.tmm;
-            var child = datatmm.childList;
-            $twochile.show();
-            $twochile.find("#twoLevelAttr_name").html("");
-            $twochile.find("#twoLevelAttr_name").html(datatmm.name);
-            $twochile.find("#edit_twoLevelAttr").attr("twoLevelId", datatmm.id);
-            $twochile.find(".new_add_twolc").remove();
-            var str = "";
-            for (var key in child) {            	
-                str = str + "<div title=\"id:"+child[key].id+", 名称："+child[key].name+"\" twoLevel_chil_Id=" + child[key].id +" class='entity_attr new_add_twolc'>"+child[key].name+"<ul class='entity_ul_hide' entityId='${item.code}' status='${item.usingState}'><li><a href='javascript:void(0)' class='edit_entity'><i class='icon edit-entity'></i>编辑实体</a></li></ul><i class='icon delete'></i></div>";
-            }
-            str = str + "<div class=\"entity_attr new_add_twolc entity_attr_img add_comm add_twoLevelAttr_children\"><img mappingId=\"" + datatmm.id + "\" alt=\"添加二级属性\" src=\"media/admin/dictionary/basicItem/addEntity_icon.png\"></div>"
-            $twochile.append(str);
-        });
+        if($(this).hasClass("active")) {
+        	$(this).removeClass("active").children("a").text("查看二级属性");
+        	$twochile.hide();
+        }else {
+        	$(this).addClass("active").children("a").text("收起二级属性");        	
+        	Ajax.ajax('admin/dictionary/basicItem/getTwoLevelAttr', {
+                id: twoLevelId
+            }, function(data) {
+                var datatmm = data.tmm;
+                var child = datatmm.childList;
+                $twochile.show();
+                $twochile.find("#twoLevelAttr_name").html("");
+                $twochile.find("#twoLevelAttr_name").html(datatmm.name);
+                $twochile.find("#edit_twoLevelAttr").attr("twoLevelId", datatmm.id);
+                $twochile.find(".new_add_twolc").remove();
+                var str = "";
+                for (var key in child) {              	
+                    str = str + "<div title=\"id:"+child[key].id+", 名称："+child[key].name+"\" twoLevel_chil_Id=" + child[key].id +" class='entity_attr new_add_twolc'>"+child[key].name+"<ul class='entity_ul' entityId='${item.code}' status='${item.usingState}'><li><a href='javascript:void(0)' class='edit_entity'><i class='icon edit-entity'></i>编辑实体</a></li></ul></div>";
+                }
+                str = str + "<div class=\"entity_attr new_add_twolc entity_attr_img add_comm add_twoLevelAttr_children\"><img mappingId=\"" + datatmm.id + "\" alt=\"添加二级属性\" src=\"media/admin/dictionary/basicItem/addEntity_icon.png\"></div>"
+                $twochile.append(str);
+            });
+        }        
     });
     //点击 确认  二级属性的孩子 
     $(".more_proper").on("click", "#twoLevelAttr_child_but_confirm", function() {
-        var $form = $(this).closest(".twoLevelAttr_child_show").find('form');
+        var $form = $(this).closest(".twoLevelAttr_child_show").find('form');        
         var name = $form.find("#name").val();
         var mappingId = $form.find("#mappingId").val();
         var dictionaryCode = $form.find("#dictionaryCode").val();
@@ -364,7 +376,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
         }, function(data) {});
         var entityId = $(".common_proper").attr("parentid");
         $(".new_add").remove();
-        enityAttr(entityId);
+        enityAttr(entityId);              
     });
     //点击 添加 二级属性的孩子 显示div
     $(".more_proper").on("click", ".add_twoLevelAttr_children", function() {
@@ -402,19 +414,24 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
             }
             $(".opera_relation").find("#entity_relation_opera_form").find("#rightRecordType").html("");
             $(".opera_relation").find("#entity_relation_opera_form").find("#rightRecordType").append(str);
+            /*$("#rightRecordType").select2();*/
+            $("#add_relation_mes").html("");
+            $("#add_relation_mes").html("添加关系");
+            $(".opera_relation").find("form").find("input").val("");
+            $(".opera_relation").show();
         });
-        $("#add_relation_mes").html("");
-        $("#add_relation_mes").html("添加关系");
-        $(".opera_relation").find("form").find("input").val("");
-        $(".opera_relation").show();
+        
+        
     });
     // 点击取消  取消添加关系
     $(".entity_relation").on("click", "#relation_but_cancel", function() {
         $(".opera_relation").hide();
+        $(".entity_relation_list").children(".add_entity_relation").removeClass("pitch");
     });
     //点击取消 ， 取消添加实体
     $("#entity_but_cancel").click(function() {
         var $form1 = $(this).closest(".opera_entity").find("form");
+        $("#add_entity").closest(".entity_attr").removeClass("pitch").siblings().removeClass("pitch");
         $form1.find("#code").removeAttr("readonly");
         $form1.find("#cnName").val("");
         $form1.find("#code").val("");
@@ -463,6 +480,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
     });
     //点击取消 ， 取消添加多值属性的孩子
     $(".more_proper").on("click", "#twoLevelAttr_but_cancel", function() {
+    	$(".add_twoLevelAttr_children").removeClass("pitch");
         var $form1 = $(this).parent();
         $form1.find("#id").val("");
         $form1.find("#dictionaryAttr").val("");
@@ -621,30 +639,52 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
     //给 实体列表  注册鼠标点击事件  让自己的ul显示出来    
     var $list = $(".entity_list");
     $list.on('click', '.entity_attr', function() {
-    	if($(this).hasClass('active')) {
-    		$(this).removeClass('active');
+    	var $this = $(this).closest(".entity_attr");    	
+    	if($this.hasClass("entity_attr_img")){
+    		$this.addClass('pitch').siblings()
+    		.removeClass('pitch')
+    		.removeClass('active');
     	}else {
-    		$(this).addClass('active')
-        	.siblings().removeClass('active');
+    		if($this.hasClass('active')) {
+        		$this.removeClass('active');
+        	}else {        		
+        		$this.addClass('active')
+            	.siblings().removeClass('active');
+        	}
     	}
+    	
     })
     //普通属性显示 ul
     $(".common_proper").on("click", ".entity_attr", function() {
-    	if($(this).hasClass('active')) {
-    		$(this).removeClass('active');
+    	var $this = $(this).closest(".entity_attr");
+    	if($this.hasClass("entity_attr_img")){
+    		$this.addClass('pitch').siblings()
+    		.removeClass('pitch')
+    		.removeClass('active');
     	}else {
-    		$(this).addClass('active')
-        	.siblings().removeClass('active');
-    	}
+    		if($this.hasClass('active')) {
+        		$this.removeClass('active');
+        	}else {
+        		$this.addClass('active')
+            	.siblings().removeClass('active');
+        	}
+    	}    	
     });
     //多值属性显示 ul
     $(".more_proper").on("click", ".entity_attr", function() {
-    	if($(this).hasClass('active')) {
-    		$(this).removeClass('active');
-    	}else {
-    		$(this).addClass('active')
-        	.siblings().removeClass('active');
-    	}
+    	var $this = $(this).closest(".entity_attr");
+    	if($this.hasClass("entity_attr_img")){
+    		$this.addClass('pitch').siblings()
+    		.removeClass('pitch')
+    		.removeClass('active');
+    	}else  {
+    		if($this.hasClass('active')) {
+        		$this.removeClass('active');
+        	}else {
+        		$this.addClass('active')
+            	.siblings().removeClass('active');
+        	}
+    	}    	
     });
     /* 	//二级属性的孩子显示 ul
 	$(".more_proper").on("click", ".more_proper_li", function() {
@@ -657,7 +697,12 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
   
     //编辑实体获取 id    
     $(".edit_entity").click(function() {
+    	$('.entity_attr').removeClass('active').removeClass('pitch');
+    	$(this).closest('.entity_attr').addClass('pitch');
         var entityId = $(this).parent().parent().attr("entityId");
+        $(".common_proper").hide();
+        $(".more_proper").hide();
+        $(".entity_relation").hide();
         Ajax.ajax('admin/dictionary/basicItem/getOne', {
             id: entityId
         }, function(jsonData) {
@@ -910,9 +955,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
             status = 'pastDue';
         } else {
             status = 'normal';
-        }
-        console.log(entityId);
-		console.log(status);
+        }        
         Ajax.ajax('admin/dictionary/basicItem/saveStatus', {
             id: entityId,
             statusStr: status
@@ -923,6 +966,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
     	$('.entity_attr').removeClass('active').removeClass('pitch');
     	$(this).closest('.entity_attr').addClass('pitch');
         var entityId = $(this).parent().parent().attr("entityId");
+        $(".opera_entity").hide();
         $(".common_proper").show();
         $(".more_proper").show();
         $(".entity_relation").show();
@@ -937,7 +981,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
     //document 绑定事件
     $(document).on('click', function(e) {    	
     	var $target = $(e.target);
-    	if($target.hasClass('entity_attr')) {
+    	if($target.hasClass('entity_attr') || $target.hasClass('status')) {
     		return;
     	}else {
     		$('.entity_attr').removeClass('active');
@@ -967,7 +1011,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
                 str = str + "<div class=\"entity_attr entity_attr_img add_comm\">" +
 							    "<img alt=\"添加普通属性\" src=\"media/admin/dictionary/basicItem/addEntity_icon.png\">" +
 							"</div></div>"	
-				str = str + "<div class=\"opera_comm\"><img class=\"opera_entity_img\" src=\"media/admin/dictionary/basicItem/opera_entity_icon.png\"><span id=\"add_comm_mes\"></span><form groupName="+commonArr[i].cnName+"  groupId="+commonArr[i].code+"   id=\"comm_opera_form1\" class=\"opera_entity_form\"><input type=\"hidden\" id=\"groupName\" name=\"groupName\" value=\"\"><input type=\"hidden\" id=\"comm_parent\" name=\"parent\" value=\"\"><input type=\"hidden\" id=\"edit_dataType\" value=\"\"><input type=\"hidden\" id=\"edit_dictParentId\" value=\"\"><input type=\"hidden\" name=\"code\" id=\"code\" /><div><span class=\"opera_entity_label\">中文名称</span><input type=\"text\" name=\"cnName\" id=\"cnName\" /></div><div><span class=\"opera_entity_label\">英文名称</span><input type=\"text\" name=\"enName\" id=\"enName\" /></div><div><span class=\"opera_entity_label\" id=\"cn_dataType\">数据类型</span><select id=\"dataType\" class=\"enum_dataType_one\" name=\"dataType\"></select></div><div><span class=\"opera_entity_label\" id=\"cn_dataRange\">数据长度</span><input type=\"text\" name=\"dataRange\" id=\"dataRange\"></div></form><div class=\"opera_entity_btn\"><span class=\"entity-btn-cancel\" id=\"comm_but_cancel\">取消</span><span class=\"entity-btn-confirm\" id=\"comm_but_confirm\">确认</span></div></div>";
+				str = str + "<div class=\"opera_comm\"><img class=\"opera_entity_img\" src=\"media/admin/dictionary/basicItem/opera_entity_icon.png\"><span id=\"add_comm_mes\"></span><form groupName="+commonArr[i].cnName+"  groupId="+commonArr[i].code+"   id=\"comm_opera_form1\" class=\"opera_entity_form\"><input type=\"hidden\" id=\"groupName\" name=\"groupName\" value=\"\"><input type=\"hidden\" id=\"comm_parent\" name=\"parent\" value=\"\"><input type=\"hidden\" id=\"edit_dataType\" value=\"\"><input type=\"hidden\" id=\"edit_dictParentId\" value=\"\"><input type=\"hidden\" name=\"code\" id=\"code\" /><div><span class=\"opera_entity_label\">中文名称</span><input type=\"text\" name=\"cnName\" id=\"cnName\" /></div><div><span class=\"opera_entity_label\">英文名称</span><input type=\"text\" name=\"enName\" id=\"enName\" /></div><div class=\"select-wrap\"><span class=\"opera_entity_label\" id=\"cn_dataType\">数据类型</span><select id=\"dataType\" class=\"enum_dataType_one\" name=\"dataType\"></select></div><div><span class=\"opera_entity_label\" id=\"cn_dataRange\">数据长度</span><input type=\"text\" name=\"dataRange\" id=\"dataRange\"></div></form><div class=\"opera_entity_btn\"><span class=\"entity-btn-cancel\" id=\"comm_but_cancel\">取消</span><span class=\"entity-btn-confirm\" id=\"comm_but_confirm\">确认</span></div></div>";
                 str = str + "<div class=\"opera_group\"><img class=\"opera_entity_img\" src=\"media/admin/dictionary/basicItem/opera_entity_icon.png\"><span class=\"opera_entity_img\" id=\"add_group_mes\"></span><form id=\"group_opera_form1\" class=\"opera_entity_form\"><input type=\"hidden\" name=\"code\" id=\"code\" /><input type=\"hidden\" id=\"group_parent\" name=\"parent\" value=\"\"><input type=\"hidden\" name=\"dataType\" value=\"group\"><div><span class=\"opera_entity_label\">中文名称</span><input type=\"text\" name=\"cnName\" id=\"cnName\" /></div></form><div class=\"opera_entity_btn\"><span class=\"entity-btn-cancel\" id=\"group_but_cancel\">取消</span><span class=\"entity-btn-confirm\" id=\"group_but_confirm\">确认</span></div></div>";
                 str = str + "</div>";                
                 $(".common_proper").append(str);
@@ -978,7 +1022,8 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
 
     //获取实体属性的ajax
     function enityAttr(entityId) {
-        Ajax.ajax('admin/dictionary/basicItem/attrByPid', {
+    	var uuid = "dcr" + guid();
+        Ajax.ajax('admin/dictionary/basicItem/attrByPid?uuid='+uuid, {
             parentId: entityId
         }, function(jsonData) {
             var commonArr = jsonData.commonProper; //普通属性
@@ -990,18 +1035,31 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
                 			"</div><div class=\"clear-fix\">";                		    
                 for (var j = 0; j < commonArr[i].childList.length; j++) {                    
                     if (commonArr[i].childList[j].usingState == '0') {
-                        str = str + "<div title=\"code:"+commonArr[i].childList[j].code+", 中文名称:"+commonArr[i].childList[j].cnName+",  英文名称:"+commonArr[i].childList[j].enName+",数据类型："+commonArr[i].childList[j].dataType+", 数据长度："+commonArr[i].childList[j].dataRange+", 字典序："+ commonArr[i].childList[j].dictParentId  +"  \" class=\"entity_attr\">" + commonArr[i].childList[j].cnName + "<ul class=\"entity_ul\" entityId=\"" + commonArr[i].childList[j].code + "\" status=\"" + commonArr[i].childList[j].usingState + "\">" + "<li><a href=\"javascript:void(0)\" class=\"edit_common\"><i class=\"icon edit-entity\"></i>编辑属性</a></li>" + "<li><a href=\"javascript:void(0)\" class=\"common_change_status\"><i class=\"icon stale-entity\"></i>过期实体"
+                        str = str + "<div title=\"code:"+commonArr[i].childList[j].code+", 中文名称:"+commonArr[i].childList[j].cnName+",  英文名称:"+commonArr[i].childList[j].enName+",数据类型："+commonArr[i].childList[j].dataType+", 数据长度："+commonArr[i].childList[j].dataRange+", 字典序："+ commonArr[i].childList[j].dictParentId  +"  \" class=\"entity_attr newadd\">" + commonArr[i].childList[j].cnName + "<ul class=\"entity_ul\" entityId=\"" + commonArr[i].childList[j].code + "\" status=\"" + commonArr[i].childList[j].usingState + "\">" + "<li><a href=\"javascript:void(0)\" class=\"edit_common\"><i class=\"icon edit-entity\"></i>编辑属性</a></li>" + "<li><a href=\"javascript:void(0)\" class=\"common_change_status\"><i class=\"icon stale-entity\"></i>过期实体"
                     } else if (commonArr[i].childList[j].usingState == '2') {
                         str = str + "<div title=\"code:"+commonArr[i].childList[j].code+", 中文名称:"+commonArr[i].childList[j].cnName+",  英文名称:"+commonArr[i].childList[j].enName+",数据类型："+commonArr[i].childList[j].dataType+", 数据长度："+commonArr[i].childList[j].dataRange+", 字典序："+ commonArr[i].childList[j].dictParentId  +"  \" class=\"entity_attr stale\">" + commonArr[i].childList[j].cnName + "<ul class=\"entity_ul\" entityId=\"" + commonArr[i].childList[j].code + "\" status=\"" + commonArr[i].childList[j].usingState + "\">" + "<li><a href=\"javascript:void(0)\" class=\"edit_common\"><i class=\"icon edit-entity\"></i>编辑属性</a></li>" + "<li><a href=\"javascript:void(0)\" class=\"common_change_status\"><i class=\"icon stale-entity\"></i>解除过期"
+                    } else if (commonArr[i].childList[j].usingState == '-1') {
+                        str = str + "<div title=\"code:"+commonArr[i].childList[j].code+", 中文名称:"+commonArr[i].childList[j].cnName+",  英文名称:"+commonArr[i].childList[j].enName+",数据类型："+commonArr[i].childList[j].dataType+", 数据长度："+commonArr[i].childList[j].dataRange+", 字典序："+ commonArr[i].childList[j].dictParentId  +"  \" class=\"entity_attr inerror\">" + commonArr[i].childList[j].cnName + "<ul class=\"entity_ul\" entityId=\"" + commonArr[i].childList[j].code + "\" status=\"" + commonArr[i].childList[j].usingState + "\">" + "<li><a href=\"javascript:void(0)\" class=\"edit_common\"><i class=\"icon edit-entity\"></i>编辑属性</a></li>" + "<li><a href=\"javascript:void(0)\" class=\"common_change_status\"><i class=\"icon stale-entity\"></i>解除过期"
+                    } else if (commonArr[i].childList[j].usingState == '1') {
+                        str = str + "<div title=\"code:"+commonArr[i].childList[j].code+", 中文名称:"+commonArr[i].childList[j].cnName+",  英文名称:"+commonArr[i].childList[j].enName+",数据类型："+commonArr[i].childList[j].dataType+", 数据长度："+commonArr[i].childList[j].dataRange+", 字典序："+ commonArr[i].childList[j].dictParentId  +"  \" class=\"entity_attr inuse\">" + commonArr[i].childList[j].cnName + "<ul class=\"entity_ul\" entityId=\"" + commonArr[i].childList[j].code + "\" status=\"" + commonArr[i].childList[j].usingState + "\">" + "<li><a href=\"javascript:void(0)\" class=\"edit_common\"><i class=\"icon edit-entity\"></i>编辑属性</a></li>" + "<li><a href=\"javascript:void(0)\" class=\"common_change_status\"><i class=\"icon stale-entity\"></i>解除过期"
                     }
-                    str = str + "</a>" + "</li>" +"<li><a href=\"javascript:void(0)\" patentId=\""+commonArr[i].childList[j].parent+"\" class=\"delete_attr\"><i class=\"icon edit-entity\"></i>删除属性</a></li>"+  "</ul>" + "<i class=\"icon delete\"></i>" +"</div>";
+                    str = str + "</a>" + "</li>" +"<li><a href=\"javascript:void(0)\" patentId=\""+commonArr[i].childList[j].parent+"\" class=\"delete_attr\"><i class=\"icon edit-entity\"></i>删除属性</a></li>"+  "</ul>" + "<i class=\"icon status\"></i>" +"</div>";
                 }
                 str = str + "<div class=\"entity_attr entity_attr_img add_comm\">" +
 							    "<img alt=\"添加普通属性\" src=\"media/admin/dictionary/basicItem/addEntity_icon.png\">" +
 							"</div></div>"	
-				str = str + "<div class=\"opera_comm\"><img class=\"opera_entity_img\" src=\"media/admin/dictionary/basicItem/opera_entity_icon.png\"><span id=\"add_comm_mes\"></span><form groupName="+commonArr[i].cnName+"  groupId="+commonArr[i].code+"   id=\"comm_opera_form1\" class=\"opera_entity_form\"><input type=\"hidden\" id=\"groupName\" name=\"groupName\" value=\"\"><input type=\"hidden\" id=\"comm_parent\" name=\"parent\" value=\"\"><input type=\"hidden\" id=\"edit_dataType\" value=\"\"><input type=\"hidden\" id=\"edit_dictParentId\" value=\"\"><input type=\"hidden\" name=\"code\" id=\"code\" /><div><span class=\"opera_entity_label\">中文名称</span><input type=\"text\" name=\"cnName\" id=\"cnName\" /></div><div><span class=\"opera_entity_label\">英文名称</span><input type=\"text\" name=\"enName\" id=\"enName\" /></div><div><span class=\"opera_entity_label\" id=\"cn_dataType\">数据类型</span><select id=\"dataType\" class=\"enum_dataType_one\" name=\"dataType\"></select></div><div><span class=\"opera_entity_label\" id=\"cn_dataRange\">数据长度</span><input type=\"text\" name=\"dataRange\" id=\"dataRange\"></div></form><div class=\"opera_entity_btn\"><span class=\"entity-btn-cancel\" id=\"comm_but_cancel\">取消</span><span class=\"entity-btn-confirm\" id=\"comm_but_confirm\">确认</span></div></div>";
-                str = str + "<div class=\"opera_group\"><img class=\"opera_entity_img\" src=\"media/admin/dictionary/basicItem/opera_entity_icon.png\"><span class=\"opera_entity_img\" id=\"add_group_mes\"></span><form id=\"group_opera_form1\" class=\"opera_entity_form\"><input type=\"hidden\" name=\"code\" id=\"code\" /><input type=\"hidden\" id=\"group_parent\" name=\"parent\" value=\"\"><input type=\"hidden\" name=\"dataType\" value=\"group\"><div><span class=\"opera_entity_label\">中文名称</span><input type=\"text\" name=\"cnName\" id=\"cnName\" /></div></form><div class=\"opera_entity_btn\"><span class=\"entity-btn-cancel\" id=\"group_but_cancel\">取消</span><span class=\"entity-btn-confirm\" id=\"group_but_confirm\">确认</span></div></div>";
-                str = str + "</div>";                
+				str = str + "<div class=\"opera_comm\"><img class=\"opera_entity_img\" src=\"media/admin/dictionary/basicItem/images/info.png\"><span id=\"add_comm_mes\"></span><form groupName="+commonArr[i].cnName+"  groupId="+commonArr[i].code+"   id=\"comm_opera_form1\" class=\"opera_entity_form\"><input type=\"hidden\" id=\"groupName\" name=\"groupName\" value=\"\"><input type=\"hidden\" id=\"comm_parent\" name=\"parent\" value=\"\"><input type=\"hidden\" id=\"edit_dataType\" value=\"\"><input type=\"hidden\" id=\"edit_dictParentId\" value=\"\"><input type=\"hidden\" name=\"code\" id=\"code\" /><div><span class=\"opera_entity_label\">中文名称</span><input type=\"text\" name=\"cnName\" id=\"cnName\" /></div><div><span class=\"opera_entity_label\">英文名称</span><input type=\"text\" name=\"enName\" id=\"enName\" /></div><div class=\"select-wrap\"><span class=\"opera_entity_label\" id=\"cn_dataType\">数据类型</span><select id=\"dataType\" class=\"enum_dataType_one\" name=\"dataType\"></select></div><div><span class=\"opera_entity_label\" id=\"cn_dataRange\">数据长度</span><input type=\"text\" name=\"dataRange\" id=\"dataRange\"></div></form><div class=\"opera_entity_btn\"><span class=\"entity-btn-cancel\" id=\"comm_but_cancel\">取消</span><span class=\"entity-btn-confirm\" id=\"comm_but_confirm\">确认</span></div></div>";
+                str = str + "<div class=\"opera_group\"><img class=\"opera_entity_img\" src=\"media/admin/dictionary/basicItem/images/info.png\"><span class=\"opera_entity_img\" id=\"add_group_mes\"></span><form id=\"group_opera_form1\" class=\"opera_entity_form\"><input type=\"hidden\" name=\"code\" id=\"code\" /><input type=\"hidden\" id=\"group_parent\" name=\"parent\" value=\"\"><input type=\"hidden\" name=\"dataType\" value=\"group\"><div><span class=\"opera_entity_label\">中文名称</span><input type=\"text\" name=\"cnName\" id=\"cnName\" /></div></form><div class=\"opera_entity_btn\"><span class=\"entity-btn-cancel\" id=\"group_but_cancel\">取消</span><span class=\"entity-btn-confirm\" id=\"group_but_confirm\">确认</span></div></div>";
+                if(commonArr[i].usingState == '0'){
+                	str = str + "<i class=\"icon status newadd\"></div>";
+                } else if(commonArr[i].usingState == '2'){
+                	str = str + "<i class=\"icon status stale\"></div>";
+                } else if(commonArr[i].usingState == '-1'){
+                	str = str + "<i class=\"icon status inerror\"></div>";
+                } else if(commonArr[i].usingState == '1'){
+                	str = str + "<i class=\"icon status inuse\"></div>";
+                }
+                                
                 $(".common_proper").append(str);
             }
             var moreArr = jsonData.moreProper; //多值属性
@@ -1017,29 +1075,41 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
                 str = str + "</div><div class=\"clear-fix\">";
                 for (var j = 0; j < moreArr[i].childList.length; j++) {                    
                     if (moreArr[i].childList[j].usingState == '0') {
-                        str = str + "<div title=\"code:"+moreArr[i].childList[j].code+", 中文名称:"+moreArr[i].childList[j].cnName+",  英文名称:"+moreArr[i].childList[j].enName+",数据类型："+moreArr[i].childList[j].dataType+", 数据长度："+moreArr[i].childList[j].dataRange+", 字典序："+ moreArr[i].childList[j].dictParentId  +"  \" class=\"entity_attr\">"  + moreArr[i].childList[j].cnName + "<ul class=\"entity_ul\" entityId=\"" + moreArr[i].childList[j].code + "\" status=\"" + moreArr[i].childList[j].usingState + "\">" + "<li><a href=\"javascript:void(0)\" class=\"edit_more_child\"><i class=\"icon edit-entity\"></i>编辑属性</a></li>" + "<li><a href=\"javascript:void(0)\" class=\"more_child_change_status\"><i class=\"icon stale-entity\"></i>过期实体"
+                        str = str + "<div title=\"code:"+moreArr[i].childList[j].code+", 中文名称:"+moreArr[i].childList[j].cnName+",  英文名称:"+moreArr[i].childList[j].enName+",数据类型："+moreArr[i].childList[j].dataType+", 数据长度："+moreArr[i].childList[j].dataRange+", 字典序："+ moreArr[i].childList[j].dictParentId  +"  \" class=\"entity_attr newadd\">"  + moreArr[i].childList[j].cnName + "<ul class=\"entity_ul\" entityId=\"" + moreArr[i].childList[j].code + "\" status=\"" + moreArr[i].childList[j].usingState + "\">" + "<li><a href=\"javascript:void(0)\" class=\"edit_more_child\"><i class=\"icon edit-entity\"></i>编辑属性</a></li>" + "<li><a href=\"javascript:void(0)\" class=\"more_child_change_status\"><i class=\"icon stale-entity\"></i>过期实体"
                     } else if (moreArr[i].childList[j].usingState == '2') {
                         str = str + "<div title=\"code:"+moreArr[i].childList[j].code+", 中文名称:"+moreArr[i].childList[j].cnName+",  英文名称:"+moreArr[i].childList[j].enName+",数据类型："+moreArr[i].childList[j].dataType+", 数据长度："+moreArr[i].childList[j].dataRange+", 字典序："+ moreArr[i].childList[j].dictParentId  +"  \" class=\"entity_attr stale\">" + moreArr[i].childList[j].cnName + "<ul class=\"entity_ul\" entityId=\"" + moreArr[i].childList[j].code + "\" status=\"" + moreArr[i].childList[j].usingState + "\">" + "<li><a href=\"javascript:void(0)\" class=\"edit_more_child\"><i class=\"icon edit-entity\"></i>编辑属性</a></li>" + "<li><a href=\"javascript:void(0)\" class=\"more_child_change_status\"><i class=\"icon stale-entity\"></i>解除过期"
+                    } else if (moreArr[i].childList[j].usingState == '-1') {
+                        str = str + "<div title=\"code:"+moreArr[i].childList[j].code+", 中文名称:"+moreArr[i].childList[j].cnName+",  英文名称:"+moreArr[i].childList[j].enName+",数据类型："+moreArr[i].childList[j].dataType+", 数据长度："+moreArr[i].childList[j].dataRange+", 字典序："+ moreArr[i].childList[j].dictParentId  +"  \" class=\"entity_attr inerror\">" + moreArr[i].childList[j].cnName + "<ul class=\"entity_ul\" entityId=\"" + moreArr[i].childList[j].code + "\" status=\"" + moreArr[i].childList[j].usingState + "\">" + "<li><a href=\"javascript:void(0)\" class=\"edit_more_child\"><i class=\"icon edit-entity\"></i>编辑属性</a></li>" + "<li><a href=\"javascript:void(0)\" class=\"more_child_change_status\"><i class=\"icon stale-entity\"></i>解除过期"
+                    } else if (moreArr[i].childList[j].usingState == '1') {
+                        str = str + "<div title=\"code:"+moreArr[i].childList[j].code+", 中文名称:"+moreArr[i].childList[j].cnName+",  英文名称:"+moreArr[i].childList[j].enName+",数据类型："+moreArr[i].childList[j].dataType+", 数据长度："+moreArr[i].childList[j].dataRange+", 字典序："+ moreArr[i].childList[j].dictParentId  +"  \" class=\"entity_attr inuse\">" + moreArr[i].childList[j].cnName + "<ul class=\"entity_ul\" entityId=\"" + moreArr[i].childList[j].code + "\" status=\"" + moreArr[i].childList[j].usingState + "\">" + "<li><a href=\"javascript:void(0)\" class=\"edit_more_child\"><i class=\"icon edit-entity\"></i>编辑属性</a></li>" + "<li><a href=\"javascript:void(0)\" class=\"more_child_change_status\"><i class=\"icon stale-entity\"></i>解除过期"
                     }
-                    str = str + "</a></li>" + "<li><a href=\"javascript:void(0)\" patentId=\""+moreArr[i].parent+"\" class=\"delete_attr\"><i class=\"icon edit-entity\"></i>删除属性</a></li>"+ "</ul>" + "<i class=\"icon delete\"></i>"+ "</div>";
+                    str = str + "</a></li>" + "<li><a href=\"javascript:void(0)\" patentId=\""+moreArr[i].parent+"\" class=\"delete_attr\"><i class=\"icon edit-entity\"></i>删除属性</a></li>"+ "</ul>" + "<i class=\"icon status\"></i>"+ "</div>";
                 }
                 str = str + "<div class=\"entity_attr entity_attr_img add_more_child\">" +
 							    "<img alt=\"添加多值属性\" src=\"media/admin/dictionary/basicItem/addEntity_icon.png\">" +
 							"</div></div>"
-                str = str + "<div class=\"opera_more_child\"><img class=\"opera_entity_img\" src=\"media/admin/dictionary/basicItem/opera_entity_icon.png\"><span id=\"add_more_child_mes\"></span><form groupName=\"" + moreArr[i].cnName + "\" groupId=\"" + moreArr[i].code + "\" id=\"more_child_opera_form1\" class=\"opera_entity_form\"><input type=\"hidden\" id=\"groupName\" name=\"groupName\" value=\"\"><input type=\"hidden\" id=\"comm_parent\" name=\"parent\" value=\"\"><input type=\"hidden\" id=\"edit_dataType\" value=\"\"><input type=\"hidden\" id=\"edit_dictParentId\" value=\"\"><input type=\"hidden\" name=\"code\" id=\"code\"/><div><span class=\"opera_entity_label\">中文名称</span><input type=\"text\" name=\"cnName\" id=\"cnName\"/></div><div><span class=\"opera_entity_label\">英文名称</span><input type=\"text\" name=\"enName\" id=\"enName\"/></div><div><span class=\"opera_entity_label\" id=\"cn_dataType\">数据类型</span><select id=\"dataType\" class=\"enum_daType_two\" name=\"dataType\"></select></div><div><span class=\"opera_entity_label\" id=\"cn_dataRange\">数据长度</span><input type=\"text\" name=\"dataRange\" id=\"dataRange\" /></div></form><div class=\"opera_entity_btn\"><span class=\"entity-btn-cancel\" id=\"more_child_but_cancel\">取消</span><span class=\"entity-btn-confirm\" id=\"more_child_but_confirm\">确认</span></div></div>";                
+                str = str + "<div class=\"opera_more_child\"><img class=\"opera_entity_img\" src=\"media/admin/dictionary/basicItem/images/info.png\"><span id=\"add_more_child_mes\"></span><form groupName=\"" + moreArr[i].cnName + "\" groupId=\"" + moreArr[i].code + "\" id=\"more_child_opera_form1\" class=\"opera_entity_form\"><input type=\"hidden\" id=\"groupName\" name=\"groupName\" value=\"\"><input type=\"hidden\" id=\"comm_parent\" name=\"parent\" value=\"\"><input type=\"hidden\" id=\"edit_dataType\" value=\"\"><input type=\"hidden\" id=\"edit_dictParentId\" value=\"\"><input type=\"hidden\" name=\"code\" id=\"code\"/><div><span class=\"opera_entity_label\">中文名称</span><input type=\"text\" name=\"cnName\" id=\"cnName\"/></div><div><span class=\"opera_entity_label\">英文名称</span><input type=\"text\" name=\"enName\" id=\"enName\"/></div><div class=\"select-wrap\"><span class=\"opera_entity_label\" id=\"cn_dataType\">数据类型</span><select id=\"dataType\" class=\"enum_daType_two\" name=\"dataType\"></select></div><div><span class=\"opera_entity_label\" id=\"cn_dataRange\">数据长度</span><input type=\"text\" name=\"dataRange\" id=\"dataRange\" /></div></form><div class=\"opera_entity_btn\"><span class=\"entity-btn-cancel\" id=\"more_child_but_cancel\">取消</span><span class=\"entity-btn-confirm\" id=\"more_child_but_confirm\">确认</span></div></div>";                
                 //这里是显示二级信息以及二级的孩子数据 start
                 str = str + "<div class=\"entity_list twoLevelAttr_child clear-fix\"><div class=\"new_add_title\"><span id=\"twoLevelAttr_name\"></span><img twoLevelId=\"\" id=\"edit_twoLevelAttr\" src=\"media/admin/dictionary/basicItem/images/edit_ch.png\"></div><div class=\"clear-fix\"></div></div>";
                 //end
                 //添加编辑二级属性 div		
-                str = str + "<div class=\"twoLevelAttr_show\"><img class=\"opera_entity_img\" src=\"media/admin/dictionary/basicItem/opera_entity_icon.png\"><span class=\"opera_entity_img\">二级属性</span><form groupName=\"" + moreArr[i].cnName + "\" groupId=\"" + moreArr[i].code + "\" id=\"twoLevelAttr_form1\" class=\"opera_entity_form\"><input type=\"hidden\" id=\"id\" name=\"id\" value=\"\"><div><span class=\"opera_entity_label\">名称</span><input type=\"text\" readonly=\"readonly\" id=\"name\" name=\"name\" value=\"\"></div><div><span class=\"opera_entity_label\">对应多值id</span><input type=\"text\" readonly=\"readonly\" id=\"relatedMultiattribute\" name=\"relatedMultiattribute\" value=\"\"></div><div><span class=\"opera_entity_label\">字典枚举</span><select id=\"dictionaryAttr\" name=\"dictionaryAttr\"></select></div><div><span class=\"opera_entity_label\">普通属性值</span><select id=\"valueAttr\" name=\"valueAttr\"></select></div></form><div class=\"opera_entity_btn\"><span class=\"entity-btn-cancel\" id=\"twoLevelAttr_but_cancel\">取消</span><span class=\"entity-btn-confirm\" id=\"twoLevelAttr_but_confirm\">确认</span></div></div>";
+                str = str + "<div class=\"twoLevelAttr_show\"><img class=\"opera_entity_img\" src=\"media/admin/dictionary/basicItem/opera_entity_icon.png\"><span class=\"opera_entity_img\">二级属性</span><form groupName=\"" + moreArr[i].cnName + "\" groupId=\"" + moreArr[i].code + "\" id=\"twoLevelAttr_form1\" class=\"opera_entity_form\"><input type=\"hidden\" id=\"id\" name=\"id\" value=\"\"><div><span class=\"opera_entity_label\">名称</span><input type=\"text\" readonly=\"readonly\" id=\"name\" name=\"name\" value=\"\"></div><div><span class=\"opera_entity_label\">对应多值id</span><input type=\"text\" readonly=\"readonly\" id=\"relatedMultiattribute\" name=\"relatedMultiattribute\" value=\"\"></div><div class=\"select-wrap\"><span class=\"opera_entity_label\">字典枚举</span><select id=\"dictionaryAttr\" name=\"dictionaryAttr\"></select></div><div class=\"select-wrap\"><span class=\"opera_entity_label\">普通属性值</span><select id=\"valueAttr\" name=\"valueAttr\"></select></div></form><div class=\"opera_entity_btn\"><span class=\"entity-btn-cancel\" id=\"twoLevelAttr_but_cancel\">取消</span><span class=\"entity-btn-confirm\" id=\"twoLevelAttr_but_confirm\">确认</span></div></div>";
                 //添加编辑二级属性的孩子 div		
-                str = str + "<div class=\"twoLevelAttr_child_show\"><img class=\"opera_entity_img\" src=\"media/admin/dictionary/basicItem/opera_entity_icon.png\"><span class=\"opera_entity_img\">添加二级属性</span><form groupName=\"" + moreArr[i].cnName + "\" groupId=\"" + moreArr[i].code + "\" id=\"twoLevelAttr_child_form1\" class=\"opera_entity_form\"><div><span class=\"opera_entity_label\">名称</span><input type=\"text\" id=\"name\" name=\"name\" value=\"\"></div><div><span class=\"opera_entity_label\">字典名称</span><select id=\"dictionaryCode\" name=\"dictionaryCode\"></select></div><input type=\"hidden\" id=\"mappingId\" name=\"mappingId\" value=\"\"></form><div class=\"opera_entity_btn\"><span class=\"entity-btn-cancel\" id=\"twoLevelAttr_but_cancel\">取消</span><span class=\"entity-btn-confirm\" id=\"twoLevelAttr_child_but_confirm\">确认</span></div></div>";
+                str = str + "<div class=\"twoLevelAttr_child_show\"><img class=\"opera_entity_img\" src=\"media/admin/dictionary/basicItem/opera_entity_icon.png\"><span class=\"opera_entity_img\">添加二级属性</span><form groupName=\"" + moreArr[i].cnName + "\" groupId=\"" + moreArr[i].code + "\" id=\"twoLevelAttr_child_form1\" class=\"opera_entity_form\"><div><span class=\"opera_entity_label\">名称</span><input type=\"text\" id=\"name\" name=\"name\" value=\"\"></div><div class=\"select-wrap\"><span class=\"opera_entity_label\">字典名称</span><select id=\"dictionaryCode\" name=\"dictionaryCode\"></select></div><input type=\"hidden\" id=\"mappingId\" name=\"mappingId\" value=\"\"></form><div class=\"opera_entity_btn\"><span class=\"entity-btn-cancel\" id=\"twoLevelAttr_but_cancel\">取消</span><span class=\"entity-btn-confirm\" id=\"twoLevelAttr_child_but_confirm\">确认</span></div></div>";
                 str = str + "<div class=\"opera_more\"><img class=\"opera_entity_img\" src=\"media/admin/dictionary/basicItem/opera_entity_icon.png\"><span class=\"opera_entity_img\" id=\"add_more_mes\"></span><form id=\"more_opera_form1\" class=\"opera_entity_form\"><input type=\"hidden\" name=\"code\" id=\"code\"/><input type=\"hidden\" id=\"more_parent\" name=\"parent\" value=\"\"><input type=\"hidden\" name=\"dataType\" value=\"repeat\"><div><span class=\"opera_entity_label\">中文名称</span><input type=\"text\" name=\"cnName\" id=\"cnName\"/><br></div><div><span class=\"opera_entity_label\">英文名称</span><input type=\"text\" name=\"enName\" id=\"enName\"/></div><div><span class=\"opera_entity_label\">表描述</span><textarea name=\"tableNameDescription\" id=\"tableNameDescription\" rows=\"\" cols=\"\"></textarea><br></div></form><div class=\"opera_entity_btn\"><span class=\"entity-btn-cancel\" id=\"more_but_cancel\">取消</span><span class=\"entity-btn-confirm\" id=\"more_but_confirm\">确认</span></div></div>";
-                str = str + "</div>";
+                if(moreArr[i].usingState == '0'){
+                	str = str + "<i class=\"icon status newadd\"></div>";
+                } else if(moreArr[i].usingState == '2'){
+                	str = str + "<i class=\"icon status stale\"></div>";
+                } else if(moreArr[i].usingState == '-1'){
+                	str = str + "<i class=\"icon status inerror\"></div>";
+                } else if(moreArr[i].usingState == '1'){
+                	str = str + "<i class=\"icon status inuse\"></div>";
+                }
                 $(".more_proper").append(str);
             }
             //实体关系
-            var entityRela = jsonData.entityRela;
+            var entityRela = jsonData.entityRela;            
             var str = "";
             for (var i = 0; i < entityRela.length; i++) {
             	str = str + "<div class=\"entity_attr\">" + entityRela[i].name
@@ -1049,8 +1119,22 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
 				+"<i class=\"icon delete\"></i>"
 				+"</div>"  
             }
-            $(".entity_relation_list").find(".entity_attr").not(".entity_attr_img").remove();
+            $(".entity_relation_list").find(".entity_attr").not(".entity_attr_img").remove();            
             $(".entity_relation_list").prepend(str);
+            $(".select-wrap").css({
+            	"width": "100%",
+            	"margin-right": "0"
+            });
+            $("select").css("width","30%");
+            $("select").select2();
         });
+    }
+    
+   //用于生成uuid
+    function S4() {
+        return (((1+Math.random())*0x10000)|0).toString(16).substring(1);
+    }
+    function guid() {
+        return (S4()+S4()+"-"+S4()+"-"+S4()+"-"+S4()+"-"+S4()+S4()+S4());
     }
 })
