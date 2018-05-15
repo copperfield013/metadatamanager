@@ -72,7 +72,9 @@ public class BasicItemServiceImpl implements BasicItemService {
 		//根据parentId获取下面所有的孩子   包括普通属性和多值属性
 		List<BasicItem> chilAll = basicItemDao.getDataByPId(parentId);
 		
-		for(BasicItem bt : chilAll) {
+		Iterator<BasicItem> iterator = chilAll.iterator();
+		while (iterator.hasNext()) {
+			BasicItem bt = iterator.next();
 			if ("重复类型".equals(bt.getDataType())) {
 				//bt 是重复类型， 在这里我要判断有没有二级属性
 				TowlevelattrMultiattrMapping oneByRelaMulAttr = tmms.getOneByRelaMulAttr(bt.getCode());
@@ -156,9 +158,11 @@ public class BasicItemServiceImpl implements BasicItemService {
 
 	@Override
 	public void saveOrUpdate(BasicItem obj, String flag) {
+		
+		//保存更改
 		basicItemDao.saveOrUpdate(obj, flag);
 		//如果是重复类型， 默认生成两个孩子， 
-		if ("重复类型".equals(obj.getDataType())) {
+		if ("重复类型".equals(obj.getDataType()) && "add".equals(flag)) {
 			BasicItem childOne = new BasicItem();//多值属性编辑时间
 				childOne.setCode(obj.getCode() + "_ED");
 				childOne.setCnName("多值属性编辑时间");
@@ -179,6 +183,10 @@ public class BasicItemServiceImpl implements BasicItemService {
 			basicItemDao.insert(childOne);
 			basicItemDao.insert(childTwo);
 		}
+		
+		
+		
+		
 	}
 
 	@Override
