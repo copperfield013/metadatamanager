@@ -110,14 +110,14 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
     		$form.find("#cn_dataRange").show();
     		 $form.find("#dataRange").show();
     		 
-    		if ("digital" == options.val()) {//数字型
+    		if ("digital" == $this.val()) {//数字型
     			$form.find("#dataRange").val('11');
-    		} else if ("digitalDecimal" == options.val()) {//数字型小数
+    		} else if ("digitalDecimal" == $this.val()) {//数字型小数
     			$form.find("#dataRange").val('10,2');
-    		} else if ("date"== options.val() || "dateTime" == options.val()) {// 日期和时间
+    		} else if ("date"== $this.val() || "dateTime" == $this.val()) {// 日期和时间
     			$form.find("#dataRange").val("").hide();
     			$form.find("#cn_dataRange").hide();
-    		} else if ("char"== options.val() ) { //字符型
+    		} else if ("char"== $this.val() ) { //字符型
     			$form.find("#dataRange").val('32');
     		}
 	        
@@ -422,8 +422,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
                 str = str + "<option value=\"" + entity[p].code + "\">" + entity[p].cnName + "</option>"; 
             }
             $(".opera_relation").find("#entity_relation_opera_form").find("#rightRecordType").html("");
-            $(".opera_relation").find("#entity_relation_opera_form").find("#rightRecordType").append(str);
-            /*$("#rightRecordType").select2();*/
+            $(".opera_relation").find("#entity_relation_opera_form").find("#rightRecordType").append(str);            
             $("#add_relation_mes").html("");
             $("#add_relation_mes").html("添加关系");
             $(".opera_relation").find("form").find("input").val("");
