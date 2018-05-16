@@ -31,6 +31,9 @@ public class TowlevelattrMultiattrMapping {
 	@Column(name = "c_value_attr")
 	private String valueAttr;// 重复类型下面的其中一个属性
 
+	@Column(name = "c_using_state")
+	private Integer usingState;
+	
 	@Transient  
 	 List<Towlevelattr> childList = null;
 	
@@ -80,6 +83,14 @@ public class TowlevelattrMultiattrMapping {
 
 	public void setChildList(List<Towlevelattr> childList) {
 		this.childList = childList;
+	}
+
+	public Integer getUsingState() {
+		return usingState;
+	}
+
+	public void setUsingState(Integer usingState) {
+		this.usingState = usingState;
 	}
 	
 }

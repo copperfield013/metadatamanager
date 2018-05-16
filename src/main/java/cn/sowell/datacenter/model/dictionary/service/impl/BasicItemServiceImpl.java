@@ -159,6 +159,33 @@ public class BasicItemServiceImpl implements BasicItemService {
 	@Override
 	public void saveOrUpdate(BasicItem obj, String flag) {
 		
+		//更改枚举值， 二级属性和二级属性的孩子需要设置状态为错误
+		if (!"add".equals(flag) ) {//必须是编辑， 并且字典类型不一样， 那么修改他的二级属性状态和孩子的状态
+			BasicItem basicItem = basicItemDao.get(BasicItem.class, obj.getCode());
+			//必须有二级属性
+			TowlevelattrMultiattrMapping oneByRelaMulAttr = tmms.getOneByRelaMulAttr(obj.getGroupName());
+			if (oneByRelaMulAttr != null && obj.getCode().equals(oneByRelaMulAttr.getDictionaryAttr())) {
+				if ("枚举".equals(basicItem.getDataRange())) {
+					if (!"枚举".equals(obj.getDataRange()) || !basicItem.getDictParentId().equals(obj.getDictParentId()) ) {
+						//这里我就要修改二级属性和二级属性的孩子状态为错误
+						oneByRelaMulAttr.setUsingState(-1);
+						tmms.update(oneByRelaMulAttr);
+						//二级属性的孩子设置为错误
+						List<Towlevelattr> listByMappingId = towlevelattrService.getListByMappingId(String.valueOf(oneByRelaMulAttr.getId()));
+						Iterator<Towlevelattr> iterator = listByMappingId.iterator();
+						while (iterator.hasNext()) {
+							Towlevelattr next = iterator.next();
+							next.setUsingState(-1);
+							towlevelattrService.update(next);
+						}
+						
+					}
+				}
+			}
+			sFactory.getCurrentSession().evict(basicItem);//session 关联两个相同id的对象， 解除一个
+			
+		}
+		
 		//保存更改
 		basicItemDao.saveOrUpdate(obj, flag);
 		//如果是重复类型， 默认生成两个孩子， 
@@ -167,6 +194,7 @@ public class BasicItemServiceImpl implements BasicItemService {
 				childOne.setCode(obj.getCode() + "_ED");
 				childOne.setCnName("多值属性编辑时间");
 				childOne.setDataType("时间型");
+				childOne.setDataRange("");
 				childOne.setTableName(obj.getTableName());
 				childOne.setParent(obj.getParent()+ "_" + obj.getCode());
 				childOne.setUsingState(0);
@@ -184,9 +212,6 @@ public class BasicItemServiceImpl implements BasicItemService {
 			basicItemDao.insert(childTwo);
 		}
 		
-		
-		
-		
 	}
 
 	@Override
@@ -196,7 +221,6 @@ public class BasicItemServiceImpl implements BasicItemService {
 
 	@Override
 	public void createTabCol() {
-		
 		//查询需要创建的表
 		List queryCreTab = basicItemDao.queryCreTab();
 			Iterator iterator = queryCreTab.iterator();
@@ -204,13 +228,13 @@ public class BasicItemServiceImpl implements BasicItemService {
 			while (iterator.hasNext()) {
 				Object[] cur = (Object[]) iterator.next();
 				String value = (String) cur[1];
+				String code = (String) cur[0];
+				BasicItem bt = basicItemDao.get(BasicItem.class, code);
 				try {
 					basicItemDao.excuteBySql(value);
 				} catch (Exception e) {
 					Session openSession = sFactory.openSession();
 					 Transaction tx = openSession.beginTransaction();
-					String code = (String) cur[0];
-					BasicItem bt = basicItemDao.get(BasicItem.class, code);
 					if ("重复类型".equals(bt.getDataType())) {
 						bt.setUsingState(-1);
 						openSession.update(bt);				

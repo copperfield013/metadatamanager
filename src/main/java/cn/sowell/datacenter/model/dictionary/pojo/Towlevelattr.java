@@ -25,6 +25,9 @@ public class Towlevelattr {
 	@Column(name = "c_dictionary_code")
 	private String dictionaryCode;
 
+	@Column(name = "c_using_state")
+	private Integer usingState;
+	
 	public Long getId() {
 		return id;
 	}
@@ -55,6 +58,14 @@ public class Towlevelattr {
 
 	public void setDictionaryCode(String dictionaryCode) {
 		this.dictionaryCode = dictionaryCode;
+	}
+
+	public Integer getUsingState() {
+		return usingState;
+	}
+
+	public void setUsingState(Integer usingState) {
+		this.usingState = usingState;
 	}
 	
 }

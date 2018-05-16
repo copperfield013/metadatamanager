@@ -287,12 +287,7 @@ public class BasicItemController {
 	@ResponseBody
 	@RequestMapping("/saveTwoLevelAttr")
 	public void saveTwoLevelAttr(TowlevelattrMultiattrMapping tmm){
-		
-		if (tmm.getId() != null) {
-			tmms.update(tmm);
-		} else {
-			tmms.create(tmm);
-		}
+			tmms.saveOrUpdate(tmm);
 	}
 	
 	//添加一个二级属性的孩子

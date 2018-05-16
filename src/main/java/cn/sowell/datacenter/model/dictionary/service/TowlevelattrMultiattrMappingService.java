@@ -41,4 +41,5 @@ public interface TowlevelattrMultiattrMappingService {
 	 */
 	TowlevelattrMultiattrMapping getOneByRelaMulAttr(String relatedMultiattribute);
 
+	void saveOrUpdate(TowlevelattrMultiattrMapping criteria);
 }
