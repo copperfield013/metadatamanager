@@ -233,66 +233,61 @@ public class BasicItemServiceImpl implements BasicItemService {
 				try {
 					basicItemDao.excuteBySql(value);
 					
-					Session openSession = sFactory.openSession();
-					Transaction tx = openSession.beginTransaction();
-					if ("重复类型".equals(bt.getDataType())) {
-						bt.setUsingState(1);
-						openSession.update(bt);				
-					} else {//  重复类型下面的孩子或者是分组类型下边的孩子
-						//他们的区别在于父亲不同， 
-						BasicItem btParent = basicItemDao.get(BasicItem.class, bt.getParent());
-						if ("记录类型".equals(btParent.getDataType())) {//bt是分组类型的孩子
-							//找到这个分组
+					Session openSession = null;
+					Transaction tx = null;
+					try {
+						 openSession = sFactory.openSession();
+						 tx = openSession.beginTransaction();
+						if ("重复类型".equals(bt.getDataType())) {
+							bt.setUsingState(1);
+							openSession.update(bt);	
+							BasicItem btParent = basicItemDao.get(BasicItem.class, bt.getParent());
+							btParent.setUsingState(1);
+							openSession.update(btParent);	
+						} else {//  重复类型下面的孩子或者是分组类型下边的孩子
+							//找到这个分组或重复类型
 							BasicItem btGroup = basicItemDao.get(BasicItem.class, bt.getGroupName());
 							btGroup.setUsingState(1);
 							openSession.update(btGroup);
-							
-							//记录类型也得修改为1
+							//分组的父亲， 也就是记录类型
+							BasicItem btParent = basicItemDao.get(BasicItem.class, btGroup.getParent());
 							btParent.setUsingState(1);
 							openSession.update(btParent);
-						} else { //bt是重复类型的孩子
-							//找到这个重复类型  btParent
-							btParent.setUsingState(1);
-							openSession.update(btParent);
-							
-							//重复类型的父亲也得修改为1
-							BasicItem parent = basicItemDao.get(BasicItem.class, btParent.getParent());
-							parent.setUsingState(1);
-							openSession.update(parent);
 						}
+						tx.commit();
+					} catch (Exception e) {
+						tx.rollback();
+					} finally {
+						openSession.close();
 					}
-					tx.commit();
 				} catch (Exception e) {
-					Session openSession = sFactory.openSession();
-					 Transaction tx = openSession.beginTransaction();
-					if ("重复类型".equals(bt.getDataType())) {
-						bt.setUsingState(-1);
-						openSession.update(bt);				
-					} else {//  重复类型下面的孩子或者是分组类型下边的孩子
-						//他们的区别在于父亲不同， 
-						BasicItem btParent = basicItemDao.get(BasicItem.class, bt.getParent());
-						if ("记录类型".equals(btParent.getDataType())) {//bt是分组类型的孩子
-							//找到这个分组
+					Session openSession = null;
+					Transaction tx = null;
+					try {
+						openSession = sFactory.openSession();
+					 	tx = openSession.beginTransaction();
+						if ("重复类型".equals(bt.getDataType())) {
+							bt.setUsingState(-1);
+							openSession.update(bt);	
+							BasicItem btParent = basicItemDao.get(BasicItem.class, bt.getParent());
+							btParent.setUsingState(-1);
+							openSession.update(btParent);	
+						} else {//  重复类型下面的孩子或者是分组类型下边的孩子
+							//找到这个分组或重复类型
 							BasicItem btGroup = basicItemDao.get(BasicItem.class, bt.getGroupName());
 							btGroup.setUsingState(-1);
 							openSession.update(btGroup);
-							
-							//记录类型也得修改为-1
+							//分组的父亲， 也就是记录类型
+							BasicItem btParent = basicItemDao.get(BasicItem.class, btGroup.getParent());
 							btParent.setUsingState(-1);
 							openSession.update(btParent);
-						} else { //bt是重复类型的孩子
-							//找到这个重复类型  btParent
-							btParent.setUsingState(-1);
-							openSession.update(btParent);
-							
-							//重复类型的父亲也得修改为-1
-							BasicItem parent = basicItemDao.get(BasicItem.class, btParent.getParent());
-							parent.setUsingState(-1);
-							openSession.update(parent);
 						}
+						tx.commit();
+					} catch (Exception e1) {
+						tx.rollback();
+					} finally {
+						openSession.close();
 					}
-						
-					tx.commit();
 					continue;
 				}
 			}
@@ -307,20 +302,36 @@ public class BasicItemServiceImpl implements BasicItemService {
 				String code = (String) cur[0];
 				try {
 					basicItemDao.excuteBySql(value);
-					
-					Session openSession = sFactory.openSession();
-					Transaction tx = openSession.beginTransaction();
-					BasicItem bt = basicItemDao.get(BasicItem.class, code);
-					bt.setUsingState(1);
-					openSession.update(bt);
-					tx.commit();
+					Session openSession = null;
+					Transaction tx = null;
+					try {
+						openSession = sFactory.openSession();
+						tx = openSession.beginTransaction();
+						BasicItem bt = basicItemDao.get(BasicItem.class, code);
+						bt.setUsingState(1);
+						openSession.update(bt);
+						tx.commit();
+					} catch (Exception e) {
+						tx.rollback();
+					} finally {
+						openSession.close();
+					}
 				} catch (Exception e) {
-					Session openSession = sFactory.openSession();
-					Transaction tx = openSession.beginTransaction();
-					BasicItem bt = basicItemDao.get(BasicItem.class, code);
-					bt.setUsingState(-1);
-					openSession.update(bt);
-					tx.commit();
+					Session openSession = null;
+					Transaction tx = null;
+					try {
+						openSession = sFactory.openSession();
+						tx = openSession.beginTransaction();
+						BasicItem bt = basicItemDao.get(BasicItem.class, code);
+						bt.setUsingState(-1);
+						openSession.update(bt);
+						tx.commit();
+					} catch (Exception e1) {
+						tx.rollback();
+					} finally {
+						openSession.close();
+					}
+					
 					continue;
 				}
 			}
@@ -337,19 +348,35 @@ public class BasicItemServiceImpl implements BasicItemService {
 			try {
 				basicItemDao.excuteBySql(value);
 				
-				Session openSession = sFactory.openSession();
-				Transaction tx = openSession.beginTransaction();
-				BasicItem bt = basicItemDao.get(BasicItem.class, code);
-				bt.setUsingState(1);
-				openSession.update(bt);
-				tx.commit();
+				Session openSession = null;
+				Transaction tx = null;
+				try {
+					 openSession = sFactory.openSession();
+					 tx = openSession.beginTransaction();
+					BasicItem bt = basicItemDao.get(BasicItem.class, code);
+					bt.setUsingState(1);
+					openSession.update(bt);
+					tx.commit();
+				} catch (Exception e) {
+					tx.rollback();
+				} finally {
+					openSession.close();
+				}
 			} catch (Exception e) {
-				Session openSession = sFactory.openSession();
-				Transaction tx = openSession.beginTransaction();
-				BasicItem bt = basicItemDao.get(BasicItem.class, code);
-				bt.setUsingState(-1);
-				openSession.update(bt);
-				tx.commit();
+				Session openSession = null;
+				Transaction tx = null;
+				try {
+					openSession = sFactory.openSession();
+					tx = openSession.beginTransaction();
+					BasicItem bt = basicItemDao.get(BasicItem.class, code);
+					bt.setUsingState(-1);
+					openSession.update(bt);
+					tx.commit();
+				} catch (Exception e1) {
+					tx.rollback();
+				} finally {
+					openSession.close();
+				}
 				continue;
 			}
 		}	
