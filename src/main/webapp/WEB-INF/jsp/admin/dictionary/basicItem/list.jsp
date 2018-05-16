@@ -18,14 +18,13 @@
 			
 			<div class="entity_list clear-fix">
 				<c:forEach items="${list }" var="item" varStatus="i">
-						<%-- <c:if test="${item.usingState eq '0' }"><div title="code:${item.code }, 中文名称:${empty item.cnName ? '-': item.cnName},  英文名称:${empty  item.enName ? '-': item.enName}" class="entity_attr"></c:if> --%>
 						<div title="code:${item.code }, 中文名称:${empty item.cnName ? '-': item.cnName},  英文名称:${empty  item.enName ? '-': item.enName}" class="entity_attr <c:if test='${item.usingState eq "2" }'>stale</c:if><c:if test='${item.usingState eq "1" }'>inuse</c:if><c:if test='${item.usingState eq "0" }'>newadd</c:if><c:if test='${item.usingState eq "-1" }'>inerror</c:if>">				
 						${item.cnName }
 						<ul class="entity_ul" entityId="${item.code }" status="${item.usingState }">
-							<li><a href="javascript:void(0)" class="edit_entity"><i class="icon edit-entity"></i>编辑实体</a></li>							
-							<c:if test="${item.usingState eq '0' }"><li><a href="javascript:void(0)" class="change_status"><i class="icon stale-entity"></i>过期实体</a></li></c:if>
-							<c:if test="${item.usingState eq '2' }"><li><a href="javascript:void(0)" class="change_status"><i class="icon stale-entity"></i>解除过期</a></li></c:if>
 							<li><a href="javascript:void(0)" class="get_entity_attr"><i class="icon entity-attr"></i>实体属性</a></li>
+							<li><a href="javascript:void(0)" class="edit_entity"><i class="icon edit-entity"></i>编辑实体</a></li>							
+							<c:if test="${item.usingState ne '2' }"><li><a href="javascript:void(0)" class="change_status"><i class="icon stale-entity"></i>过期实体</a></li></c:if>
+							<c:if test="${item.usingState eq '2' }"><li><a href="javascript:void(0)" class="change_status"><i class="icon stale-entity"></i>解除过期</a></li></c:if>
 							<li><a href="javascript:void(0)" class="delete_entity"><i class="icon edit-entity"></i>删除实体</a></li>
 						</ul>
 						<i class="icon status"></i>	
@@ -61,8 +60,8 @@
 		     <div class="entity_ch_head">		           
 			      <img src="media/admin/dictionary/basicItem/images/common.png">
 			      <span>普通属性</span>		           	
-		          <div class="entity_ch_opera">
-		               <img id="add_group"  src="media/admin/dictionary/basicItem/images/add-common.png">
+		          <div class="entity_ch_opera" id="add_group" >
+		               <img src="media/admin/dictionary/basicItem/images/add-common.png">
 		               <span>添加分组</span>
 		          </div>
 		     </div>
@@ -88,8 +87,8 @@
 			<div class="entity_ch_head">		           
 				<img src="media/admin/dictionary/basicItem/images/more.png">
 				<span>多值属性</span>		           	
-				<div class="entity_ch_opera">
-					 <img id="add_more"  src="media/admin/dictionary/basicItem/images/add-more.png">
+				<div class="entity_ch_opera" id="add_more">
+					 <img src="media/admin/dictionary/basicItem/images/add-more.png">
 					 <span>添加多值属性</span>
 				</div>
 			</div>		          

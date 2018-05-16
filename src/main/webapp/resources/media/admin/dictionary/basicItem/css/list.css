@@ -194,6 +194,18 @@
 	margin-right: 0.5em;
 }
 
+.entity_ch_opera {
+	cursor: pointer;
+}
+
+#edit_group {
+	cursor: pointer;
+} 
+
+#edit_more {
+	cursor: pointer;
+}
+
 #entity-wrap .entity_ch_opera {
 	float: right;
 }

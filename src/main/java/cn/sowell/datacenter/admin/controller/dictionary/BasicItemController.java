@@ -210,8 +210,12 @@ public class BasicItemController {
 	public AjaxPageResponse savePastDue(String id, String statusStr){
 		try {
 			
-			Integer status = Constants.USING_STATE_MAP.get(statusStr);
-			
+			Integer status = 0;
+			if ("2".equals(statusStr)) {
+				status = 0;
+			} else {
+				status = 2;
+			}
 			BasicItem basicItem = basicItemService.getBasicItem(id);
 			basicItemService.savePastDue(basicItem, status);
 			

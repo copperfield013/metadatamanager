@@ -60,7 +60,6 @@ public class TowlevelattrMultiattrMappingServiceImpl implements TowlevelattrMult
 	@Override
 	public void saveOrUpdate(TowlevelattrMultiattrMapping criteria) {
 		if (criteria.getId() != null) {
-			
 			//二级属性
 			TowlevelattrMultiattrMapping oneByRelaMulAttr = tmmd.get(TowlevelattrMultiattrMapping.class, criteria.getId());
 			if (!criteria.getDictionaryAttr().equals(oneByRelaMulAttr.getDictionaryAttr()) || !criteria.getValueAttr().equals(oneByRelaMulAttr.getValueAttr())) {
