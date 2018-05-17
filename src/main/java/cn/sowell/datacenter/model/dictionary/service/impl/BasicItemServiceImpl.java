@@ -209,7 +209,7 @@ public class BasicItemServiceImpl implements BasicItemService {
 				childOne.setCode(obj.getCode() + "_ED");
 				childOne.setCnName("多值属性编辑时间");
 				childOne.setDataType("时间型");
-				childOne.setDataRange("");
+				childOne.setDataRange("date");
 				childOne.setTableName(obj.getTableName());
 				childOne.setParent(obj.getParent()+ "_" + obj.getCode());
 				childOne.setUsingState(0);
