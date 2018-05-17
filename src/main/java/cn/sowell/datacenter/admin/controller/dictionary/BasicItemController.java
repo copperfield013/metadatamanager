@@ -291,6 +291,7 @@ public class BasicItemController {
 	@ResponseBody
 	@RequestMapping("/saveTwoLevelAttr")
 	public void saveTwoLevelAttr(TowlevelattrMultiattrMapping tmm){
+			tmm.setUsingState(0);
 			tmms.saveOrUpdate(tmm);
 	}
 	
@@ -298,6 +299,7 @@ public class BasicItemController {
 	@ResponseBody
 	@RequestMapping("/saveTwoLevelAttrChild")
 	public void saveTwoLevelAttrChild(Towlevelattr criteria){
+		criteria.setUsingState(0);
 		basicItemService.createTowLevel(criteria);
 	}
 	

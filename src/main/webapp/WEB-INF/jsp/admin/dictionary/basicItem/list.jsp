@@ -44,11 +44,11 @@
 						<input type="hidden" name="code" id="code"/>
 					<input type="hidden" name="dataType" value="record">
 					<div>
-						<span class="opera_entity_label">中文名称</span>
+						<span class="opera_entity_label">中文名称<span style="color: red;">*</span></span>
 						<input type="text" name="cnName" id="cnName"/>
 					</div>
 					<div>
-						<span class="opera_entity_label">英文名称</span>
+						<span class="opera_entity_label">英文名称<span style="color: red;">*</span></span>
 						<input type="text" name="enName" id="enName"/><br>
 					</div>						
 				</form>
@@ -76,7 +76,7 @@
 					<input type="hidden" id="group_parent" name="parent" value="">
 					<input type="hidden" name="dataType" value="group">
 					<div>
-						<span class="opera_entity_label">中文名称</span>
+						<span class="opera_entity_label">中文名称<span style="color: red;">*</span></span>
 						<input type="text" name="cnName" id="cnName"/>
 					</div>						
 				</form>
@@ -103,11 +103,11 @@
 					<input type="hidden" id="more_parent" name="parent" value="">
 					<input type="hidden" name="dataType" value="repeat">
 					<div>
-						<span class="opera_entity_label">中文名称</span>
+						<span class="opera_entity_label">中文名称<span style="color: red;">*</span></span>
 						<input type="text" name="cnName" id="cnName"/><br>
 					</div>
 					<div>
-						<span class="opera_entity_label">英文名称</span>
+						<span class="opera_entity_label">英文名称<span style="color: red;">*</span></span>
 						<input type="text" name="enName" id="enName"/>
 					</div>
 					<div>
@@ -145,18 +145,18 @@
 					   		</label>
 						</div>
 				        <div class="select-wrap" id="rela_right">
-				            <span class="opera_entity_label">选择右实体</span>
+				            <span class="opera_entity_label">选择右实体<span style="color: red;">*</span></span>
 				            <select id="rightRecordType" name="rightRecordType" style="width:30%">
 				            </select>
 				        </div>
 				          <input type="hidden" name="typeCode" id="typeCode" />
 				          <input type="hidden" name="reverseCode" id="reverseCode" />
 				        <div>
-				            <span class="opera_entity_label">关系名称</span>
+				            <span class="opera_entity_label">关系名称<span style="color: red;">*</span></span>
 				            <input type="text" name="leftName" id="leftName" />
 				        </div>
 				        <div id="rela_ni_name">
-				            <span class="opera_entity_label">逆向关系名称</span>
+				            <span class="opera_entity_label">逆向关系名称<span style="color: red;">*</span></span>
 				            <input type="text" name="rightName" id="rightName" />
 				        </div>
 				    </form>

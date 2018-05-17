@@ -334,25 +334,21 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
                 var dictattr_enum = "";
                 var valuestr = "";
                 for (var key in datachild) {
-                    if (datachild[key].code == valueattr) {
-                        valuestr = valuestr + " <option selected=\"selected\" value =\"" + datachild[key].code + "\">" + datachild[key].cnName + "</option>";
-                    } else {
-                        valuestr = valuestr + " <option value =\"" + datachild[key].code + "\">" + datachild[key].cnName + "</option>";
-                    }
+                    
                     if (datachild[key].dataRange == '枚举') {
                         if (datachild[key].code == dictionarystr) {
                             dictattr_enum = dictattr_enum + " <option selected=\"selected\" value =\"" + datachild[key].code + "\">" + datachild[key].cnName + "</option>";
                         } else {
                             dictattr_enum = dictattr_enum + " <option value =\"" + datachild[key].code + "\">" + datachild[key].cnName + "</option>";
                         }
+                    } else {
+                    	if (datachild[key].code == valueattr) {
+                            valuestr = valuestr + " <option selected=\"selected\" value =\"" + datachild[key].code + "\">" + datachild[key].cnName + "</option>";
+                        } else {
+                            valuestr = valuestr + " <option value =\"" + datachild[key].code + "\">" + datachild[key].cnName + "</option>";
+                        }
                     }
                 }
-                /*   for(var key in datachild){
-							 valuestr = valuestr + " <option value =\""+datachild[key].code+"\">"+datachild[key].cnName+"</option>";
-							if (datachild[key].dataRange == '枚举') {
-								dictattr_enum = dictattr_enum + " <option value =\""+datachild[key].code+"\">"+datachild[key].cnName+"</option>";
-							} 
-					      }  */
                 $form.find("#dictionaryAttr").append(dictattr_enum).trigger("change");
                 $form.find("#valueAttr").append(valuestr).trigger("change");
             });
@@ -384,13 +380,13 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
                 var str = "";
                 for (var key in child) {              	                    
                     if(child[key].usingState == '0'){                    	
-                    	str = str + "<div title=\"id:"+child[key].id+", 名称："+child[key].name+"\" twoLevel_chil_Id=" + child[key].id +" class='entity_attr new_add_twolc newadd'>"+child[key].name+"<ul class='entity_ul' entityId='${item.code}' status='${item.usingState}'><li><a href='javascript:void(0)' class='edit_entity'><i class='icon edit-entity'></i>编辑实体</a></li></ul><i class=\"icon status\"></i></div>";
+                    	str = str + "<div title=\"id:"+child[key].id+", 名称："+child[key].name+"\" twoLevel_chil_Id=" + child[key].id +" class='entity_attr new_add_twolc newadd'>"+child[key].name+"<ul class='entity_ul' entityId='${item.code}' status='${item.usingState}'><li><a href='javascript:void(0)' class='edit_entity'><i class='icon edit-entity'></i>编辑实体</a></li></ul><i class=\"icon status\"></i></div>"
                     } else if(child[key].usingState == '2'){                    	
-                    	str = str + "<div title=\"id:"+child[key].id+", 名称："+child[key].name+"\" twoLevel_chil_Id=" + child[key].id +" class='entity_attr new_add_twolc stale'>"+child[key].name+"<ul class='entity_ul' entityId='${item.code}' status='${item.usingState}'><li><a href='javascript:void(0)' class='edit_entity'><i class='icon edit-entity'></i>编辑实体</a></li></ul><i class=\"icon status\"></i></div>";
+                    	str = str + "<div title=\"id:"+child[key].id+", 名称："+child[key].name+"\" twoLevel_chil_Id=" + child[key].id +" class='entity_attr new_add_twolc stale'>"+child[key].name+"<ul class='entity_ul' entityId='${item.code}' status='${item.usingState}'><li><a href='javascript:void(0)' class='edit_entity'><i class='icon edit-entity'></i>编辑实体</a></li></ul><i class=\"icon status\"></i></div>"
                     } else if(child[key].usingState == '-1'){                    	
-                    	str = str + "<div title=\"id:"+child[key].id+", 名称："+child[key].name+"\" twoLevel_chil_Id=" + child[key].id +" class='entity_attr new_add_twolc inerror'>"+child[key].name+"<ul class='entity_ul' entityId='${item.code}' status='${item.usingState}'><li><a href='javascript:void(0)' class='edit_entity'><i class='icon edit-entity'></i>编辑实体</a></li></ul><i class=\"icon status\"></i></div>";
+                    	str = str + "<div title=\"id:"+child[key].id+", 名称："+child[key].name+"\" twoLevel_chil_Id=" + child[key].id +" class='entity_attr new_add_twolc inerror'>"+child[key].name+"<ul class='entity_ul' entityId='${item.code}' status='${item.usingState}'><li><a href='javascript:void(0)' class='edit_entity'><i class='icon edit-entity'></i>编辑实体</a></li></ul><i class=\"icon status\"></i></div>"
                     } else if(child[key].usingState == '1'){                    	
-                    	str = str + "<div title=\"id:"+child[key].id+", 名称："+child[key].name+"\" twoLevel_chil_Id=" + child[key].id +" class='entity_attr new_add_twolc inuse'>"+child[key].name+"<ul class='entity_ul' entityId='${item.code}' status='${item.usingState}'><li><a href='javascript:void(0)' class='edit_entity'><i class='icon edit-entity'></i>编辑实体</a></li></ul><i class=\"icon status\"></i></div>";
+                    	str = str + "<div title=\"id:"+child[key].id+", 名称："+child[key].name+"\" twoLevel_chil_Id=" + child[key].id +" class='entity_attr new_add_twolc inuse'>"+child[key].name+"<ul class='entity_ul' entityId='${item.code}' status='${item.usingState}'><li><a href='javascript:void(0)' class='edit_entity'><i class='icon edit-entity'></i>编辑实体</a></li></ul><i class=\"icon status\"></i></div>"
                     }
                 }
                 str = str + "<div class=\"entity_attr new_add_twolc entity_attr_img add_comm add_twoLevelAttr_children\"><img mappingId=\"" + datatmm.id + "\" alt=\"添加二级属性\" src=\"media/admin/dictionary/basicItem/addEntity_icon.png\"></div>"
@@ -687,7 +683,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
     	var formdom = $(this).closest(".opera_entity").find("#entity_opera_form1")[0];
     	console.log(formdom);
     	console.log(new FormData(formdom));
-        var fData = new FormData(formdom);        
+        var fData = new FormData(formdom);  
         Ajax.ajax('admin/dictionary/basicItem/do_add', fData, function(data) {});
     });
     //给 实体列表  注册鼠标点击事件  让自己的ul显示出来    
