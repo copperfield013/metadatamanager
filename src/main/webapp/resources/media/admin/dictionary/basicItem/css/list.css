@@ -3,8 +3,20 @@
 	height: 100%;
 	overflow-x: auto;
 	overflow-y: auto;
+	position: relative;
 }
-
+#entity-wrap .status-legend {
+	display: inline-block;
+	position: absolute;
+	top: 2em;
+	left: 49em;	
+	width: 20.3em;
+	height: 1em;
+	background-image: url('../images/status-legend.png');
+	background-size: cover;
+	background-repeat: no-repeat;
+	margin-bottom: 1em;
+}
 #entity-wrap ul,
 #entity-wrap p,
 #entity-wrap li {
@@ -316,13 +328,13 @@
 	box-shadow: 0 3px 2px rgba(0,0,0,.15);
     border-width: 2px !important;
 }
-#entity-wrap .entity_attr.inuse {
-	color: #f2ac16;
-	border: 1px solid #f2ac16;
-}
-#entity-wrap .entity_attr.newadd {
+#entity-wrap .entity_attr.inuse {	
 	color: #307b89;
 	border: 1px solid #26a39a;
+}
+#entity-wrap .entity_attr.newadd {
+	color: #f2ac16;
+	border: 1px solid #f2ac16;
 }
 #entity-wrap .entity_attr.inerror{
 	color: #f24949;
@@ -335,7 +347,7 @@
 }
 
 #entity-wrap .entity_attr.newadd .status,
-#entity-wrap .new_add>.newadd {
+#entity-wrap .new_add>.newadd {		
 	background-image: url('../images/newadd.png');
 }
 
@@ -421,6 +433,9 @@
 #entity-wrap .two-level-attr {
 	float: right;
 	margin-right: 1.8em;
+}
+#entity-wrap .two-level-attr a {
+	color: #307b89;	
 }
 #entity-wrap .enum-wrap {
 	float: right;

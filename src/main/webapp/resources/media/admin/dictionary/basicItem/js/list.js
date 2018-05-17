@@ -102,12 +102,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
                 str = str + "</select>";               
                 $form.find("#dataType").after(str);
                 $form.find("#dataRange").val("枚举").hide();
-                $form.find("#cn_dataRange").hide();   
-                /*$this.closest(".select-wrap").find("#dictParentId").css({
-                	"width": "30%"
-                });                  
-                                   
-                $this.closest(".select-wrap").find("#dictParentId").select2();*/             
+                $form.find("#cn_dataRange").hide();                  
                 $CPF.closeLoading();
             });            
     	} else {
@@ -137,11 +132,31 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
     	var options=$(this).find("option:selected");
     	//var $form = $(".more_proper").find("#more_child_opera_form1");
     	var $form  = $(this).parent().parent();
-    	if ("枚举" == options.val()) {
+    	if ("枚举" == options.val()) {    		
     		 //如果是枚举， 则显示下拉列表
 	    	$CPF.showLoading();
 	        $form.find("#dictParentId").remove();
-	        $form.find("#span_enum").remove();        
+	        $form.find("#span_enum").remove();   
+	        /*Ajax.ajax('admin/dictionary/dictParentItem/getDictPitem', '', function(data) {
+            var dataArr = data.dictPitem;    	            
+            var dictParentId = $form1.find("#edit_dictParentId").val();
+            if (dictParentId != "") {
+                var str = "<span id=\"span_enum\">字典序：</span><select id=\"dictParentId\" name=\"dictParentId\">";
+                for (var p in dataArr) { //遍历json数组时，这么写p为索引，0,1
+                    if (dictParentId == dataArr[p].id) {
+                        str = str + "<option selected=\"selected\"  value=\"" + dataArr[p].id + "\">" + dataArr[p].name + "</option>"; 
+                    } else {
+                        str = str + "<option value=\"" + dataArr[p].id + "\">" + dataArr[p].name + "</option>"; 
+                    }
+                }
+                str = str + "</select>";
+                $form1.find("#dataRange").hide();
+                $form1.find("#cn_dataRange").hide();  
+                $form1.find("#span_enum").remove();
+                $form1.find("#dictParentId").remove();
+                $form1.find("#dataType").after(str);
+            }
+        });   	*/
             //选中  则显示下拉列表       
             Ajax.ajax('admin/dictionary/dictParentItem/getDictPitem', '', function(data) {
                 var dataArr = data.dictPitem;
@@ -197,6 +212,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
             }    
             
             $select.append(str);
+            $select.trigger("change");
         });
         $form.find("#dictParentId").remove();
         $form.find("#span_enum").remove();
@@ -226,7 +242,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
                 	 str = str + " <option value =\"" + key + "\">" + data[key] + "</option>";
                 }
             }
-            $(".opera_more_child").find("#more_child_opera_form1").find("#dataType").append(str);
+            $(".opera_more_child").find("#more_child_opera_form1").find("#dataType").append(str).trigger("change");            
         });
         $newAdd.find("#add_more_child_mes").html("");
         $newAdd.find("#add_more_child_mes").html("添加多值属性");
@@ -288,8 +304,8 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
                 	 valuestr = valuestr + " <option value =\"" + datachild[key].code + "\">" + datachild[key].cnName + "</option>";
                 }
             }
-            $form.find("#dictionaryAttr").append(dictattr_enum);
-            $form.find("#valueAttr").append(valuestr);
+            $form.find("#dictionaryAttr").append(dictattr_enum).trigger("change");
+            $form.find("#valueAttr").append(valuestr).trigger("change");
         });
         $("#twoLevelAttr_mes").html("");
         $("#twoLevelAttr_mes").html("添加二级属性");
@@ -337,8 +353,8 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
 								dictattr_enum = dictattr_enum + " <option value =\""+datachild[key].code+"\">"+datachild[key].cnName+"</option>";
 							} 
 					      }  */
-                $form.find("#dictionaryAttr").append(dictattr_enum);
-                $form.find("#valueAttr").append(valuestr);
+                $form.find("#dictionaryAttr").append(dictattr_enum).trigger("change");
+                $form.find("#valueAttr").append(valuestr).trigger("change");
             });
         });
         $("#twoLevelAttr_mes").html("");
@@ -359,14 +375,23 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
             }, function(data) {
                 var datatmm = data.tmm;
                 var child = datatmm.childList;
+                console.log(datatmm);
                 $twochile.show();
                 $twochile.find("#twoLevelAttr_name").html("");
                 $twochile.find("#twoLevelAttr_name").html(datatmm.name);
                 $twochile.find("#edit_twoLevelAttr").attr("twoLevelId", datatmm.id);
                 $twochile.find(".new_add_twolc").remove();
                 var str = "";
-                for (var key in child) {              	
-                    str = str + "<div title=\"id:"+child[key].id+", 名称："+child[key].name+"\" twoLevel_chil_Id=" + child[key].id +" class='entity_attr new_add_twolc'>"+child[key].name+"<ul class='entity_ul' entityId='${item.code}' status='${item.usingState}'><li><a href='javascript:void(0)' class='edit_entity'><i class='icon edit-entity'></i>编辑实体</a></li></ul></div>";
+                for (var key in child) {              	                    
+                    if(child[key].usingState == '0'){                    	
+                    	str = str + "<div title=\"id:"+child[key].id+", 名称："+child[key].name+"\" twoLevel_chil_Id=" + child[key].id +" class='entity_attr new_add_twolc newadd'>"+child[key].name+"<ul class='entity_ul' entityId='${item.code}' status='${item.usingState}'><li><a href='javascript:void(0)' class='edit_entity'><i class='icon edit-entity'></i>编辑实体</a></li></ul><i class=\"icon status\"></i></div>";
+                    } else if(child[key].usingState == '2'){                    	
+                    	str = str + "<div title=\"id:"+child[key].id+", 名称："+child[key].name+"\" twoLevel_chil_Id=" + child[key].id +" class='entity_attr new_add_twolc stale'>"+child[key].name+"<ul class='entity_ul' entityId='${item.code}' status='${item.usingState}'><li><a href='javascript:void(0)' class='edit_entity'><i class='icon edit-entity'></i>编辑实体</a></li></ul><i class=\"icon status\"></i></div>";
+                    } else if(child[key].usingState == '-1'){                    	
+                    	str = str + "<div title=\"id:"+child[key].id+", 名称："+child[key].name+"\" twoLevel_chil_Id=" + child[key].id +" class='entity_attr new_add_twolc inerror'>"+child[key].name+"<ul class='entity_ul' entityId='${item.code}' status='${item.usingState}'><li><a href='javascript:void(0)' class='edit_entity'><i class='icon edit-entity'></i>编辑实体</a></li></ul><i class=\"icon status\"></i></div>";
+                    } else if(child[key].usingState == '1'){                    	
+                    	str = str + "<div title=\"id:"+child[key].id+", 名称："+child[key].name+"\" twoLevel_chil_Id=" + child[key].id +" class='entity_attr new_add_twolc inuse'>"+child[key].name+"<ul class='entity_ul' entityId='${item.code}' status='${item.usingState}'><li><a href='javascript:void(0)' class='edit_entity'><i class='icon edit-entity'></i>编辑实体</a></li></ul><i class=\"icon status\"></i></div>";
+                    }
                 }
                 str = str + "<div class=\"entity_attr new_add_twolc entity_attr_img add_comm add_twoLevelAttr_children\"><img mappingId=\"" + datatmm.id + "\" alt=\"添加二级属性\" src=\"media/admin/dictionary/basicItem/addEntity_icon.png\"></div>"
                 $twochile.append(str);
@@ -405,7 +430,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
             for (var key in dictList) {
                 str = str + " <option value =\"" + dictList[key].code + "\">" + dictList[key].name + "</option>";
             }
-            $form.find("#dictionaryCode").append(str);
+            $form.find("#dictionaryCode").append(str).trigger("change");
         });
         $(this).closest('.new_add').find(".twoLevelAttr_child_show").show();
     });
@@ -426,7 +451,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
                 str = str + "<option value=\"" + entity[p].code + "\">" + entity[p].cnName + "</option>"; 
             }
             $(".opera_relation").find("#entity_relation_opera_form").find("#rightRecordType").html("");
-            $(".opera_relation").find("#entity_relation_opera_form").find("#rightRecordType").append(str);            
+            $(".opera_relation").find("#entity_relation_opera_form").find("#rightRecordType").append(str).trigger("change");            
             $("#add_relation_mes").html("");
             $("#add_relation_mes").html("添加关系");
             $(".opera_relation").find("form").find("input").val("");
@@ -768,7 +793,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
             $form1.find("#edit_dictParentId").val(jsonData.dictParentId);
             $form1.find("#dataType").html("");
             if(ischecked) {
-    			Ajax.ajax('admin/dictionary/dictParentItem/getDictPitem', '', function(data) {
+    			/*Ajax.ajax('admin/dictionary/dictParentItem/getDictPitem', '', function(data) {
     	            var dataArr = data.dictPitem;    	            
     	            var dictParentId = $form1.find("#edit_dictParentId").val();
     	            if (dictParentId != "") {
@@ -787,7 +812,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
     	                $form1.find("#cn_dataRange").hide();
     	                $form1.find("#dataType").after(str);
     	            }
-    	        });   	
+    	        });   	*/
             }else {
             	$form1.find("#span_enum").remove();
                 $form1.find("#dictParentId").remove();	
@@ -823,7 +848,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
 	               
 	            }
 	            
-	            $form1.find("#dataType").append(str);
+	            $form1.find("#dataType").append(str).trigger("change");
 	        });
             
             $newAdd.find("#add_comm_mes").html("");
@@ -854,7 +879,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
             $form1.find("#edit_dictParentId").val(jsonData.dictParentId);
             $form1.find("#dataType").html("");  
     		if(ischecked) {
-    			Ajax.ajax('admin/dictionary/dictParentItem/getDictPitem', '', function(data) {
+    			/*Ajax.ajax('admin/dictionary/dictParentItem/getDictPitem', '', function(data) {
     	            var dataArr = data.dictPitem;    	            
     	            var dictParentId = $form1.find("#edit_dictParentId").val();
     	            if (dictParentId != "") {
@@ -873,7 +898,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
     	                $form1.find("#dictParentId").remove();
     	                $form1.find("#dataType").after(str);
     	            }
-    	        });   	
+    	        });   	*/
     		}else {
     			 $form1.find("#span_enum").remove();
                  $form1.find("#dictParentId").remove();
@@ -883,7 +908,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
  	           if ("日期型" == jsonData.dataType || "时间型" == jsonData.dataType) {
            		$form1.find("#dataRange").val("").hide();
 	                $form1.find("#cn_dataRange").hide();
-           	} 
+ 	           } 
     		}   
     		
     		Ajax.ajax('admin/dictionary/basicItem/getDataType', '', function(data) {    	           
@@ -906,7 +931,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
 	            	}
 	            }
 	           
-	            $form1.find("#dataType").append(str);
+	            $form1.find("#dataType").append(str).trigger("change");
 	        }); 	
     		
             $("#add_more_child_mes").html("");
@@ -1148,7 +1173,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
             	"width": "100%",
             	"margin-right": "0"
             });
-            $("select").css("width","30%");
+            $("select").css("width","30%");                        
             $("select").select2();
         });
     }

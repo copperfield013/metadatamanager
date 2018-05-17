@@ -5,6 +5,9 @@
 <script src="media/admin/plugins/beyond/js/select2/select2.js"></script>
 
 <div id="entity-wrap">
+	<div class="status-legend">
+		
+	</div>
 	<div class="entity-list">
 		<div class="entity">
 			 <div class="entity_head">
