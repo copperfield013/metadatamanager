@@ -1,4 +1,45 @@
 seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
+	//验证 不能为空
+	function notNull(data) {
+    	var reg = /^\s*$/g;
+    	return reg.test(data);
+    }
+	
+	//验证表单为必填项
+	 function checkForm($form) {
+	    	var $cnName = $form.find("#cnName");
+	        var $enName = $form.find("#enName");
+	        
+	        //中文名
+	         if (notNull($cnName.val())) {
+	        	 $cnName.siblings("#req").remove();
+	        	 $cnName.after(" <span id=\"req\" style=\"color: red;\">必填项</span>");
+	        	 return false;
+	         } else {
+	        	 $cnName.siblings("#req").remove();
+	         }
+	         
+	         //英文名
+	         if (notNull($enName.val())) {
+	        	 $enName.siblings("#req").remove();
+	        	 $enName.after(" <span id=\"req\" style=\"color: red;\">必填项</span>");
+	        	 return false;
+	         } else {
+	        	 $enName.siblings("#req").remove();
+	         }
+	         
+	         //数据长度
+	         
+	         if (notNull($enName.val())) {
+	        	 $enName.siblings("#req").remove();
+	        	 $enName.after(" <span id=\"req\" style=\"color: red;\">必填项</span>");
+	        	 return false;
+	         } else {
+	        	 $enName.siblings("#req").remove();
+	         }
+	         return true;
+	    }
+	
     //创建表
    $("#createTab").click(function() {
     	Dialog.confirm("点击是， 则生成数据库表，字段", function(isYes) {
@@ -535,18 +576,22 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
     	var formdom = $(this).closest(".opera_group").find("#group_opera_form1")[0];
         var fData = new FormData(formdom);
         var entityId = $(".common_proper").attr("parentid");
-        $CPF.showLoading();
-        Ajax.ajax('admin/dictionary/basicItem/do_add', fData, function(data) {
-        	$(".opera_group").hide();
-            //重新加载全部
-            $(".new_add").remove();        
-            enityAttr(entityId);
-            
-          /*  //重新加载部分
-            $(".common_proper").find(".new_add").remove();   
-            commAttr(entityId);*/
-            $CPF.closeLoading();
-        });
+        var $form = $(this).closest(".opera_group").find("#group_opera_form1");
+        //验证表单不能为空
+        if(checkForm($form)) {
+        	 $CPF.showLoading();
+        	 Ajax.ajax('admin/dictionary/basicItem/do_add', fData, function(data) {
+             	$(".opera_group").hide();
+                 //重新加载全部
+                 $(".new_add").remove();        
+                 enityAttr(entityId);
+                 
+               /*  //重新加载部分
+                 $(".common_proper").find(".new_add").remove();   
+                 commAttr(entityId);*/
+                 $CPF.closeLoading();
+             });
+        }
     });
     //点击确认， 进行添加多值属性自身
     $(".more_proper").on("click", "#more_but_confirm", function() {
@@ -583,24 +628,27 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
         if (typeof(dictParentId) == "undefined") {
             dictParentId = "";
         }        
-        
         var entityId = $(".common_proper").attr("parentId");
-        $CPF.showLoading();
-        Ajax.ajax('admin/dictionary/basicItem/do_add', {
-            code: code,
-            cnName: cnName,
-            enName: enName,
-            dataType: dataType,
-            dataRange: dataRange,
-            dictParentId: dictParentId,
-            groupName: groupName,
-            parent: parent
-        }, function(data) {
-        	$(this).closest('.opera_comm').hide();
-            $(".new_add").remove();
-            enityAttr(entityId);
-        	 $CPF.closeLoading();
-        });
+        var $form = $(this).closest(".opera_comm").find("#comm_opera_form1");
+        //验证表单
+        if (checkForm($form)) {
+        	$CPF.showLoading();
+            Ajax.ajax('admin/dictionary/basicItem/do_add', {
+                code: code,
+                cnName: cnName,
+                enName: enName,
+                dataType: dataType,
+                dataRange: dataRange,
+                dictParentId: dictParentId,
+                groupName: groupName,
+                parent: parent
+            }, function(data) {
+            	$(this).closest('.opera_comm').hide();
+                $(".new_add").remove();
+                enityAttr(entityId);
+            	 $CPF.closeLoading();
+            });
+        }
     });
     
   //添加对称关系
@@ -691,11 +739,15 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
     //点击确认， 进行添加操作
     $("#entity_but_confirm").click(function() {
     	var formdom = $(this).closest(".opera_entity").find("#entity_opera_form1")[0];
-    	console.log(formdom);
-    	console.log(new FormData(formdom));
         var fData = new FormData(formdom);  
-        Ajax.ajax('admin/dictionary/basicItem/do_add', fData, function(data) {});
+        
+        var $form = $(this).closest(".opera_entity").find("#entity_opera_form1");
+        
+        if (checkForm($form)) {
+        	Ajax.ajax('admin/dictionary/basicItem/do_add', fData, function(data) {});
+        }
     });
+    
     //给 实体列表  注册鼠标点击事件  让自己的ul显示出来    
     var $list = $(".entity_list");
     $list.on('click', '.entity_attr', function() {
