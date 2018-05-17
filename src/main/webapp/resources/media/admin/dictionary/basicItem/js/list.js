@@ -91,16 +91,30 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
     		 //如果是枚举， 则显示下拉列表
 	    	$CPF.showLoading();
 	        $form.find("#dictParentId").remove();
-	        $form.find("#span_enum").remove();        
+	        $form.find("#s2id_dictParentId").remove();
+	        $form.find("#span_enum").remove(); 	        
             //选中  则显示下拉列表       
             Ajax.ajax('admin/dictionary/dictParentItem/getDictPitem', '', function(data) {
+            	var dictParentId = $form.find("#edit_dictParentId").val();
                 var dataArr = data.dictPitem;
                 var str = "<span id=\"span_enum\">字典序：</span><select id=\"dictParentId\" name=\"dictParentId\">";
-                for (var p in dataArr) { //遍历json数组时，这么写p为索引，0,1
-                    str = str + "<option value=\"" + dataArr[p].id + "\">" + dataArr[p].name + "</option>"; 
+                if (dictParentId == "") {
+                	for (var p in dataArr) { //遍历json数组时，这么写p为索引，0,1
+                        str = str + "<option value=\"" + dataArr[p].id + "\">" + dataArr[p].name + "</option>"; 
+                    }
+                }else {
+                	for (var p in dataArr) { //遍历json数组时，这么写p为索引，0,1
+                        if (dictParentId == dataArr[p].id) {
+                            str = str + "<option selected=\"selected\"  value=\"" + dataArr[p].id + "\">" + dataArr[p].name + "</option>"; 
+                        } else {
+                            str = str + "<option value=\"" + dataArr[p].id + "\">" + dataArr[p].name + "</option>"; 
+                        }
+                    }
                 }
+                
                 str = str + "</select>";               
-                $form.find("#dataType").after(str);
+                $form.find("#dataType").after(str);                
+                $form.find("#dictParentId").css("width","30%").select2();
                 $form.find("#dataRange").val("枚举").hide();
                 $form.find("#cn_dataRange").hide();                  
                 $CPF.closeLoading();
@@ -121,7 +135,8 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
     		}
 	        
 	        $form.find("#dictParentId").remove();
-	        $form.find("#span_enum").remove();    
+	        $form.find("#s2id_dictParentId").remove();
+	        $form.find("#span_enum").remove(); 	        
 	        $CPF.closeLoading();
         }
     	
@@ -129,43 +144,36 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
     
   //选中数据类型为  枚举   触发事件
     $(".more_proper").on("change", ".enum_daType_two", function() {
-    	var options=$(this).find("option:selected");
-    	//var $form = $(".more_proper").find("#more_child_opera_form1");
+    	var options=$(this).find("option:selected");    	
     	var $form  = $(this).parent().parent();
     	if ("枚举" == options.val()) {    		
     		 //如果是枚举， 则显示下拉列表
 	    	$CPF.showLoading();
 	        $form.find("#dictParentId").remove();
-	        $form.find("#span_enum").remove();   
-	        /*Ajax.ajax('admin/dictionary/dictParentItem/getDictPitem', '', function(data) {
-            var dataArr = data.dictPitem;    	            
-            var dictParentId = $form1.find("#edit_dictParentId").val();
-            if (dictParentId != "") {
-                var str = "<span id=\"span_enum\">字典序：</span><select id=\"dictParentId\" name=\"dictParentId\">";
-                for (var p in dataArr) { //遍历json数组时，这么写p为索引，0,1
-                    if (dictParentId == dataArr[p].id) {
-                        str = str + "<option selected=\"selected\"  value=\"" + dataArr[p].id + "\">" + dataArr[p].name + "</option>"; 
-                    } else {
-                        str = str + "<option value=\"" + dataArr[p].id + "\">" + dataArr[p].name + "</option>"; 
-                    }
-                }
-                str = str + "</select>";
-                $form1.find("#dataRange").hide();
-                $form1.find("#cn_dataRange").hide();  
-                $form1.find("#span_enum").remove();
-                $form1.find("#dictParentId").remove();
-                $form1.find("#dataType").after(str);
-            }
-        });   	*/
+	        $form.find("#s2id_dictParentId").remove();
+	        $form.find("#span_enum").remove();  	        
             //选中  则显示下拉列表       
             Ajax.ajax('admin/dictionary/dictParentItem/getDictPitem', '', function(data) {
                 var dataArr = data.dictPitem;
+                var dictParentId = $form.find("#edit_dictParentId").val();
                 var str = "<span id=\"span_enum\">字典序：</span><select id=\"dictParentId\" name=\"dictParentId\">";
-                for (var p in dataArr) { //遍历json数组时，这么写p为索引，0,1
-                    str = str + "<option value=\"" + dataArr[p].id + "\">" + dataArr[p].name + "</option>"; 
+                if(dictParentId == "") {
+                	for (var p in dataArr) { //遍历json数组时，这么写p为索引，0,1
+                        str = str + "<option value=\"" + dataArr[p].id + "\">" + dataArr[p].name + "</option>"; 
+                    }                	                                        
+                }else {
+                	for (var p in dataArr) { //遍历json数组时，这么写p为索引，0,1
+                        if (dictParentId == dataArr[p].id) {
+                            str = str + "<option selected=\"selected\"  value=\"" + dataArr[p].id + "\">" + dataArr[p].name + "</option>"; 
+                        } else {
+                            str = str + "<option value=\"" + dataArr[p].id + "\">" + dataArr[p].name + "</option>"; 
+                        }
+                    }
                 }
+                
                 str = str + "</select>";
                 $form.find("#dataType").after(str);
+                $form.find("#dictParentId").css("width","30%").select2();
                 $form.find("#dataRange").val("枚举").hide();
                 $form.find("#cn_dataRange").hide();
                 $CPF.closeLoading();
@@ -186,6 +194,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
     		}
     		
 	        $form.find("#dictParentId").remove();
+	        $form.find("#s2id_dictParentId").remove();
 	        $form.find("#span_enum").remove();    
 	        $CPF.closeLoading();
         }
@@ -215,6 +224,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
             $select.trigger("change");
         });
         $form.find("#dictParentId").remove();
+        $form.find("#s2id_dictParentId").remove();
         $form.find("#span_enum").remove();
         
         $newAdd.find("#add_comm_mes").html("");
@@ -253,6 +263,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
         $form.find("#dataRange").val("32");
         $form.find("#cn_dataRange").show();
         $form.find("#dictParentId").remove();
+        $form.find("#s2id_dictParentId").remove();
         $form.find("#span_enum").remove(); 
     });
     //点击确认， 添加一条二级属性
@@ -370,8 +381,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
                 id: twoLevelId
             }, function(data) {
                 var datatmm = data.tmm;
-                var child = datatmm.childList;
-                console.log(datatmm);
+                var child = datatmm.childList;                
                 $twochile.show();
                 $twochile.find("#twoLevelAttr_name").html("");
                 $twochile.find("#twoLevelAttr_name").html(datatmm.name);
