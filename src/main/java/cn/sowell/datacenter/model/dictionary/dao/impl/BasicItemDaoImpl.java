@@ -86,18 +86,6 @@ public class BasicItemDaoImpl implements BasicItemDao {
 	@Override
 	public void saveOrUpdate(BasicItem obj, String flag) {
 		if ("add".equals(flag)) {
-			//生成code 规则：实体code TE0001 开始  其他code规则 T00001开始
-			String dataType = obj.getDataType();
-			if ("记录类型".equals(dataType)) {
-				obj.setCode(getEntityCode());
-			} else {
-				obj.setCode(getAttrCode());
-			}
-			
-			if ("重复类型".equals(dataType)) {
-				obj.setTableName("t_" + obj.getParent() +"_"+ obj.getCode() +"_"+ obj.getCode());
-			}
-			
 			sFactory.getCurrentSession().save(obj);
 		} else {
 			sFactory.getCurrentSession().update(obj);
@@ -106,7 +94,7 @@ public class BasicItemDaoImpl implements BasicItemDao {
 	}
 	
 	//实体code  生成规则
-	private String getEntityCode() {
+	public String getEntityCode() {
 		String sql = "SELECT SUBSTR(c_code, 5) aa from t_c_basic_item WHERE c_data_type='记录类型' AND c_code like 'IBT%' AND c_code not like '%_ED' AND c_code not like '%_P' ORDER BY  CAST(aa as SIGNED ) DESC";
 		List list = sFactory.getCurrentSession().createSQLQuery(sql).list();
 
@@ -123,7 +111,7 @@ public class BasicItemDaoImpl implements BasicItemDao {
 	}
 	
 	//其他code， 生成规则
-	private String getAttrCode() {
+	public String getAttrCode() {
 		String sql = "SELECT SUBSTR(c_code, 4) aa from t_c_basic_item WHERE c_data_type!='记录类型' AND c_code like 'IBT%' AND c_code not like '%_ED' AND c_code not like '%_P' ORDER BY  CAST(aa as SIGNED ) DESC";
 		
 		List list = sFactory.getCurrentSession().createSQLQuery(sql).list();

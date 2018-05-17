@@ -87,4 +87,10 @@ public interface BasicItemDao {
 	 * @param sql
 	 */
 	void excuteBySql(String sql);
+	
+	//实体code  生成规则
+	public String getEntityCode();
+	
+	//其他code， 生成规则
+	public String getAttrCode();
 }

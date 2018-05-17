@@ -186,6 +186,21 @@ public class BasicItemServiceImpl implements BasicItemService {
 			
 		}
 		
+		//生成code 规则：实体code TE0001 开始  其他code规则 T00001开始
+		if ("add".equals(flag)) {
+			//生成code 规则：实体code TE0001 开始  其他code规则 T00001开始
+			String dataType = obj.getDataType();
+			if ("记录类型".equals(dataType)) {
+				obj.setCode(basicItemDao.getEntityCode());
+			} else {
+				obj.setCode(basicItemDao.getAttrCode());
+			}
+			
+			if ("重复类型".equals(obj.getDataType())) {
+				obj.setTableName("t_" + obj.getParent() +"_"+ obj.getCode() +"_"+ obj.getCode());
+			}
+		}
+		
 		//保存更改
 		basicItemDao.saveOrUpdate(obj, flag);
 		//如果是重复类型， 默认生成两个孩子， 
