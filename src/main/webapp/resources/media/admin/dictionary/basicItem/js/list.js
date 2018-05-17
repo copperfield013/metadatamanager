@@ -519,13 +519,13 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
                 var str = "";
                 for (var key in child) {              	                    
                     if(child[key].usingState == '0'){                    	
-                    	str = str + "<div title=\"id:"+child[key].id+", 名称："+child[key].name+"\" twoLevel_chil_Id=" + child[key].id +" class='entity_attr new_add_twolc newadd'>"+child[key].name+"<ul class='entity_ul' entityId='${item.code}' status='${item.usingState}'><li><a href='javascript:void(0)' class='edit_entity'><i class='icon edit-entity'></i>编辑实体</a></li></ul><i class=\"icon status\"></i></div>"
+                    	str = str + "<div title=\"id:"+child[key].id+", 名称："+child[key].name+"\" twoLevel_chil_Id=" + child[key].id +" class='entity_attr new_add_twolc newadd'>"+child[key].name+"</div>"
                     } else if(child[key].usingState == '2'){                    	
-                    	str = str + "<div title=\"id:"+child[key].id+", 名称："+child[key].name+"\" twoLevel_chil_Id=" + child[key].id +" class='entity_attr new_add_twolc stale'>"+child[key].name+"<ul class='entity_ul' entityId='${item.code}' status='${item.usingState}'><li><a href='javascript:void(0)' class='edit_entity'><i class='icon edit-entity'></i>编辑实体</a></li></ul><i class=\"icon status\"></i></div>"
+                    	str = str + "<div title=\"id:"+child[key].id+", 名称："+child[key].name+"\" twoLevel_chil_Id=" + child[key].id +" class='entity_attr new_add_twolc stale'>"+child[key].name+"</div>"
                     } else if(child[key].usingState == '-1'){                    	
-                    	str = str + "<div title=\"id:"+child[key].id+", 名称："+child[key].name+"\" twoLevel_chil_Id=" + child[key].id +" class='entity_attr new_add_twolc inerror'>"+child[key].name+"<ul class='entity_ul' entityId='${item.code}' status='${item.usingState}'><li><a href='javascript:void(0)' class='edit_entity'><i class='icon edit-entity'></i>编辑实体</a></li></ul><i class=\"icon status\"></i></div>"
+                    	str = str + "<div title=\"id:"+child[key].id+", 名称："+child[key].name+"\" twoLevel_chil_Id=" + child[key].id +" class='entity_attr new_add_twolc inerror'>"+child[key].name+"</div>"
                     } else if(child[key].usingState == '1'){                    	
-                    	str = str + "<div title=\"id:"+child[key].id+", 名称："+child[key].name+"\" twoLevel_chil_Id=" + child[key].id +" class='entity_attr new_add_twolc inuse'>"+child[key].name+"<ul class='entity_ul' entityId='${item.code}' status='${item.usingState}'><li><a href='javascript:void(0)' class='edit_entity'><i class='icon edit-entity'></i>编辑实体</a></li></ul><i class=\"icon status\"></i></div>"
+                    	str = str + "<div title=\"id:"+child[key].id+", 名称："+child[key].name+"\" twoLevel_chil_Id=" + child[key].id +" class='entity_attr new_add_twolc inuse'>"+child[key].name+"</div>"
                     }
                 }
                 str = str + "<div class=\"entity_attr new_add_twolc entity_attr_img add_comm add_twoLevelAttr_children\"><img mappingId=\"" + datatmm.id + "\" alt=\"添加二级属性\" src=\"media/admin/dictionary/basicItem/addEntity_icon.png\"></div>"
@@ -597,7 +597,6 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
             $(".opera_relation").find("form").find("input").val("");
             $(".opera_relation").show();
         });
-        
         
     });
     // 点击取消  取消添加关系
