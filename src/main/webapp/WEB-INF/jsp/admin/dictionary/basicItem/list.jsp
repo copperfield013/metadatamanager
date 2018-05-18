@@ -28,7 +28,7 @@
 							<c:if test="${item.usingState ne '2' }"><li><a href="javascript:void(0)" class="edit_entity"><i class="icon edit-entity"></i>编辑实体</a></li></c:if>							
 							<c:if test="${item.usingState ne '2' }"><li><a href="javascript:void(0)" class="change_status"><i class="icon stale-entity"></i>过期实体</a></li></c:if>
 							<c:if test="${item.usingState eq '2' }"><li><a href="javascript:void(0)" class="change_status"><i class="icon stale-entity"></i>解除过期</a></li></c:if>
-							<c:if test="${item.usingState ne '2' }"><li><a href="javascript:void(0)" class="delete_entity"><i class="icon edit-entity"></i>删除实体</a></li></c:if>
+							<li><a href="javascript:void(0)" class="delete_entity"><i class="icon edit-entity"></i>删除实体</a></li>
 						</ul>
 						<i class="icon status"></i>	
 					</div>			
