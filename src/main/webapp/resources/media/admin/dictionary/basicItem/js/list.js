@@ -1199,6 +1199,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
     	$('.entity_attr').removeClass('active').removeClass('pitch');
     	$(this).closest('.entity_attr').addClass('pitch');
         var entityId = $(this).parent().parent().attr("entityId");
+        var status = $(this).parent().parent().attr("status");
         $(".opera_entity").hide();
         $(".common_proper").show();
         $(".more_proper").show();
@@ -1210,6 +1211,12 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
         $("#more_parent").val(entityId);
         $(".new_add").remove();
         enityAttr(entityId);
+        if (status == 2) {//这里是实体过期了， 下面的所有孩子都不能编辑
+        	$("#add_group").hide();
+        	 	
+        	$("#edit_group").hide();
+        }
+        
     });
     //document 绑定事件
     $(document).on('click', function(e) {    	
