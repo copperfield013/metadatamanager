@@ -555,10 +555,16 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
                     	str = str + "<div title=\"id:"+child[key].id+", 名称："+child[key].name+"\" twoLevel_chil_Id=" + child[key].id +" class='entity_attr new_add_twolc inuse'>"+child[key].name+"</div>"
                     }
                 }
-                str = str + "<div class=\"entity_attr new_add_twolc entity_attr_img add_comm add_twoLevelAttr_children\"><img mappingId=\"" + datatmm.id + "\" alt=\"添加二级属性\" src=\"media/admin/dictionary/basicItem/addEntity_icon.png\"></div>"
-               
                 
-                $twochile.append(str);
+                Ajax.ajax('admin/dictionary/basicItem/getMoreParent', {
+                	code: datatmm.relatedMultiattribute
+                }, function(data) {
+                	if (data != 2) {
+                		str = str + "<div class=\"entity_attr new_add_twolc entity_attr_img add_comm add_twoLevelAttr_children\"><img mappingId=\"" + datatmm.id + "\" alt=\"添加二级属性\" src=\"media/admin/dictionary/basicItem/addEntity_icon.png\"></div>"
+                	}
+                	
+                	$twochile.append(str);
+                });
             });
         }        
     });

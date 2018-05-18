@@ -322,4 +322,17 @@ public class BasicItemController {
 			return json.toString();
 			
 		}
+		
+		
+		//获取多值属性的父亲， 传入参数为多值属性的code
+		@ResponseBody
+		@RequestMapping("/getMoreParent")
+		public String getMoreParent(String code){
+			BasicItem btMore = basicItemService.getBasicItem(code);
+			BasicItem btParent = basicItemService.getBasicItem(btMore.getParent());
+			String str  = String.valueOf(btParent.getUsingState());
+			return str;
+			
+		}	
+		
 }
