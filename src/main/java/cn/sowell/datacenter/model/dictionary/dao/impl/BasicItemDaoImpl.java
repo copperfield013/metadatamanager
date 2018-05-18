@@ -75,6 +75,13 @@ public class BasicItemDaoImpl implements BasicItemDao {
 		List<BasicItem> list = sFactory.getCurrentSession().createQuery(sql).setParameter("parent", parent).list();
 		return list;
 	}
+	
+	@Override
+	public List<BasicItem> getChilByPid(String parent) {
+		String sql = "from BasicItem WHERE parent=:parent";
+		List<BasicItem> list = sFactory.getCurrentSession().createQuery(sql).setParameter("parent", parent).list();
+		return list;
+	}
 
 	@Override
 	public List getAttrByPidGroupName(String parent, String groupName) {
@@ -258,6 +265,22 @@ public class BasicItemDaoImpl implements BasicItemDao {
 				DataBaseName = catalog;
 			}
 		});
+	}
+
+	@Override
+	public List queryEntityTable(String entityCode) {
+		getDataBaseName();
+		String sql = "SELECT table_name  FROM information_schema.tables t WHERE t.table_schema = '"+DataBaseName+"' AND t.TABLE_NAME like 't_"+entityCode+"%'";
+		List list = sFactory.getCurrentSession().createSQLQuery(sql).list();
+		return list;
+	}
+
+	@Override
+	public List queryEntityCol(String entityCode) {
+		getDataBaseName();
+		String sql = "select COLUMN_NAME from information_schema.COLUMNS where table_name LIKE 't_"+entityCode+"_%' and table_schema = '"+DataBaseName+"'";
+		List list = sFactory.getCurrentSession().createSQLQuery(sql).list();
+		return list;
 	}
 
 }

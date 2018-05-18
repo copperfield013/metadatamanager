@@ -117,8 +117,97 @@ public class BasicItemServiceImpl implements BasicItemService {
 		basicItemDao.delete(basicItem);
 	}
 	
-	@Override
-	public void savePastDue(BasicItem basicItem, Integer status) {
+	
+	public void saveUsingStatus(BasicItem basicItem, String statusStr) {
+		Integer status = 0;
+		if ("2".equals(statusStr)) {//变为新增或回复原来的状态
+			if ("记录类型".equals(basicItem.getDataType())) {
+				List tableList = basicItemDao.queryEntityTable(basicItem.getCode());
+				if (tableList.isEmpty()) {
+					status = 0;
+					savePastDue(basicItem, status);//全部标记为新增
+				} else {//如果查到表， 只把当前实体标记为再用并把每个表对应的分组活重复类型标记为再用
+					status = 1;
+					pastDue(basicItem, status);
+					//更改分组或重复类型
+					Iterator iterator = tableList.iterator();
+					while (iterator.hasNext()) {
+						String next = (String)iterator.next();
+						String[] str = next.split("_");
+						if (str[2].startsWith("ibt")) {
+							BasicItem item = basicItemDao.get(BasicItem.class, str[2]);
+							status = 1;
+							pastDue(item, status);
+						}
+					}
+					
+					//查询当前实体对应的所有表中存在的所有字段
+					List colList = basicItemDao.queryEntityCol(basicItem.getCode());
+					List<BasicItem> chilList = basicItemDao.getDataByPId(basicItem.getCode());
+					
+					Iterator<BasicItem> iterator2 = chilList.iterator();
+					
+					while (iterator2.hasNext()) {
+						BasicItem next = iterator2.next();
+						if ("重复类型".equals(next.getDataType())) {
+							List<BasicItem> moreChilList = basicItemDao.getChilByPid(next.getParent() + "_" + next.getCode());
+							
+							Iterator<BasicItem> iterator3 = moreChilList.iterator();
+							while (iterator3.hasNext()) {
+								BasicItem next2 = iterator3.next();
+								if (colList.contains(next2.getCode())) {
+									status = 1;
+									pastDue(next2, status);
+								} else {//不包含为新增
+									status = 0;
+									pastDue(next2, status);
+								}
+							}
+							
+						} else if (!"分组类型".equals(next.getDataType())){//不是重复类型也不能是分组类型
+							if (colList.contains(next.getCode())) {
+								status = 1;
+								pastDue(next, status);
+							} else {//不包含为新增
+								status = 0;
+								pastDue(next, status);
+							}
+						}
+						
+					}
+				}
+			} else {//普通属性和多值属性下的属性
+				//分组或者是重复类型
+				BasicItem btGroup = basicItemDao.get(BasicItem.class, basicItem.getGroupName());
+				BasicItem entity = basicItemDao.get(BasicItem.class, btGroup.getParent());
+				//查询当前实体对应的所有表中存在的所有字段
+				List colList = basicItemDao.queryEntityCol(entity.getCode());
+				
+				if (colList.contains(basicItem.getCode())) {//含有，已生成数据库字段， 再用状态
+					status = 1;
+					pastDue(basicItem, status);
+				} else {//不包含为新增
+					status = 0;
+					pastDue(basicItem, status);
+				}
+				
+			}
+			
+			
+			
+			
+		} else {//过期就是全部过期
+			status = 2;
+			savePastDue(basicItem, status);//全部过期
+		}
+	}
+	
+	/**
+	 * 改变状态值为过期or正常， 传过来实体：则实体下面所有的数据项都过期or正常
+	 * 传过来重复类型： 则重复类型下面所有的都过期or正常
+	 * 传过来普通属性 ： 则普通属性过期or正常
+	 */
+	private void savePastDue(BasicItem basicItem, Integer status) {
 		//不管是什么类型， 自身状态都要改变
 		pastDue(basicItem, status);
 		//记录类型
@@ -195,12 +284,11 @@ public class BasicItemServiceImpl implements BasicItemService {
 			} else {
 				obj.setCode(basicItemDao.getAttrCode());
 			}
-			
-			if ("重复类型".equals(obj.getDataType())) {
-				obj.setTableName("t_" + obj.getParent() +"_"+ obj.getCode() +"_"+ obj.getCode());
-			}
 		}
 		
+		if ("重复类型".equals(obj.getDataType())) {
+			obj.setTableName("t_" + obj.getParent() +"_"+ obj.getCode() +"_"+ obj.getCode());
+		}
 		//保存更改
 		basicItemDao.saveOrUpdate(obj, flag);
 		//如果是重复类型， 默认生成两个孩子， 

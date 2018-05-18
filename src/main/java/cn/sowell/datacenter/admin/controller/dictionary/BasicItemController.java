@@ -209,15 +209,8 @@ public class BasicItemController {
 	@RequestMapping("/saveStatus")
 	public AjaxPageResponse savePastDue(String id, String statusStr){
 		try {
-			
-			Integer status = 0;
-			if ("2".equals(statusStr)) {
-				status = 0;
-			} else {
-				status = 2;
-			}
 			BasicItem basicItem = basicItemService.getBasicItem(id);
-			basicItemService.savePastDue(basicItem, status);
+			basicItemService.saveUsingStatus(basicItem, statusStr);
 			
 			if ("记录类型".equals(basicItem.getDataType())) {
 				return AjaxPageResponse.CLOSE_AND_REFRESH_PAGE("修改成功", "basicItem_list");

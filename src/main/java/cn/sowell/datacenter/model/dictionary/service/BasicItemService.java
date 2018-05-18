@@ -44,11 +44,11 @@ public interface BasicItemService {
 	void delete(BasicItem basicItem);
 	
 	/**
-	 * 改变状态值为过期or正常， 传过来实体：则实体下面所有的数据项都过期or正常
-	 * 传过来重复类型： 则重复类型下面所有的都过期or正常
-	 * 传过来普通属性 ： 则普通属性过期or正常
+	 * 判断是过期还是正常
+	 * @param basicItem
+	 * @param statusStr
 	 */
-	void savePastDue(BasicItem basicItem, Integer status);
+	void saveUsingStatus(BasicItem basicItem, String statusStr);
 	
 	/**
 	 * 根据实体id， 获取多值属性， 普通属性的json数据和本实体的关系

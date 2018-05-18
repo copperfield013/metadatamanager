@@ -42,7 +42,7 @@ public interface BasicItemDao {
 	void delete(Object pojo);
 	
 	/**
-	 * 根据父id获取孩子
+	 * 查询除了多值属性唯一编码和多值属性编辑时间
 	 * @param parent
 	 * @return
 	 */
@@ -93,4 +93,25 @@ public interface BasicItemDao {
 	
 	//其他code， 生成规则
 	public String getAttrCode();
+	
+	/**
+	 * ##查询出当前实体生成的表，，
+	 *  如果为null, 证明没生成表， 则标记为新增， 否则， 修改实体为再用
+	 * @param entityCode
+	 * @return
+	 */
+	public List queryEntityTable(String entityCode);
+	
+	/**
+	 * ## 查询当前实体已经生成的字段
+	 * @return
+	 */
+	public List queryEntityCol(String entityCode);
+	
+	/**
+	 *  * 根据父id获取所有孩子
+	 * @param parent
+	 * @return
+	 */
+	public List<BasicItem> getChilByPid(String parent);
 }
