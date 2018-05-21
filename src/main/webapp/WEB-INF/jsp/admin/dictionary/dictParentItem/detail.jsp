@@ -4,7 +4,7 @@
 	<nav>
 		<form class="form-inline" action="admin/dictionary/dictBasicItem/list">
 			<div class="form-group">
-				<label for="name">关键字</label>
+				<label for="name">名称</label>
 				<input type="text" class="form-control" name="name" value="${criteria.name }" />
 				<input type="hidden" class="form-control" name="parentId" value="${criteria.parentId }" />
 			</div>
