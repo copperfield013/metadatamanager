@@ -153,7 +153,11 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
    $("#createTab").click(function() {
     	Dialog.confirm("点击是， 则生成数据库表，字段", function(isYes) {
     		if (isYes) {
-    			 Ajax.ajax('admin/dictionary/basicItem/createTab', '', function(data) {});
+    			$CPF.showLoading();
+    			 Ajax.ajax('admin/dictionary/basicItem/createTab', '', function(data) {
+    				 $CPF.closeLoading();
+    			 });
+    			 
     		}
     	});
     });
