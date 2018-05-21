@@ -1,10 +1,13 @@
 package cn.sowell.datacenter.model.dictionary.pojo;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -19,8 +22,9 @@ public class DictionaryMappingAlias {
 	@Column(name = "mapping_id")
 	private Integer mappingId;
 
-	@Column(name = "basic_item_id")
-	private Integer basicItemId;
+	@OneToOne(optional=false)
+	@JoinColumn(name="basic_item_id")
+	private DictionaryBasicItem basicItem;
 
 	@Column(name = "alias_name")
 	private String aliasName;
@@ -36,9 +40,6 @@ public class DictionaryMappingAlias {
 		return mappingId;
 	}
 
-	public Integer getBasicItemId() {
-		return basicItemId;
-	}
 
 	public String getAliasName() {
 		return aliasName;
@@ -56,10 +57,6 @@ public class DictionaryMappingAlias {
 		this.mappingId = mappingId;
 	}
 
-	public void setBasicItemId(Integer basicItemId) {
-		this.basicItemId = basicItemId;
-	}
-
 	public void setAliasName(String aliasName) {
 		this.aliasName = aliasName;
 	}
@@ -67,4 +64,13 @@ public class DictionaryMappingAlias {
 	public void setPriorityLevel(Integer priorityLevel) {
 		this.priorityLevel = priorityLevel;
 	}
+
+	public DictionaryBasicItem getBasicItem() {
+		return basicItem;
+	}
+
+	public void setBasicItem(DictionaryBasicItem basicItem) {
+		this.basicItem = basicItem;
+	}
+
 }

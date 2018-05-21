@@ -12,10 +12,10 @@
 				<form class="bv-form form-horizontal validate-form" action="admin/dictionary/dictMappingAlias/do_add">
 					
 					<div class="form-group">
-						<label class="col-lg-2 control-label" for="mappingId">映射名称</label>
+						<label class="col-lg-2 control-label" for="mappingId">字典名称</label>
 						<div class="col-lg-5">
-							<select name="mappingId">
-									<c:forEach items="${dictMappingList }" var="item">
+							<select name="basicItemId">
+									<c:forEach items="${dictBItemList }" var="item">
 										<option value="${item.id }">${item.name }</option>
 									</c:forEach>
 							</select>
@@ -23,7 +23,7 @@
 					</div>
 					
 					<div class="form-group">
-						<input type="hidden" name="basicItemId" value="${basicItemId }">
+						<input type="hidden" name="mappingId" value="${mappingId }">
 						<label class="col-lg-2 control-label" for="aliasName">别名</label>
 						<div class="col-lg-5">
 							<input type="text" class="form-control" name="aliasName" />

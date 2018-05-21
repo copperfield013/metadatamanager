@@ -106,6 +106,8 @@ public class DictionaryParentItemController {
 	public AjaxPageResponse doDelte(@PathVariable Integer id){
 		try {
 			dictionaryParentItemService.delete(id);
+			
+			
 			return AjaxPageResponse.REFRESH_LOCAL("删除成功");
 		} catch (Exception e) {
 			logger.error("删除失败", e);

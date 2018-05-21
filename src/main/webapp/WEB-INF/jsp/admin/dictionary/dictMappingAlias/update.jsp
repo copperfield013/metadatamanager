@@ -11,15 +11,10 @@
 			<div class="col-lg-12">
 				<form class="bv-form form-horizontal validate-form" action="admin/dictionary/dictMappingAlias/do_update">
 					<input type="hidden" name="id" value="${dictMappingAlias.id }" />
-					
 					<div class="form-group">
-						<label class="col-lg-2 control-label" for="mappingId">映射名称</label>
+						<label class="col-lg-2 control-label" for="basicItemId">字典名称</label>
 						<div class="col-lg-5">
-							<select name="mappingId">
-									<c:forEach items="${dictMappingList }" var="item">
-										<option value="${item.id }" <c:if test="${dictMappingAlias.mappingId eq item.id }">selected="selected"</c:if>>${item.name }</option>
-									</c:forEach>
-							</select>
+							${dictMappingAlias.basicItem.name }
 						</div>
 					</div>
 					

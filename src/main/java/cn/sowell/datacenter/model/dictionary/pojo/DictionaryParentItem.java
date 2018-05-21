@@ -2,6 +2,7 @@ package cn.sowell.datacenter.model.dictionary.pojo;
 
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -19,14 +20,14 @@ public class DictionaryParentItem {
 
 	@Id
 	@Column(name = "id")
-	@GenericGenerator(name = "system-uuid", strategy = "uuid")
+	@GenericGenerator(name="system-uuid", strategy="uuid")
 	private Integer id;
 
 	@Column(name = "c_name")
 	private String name;
 
-	@OneToMany(fetch = FetchType.EAGER)
-	@JoinColumn(name = "parent_id")
+	@OneToMany(fetch=FetchType.EAGER, cascade=CascadeType.REMOVE)
+	@JoinColumn(name="parent_id")
 	private List<DictionaryBasicItem> dictBasicItemList;
 
 	public Integer getId() {

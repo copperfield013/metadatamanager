@@ -19,8 +19,10 @@ import cn.sowell.copframe.dto.ajax.AjaxPageResponse;
 import cn.sowell.copframe.dto.page.PageInfo;
 import cn.sowell.datacenter.admin.controller.AdminConstants;
 import cn.sowell.datacenter.model.dictionary.criteria.DictionaryMappingAliasCriteria;
+import cn.sowell.datacenter.model.dictionary.pojo.DictionaryBasicItem;
 import cn.sowell.datacenter.model.dictionary.pojo.DictionaryMapping;
 import cn.sowell.datacenter.model.dictionary.pojo.DictionaryMappingAlias;
+import cn.sowell.datacenter.model.dictionary.service.DictionaryBasicItemService;
 import cn.sowell.datacenter.model.dictionary.service.DictionaryMappingAliasService;
 import cn.sowell.datacenter.model.dictionary.service.DictionaryMappingService;
 
@@ -33,6 +35,9 @@ public class DictionaryMappingAliasController {
 	
 	@Resource
 	DictionaryMappingService dictionaryMappingService;
+	
+	@Resource
+	DictionaryBasicItemService DictBItemService;
 	
 	Logger logger = Logger.getLogger(DictionaryMappingAliasController.class);
 	@org.springframework.web.bind.annotation.InitBinder
@@ -53,12 +58,10 @@ public class DictionaryMappingAliasController {
 	}
 	
 	@RequestMapping("/add")
-	public String add(String basicItemId, Model model){
-		
-		List<DictionaryMapping> dictMappingList = dictionaryMappingService.queryListAll();
-		
-		model.addAttribute("basicItemId", basicItemId);
-		model.addAttribute("dictMappingList", dictMappingList);
+	public String add(String mappingId, Model model){
+		List<DictionaryBasicItem> dictBItemList = DictBItemService.queryAllList();
+		model.addAttribute("mappingId", mappingId);
+		model.addAttribute("dictBItemList", dictBItemList);
 		return AdminConstants.JSP_DICTIONARY + "/dictMappingAlias/add.jsp";
 	}
 	
@@ -76,10 +79,10 @@ public class DictionaryMappingAliasController {
 
 	@RequestMapping("/update/{id}")
 	public String update(@PathVariable Integer id, Model model){
-		List<DictionaryMapping> dictMappingList = dictionaryMappingService.queryListAll();
+		List<DictionaryBasicItem> dictBItemList = DictBItemService.queryAllList();
 		DictionaryMappingAlias dictMappingAlias = dictMappingAliasService.getOne(id);
 		model.addAttribute("dictMappingAlias", dictMappingAlias);
-		model.addAttribute("dictMappingList", dictMappingList);
+		model.addAttribute("dictBItemList", dictBItemList);
 		return AdminConstants.JSP_DICTIONARY + "/dictMappingAlias/update.jsp";
 	}
 	

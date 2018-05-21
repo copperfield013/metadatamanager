@@ -57,4 +57,9 @@ public class DictionaryBasicItemServiceImpl implements DictionaryBasicItemServic
 		return dictionaryBasicItemDao.getBasicItemByParentAndCode(dictParentId, dictionaryCode);
 	}
 
+	@Override
+	public List<DictionaryBasicItem> queryAllList() {
+		return dictionaryBasicItemDao.queryAllList();
+	}
+
 }

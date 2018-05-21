@@ -4,7 +4,7 @@
 	<nav>
 		<form class="form-inline" action="admin/dictionary/dictParentItem/list">
 			<div class="form-group">
-				<label for="name">关键字</label>
+				<label for="name">名称</label>
 				<input type="text" class="form-control" name="name" value="${criteria.name }" />
 			</div>
 			
@@ -25,8 +25,9 @@
 				<c:forEach items="${list }" var="item" varStatus="i">
 					<tr>
 						<td>${i.index + 1 }</td>
-						<td><a class="tab" href="admin/dictionary/dictBasicItem/list?parentId=${item.id }" target="dictBasicItem_list" title="查看子数据">${item.name }</a></td>
+						<td>${item.name }</td>
 						<td>
+							<a class="tab" href="admin/dictionary/dictBasicItem/list?parentId=${item.id }" target="dictBasicItem_list" title="查看子数据">查看子数据</a>
 							<a href="admin/dictionary/dictParentItem/update/${item.id }" class="tab" target="dictParentItem_update" title="修改">修改</a>
 							<a href="admin/dictionary/dictParentItem/do_delete/${item.id }" confirm="确认删除？">删除</a>
 						</td>

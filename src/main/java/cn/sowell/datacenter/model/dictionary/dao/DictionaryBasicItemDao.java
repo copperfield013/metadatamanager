@@ -56,4 +56,6 @@ public interface DictionaryBasicItemDao {
 	public Integer getCode(Integer parentId);
 
 	DictionaryBasicItem getBasicItemByParentAndCode(Integer dictParentId, Integer dictionaryCode);
+
+	List<DictionaryBasicItem> queryAllList();
 }

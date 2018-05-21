@@ -44,4 +44,10 @@ public interface DictionaryBasicItemService {
 	List<DictionaryBasicItem> getDictBasicItemByParent(Integer parentId);
 
 	DictionaryBasicItem getBasicItemByParentAndCode(Integer dictParentId, Integer dictionaryCode);
+	
+	/**
+	 * 查询全部的字典
+	 * @return
+	 */
+	List<DictionaryBasicItem> queryAllList();
 }

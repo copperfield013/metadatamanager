@@ -110,6 +110,14 @@ public class DictionaryBasicItemDaoImpl implements DictionaryBasicItemDao {
 		Session session = sFactory.getCurrentSession();
 		String hql = "from DictionaryBasicItem where parentId=:dictParentId and code=:dictionaryCode";
 		return (DictionaryBasicItem) session.createQuery(hql).setParameter("dictParentId", dictParentId).setParameter("dictionaryCode", dictionaryCode).uniqueResult();
+	}
+
+	@Override
+	public List<DictionaryBasicItem> queryAllList() {
+		Session session = sFactory.getCurrentSession();
+		String hql = "from DictionaryBasicItem";
+		List<DictionaryBasicItem> dictBasicItemList = session.createQuery(hql).list();
+		return dictBasicItemList;
 	} 
 	
 }
