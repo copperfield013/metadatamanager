@@ -785,11 +785,13 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
     	if ($(this).is(':checked')) {
     		$(this).parent().parent().siblings('#rela_right').hide();
     		$(this).parent().parent().siblings('#rela_ni_code').hide();
+    		$(this).parent().parent().siblings('#rela_ni_name').find("#rightName").val("1");
     		$(this).parent().parent().siblings('#rela_ni_name').hide();
     		$(this).parent().parent().siblings('#symmetry').val('symmetry');
     	} else {
     		$(this).parent().parent().siblings('#rela_right').show();
     		$(this).parent().parent().siblings('#rela_ni_code').show();
+    		$(this).parent().parent().siblings('#rela_ni_name').find("#rightName").val("");
     		$(this).parent().parent().siblings('#rela_ni_name').show();
     		$(this).parent().parent().siblings('#symmetry').val("");
     	}
