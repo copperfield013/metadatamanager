@@ -49,7 +49,13 @@ public class DictionaryMappingAliasController {
 	}
 
 	@RequestMapping("/list")
-	public String list(DictionaryMappingAliasCriteria criteria, Model model, PageInfo pageInfo){
+	public String list(DictionaryMappingAliasCriteria criteria,String btItemParentName, String basicItemName, Model model, PageInfo pageInfo){
+		
+		DictionaryBasicItem dbItem = new DictionaryBasicItem();
+		dbItem.setName(basicItemName);
+		dbItem.setParentName(btItemParentName);
+		criteria.setBasicItem(dbItem);
+		
 		List<DictionaryMappingAlias> list = dictMappingAliasService.queryList(criteria, pageInfo);
 		model.addAttribute("list", list);
 		model.addAttribute("pageInfo", pageInfo);

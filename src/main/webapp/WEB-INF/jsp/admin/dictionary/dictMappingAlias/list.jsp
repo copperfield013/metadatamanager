@@ -4,10 +4,14 @@
 	<nav>
 		<form class="form-inline" action="admin/dictionary/dictMappingAlias/list">
 			<div class="form-group">
+				<label for="name">父名称</label>
+				<input type="text" class="form-control" name="btItemParentName" value="${criteria.basicItem.parentName }" />
+				
+				<label for="name">字典名称</label>
+				<input type="hidden" class="form-control" name="mappingId" value="${criteria.mappingId }" />
+				<input type="text" class="form-control" name="basicItemName" value="${criteria.basicItem.name }">
 				<label for="name">别名</label>
 				<input type="text" class="form-control" name="aliasName" value="${criteria.aliasName }" />
-				
-				<input type="hidden" class="form-control" name="mappingId" value="${criteria.mappingId }" />
 			</div>
 			<button type="submit" class="btn btn-default">查询</button>
 			<a class="btn btn-primary tab" href="admin/dictionary/dictMappingAlias/add?mappingId=${criteria.mappingId }" title="创建" target="dictMappingAlias_add" >创建</a>

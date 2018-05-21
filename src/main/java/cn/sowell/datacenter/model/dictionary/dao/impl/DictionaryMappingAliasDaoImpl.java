@@ -35,6 +35,16 @@ public class DictionaryMappingAliasDaoImpl implements DictionaryMappingAliasDao 
 					.setParam("aliasName", "%" + criteria.getAliasName() + "%");
 		}
 		
+		if(criteria.getBasicItem() != null && criteria.getBasicItem().getParentName() != null){
+			dQuery.appendCondition(" and b.basicItem.parentName  like :parentName")
+					.setParam("parentName","%" +criteria.getBasicItem().getParentName() + "%");
+		}
+		
+		if(criteria.getBasicItem() != null && criteria.getBasicItem().getName() != null){
+			dQuery.appendCondition(" and b.basicItem.name like :basicItemName")
+					.setParam("basicItemName", "%" +criteria.getBasicItem().getName() + "%");
+		}
+		
 		if(criteria.getMappingId() != null){
 			dQuery.appendCondition(" and b.mappingId =:mappingId")
 					.setParam("mappingId", criteria.getMappingId());
