@@ -13,7 +13,7 @@ public interface DictionaryMappingAliasDao {
 	 * @param pageInfo
 	 * @return
 	 */
-	List<DictionaryMappingAlias> queryList(DictionaryMappingAliasCriteria criteria, PageInfo pageInfo);
+	List queryList(DictionaryMappingAliasCriteria criteria, PageInfo pageInfo);
 
 	/**
 	 * 对象插入到数据表中

@@ -18,7 +18,9 @@ import cn.sowell.copframe.utils.FormatUtils;
 import cn.sowell.copframe.utils.TextUtils;
 import cn.sowell.datacenter.model.dictionary.criteria.DictionaryMappingAliasCriteria;
 import cn.sowell.datacenter.model.dictionary.dao.DictionaryMappingAliasDao;
+import cn.sowell.datacenter.model.dictionary.pojo.DictionaryBasicItem;
 import cn.sowell.datacenter.model.dictionary.pojo.DictionaryMappingAlias;
+import cn.sowell.datacenter.model.dictionary.pojo.DictionaryParentItem;
 
 @Repository
 public class DictionaryMappingAliasDaoImpl implements DictionaryMappingAliasDao {
@@ -27,39 +29,41 @@ public class DictionaryMappingAliasDaoImpl implements DictionaryMappingAliasDao 
 	SessionFactory sFactory;
 
 	@Override
-	public List<DictionaryMappingAlias> queryList(DictionaryMappingAliasCriteria criteria, PageInfo pageInfo) {
-		String hql = "from DictionaryMappingAlias b";
-		DeferedParamQuery dQuery = new DeferedParamQuery(hql);
+	public List queryList(DictionaryMappingAliasCriteria criteria, PageInfo pageInfo) {
+		
+		String sql = "SELECT  b.id itemId, b.parent_name, b.parent_id, b.c_code, b.c_name, b.c_en_name, b.c_status, "
+				+ " c.id aliasId, c.mapping_id, c.basic_item_id, c.alias_name, c.priority_level "
+				+ " from t_c_dictionary_basic_item b"
+				+ " LEFT OUTER JOIN ( "
+				+ "SELECT * from t_c_dictionary_mapping_alias  a "
+				+ "WHERE mapping_id ='"+criteria.getMappingId()+"' ) c ON b.id= c.basic_item_id ";
+		DeferedParamQuery dQuery = new DeferedParamQuery(sql);
+		
+		if(TextUtils.hasText(criteria.getBtItemParentName())){
+			dQuery.appendCondition(" and b.parent_name like :parentName")
+					.setParam("parentName", "%" + criteria.getBtItemParentName() + "%");
+		}
+		
+		if(TextUtils.hasText(criteria.getBasicItemName())){
+			dQuery.appendCondition(" and b.c_name like :bitemName")
+					.setParam("bitemName", "%" + criteria.getBasicItemName() + "%");
+		}
+		
 		if(TextUtils.hasText(criteria.getAliasName())){
-			dQuery.appendCondition(" and b.aliasName like :aliasName")
+			dQuery.appendCondition(" and c.alias_name like :aliasName")
 					.setParam("aliasName", "%" + criteria.getAliasName() + "%");
 		}
 		
-		if(criteria.getBasicItem() != null && criteria.getBasicItem().getParentName() != null){
-			dQuery.appendCondition(" and b.basicItem.parentName  like :parentName")
-					.setParam("parentName","%" +criteria.getBasicItem().getParentName() + "%");
-		}
-		
-		if(criteria.getBasicItem() != null && criteria.getBasicItem().getName() != null){
-			dQuery.appendCondition(" and b.basicItem.name like :basicItemName")
-					.setParam("basicItemName", "%" +criteria.getBasicItem().getName() + "%");
-		}
-		
-		if(criteria.getMappingId() != null){
-			dQuery.appendCondition(" and b.mappingId =:mappingId")
-					.setParam("mappingId", criteria.getMappingId());
-		}
-		
-		Query countQuery = dQuery.createQuery(sFactory.getCurrentSession(), true, new WrapForCountFunction());
+		Query countQuery = dQuery.createSQLQuery(sFactory.getCurrentSession(), true, new WrapForCountFunction());
 		Integer count = FormatUtils.toInteger(countQuery.uniqueResult());
 		pageInfo.setCount(count);
 		if(count > 0){
-			Query query = dQuery.createQuery(sFactory.getCurrentSession(), true, null);
+			Query query = dQuery.createSQLQuery(sFactory.getCurrentSession(), true, null);
 			QueryUtils.setPagingParamWithCriteria(query , pageInfo);
 			return query.list();
 		}
 		
-		return new ArrayList<DictionaryMappingAlias>();
+		return new ArrayList();
 	}
 	
 	@Override

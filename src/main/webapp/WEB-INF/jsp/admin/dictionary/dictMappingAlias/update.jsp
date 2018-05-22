@@ -11,10 +11,13 @@
 			<div class="col-lg-12">
 				<form class="bv-form form-horizontal validate-form" action="admin/dictionary/dictMappingAlias/do_update">
 					<input type="hidden" name="id" value="${dictMappingAlias.id }" />
-					<div class="form-group">
+					<input type="hidden" name="basicItemId" value="${dictBasicItem.id }">
+					<input type="hidden" name="mappingId" value="${criteria.mappingId }">
+					
+					 <div class="form-group">
 						<label class="col-lg-2 control-label" for="basicItemId">字典名称</label>
 						<div class="col-lg-5">
-							${dictMappingAlias.basicItem.name }
+							${dictBasicItem.parentName }-${dictBasicItem.name }
 						</div>
 					</div>
 					

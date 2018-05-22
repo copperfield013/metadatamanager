@@ -22,9 +22,11 @@ import cn.sowell.datacenter.model.dictionary.criteria.DictionaryMappingAliasCrit
 import cn.sowell.datacenter.model.dictionary.pojo.DictionaryBasicItem;
 import cn.sowell.datacenter.model.dictionary.pojo.DictionaryMapping;
 import cn.sowell.datacenter.model.dictionary.pojo.DictionaryMappingAlias;
+import cn.sowell.datacenter.model.dictionary.pojo.DictionaryParentItem;
 import cn.sowell.datacenter.model.dictionary.service.DictionaryBasicItemService;
 import cn.sowell.datacenter.model.dictionary.service.DictionaryMappingAliasService;
 import cn.sowell.datacenter.model.dictionary.service.DictionaryMappingService;
+import cn.sowell.datacenter.model.dictionary.service.DictionaryParentItemService;
 
 @Controller
 @RequestMapping(AdminConstants.URI_DICTIONARY + "/dictMappingAlias")
@@ -39,6 +41,9 @@ public class DictionaryMappingAliasController {
 	@Resource
 	DictionaryBasicItemService DictBItemService;
 	
+	@Resource
+	DictionaryParentItemService dictParentItemService;
+	
 	Logger logger = Logger.getLogger(DictionaryMappingAliasController.class);
 	@org.springframework.web.bind.annotation.InitBinder
 	public void InitBinder(ServletRequestDataBinder binder) {
@@ -50,13 +55,7 @@ public class DictionaryMappingAliasController {
 
 	@RequestMapping("/list")
 	public String list(DictionaryMappingAliasCriteria criteria,String btItemParentName, String basicItemName, Model model, PageInfo pageInfo){
-		
-		DictionaryBasicItem dbItem = new DictionaryBasicItem();
-		dbItem.setName(basicItemName);
-		dbItem.setParentName(btItemParentName);
-		criteria.setBasicItem(dbItem);
-		
-		List<DictionaryMappingAlias> list = dictMappingAliasService.queryList(criteria, pageInfo);
+		List list = dictMappingAliasService.queryList(criteria, pageInfo);
 		model.addAttribute("list", list);
 		model.addAttribute("pageInfo", pageInfo);
 		model.addAttribute("criteria", criteria);
@@ -83,12 +82,16 @@ public class DictionaryMappingAliasController {
 		}
 	}
 
-	@RequestMapping("/update/{id}")
-	public String update(@PathVariable Integer id, Model model){
-		List<DictionaryBasicItem> dictBItemList = DictBItemService.queryAllList();
-		DictionaryMappingAlias dictMappingAlias = dictMappingAliasService.getOne(id);
+	@RequestMapping("/update")
+	public String update(DictionaryMappingAlias criteria, Model model){
+		DictionaryBasicItem dictBasicItem = DictBItemService.getDictionaryBasicItem(criteria.getBasicItemId());
+		DictionaryMappingAlias dictMappingAlias = null;
+		if (criteria.getId() != null) {
+			dictMappingAlias = dictMappingAliasService.getOne(criteria.getId());
+		}
+		model.addAttribute("criteria", criteria);
 		model.addAttribute("dictMappingAlias", dictMappingAlias);
-		model.addAttribute("dictBItemList", dictBItemList);
+		model.addAttribute("dictBasicItem", dictBasicItem);
 		return AdminConstants.JSP_DICTIONARY + "/dictMappingAlias/update.jsp";
 	}
 	
@@ -96,10 +99,11 @@ public class DictionaryMappingAliasController {
 	@RequestMapping("/do_update")
 	public AjaxPageResponse doUpdate(DictionaryMappingAlias criteria){
 		try {
-			DictionaryMappingAlias dictMappingAlias = dictMappingAliasService.getOne(criteria.getId());
-			dictMappingAlias.setAliasName(criteria.getAliasName());
-			dictMappingAlias.setPriorityLevel(criteria.getPriorityLevel());
-			dictMappingAliasService.update(dictMappingAlias);
+			if (criteria.getId() !=null) {
+				dictMappingAliasService.update(criteria);
+			} else {
+				dictMappingAliasService.create(criteria);
+			}
 			return AjaxPageResponse.CLOSE_AND_REFRESH_PAGE("修改成功", "dictMappingAlias_list");
 		} catch (Exception e) {
 			logger.error("修改失败", e);

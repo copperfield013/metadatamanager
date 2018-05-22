@@ -14,7 +14,7 @@ public interface DictionaryMappingAliasService {
 	 * @param pageInfo
 	 * @return
 	 */
-	List<DictionaryMappingAlias> queryList(DictionaryMappingAliasCriteria criteria, PageInfo pageInfo);
+	List queryList(DictionaryMappingAliasCriteria criteria, PageInfo pageInfo);
 
 	/**
 	 * 创建一个DictionaryMappingAlias对象

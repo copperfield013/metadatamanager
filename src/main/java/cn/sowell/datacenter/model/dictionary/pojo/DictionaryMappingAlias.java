@@ -22,9 +22,8 @@ public class DictionaryMappingAlias {
 	@Column(name = "mapping_id")
 	private Integer mappingId;
 
-	@OneToOne(optional=false)
-	@JoinColumn(name="basic_item_id")
-	private DictionaryBasicItem basicItem;
+	@Column(name="basic_item_id")
+	private Integer basicItemId;
 
 	@Column(name = "alias_name")
 	private String aliasName;
@@ -65,12 +64,11 @@ public class DictionaryMappingAlias {
 		this.priorityLevel = priorityLevel;
 	}
 
-	public DictionaryBasicItem getBasicItem() {
-		return basicItem;
+	public Integer getBasicItemId() {
+		return basicItemId;
 	}
 
-	public void setBasicItem(DictionaryBasicItem basicItem) {
-		this.basicItem = basicItem;
+	public void setBasicItemId(Integer basicItemId) {
+		this.basicItemId = basicItemId;
 	}
-
 }

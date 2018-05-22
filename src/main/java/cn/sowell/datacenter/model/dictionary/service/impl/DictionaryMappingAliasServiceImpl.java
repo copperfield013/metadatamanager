@@ -19,7 +19,7 @@ public class DictionaryMappingAliasServiceImpl implements DictionaryMappingAlias
 	DictionaryMappingAliasDao dictMappingAlias;
 	
 	@Override
-	public List<DictionaryMappingAlias> queryList(DictionaryMappingAliasCriteria criteria, PageInfo pageInfo) {
+	public List queryList(DictionaryMappingAliasCriteria criteria, PageInfo pageInfo) {
 		return dictMappingAlias.queryList(criteria, pageInfo);
 	}
 
