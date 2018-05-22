@@ -21,6 +21,8 @@ public class DictionaryMapping {
 	
 	@Column(name="c_describe")
 	private String describe;
+	
+	
 
 	public Integer getId() {
 		return id;

@@ -31,7 +31,7 @@
 						<td>
 							<a href="admin/dictionary/dictMappingAlias/list?mappingId=${item.id }" class="tab" target="dictMappingAlias_list" title="管理别名">管理别名</a>
 							<a href="admin/dictionary/dictMapping/update/${item.id }" class="tab" target="dictMapping_update" title="修改">修改</a>
-							<a href="admin/dictionary/dictMapping/do_delete/${item.id }" confirm="确认删除？">删除</a>
+							<%-- <a href="admin/dictionary/dictMapping/do_delete/${item.id }" confirm="确认删除？">删除</a> --%>
 						</td>
 					</tr>
 				</c:forEach>

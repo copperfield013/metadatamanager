@@ -16,37 +16,37 @@ import cn.sowell.datacenter.model.dictionary.service.DictionaryMappingService;
 public class DictionaryMappingServiceImpl implements DictionaryMappingService {
 
 	@Resource
-	DictionaryMappingDao dictiBasicItemAliasDao;
+	DictionaryMappingDao dictMappingDao;
 	
 	@Override
 	public List<DictionaryMapping> queryList(DictionaryMappingCriteria criteria, PageInfo pageInfo) {
-		return dictiBasicItemAliasDao.queryList(criteria, pageInfo);
+		return dictMappingDao.queryList(criteria, pageInfo);
 	}
 
 	@Override
 	public void create(DictionaryMapping dictParentItem) {
-		dictiBasicItemAliasDao.insert(dictParentItem);
+		dictMappingDao.insert(dictParentItem);
 	}
 
 	@Override
 	public DictionaryMapping getOne(Integer id) {
-		return dictiBasicItemAliasDao.get(DictionaryMapping.class, id);
+		return dictMappingDao.get(DictionaryMapping.class, id);
 	}
 
 	@Override
 	public void update(DictionaryMapping dictParentItem) {
-		dictiBasicItemAliasDao.update(dictParentItem);
+		dictMappingDao.update(dictParentItem);
 	}
 
 	@Override
 	public void delete(Integer id) {
-		DictionaryMapping dictParentItem = dictiBasicItemAliasDao.get(DictionaryMapping.class, id);
-		dictiBasicItemAliasDao.delete(dictParentItem);
+		DictionaryMapping dictionaryMapping = dictMappingDao.get(DictionaryMapping.class, id);
+		dictMappingDao.delete(dictionaryMapping);
 	}
 
 	@Override
 	public List<DictionaryMapping> queryListAll() {
-		return dictiBasicItemAliasDao.queryListAll();
+		return dictMappingDao.queryListAll();
 	}
 
 }
