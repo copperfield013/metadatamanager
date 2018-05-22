@@ -1,5 +1,6 @@
 package cn.sowell.datacenter.model.dictionary.service;
 
+import java.math.BigInteger;
 import java.util.List;
 
 import com.alibaba.fastjson.JSONObject;
@@ -82,4 +83,18 @@ public interface BasicItemService {
 	List<DictionaryBasicItem> getDictCode(Long id);
 
 	void createTowLevel(Towlevelattr criteria);
+
+	/**
+	 * 根据cnName和实体id， 查询二级属性中是否有相同的名字， 有则返回数字大于0无则返回0
+	 * @param cnName
+	 * @param entityId
+	 */
+	BigInteger geSameCount(String cnName, String entityId);
+
+	/**
+	 * 根据name和实体id， 查询普通属性中是否有相同的名字， 有则返回数字大于0无则返回0
+	 * @param cnName
+	 * @param entityId
+	 */
+	BigInteger getTwoSameCount(String name, String entityId);
 }

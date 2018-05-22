@@ -1,5 +1,6 @@
 package cn.sowell.datacenter.admin.controller.dictionary;
 
+import java.math.BigInteger;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -323,7 +324,6 @@ public class BasicItemController {
 			
 		}
 		
-		
 		//获取多值属性的父亲， 传入参数为多值属性的code
 		@ResponseBody
 		@RequestMapping("/getMoreParent")
@@ -332,7 +332,30 @@ public class BasicItemController {
 			BasicItem btParent = basicItemService.getBasicItem(btMore.getParent());
 			String str  = String.valueOf(btParent.getUsingState());
 			return str;
-			
 		}	
+		
+		//添加普通属性，c_cn_name 和当前实体下的二级属性的孩子的名称不能相同
+		@ResponseBody
+		@RequestMapping("/getSameCount")
+		public String getSameCount(String cnName, String parent){
+			BigInteger geSameCount = basicItemService.geSameCount(cnName, parent);
+			if (geSameCount.equals(BigInteger.ZERO)) {
+				return "true";
+			} else {
+				return "false";
+			}
+		}
+		
+		//添加二级属性的孩子， 二级属性孩子的名称和当前实体普通属性的名称不能相同
+		@ResponseBody
+		@RequestMapping("/getTwoSameCount")
+		public String getTwoSameCount(String name, String entityId){
+			BigInteger geSameCount = basicItemService.getTwoSameCount(name, entityId);
+			if (geSameCount.equals(BigInteger.ZERO)) {
+				return "true";
+			} else {
+				return "false";
+			}
+		}
 		
 }

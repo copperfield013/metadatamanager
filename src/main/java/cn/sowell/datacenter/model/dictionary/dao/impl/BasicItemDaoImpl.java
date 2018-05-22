@@ -1,5 +1,6 @@
 package cn.sowell.datacenter.model.dictionary.dao.impl;
 
+import java.math.BigInteger;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -281,6 +282,32 @@ public class BasicItemDaoImpl implements BasicItemDao {
 		String sql = "select COLUMN_NAME from information_schema.COLUMNS where table_name LIKE 't_"+entityCode+"_%' and table_schema = '"+DataBaseName+"'";
 		List list = sFactory.getCurrentSession().createSQLQuery(sql).list();
 		return list;
+	}
+
+	@Override
+	public BigInteger geSameCount(String cnName, String entityId) {
+		String sql = "SELECT COUNT(*) FROM ("
+				+ "	SELECT c.c_name FROM t_c_towlevelattr c"
+				+ "	WHERE c.c_mapping_id in("
+				+ "			SELECT a.id FROM t_c_towlevelattr_multiattr_mapping a "
+				+ "			WHERE a.c_related_multiattribute in("
+				+ "				SELECT c_code FROM t_c_basic_item b"
+				+ "				WHERE b.c_data_type = '重复类型' AND b.c_parent=:entityId"
+				+ "		)	)) d WHERE d.c_name =:cnName";
+		
+		   List list = sFactory.getCurrentSession().createSQLQuery(sql).setParameter("entityId", entityId).setParameter("cnName", cnName).list();
+		return (BigInteger) list.get(0);
+	}
+
+	@Override
+	public BigInteger getTwoSameCount(String name, String entityId) {
+		String sql = "SELECT COUNT(*) FROM (	SELECT a.c_cn_name FROM t_c_basic_item a"
+				+ "	WHERE a.c_parent = :entityId "
+				+ "	AND a.c_data_type != '分组类型' "
+				+ "	AND a.c_data_type != '重复类型') b"
+				+ " WHERE b.c_cn_name=:name";
+		  List list = sFactory.getCurrentSession().createSQLQuery(sql).setParameter("entityId", entityId).setParameter("name", name).list();
+		  return (BigInteger) list.get(0);
 	}
 
 }

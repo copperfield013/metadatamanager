@@ -1,5 +1,6 @@
 package cn.sowell.datacenter.model.dictionary.dao;
 
+import java.math.BigInteger;
 import java.util.List;
 
 import cn.sowell.copframe.dto.page.PageInfo;
@@ -114,4 +115,19 @@ public interface BasicItemDao {
 	 * @return
 	 */
 	public List<BasicItem> getChilByPid(String parent);
+	/**
+	 * 根据cnName和实体id， 查询二级属性中是否有相同的名字， 有则返回数字大于0无则返回0
+	 * @param cnName
+	 * @param entityId
+	 * @return
+	 */
+	BigInteger geSameCount(String cnName, String entityId);
+
+	/**
+	 * 根据name和实体id， 查询普通属性中是否有相同的名字， 有则返回数字大于0无则返回0
+	 * @param name
+	 * @param entityId
+	 * @return
+	 */
+	BigInteger getTwoSameCount(String name, String entityId);
 }

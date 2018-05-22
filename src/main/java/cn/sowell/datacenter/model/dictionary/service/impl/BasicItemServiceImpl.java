@@ -1,5 +1,6 @@
 package cn.sowell.datacenter.model.dictionary.service.impl;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -525,6 +526,16 @@ public class BasicItemServiceImpl implements BasicItemService {
 	@Override
 	public void createTowLevel(Towlevelattr criteria) {
 		towlevelattrService.create(criteria);
+	}
+
+	@Override
+	public BigInteger geSameCount(String cnName, String entityId) {
+		return basicItemDao.geSameCount(cnName, entityId);
+	}
+
+	@Override
+	public BigInteger getTwoSameCount(String name, String entityId) {
+		return basicItemDao.getTwoSameCount(name, entityId);
 	}
 
 }

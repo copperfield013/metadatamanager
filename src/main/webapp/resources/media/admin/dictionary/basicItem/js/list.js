@@ -579,17 +579,30 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
         var mappingId = $form.find("#mappingId").val();
         var dictionaryCode = $form.find("#dictionaryCode").val();
         var entityId = $(".common_proper").attr("parentid");
-       
+      
         if (twoChildCheck($form)) {
         	 $CPF.showLoading();
-             Ajax.ajax('admin/dictionary/basicItem/saveTwoLevelAttrChild', {
+        	 
+        	 Ajax.ajax('admin/dictionary/basicItem/getTwoSameCount', {
                  name: name,
-                 mappingId: mappingId,
-                 dictionaryCode: dictionaryCode
+                 entityId: entityId,
              }, function(data) {
-             	 $(".new_add").remove();
-                  enityAttr(entityId);    
-             	 $CPF.closeLoading();
+             	if (data == true) {
+             		 Ajax.ajax('admin/dictionary/basicItem/saveTwoLevelAttrChild', {
+                         name: name,
+                         mappingId: mappingId,
+                         dictionaryCode: dictionaryCode
+                     }, function(data) {
+                     	 $(".new_add").remove();
+                          enityAttr(entityId);    
+                     	 $CPF.closeLoading();
+                     });
+             	} else {
+             		var $name = $form.find("#name");
+             		$name.siblings("#req").remove();
+             		$name.after(" <span id=\"req\" style=\"color: red;\">和普通属性名称不能相同</span>");
+             		$CPF.closeLoading();
+             	}
              });
         }
         
@@ -763,23 +776,38 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
         }        
         var entityId = $(".common_proper").attr("parentId");
         var $form = $(this).closest(".opera_comm").find("#comm_opera_form1");
+        
         //验证表单
         if (checkForm($form)) {
         	$CPF.showLoading();
-            Ajax.ajax('admin/dictionary/basicItem/do_add', {
-                code: code,
-                cnName: cnName,
-                enName: enName,
-                dataType: dataType,
-                dataRange: dataRange,
-                dictParentId: dictParentId,
-                groupName: groupName,
+        	Ajax.ajax('admin/dictionary/basicItem/getSameCount', {
+        		cnName: cnName,
                 parent: parent
             }, function(data) {
-            	$(this).closest('.opera_comm').hide();
-                $(".new_add").remove();
-                enityAttr(entityId);
-            	 $CPF.closeLoading();
+            	//添加普通属性的时候验证 和二级属性的孩子不能重复
+            if (data == true) {
+            	Ajax.ajax('admin/dictionary/basicItem/do_add', {
+                    code: code,
+                    cnName: cnName,
+                    enName: enName,
+                    dataType: dataType,
+                    dataRange: dataRange,
+                    dictParentId: dictParentId,
+                    groupName: groupName,
+                    parent: parent
+                }, function(data) {
+                	$(this).closest('.opera_comm').hide();
+                    $(".new_add").remove();
+                    enityAttr(entityId);
+                	 $CPF.closeLoading();
+                });
+            } else {
+            	var $cnName = $form.find("#cnName");
+            	 $cnName.siblings("#req").remove();
+            	 $cnName.after(" <span id=\"req\" style=\"color: red;\">和二级属性孩子名称不能相同</span>");
+            	$CPF.closeLoading();
+            }
+            	
             });
         }
     });
