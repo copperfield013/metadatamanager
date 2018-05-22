@@ -235,6 +235,12 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
     	$opera = $(this).closest('.entity_ch_head').siblings('.opera_more');
     	$opera.find("#add_more_mes").html("");
     	$opera.find("#add_more_mes").html("添加多值属性信息");
+    	var $form1 = $opera.find("#more_opera_form1");
+    	$form1.find("#code").removeAttr("readonly");
+        $form1.find("#cnName").val("");
+        $form1.find("#code").val("");
+        $form1.find("#enName").val("");
+        $form1.find("#tableNameDescription").val("");
         $opera.show();
     });
     
