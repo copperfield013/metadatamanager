@@ -13,7 +13,7 @@
 				<input type="text" class="form-control" id="date" name="date" readonly="readonly" css-cursor="text"  />
 			</div> -->
 			<button type="submit" class="btn btn-default">查询</button>
-			<a class="btn btn-primary tab" href="admin/dictionary/dictBasicItem/add?parentId=${criteria.parentId }" title="创建" target="dictBasicItem_add" >创建</a>
+			<a class="btn btn-primary tab" id="add" pId="${criteria.parentId }">创建</a>
 		</form>
 	</nav>
 	
@@ -41,7 +41,7 @@
 						<td>${item.status }</td>
 						<td>
 							<%-- <a href="admin/dictionary/dictMappingAlias/list?basicItemId=${item.id }" class="tab" target="dictMappingAlias_list" title="管理别名">管理别名</a> --%>
-							<a href="admin/dictionary/dictBasicItem/update/${item.id }" class="tab" target="dictBasicItem_update" title="修改">修改</a>
+							<a href="javascript:;" title="修改" itemId="${item.id }" id="edit">修改</a>
 							<a href="admin/dictionary/dictBasicItem/do_delete/${item.id }" confirm="确认删除？">删除</a>
 						</td>
 					</tr>
@@ -51,8 +51,25 @@
 		<div class="cpf-paginator" pageNo="${pageInfo.pageNo }" pageSize="${pageInfo.pageSize }" count="${pageInfo.count }"></div>
 	</div>
 <script>
-	seajs.use(['utils'], function(Utils){
+	seajs.use(['dialog','utils'], function(Dialog, Utils){
 		var $page = $('#demo-list');
 		Utils.datepicker($('#date', $page));
+		
+		$("form").on("click", "#add", function() {
+            var pId=$(this).attr("pId");
+            Dialog.openDialog("admin/dictionary/dictBasicItem/add?parentId="+pId, "创建", undefined, {
+                width :600,
+                height : 300
+            });
+        });
+		
+		$("tbody").on("click", "#edit", function() {
+            var itemId=$(this).attr("itemId");
+            Dialog.openDialog("admin/dictionary/dictBasicItem/update/"+itemId, "修改", undefined, {
+                width :600,
+                height : 300
+            });
+        });
+		
 	});
 </script>

@@ -37,7 +37,7 @@
 						<td>${item[10] }</td>
 						<td>${item[11] }</td>
 						<td>
-							<a href="admin/dictionary/dictMappingAlias/update?id=${item[7]}&basicItemId=${item[0]}&mappingId=${criteria.mappingId }" class="tab" target="dictMappingAlias_update" title="修改">修改</a>
+							<a href="javascript:;" title="修改" itemId="${item[7]}" basicItemId="${item[0]}" mappingId=${criteria.mappingId } id="edit">修改</a>
 							<a href="admin/dictionary/dictMappingAlias/do_delete/${item[7] }" confirm="确认删除？">删除</a>
 						</td>
 					</tr>
@@ -48,8 +48,21 @@
 	</div>
 </div>
 <script>
-	seajs.use(['utils'], function(Utils){
+	seajs.use(['dialog','utils'], function(Dialog, Utils){
 		var $page = $('#demo-list');
 		Utils.datepicker($('#date', $page));
+		
+		$("tbody").on("click", "#edit", function() {
+			var itemId=$(this).attr("itemId");
+			var basicItemId=$(this).attr("basicItemId");
+			var mappingId=$(this).attr("mappingId");
+			
+			Dialog.openDialog("admin/dictionary/dictMappingAlias/update?id="+itemId+"&basicItemId="+basicItemId+"&mappingId="+mappingId, "修改", undefined, {
+				width :600,
+				height : 300
+			});
+		});
+		
+		
 	});
 </script>

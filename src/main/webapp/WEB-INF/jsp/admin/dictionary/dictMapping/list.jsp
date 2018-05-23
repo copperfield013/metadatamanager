@@ -30,7 +30,7 @@
 						<td>${item.describe }</td>
 						<td>
 							<a href="admin/dictionary/dictMappingAlias/list?mappingId=${item.id }" class="tab" target="dictMappingAlias_list" title="管理别名">管理别名</a>
-							<a href="admin/dictionary/dictMapping/update/${item.id }" class="tab" target="dictMapping_update" title="修改">修改</a>
+							<a href="javascript:;" itemId="${item.id }" title="修改" id="edit">修改</a>
 							<a href="admin/dictionary/dictMapping/do_delete/${item.id }" confirm="确认删除？">删除</a>
 						</td>
 					</tr>
@@ -41,8 +41,16 @@
 	</div>
 </div>
 <script>
-	seajs.use(['utils'], function(Utils){
+	seajs.use(['dialog','utils'], function(Dialog, Utils){
 		var $page = $('#demo-list');
 		Utils.datepicker($('#date', $page));
+		
+		$("tbody").on("click", "#edit", function() {
+            var itemId=$(this).attr("itemId");
+            Dialog.openDialog("admin/dictionary/dictMapping/update/" +itemId , "修改", undefined, {
+                width :600,
+                height : 300
+           		});
+       		 });
 	});
 </script>
