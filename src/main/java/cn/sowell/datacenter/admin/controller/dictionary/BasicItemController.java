@@ -123,6 +123,8 @@ public class BasicItemController {
 				dataType = "分组类型";
 			} else if ("枚举".equals(dType)) {
 				dataType = "字符型";
+			} else if ("文件型".equals(dType)) {
+				dataType = "二进制型";
 			}
 			basicItem.setDataType(dataType);
 			//记录类型

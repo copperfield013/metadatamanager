@@ -17,6 +17,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.abc.mapping.node.NodeOps;
 import com.abc.mapping.node.NodeType;
 
 import cn.sowell.datacenter.model.dictionary.pojo.BasicItem;

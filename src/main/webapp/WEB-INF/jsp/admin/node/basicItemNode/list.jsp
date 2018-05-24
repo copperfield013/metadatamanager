@@ -44,12 +44,12 @@
 		var $page = $('#demo-list');
 		Utils.datepicker($('#date', $page));
 		
-		$("tbody").on("click", "#edit", function() {
+	/* 	$("tbody").on("click", "#edit", function() {
             var itemId=$(this).attr("itemId");
             Dialog.openDialog("admin/dictionary/dictMapping/update/" +itemId , "修改", undefined, {
                 width :600,
                 height : 300
            		});
-       		 });
+       		 }); */
 	});
 </script>

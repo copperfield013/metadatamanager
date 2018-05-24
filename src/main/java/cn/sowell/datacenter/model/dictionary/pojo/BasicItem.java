@@ -100,7 +100,11 @@ public class BasicItem {
 	}
 
 	public String getDataType() {
-		return dataType;
+		if ("二进制型".equals(this.dataType)) {
+			return "文件型";
+		} else {
+			return dataType;
+		}
 	}
 
 	public String getDataRange() {

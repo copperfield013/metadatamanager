@@ -19,6 +19,7 @@ public interface Constants {
 			put("repeat", "重复类型");
 			put("group", "分组类型");
 			put("枚举", "枚举");
+			put("文件型", "文件型");
 		}
 	};
 	
