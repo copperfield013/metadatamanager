@@ -15,6 +15,7 @@ import cn.sowell.copframe.dao.deferedQuery.sqlFunc.WrapForCountFunction;
 import cn.sowell.copframe.dao.utils.QueryUtils;
 import cn.sowell.copframe.dto.page.PageInfo;
 import cn.sowell.copframe.utils.FormatUtils;
+import cn.sowell.copframe.utils.TextUtils;
 import cn.sowell.datacenter.model.node.criteria.BasicItemNodeCriteria;
 import cn.sowell.datacenter.model.node.dao.BasicItemNodeDao;
 import cn.sowell.datacenter.model.node.pojo.BasicItemNode;
@@ -27,13 +28,24 @@ public class BasicItemNodeDaoImpl implements BasicItemNodeDao {
 
 	@Override
 	public List<BasicItemNode> queryList(BasicItemNodeCriteria criteria, PageInfo pageInfo) {
-		String hql = "from BasicItemNode b";
+		String hql = "from BasicItemNode b WHERE b.type = '1' AND b.parentId is NULL";
 		DeferedParamQuery dQuery = new DeferedParamQuery(hql);
-		Query countQuery = dQuery.createQuery(sFactory.getCurrentSession(), true, new WrapForCountFunction());
+		
+		if(TextUtils.hasText(criteria.getName())){
+			dQuery.appendCondition(" and b.name like :name")
+					.setParam("name", "%" + criteria.getName() + "%");
+		}
+		
+		if(TextUtils.hasText(criteria.getAbcattr())){
+			dQuery.appendCondition(" and b.abcattr like :abcattr")
+					.setParam("abcattr", "%" + criteria.getAbcattr() + "%");
+		}
+		
+		Query countQuery = dQuery.createQuery(sFactory.getCurrentSession(), false, new WrapForCountFunction());
 		Integer count = FormatUtils.toInteger(countQuery.uniqueResult());
 		pageInfo.setCount(count);
 		if(count > 0){
-			Query query = dQuery.createQuery(sFactory.getCurrentSession(), true, null);
+			Query query = dQuery.createQuery(sFactory.getCurrentSession(), false, null);
 			QueryUtils.setPagingParamWithCriteria(query , pageInfo);
 			return query.list();
 		}

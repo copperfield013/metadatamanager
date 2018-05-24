@@ -23,6 +23,7 @@ import cn.sowell.datacenter.model.dictionary.pojo.BasicItem;
 import cn.sowell.datacenter.model.dictionary.pojo.RecordRelationType;
 import cn.sowell.datacenter.model.dictionary.service.BasicItemService;
 import cn.sowell.datacenter.model.dictionary.service.RecordRelationTypeService;
+import cn.sowell.datacenter.model.node.service.BasicItemNodeService;
 
 @ContextConfiguration(locations = "classpath*:spring-config/spring-junit.xml")
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -33,6 +34,9 @@ public class TestBasicItemDao {
 	RecordRelationTypeService rrt;
 	@Resource
 	SessionFactory sFactory;
+	
+	@Resource
+	BasicItemNodeService btn;
 	
 	@Test
 	@Transactional
@@ -49,7 +53,9 @@ public class TestBasicItemDao {
 	@Test
 	@Transactional
 	public void fun1() {
-		basicItemService.createTabCol();
+		
+		
+		
 	}
 	
 	@Test

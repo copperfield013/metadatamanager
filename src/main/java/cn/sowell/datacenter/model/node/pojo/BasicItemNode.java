@@ -7,10 +7,12 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import com.abc.mapping.node.NodeType;
+
 @Entity
 @Table(name = "t_c_basic_item_node")
 public class BasicItemNode {
-
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id")

@@ -23,7 +23,7 @@ import cn.sowell.datacenter.model.node.pojo.BasicItemNode;
 import cn.sowell.datacenter.model.node.service.BasicItemNodeService;
 
 @Controller
-@RequestMapping(AdminConstants.URI_DICTIONARY + "/basicItemNode")
+@RequestMapping(AdminConstants.URI_NODE + "/basicItemNode")
 public class BasicItemNodeController {
 	
 	@Resource
@@ -44,7 +44,7 @@ public class BasicItemNodeController {
 		model.addAttribute("list", list);
 		model.addAttribute("pageInfo", pageInfo);
 		model.addAttribute("criteria", criteria);
-		return AdminConstants.JSP_DICTIONARY + "/basicItemNode/list.jsp";
+		return AdminConstants.JSP_NODE + "/basicItemNode/list.jsp";
 	}
 	
 	@RequestMapping("/add")
@@ -52,7 +52,7 @@ public class BasicItemNodeController {
 		
 		
 		model.addAttribute("basicItemId", basicItemId);
-		return AdminConstants.JSP_DICTIONARY + "/basicItemNode/add.jsp";
+		return AdminConstants.JSP_NODE + "/basicItemNode/add.jsp";
 	}
 	
 	@ResponseBody
@@ -69,7 +69,7 @@ public class BasicItemNodeController {
 
 	@RequestMapping("/update/{id}")
 	public String update(@PathVariable Integer id, Model model){
-		return AdminConstants.JSP_DICTIONARY + "/basicItemNode/update.jsp";
+		return AdminConstants.JSP_NODE + "/basicItemNode/update.jsp";
 	}
 	
 	@ResponseBody

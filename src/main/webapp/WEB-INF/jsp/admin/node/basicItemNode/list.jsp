@@ -2,14 +2,15 @@
 <%@ include file="/WEB-INF/jsp/common/base_empty.jsp"%>
 <div id="demo-list">
 	<nav>
-		<form class="form-inline" action="admin/dictionary/dictParentItem/list">
+		<form class="form-inline" action="admin/node/basicItemNode/list">
 			<div class="form-group">
-				<label for="name">名称</label>
+				<label for="name">name</label>
 				<input type="text" class="form-control" name="name" value="${criteria.name }" />
+				<label for="name">abcattr</label>
+				<input type="text" class="form-control" name="abcattr" value="${criteria.abcattr }" />
 			</div>
-			
 			<button type="submit" class="btn btn-default">查询</button>
-			<a id="add" class="btn btn-primary tab" title="创建">创建</a>
+			<a class="btn btn-primary tab" href="#" title="创建" target="dictMapping_add" >创建</a>
 		</form>
 	</nav>
 	<div class="row list-area">
@@ -17,7 +18,8 @@
 			<thead>
 				<tr>
 					<th>序号</th>
-					<th>名称</th>
+					<th>name</th>
+					<th>abcattr</th>
 					<th>操作</th>
 				</tr>
 			</thead>
@@ -26,10 +28,9 @@
 					<tr>
 						<td>${i.index + 1 }</td>
 						<td>${item.name }</td>
+						<td>${item.abcattr }</td>
 						<td>
-							<a class="tab" href="admin/dictionary/dictBasicItem/list?parentId=${item.id }" target="dictBasicItem_list" title="查看子数据">查看子数据</a>
 							<a href="javascript:;" itemId="${item.id }" title="修改" id="edit">修改</a>
-							<a href="admin/dictionary/dictParentItem/do_delete/${item.id }" confirm="确认删除？">删除</a>
 						</td>
 					</tr>
 				</c:forEach>
@@ -43,20 +44,12 @@
 		var $page = $('#demo-list');
 		Utils.datepicker($('#date', $page));
 		
-		$("form").on("click", "#add", function() {
-            Dialog.openDialog("admin/dictionary/dictParentItem/add", "创建", undefined, {
-                width :600,
-                height : 300
-            });
-        });
-		
 		$("tbody").on("click", "#edit", function() {
             var itemId=$(this).attr("itemId");
-            Dialog.openDialog("admin/dictionary/dictParentItem/update/"+itemId, "修改", undefined, {
+            Dialog.openDialog("admin/dictionary/dictMapping/update/" +itemId , "修改", undefined, {
                 width :600,
                 height : 300
-            });
-        });
-		
+           		});
+       		 });
 	});
 </script>

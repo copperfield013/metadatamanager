@@ -34,6 +34,8 @@ public interface AdminConstants {
 	
 	final String URI_DICTIONARY = URI_BASE + "/dictionary"; 
 	
+	final String URI_NODE = URI_BASE + "/node"; 
+	
 	/**
 	 * 管理端jsp资源的基本路径
 	 */
@@ -45,6 +47,8 @@ public interface AdminConstants {
 	final String JSP_DEMO = JSP_BASE + "/demo";
 	
 	final String JSP_DICTIONARY = JSP_BASE + "/dictionary";
+	
+	final String JSP_NODE = JSP_BASE + "/node";
 	
 	/**
 	 *  管理端人口资源路径

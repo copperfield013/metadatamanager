@@ -11,6 +11,11 @@
                 <span class="menu-text">实体管理</span>
             </a>
         </li>
+        <li>
+            <a class="tab" href="admin/node/basicItemNode/list" target="basicItemNode_list" title="配置文件">
+                <span class="menu-text">配置文件</span>
+            </a>
+        </li>
     </ul>
 </li>
  <li>
@@ -21,7 +26,7 @@
     </a>
     <ul class="submenu">
         <li>
-            <a class="tab" href="admin/dictionary/dictParentItem/list" target="dictParentItem_list" title="dictParentItem列表">
+            <a class="tab" href="admin/dictionary/dictParentItem/list" target="dictParentItem_list" title="字典列表">
                 <span class="menu-text">字典管理</span>
             </a>
         </li>

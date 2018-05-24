@@ -9,7 +9,7 @@
 				<input type="hidden" name="id" value="${criteria.id }">
 			</div>
 			<button type="submit" class="btn btn-default">查询</button>
-			<a class="btn btn-primary tab" href="admin/dictionary/dictMapping/add" title="创建" target="dictMapping_add" >创建</a>
+			<a class="btn btn-primary tab" id="add" title="创建">创建</a>
 		</form>
 	</nav>
 	<div class="row list-area">
@@ -45,12 +45,19 @@
 		var $page = $('#demo-list');
 		Utils.datepicker($('#date', $page));
 		
+		$("form").on("click", "#add", function() {
+            Dialog.openDialog("admin/dictionary/dictMapping/add" , "创建", undefined, {
+                width :600,
+                height : 300
+           	});
+       	});
+		
 		$("tbody").on("click", "#edit", function() {
             var itemId=$(this).attr("itemId");
             Dialog.openDialog("admin/dictionary/dictMapping/update/" +itemId , "修改", undefined, {
                 width :600,
                 height : 300
            		});
-       		 });
+       	});
 	});
 </script>
