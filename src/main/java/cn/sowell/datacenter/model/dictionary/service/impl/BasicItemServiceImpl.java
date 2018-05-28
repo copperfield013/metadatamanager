@@ -290,6 +290,58 @@ public class BasicItemServiceImpl implements BasicItemService {
 		if ("重复类型".equals(obj.getDataType())) {
 			obj.setTableName("t_" + obj.getParent() +"_"+ obj.getCode() +"_"+ obj.getCode());
 		}
+		
+		//默认生成一个兄弟
+		if ("add".equals(flag)) {
+			if ("文件型".equals(obj.getDataType())) {
+				BasicItem bt = new BasicItem();
+				bt.setCode(obj.getCode() + "_P");
+				bt.setCnName(obj.getCnName() + "_P");
+				bt.setEnName(obj.getEnName());
+				bt.setDataType("字符型");
+				bt.setDataRange("32");
+				bt.setTableName(obj.getTableName());
+				bt.setParent(obj.getParent());
+				bt.setUsingState(0);
+				bt.setGroupName(obj.getGroupName());
+				basicItemDao.insert(bt);
+			} 
+		} else {//如果是编辑， 
+			BasicItem basicItem = basicItemDao.get(BasicItem.class, obj.getCode());
+			if ("文件型".equals(basicItem.getDataType())) {
+				BasicItem pojo = basicItemDao.get(BasicItem.class, obj.getCode()+ "_P");
+				if (!"文件型".equals(obj.getDataType())) {
+					basicItemDao.delete(pojo);
+				} else {
+					pojo.setCnName(obj.getCnName() + "_P");
+					pojo.setTableName(obj.getTableName());
+					pojo.setEnName(obj.getEnName());
+					pojo.setParent(obj.getParent());
+					pojo.setUsingState(0);
+					pojo.setGroupName(obj.getGroupName());
+					
+					basicItemDao.update(pojo);
+				}
+			} else {//之前不是文件型
+				if ("文件型".equals(obj.getDataType())) {//现在是文件型
+					BasicItem bt = new BasicItem();
+					bt.setCode(obj.getCode() + "_P");
+					bt.setCnName(obj.getCnName() + "_P");
+					bt.setEnName(obj.getEnName());
+					bt.setDataType("字符型");
+					bt.setDataRange("32");
+					bt.setTableName(obj.getTableName());
+					bt.setParent(obj.getParent());
+					bt.setUsingState(0);
+					bt.setGroupName(obj.getGroupName());
+					basicItemDao.insert(bt);
+				}
+			}
+			
+			sFactory.getCurrentSession().evict(basicItem);//session 关联两个相同id的对象， 解除一个	
+		}
+		
+		
 		//保存更改
 		basicItemDao.saveOrUpdate(obj, flag);
 		//如果是重复类型， 默认生成两个孩子， 
@@ -315,6 +367,7 @@ public class BasicItemServiceImpl implements BasicItemService {
 			basicItemDao.insert(childOne);
 			basicItemDao.insert(childTwo);
 		}
+		
 		
 	}
 
@@ -536,6 +589,11 @@ public class BasicItemServiceImpl implements BasicItemService {
 	@Override
 	public BigInteger getTwoSameCount(String name, String entityId) {
 		return basicItemDao.getTwoSameCount(name, entityId);
+	}
+
+	@Override
+	public List getComm(String entityId) {
+		return basicItemDao.getComm(entityId);
 	}
 
 }

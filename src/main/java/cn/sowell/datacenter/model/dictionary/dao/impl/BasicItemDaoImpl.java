@@ -33,6 +33,17 @@ public class BasicItemDaoImpl implements BasicItemDao {
 	public List<BasicItem> queryList(BasicItemCriteria criteria) {
 		String hql = "from BasicItem b";
 		DeferedParamQuery dQuery = new DeferedParamQuery(hql);
+		
+		if(criteria.getUsingState() != null && criteria.getUsingState().SIZE > 0){
+			dQuery.appendCondition(" and b.usingState = :usingState")
+					.setParam("usingState", criteria.getUsingState());
+		}
+		
+		if(TextUtils.hasText(criteria.getParent())){
+			dQuery.appendCondition(" and b.parent = :parent")
+					.setParam("parent", criteria.getParent());
+		}
+		
 		if(TextUtils.hasText(criteria.getCnName())){
 			dQuery.appendCondition(" and b.cnName like :cnName")
 					.setParam("cnName", "%" + criteria.getCnName() + "%");
@@ -86,7 +97,7 @@ public class BasicItemDaoImpl implements BasicItemDao {
 
 	@Override
 	public List getAttrByPidGroupName(String parent, String groupName) {
-		String sql = "from BasicItem WHERE parent=:parent AND groupName=:groupName";
+		String sql = "from BasicItem WHERE parent=:parent AND groupName=:groupName AND code not LIKE '%_P'";
 		List<BasicItem> list = sFactory.getCurrentSession().createQuery(sql).setParameter("parent", parent).setParameter("groupName", groupName).list();
 		return list;
 	}
@@ -308,6 +319,23 @@ public class BasicItemDaoImpl implements BasicItemDao {
 				+ " WHERE b.c_cn_name=:name";
 		  List list = sFactory.getCurrentSession().createSQLQuery(sql).setParameter("entityId", entityId).setParameter("name", name).list();
 		  return (BigInteger) list.get(0);
+	}
+
+	@Override
+	public List getComm(String entityId) {
+		String sql = "	SELECT id code, c_name name FROM t_c_towlevelattr "
+				+ "		WHERE c_mapping_id in("
+				+ "		SELECT id from t_c_towlevelattr_multiattr_mapping "
+				+ "		WHERE c_related_multiattribute in ("
+				+ "		SELECT c_code FROM t_c_basic_item"
+				+ "	WHERE c_parent=:entityId AND c_data_type = '重复类型'"
+				+ "		))	AND c_using_state != '-1'"	
+				+ "	UNION		SELECT c_code code, c_cn_name name FROM t_c_basic_item"
+				+ "		WHERE c_parent=:entityId AND c_data_type != '重复类型' "
+				+ "		AND c_data_type != '分组类型' AND c_using_state = '1'";
+		
+		 List list = sFactory.getCurrentSession().createSQLQuery(sql).setParameter("entityId", entityId).list();
+		return list;
 	}
 
 }

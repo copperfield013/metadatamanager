@@ -16,11 +16,18 @@ public interface RecordRelationTypeDao {
 	List<RecordRelationType> queryList(RecordRelationTypeCriteria criteria, PageInfo pageInfo);
 
 	/**
-	 * 根据实体id， 求出实体所有的关系
+	 * 根据实体id， 求出实体的右关系
 	 * @param recordType
 	 * @return
 	 */
 	List<RecordRelationType> getEntityRelaByBitemId(String recordType);
+	
+	/**
+	 * 根据左实体id， 和右实体id， 求出左右实体共同的关系
+	 * @param recordType
+	 * @return
+	 */
+	List<RecordRelationType> getEntityRelaByBitemId(String leftRecordType, String rightRecordType);
 	
 	/**
 	 * 对象插入到数据表中

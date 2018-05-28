@@ -72,6 +72,13 @@ public class RecordRelationTypeDaoImpl implements RecordRelationTypeDao {
 		List list = sFactory.getCurrentSession().createQuery(hql).setParameter("rightRecordType", recordType).list();
 		return list;
 	}
+	
+	@Override
+	public List<RecordRelationType> getEntityRelaByBitemId(String leftRecordType, String rightRecordType) {
+		String hql = "FROM RecordRelationType where rightRecordType =:leftRecordType AND leftRecordType=:rightRecordType";
+		List list = sFactory.getCurrentSession().createQuery(hql).setParameter("leftRecordType", leftRecordType).setParameter("rightRecordType", rightRecordType).list();
+		return list;
+	}
 
 	@Override
 	public String getRecordRelaCode(String entityCode) {

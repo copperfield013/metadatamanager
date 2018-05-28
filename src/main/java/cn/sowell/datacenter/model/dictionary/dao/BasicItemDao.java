@@ -3,6 +3,9 @@ package cn.sowell.datacenter.model.dictionary.dao;
 import java.math.BigInteger;
 import java.util.List;
 
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
 import cn.sowell.copframe.dto.page.PageInfo;
 import cn.sowell.datacenter.model.dictionary.criteria.BasicItemCriteria;
 import cn.sowell.datacenter.model.dictionary.pojo.BasicItem;
@@ -130,4 +133,12 @@ public interface BasicItemDao {
 	 * @return
 	 */
 	BigInteger getTwoSameCount(String name, String entityId);
+	
+	/**
+	 * 根据实体id， 获取当前实体下的所有普通属性， 
+		//还有当前实体下的所有二级属性
+	 * @param entityId
+	 * @return
+	 */
+	public List getComm(String entityId);
 }

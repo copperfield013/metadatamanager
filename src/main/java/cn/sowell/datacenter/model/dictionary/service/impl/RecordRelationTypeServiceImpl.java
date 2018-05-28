@@ -89,4 +89,9 @@ public class RecordRelationTypeServiceImpl implements RecordRelationTypeService 
 		
 	}
 
+	@Override
+	public List<RecordRelationType> getEntityRelaByBitemId(String leftRecordType, String rightRecordType) {
+		return dictionaryParentItemDao.getEntityRelaByBitemId(leftRecordType, rightRecordType);
+	}
+
 }

@@ -97,4 +97,12 @@ public interface BasicItemService {
 	 * @param entityId
 	 */
 	BigInteger getTwoSameCount(String name, String entityId);
+	
+	/**
+	 * 根据实体id， 获取当前实体下的所有普通属性， 
+		//还有当前实体下的所有二级属性
+	 * @param entityId
+	 * @return
+	 */
+	public List getComm(String entityId);
 }

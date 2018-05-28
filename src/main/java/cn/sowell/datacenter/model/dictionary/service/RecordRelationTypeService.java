@@ -49,4 +49,11 @@ public interface RecordRelationTypeService {
 	 * @param rightRrecordType
 	 */
 	void saveRelation(RecordRelationType lefRrecordType, RecordRelationType rightRrecordType, String symmetry);
+	
+	/**
+	 * 根据左实体id， 和右实体id， 求出左右实体共同的关系
+	 * @param recordType
+	 * @return
+	 */
+	List<RecordRelationType> getEntityRelaByBitemId(String leftRecordType, String rightRecordType);
 }
