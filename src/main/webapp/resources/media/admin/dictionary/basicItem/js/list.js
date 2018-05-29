@@ -284,7 +284,6 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
     	} else {
     		$form.find("#cn_dataRange").show();
     		 $form.find("#dataRange").show();
-    		 
     		if ("digital" == $this.val()) {//数字型
     			$form.find("#dataRange").val('11');
     		} else if ("digitalDecimal" == $this.val()) {//数字型小数
@@ -294,6 +293,9 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
     			$form.find("#cn_dataRange").hide();
     		} else if ("char"== $this.val() ) { //字符型
     			$form.find("#dataRange").val('32');
+    		} else if ("文件型" == $this.val()) {
+    			$form.find("#dataRange").val("文件型").hide();
+    			$form.find("#cn_dataRange").hide();
     		}
 	        
 	        $form.find("#dictParentId").remove();
@@ -353,6 +355,9 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
     			$form.find("#cn_dataRange").hide();
     		} else if ("char"== options.val() ) { //字符型
     			$form.find("#dataRange").val('32');
+    		} else if ("文件型" == options.val()) {
+    			$form.find("#dataRange").val("文件型").hide();
+    			$form.find("#cn_dataRange").hide();
     		}
     		
 	        $form.find("#dictParentId").remove();

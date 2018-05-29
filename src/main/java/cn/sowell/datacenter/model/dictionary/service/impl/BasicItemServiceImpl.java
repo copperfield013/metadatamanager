@@ -111,10 +111,19 @@ public class BasicItemServiceImpl implements BasicItemService {
 	@Override
 	public void update(BasicItem basicItem) {
 		basicItemDao.update(basicItem);
+		
 	}
 
 	@Override
 	public void delete(BasicItem basicItem) {
+		if ("文件型".equals(basicItem.getDataType())) {
+			BasicItem bt = basicItemDao.get(BasicItem.class, basicItem.getCode()+ "_P");
+			
+			if (bt != null) {
+				basicItemDao.delete(bt);
+			}
+		}
+		
 		basicItemDao.delete(basicItem);
 	}
 	
@@ -247,7 +256,7 @@ public class BasicItemServiceImpl implements BasicItemService {
 	}
 
 	@Override
-	public void saveOrUpdate(BasicItem obj, String flag) {
+	public void saveOrUpdate(BasicItem obj, String flag, String comm) {
 		
 		//更改枚举值， 二级属性和二级属性的孩子需要设置状态为错误
 		if (!"add".equals(flag) ) {//必须是编辑， 并且字典类型不一样， 那么修改他的二级属性状态和孩子的状态
@@ -292,38 +301,9 @@ public class BasicItemServiceImpl implements BasicItemService {
 		}
 		
 		//默认生成一个兄弟
-		if ("add".equals(flag)) {
-			if ("文件型".equals(obj.getDataType())) {
-				BasicItem bt = new BasicItem();
-				bt.setCode(obj.getCode() + "_P");
-				bt.setCnName(obj.getCnName() + "_P");
-				bt.setEnName(obj.getEnName());
-				bt.setDataType("字符型");
-				bt.setDataRange("32");
-				bt.setTableName(obj.getTableName());
-				bt.setParent(obj.getParent());
-				bt.setUsingState(0);
-				bt.setGroupName(obj.getGroupName());
-				basicItemDao.insert(bt);
-			} 
-		} else {//如果是编辑， 
-			BasicItem basicItem = basicItemDao.get(BasicItem.class, obj.getCode());
-			if ("文件型".equals(basicItem.getDataType())) {
-				BasicItem pojo = basicItemDao.get(BasicItem.class, obj.getCode()+ "_P");
-				if (!"文件型".equals(obj.getDataType())) {
-					basicItemDao.delete(pojo);
-				} else {
-					pojo.setCnName(obj.getCnName() + "_P");
-					pojo.setTableName(obj.getTableName());
-					pojo.setEnName(obj.getEnName());
-					pojo.setParent(obj.getParent());
-					pojo.setUsingState(0);
-					pojo.setGroupName(obj.getGroupName());
-					
-					basicItemDao.update(pojo);
-				}
-			} else {//之前不是文件型
-				if ("文件型".equals(obj.getDataType())) {//现在是文件型
+		if ("comm".equals(comm)) {
+			if ("add".equals(flag)) {
+				if ("文件型".equals(obj.getDataType())) {
 					BasicItem bt = new BasicItem();
 					bt.setCode(obj.getCode() + "_P");
 					bt.setCnName(obj.getCnName() + "_P");
@@ -335,10 +315,41 @@ public class BasicItemServiceImpl implements BasicItemService {
 					bt.setUsingState(0);
 					bt.setGroupName(obj.getGroupName());
 					basicItemDao.insert(bt);
+				} 
+			} else {//如果是编辑， 
+				BasicItem basicItem = basicItemDao.get(BasicItem.class, obj.getCode());
+				if ("文件型".equals(basicItem.getDataType())) {
+					BasicItem pojo = basicItemDao.get(BasicItem.class, obj.getCode()+ "_P");
+					if (!"文件型".equals(obj.getDataType())) {
+						basicItemDao.delete(pojo);
+					} else {
+						pojo.setCnName(obj.getCnName() + "_P");
+						pojo.setTableName(obj.getTableName());
+						pojo.setEnName(obj.getEnName());
+						pojo.setParent(obj.getParent());
+						pojo.setUsingState(0);
+						pojo.setGroupName(obj.getGroupName());
+						
+						basicItemDao.update(pojo);
+					}
+				} else {//之前不是文件型
+					if ("文件型".equals(obj.getDataType())) {//现在是文件型
+						BasicItem bt = new BasicItem();
+						bt.setCode(obj.getCode() + "_P");
+						bt.setCnName(obj.getCnName() + "_P");
+						bt.setEnName(obj.getEnName());
+						bt.setDataType("字符型");
+						bt.setDataRange("32");
+						bt.setTableName(obj.getTableName());
+						bt.setParent(obj.getParent());
+						bt.setUsingState(0);
+						bt.setGroupName(obj.getGroupName());
+						basicItemDao.insert(bt);
+					}
 				}
+				
+				sFactory.getCurrentSession().evict(basicItem);//session 关联两个相同id的对象， 解除一个	
 			}
-			
-			sFactory.getCurrentSession().evict(basicItem);//session 关联两个相同id的对象， 解除一个	
 		}
 		
 		

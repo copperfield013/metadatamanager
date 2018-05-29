@@ -105,6 +105,8 @@ public class BasicItemController {
 	public AjaxPageResponse doAdd(BasicItem	basicItem){
 			String dType = basicItem.getDataType();
 			String dataType = "";
+			String comm = null;
+			
 			if ("char".equals(dType)) {
 				dataType = "字符型";
 			} else if ("digital".equals(dType)) {
@@ -144,6 +146,7 @@ public class BasicItemController {
 					basicItem.setGroupName(bItemPanrent.getCode());
 				} else {//普通属性
 					basicItem.setTableName("t_" + basicItem.getParent() + "_" + basicItem.getGroupName());
+					comm = "comm";
 				}
 			}
 			basicItem.setUsingState(0);
@@ -155,7 +158,7 @@ public class BasicItemController {
 			
 			for(int i=0; i<10; i++) {
                 try {
-                	basicItemService.saveOrUpdate(basicItem, flag);
+                	basicItemService.saveOrUpdate(basicItem, flag, comm);
         			
         			if ("记录类型".equals(basicItem.getDataType())) {
         				return AjaxPageResponse.CLOSE_AND_REFRESH_PAGE("修改成功", "basicItem_list");

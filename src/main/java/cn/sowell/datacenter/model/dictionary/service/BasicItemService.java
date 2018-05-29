@@ -58,7 +58,7 @@ public interface BasicItemService {
 	 */
 	public JSONObject getAttrByPid(String parentId);
 	
-	void saveOrUpdate(BasicItem obj, String flag);
+	void saveOrUpdate(BasicItem obj, String flag, String comm);
 
 	/**
 	 * 
