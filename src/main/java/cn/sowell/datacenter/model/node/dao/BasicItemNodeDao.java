@@ -33,11 +33,27 @@ public interface BasicItemNodeDao {
 	 * 更新一个pojo对象
 	 * @param demo
 	 */
-	void update(Object obj);
+	void update(BasicItemNode obj);
 
 	/**
 	 * 从数据库中删除一个对象
 	 * @param pojo
 	 */
-	void delete(Object pojo);
+	void delete(Integer id);
+	/**
+	 * 从数据库中删除一个对象
+	 * @param pojo
+	 */
+	void delete(BasicItemNode bt);
+
+	/**
+	 * 根据父id， 获取所有孩子
+	 * @param integer
+	 * @return
+	 */
+	List<BasicItemNode> getChildByPid(String parentId);
+	
+	public void executeSql(String sql);
+	
+	
 }

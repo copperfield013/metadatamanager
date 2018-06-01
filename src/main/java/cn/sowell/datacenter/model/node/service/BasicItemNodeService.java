@@ -33,6 +33,24 @@ public interface BasicItemNodeService {
 	/**
 	 * 从数据库中删除一个BasicItemNode对象
 	 * @param id
+	 * @param isDelChil  属性组出过来true,就删除孩子， 否则不删除孩子， 移动孩子到实体下面
+	 * 
 	 */
-	void delete(Integer id);
+	 
+	void delete(Integer id, String isDelChil);
+	
+	/**
+	 * 节点排序
+	 * @param parentId 父id
+	 * @param currentId  当前排序id
+	 * @param beforeId 前驱id
+	 * @param afterId  后继id
+	 * @return   
+	 */
+	public String nodeSort(BasicItemNode current, Integer beforeId, Integer afterId);
+	/**
+	 * 扩展语句
+	 */
+	public void excuExtend(String parentId);
+	
 }

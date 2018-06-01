@@ -64,13 +64,29 @@ public class BasicItemNodeDaoImpl implements BasicItemNodeDao {
 	}
 	
 	@Override
-	public void update(Object pojo) {
+	public void update(BasicItemNode pojo) {
 		sFactory.getCurrentSession().update(pojo);
 	}
 	
 	@Override
-	public void delete(Object pojo) {
-		sFactory.getCurrentSession().delete(pojo);
+	public void delete(Integer id) {
+		String sql = "DELETE FROM t_c_basic_item_node WHERE id=:id";
+		sFactory.getCurrentSession().createSQLQuery(sql).setParameter("id", id).executeUpdate();
 	}
 
+	@Override
+	public void delete(BasicItemNode bt) {
+		sFactory.getCurrentSession().delete(bt);
+	}
+
+	@Override
+	public List<BasicItemNode> getChildByPid(String parentId) {
+		String hql = " FROM BasicItemNode WHERE parentId=:parentId";
+		return	sFactory.getCurrentSession().createQuery(hql).setParameter("parentId", parentId).list();
+	}
+
+	@Override
+	public void executeSql(String sql) {
+		sFactory.getCurrentSession().createSQLQuery(sql).executeUpdate();
+	}
 }

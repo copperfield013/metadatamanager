@@ -1,10 +1,16 @@
 package cn.sowell.datacenter.model.node.pojo;
 
+import java.util.List;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import com.abc.mapping.node.NodeType;
@@ -41,7 +47,7 @@ public class BasicItemNode {
 
 	@Column(name = "parent_id")
 	private String parentId;
-
+	
 	public Integer getId() {
 		return id;
 	}

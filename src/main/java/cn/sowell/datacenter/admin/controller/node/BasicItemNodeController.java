@@ -28,8 +28,10 @@ import cn.sowell.copframe.dto.page.PageInfo;
 import cn.sowell.datacenter.admin.controller.AdminConstants;
 import cn.sowell.datacenter.model.dictionary.criteria.BasicItemCriteria;
 import cn.sowell.datacenter.model.dictionary.pojo.BasicItem;
+import cn.sowell.datacenter.model.dictionary.pojo.DictionaryBasicItem;
 import cn.sowell.datacenter.model.dictionary.pojo.RecordRelationType;
 import cn.sowell.datacenter.model.dictionary.service.BasicItemService;
+import cn.sowell.datacenter.model.dictionary.service.DictionaryBasicItemService;
 import cn.sowell.datacenter.model.dictionary.service.RecordRelationTypeService;
 import cn.sowell.datacenter.model.node.criteria.BasicItemNodeCriteria;
 import cn.sowell.datacenter.model.node.pojo.BasicItemNode;
@@ -47,6 +49,9 @@ public class BasicItemNodeController {
 	
 	@Resource
 	RecordRelationTypeService recordRelationTypeService;
+	
+	@Resource
+	DictionaryBasicItemService dictBitemServices;
 	
 	Logger logger = Logger.getLogger(BasicItemNodeController.class);
 	@org.springframework.web.bind.annotation.InitBinder
@@ -72,8 +77,6 @@ public class BasicItemNodeController {
 			try {
 				basicItemNodeService.create(criteria);
 				
-				
-				
 				AjaxPageResponse response = new AjaxPageResponse();
 				response.setNotice("操作成功");
 				response.setNoticeType(NoticeType.SUC);
@@ -86,9 +89,9 @@ public class BasicItemNodeController {
 	
 	@ResponseBody
 	@RequestMapping("/do_delete")
-	public AjaxPageResponse doDelte(@PathVariable Integer id){
+	public AjaxPageResponse doDelte(@PathVariable Integer id,String isDelChil){
 		try {
-			basicItemNodeService.delete(id);
+			basicItemNodeService.delete(id, isDelChil);
 			return AjaxPageResponse.REFRESH_LOCAL("删除成功");
 		} catch (Exception e) {
 			logger.error("删除失败", e);
@@ -192,15 +195,30 @@ public class BasicItemNodeController {
 		return jobj.toString();
 	}	
 	
-	//获取lab关系名称
+	//获取lab关系名称, 关系下边的lab
 	@ResponseBody
 	@RequestMapping("/getLabRela")
 	public String getLabRela(String leftRecordType, String rightRecordType){
 		List<RecordRelationType> list = recordRelationTypeService.getEntityRelaByBitemId(leftRecordType, rightRecordType);
 		Map<String, Object> map = new HashMap<String, Object>();
-		map.put("comm", list);
+		map.put("labRela", list);
 		JSONObject jobj = new JSONObject(map);
 		return jobj.toString();
 	}	
+	
+	//获取标签名称， 实体下面和属性组下边的标签， 从DictionaryBasicItem
+	@ResponseBody
+	@RequestMapping("/getCommLab")
+	public String getCommLab(){
+		List<DictionaryBasicItem> list = dictBitemServices.getDictBasicItemByParent(125);
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("commLab", list);
+		JSONObject jobj = new JSONObject(map);
+		return jobj.toString();
+	}	
+	
+	
+	
+	
 	
 }
