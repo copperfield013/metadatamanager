@@ -234,9 +234,13 @@ public class BasicItemController {
 	
 	//过期实体or正常  普通属性和多值属性
 	@ApiOperation(value="过期实体", notes="过期实体or正常  普通属性和多值属性")
+	@ApiImplicitParams({
+		@ApiImplicitParam(name="id", value="节点id", required=true, dataType="String", paramType="query"),
+		@ApiImplicitParam(name="statusStr", value="节点状态值", required=true, dataType="String", paramType="query")
+	})
 	@ResponseBody
 	@RequestMapping(value="/saveStatus", method=RequestMethod.POST)
-	public AjaxPageResponse savePastDue(@ApiParam(name="id", value="节点id", required=true)String id, @ApiParam(name="statusStr", value="过期状态值", required=true)String statusStr){
+	public AjaxPageResponse savePastDue(String id, String statusStr){
 		try {
 			BasicItem basicItem = basicItemService.getBasicItem(id);
 			basicItemService.saveUsingStatus(basicItem, statusStr);
