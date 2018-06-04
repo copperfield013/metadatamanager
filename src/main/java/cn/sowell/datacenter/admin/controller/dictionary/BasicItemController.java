@@ -198,7 +198,7 @@ public class BasicItemController {
 	@ApiOperation(value="get节点信息", notes="获取单个节点信息")
 	@ApiImplicitParams({
         @ApiImplicitParam(name="id", value="节点ID", required=true, paramType="query", dataType="String")
- })
+	})
 	@ResponseBody
 	@RequestMapping(value="/getOne", method=RequestMethod.POST)
 	public String getOne(String id){
@@ -222,9 +222,12 @@ public class BasicItemController {
 	
 	//根据实体id， 获取实体下面的普通属性， 多值属性 和实体关系
 	@ApiOperation(value="属性管理", notes="根据实体id， 获取实体下面的普通属性， 多值属性 和实体关系")
+	@ApiImplicitParams({
+		@ApiImplicitParam(name="parentId", value="实体id", dataType="String", paramType="query", required=true)
+	})
 	@ResponseBody
 	@RequestMapping(value="/attrByPid", method=RequestMethod.POST)
-	public String getAttrByPid(@ApiParam(name="parentId", value="实体id", required=true)String parentId) {
+	public String attrByPid(String parentId) {
 		JSONObject attr = basicItemService.getAttrByPid(parentId);
 		return attr.toJSONString();
 	}
