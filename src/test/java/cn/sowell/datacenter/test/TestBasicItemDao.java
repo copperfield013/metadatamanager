@@ -8,18 +8,15 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.abc.mapping.node.NodeOpsType;
 import com.abc.mapping.node.NodeType;
 import com.abc.util.ValueTypeConstant;
 import com.abc.variable.Global;
 
-import cn.sowell.datacenter.model.dictionary.pojo.BasicItem;
 import cn.sowell.datacenter.model.dictionary.service.BasicItemService;
 import cn.sowell.datacenter.model.dictionary.service.DictionaryBasicItemService;
 import cn.sowell.datacenter.model.dictionary.service.RecordRelationTypeService;
-import cn.sowell.datacenter.model.node.pojo.BasicItemNode;
 import cn.sowell.datacenter.model.node.service.BasicItemNodeService;
 
 @ContextConfiguration(locations = "classpath*:spring-config/spring-junit.xml")
@@ -77,7 +74,6 @@ public class TestBasicItemDao {
 	  
 	@Test
 	public void fun2() {
-		
 		
 		
 		

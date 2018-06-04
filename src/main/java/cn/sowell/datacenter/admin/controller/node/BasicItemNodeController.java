@@ -36,7 +36,9 @@ import cn.sowell.datacenter.model.dictionary.service.RecordRelationTypeService;
 import cn.sowell.datacenter.model.node.criteria.BasicItemNodeCriteria;
 import cn.sowell.datacenter.model.node.pojo.BasicItemNode;
 import cn.sowell.datacenter.model.node.service.BasicItemNodeService;
-
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+@Api(value="配置文件controller")
 @Controller
 @RequestMapping(AdminConstants.URI_NODE + "/basicItemNode")
 public class BasicItemNodeController {
@@ -61,7 +63,7 @@ public class BasicItemNodeController {
 		dateFormat.setLenient(false);
 		binder.registerCustomEditor(Date.class, null, new CustomDateEditor(dateFormat, true));
 	}
-
+	
 	@RequestMapping("/list")
 	public String list(BasicItemNodeCriteria criteria, Model model, PageInfo pageInfo){
 		List<BasicItemNode> list = basicItemNodeService.queryList(criteria, pageInfo);
@@ -115,6 +117,7 @@ public class BasicItemNodeController {
 	}
 
 	//ajax 获取NodeOpsType
+	@ApiOperation(notes="getNodeOpsType", httpMethod="POST", value="添加一个新的群组")
 	@ResponseBody
 	@RequestMapping("/getNodeOpsType")
 	public String getNodeOpsType(){
@@ -128,7 +131,7 @@ public class BasicItemNodeController {
 		JSONObject jobj = new JSONObject(map);
 		return jobj.toString();
 	}
-		
+	
 	//ajax 获取dataType
 	@ResponseBody
 	@RequestMapping("/getDataType")

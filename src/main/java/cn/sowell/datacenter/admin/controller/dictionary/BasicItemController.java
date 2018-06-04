@@ -19,7 +19,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.ServletRequestDataBinder;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -43,7 +45,14 @@ import cn.sowell.datacenter.model.dictionary.pojo.TowlevelattrMultiattrMapping;
 import cn.sowell.datacenter.model.dictionary.service.BasicItemService;
 import cn.sowell.datacenter.model.dictionary.service.TowlevelattrMultiattrMappingService;
 import cn.sowell.datacenter.model.dictionary.service.TowlevelattrService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import springfox.documentation.annotations.ApiIgnore;
 
+@Api(value="entityManager", description="实体管理接口")
 @Controller
 @RequestMapping(AdminConstants.URI_DICTIONARY + "/basicItem")
 public class BasicItemController {
@@ -66,6 +75,7 @@ public class BasicItemController {
 		binder.registerCustomEditor(Date.class, null, new CustomDateEditor(dateFormat, true));
 	}
 
+	
 	@RequestMapping("/list")
 	public String list(BasicItemCriteria criteria, Model model){
 		criteria.setDataType("记录类型");
@@ -76,8 +86,9 @@ public class BasicItemController {
 	}
 	
 	//ajax 获取实体列表
+	@ApiOperation(value="获取实体列表信息", notes="获取实体列表")
 	@ResponseBody
-	@RequestMapping("/entityList")
+	@RequestMapping(value="/entityList", method=RequestMethod.POST)
 	public String entityList(){
 		BasicItemCriteria criteria = new BasicItemCriteria();
 		criteria.setDataType("记录类型");
@@ -100,9 +111,10 @@ public class BasicItemController {
 		return jobj.toString();
 	}
 	
+	@ApiOperation(value="添加", notes="新增实体,新增普通属性， 多值属性， 分组")
 	@ResponseBody
-	@RequestMapping("/do_add")
-	public AjaxPageResponse doAdd(BasicItem	basicItem){
+	@RequestMapping(value="/do_add", method=RequestMethod.POST)
+	public AjaxPageResponse doAdd(@ApiParam(name="basicItem对象", value="传入json格式", required=true)BasicItem basicItem){
 			String dType = basicItem.getDataType();
 			String dataType = "";
 			String comm = null;
@@ -182,14 +194,20 @@ public class BasicItemController {
 			return null;
 	}
 
+	
+	@ApiOperation(value="get节点信息", notes="获取单个节点信息")
+	@ApiImplicitParams({
+        @ApiImplicitParam(name="id", value="节点ID", required=true, paramType="query", dataType="String")
+ })
 	@ResponseBody
-	@RequestMapping("/getOne")
-	public String update(String id, Model model){
+	@RequestMapping(value="/getOne", method=RequestMethod.POST)
+	public String getOne(String id){
 		BasicItem basicItem = basicItemService.getBasicItem(id);
 		String jsonString = JSONObject.toJSONString(basicItem);
 		return jsonString;
 	}
 	
+	@ApiIgnore
 	@ResponseBody
 	@RequestMapping("/do_update")
 	public AjaxPageResponse doUpdate(BasicItem basicItem){
@@ -203,17 +221,19 @@ public class BasicItemController {
 	}
 	
 	//根据实体id， 获取实体下面的普通属性， 多值属性 和实体关系
+	@ApiOperation(value="属性管理", notes="根据实体id， 获取实体下面的普通属性， 多值属性 和实体关系")
 	@ResponseBody
-	@RequestMapping("/attrByPid")
-	public String getAttrByPid(String parentId) {
+	@RequestMapping(value="/attrByPid", method=RequestMethod.POST)
+	public String getAttrByPid(@ApiParam(name="parentId", value="实体id", required=true)String parentId) {
 		JSONObject attr = basicItemService.getAttrByPid(parentId);
 		return attr.toJSONString();
 	}
 	
 	//过期实体or正常  普通属性和多值属性
+	@ApiOperation(value="过期实体", notes="过期实体or正常  普通属性和多值属性")
 	@ResponseBody
-	@RequestMapping("/saveStatus")
-	public AjaxPageResponse savePastDue(String id, String statusStr){
+	@RequestMapping(value="/saveStatus", method=RequestMethod.POST)
+	public AjaxPageResponse savePastDue(@ApiParam(name="id", value="节点id", required=true)String id, @ApiParam(name="statusStr", value="过期状态值", required=true)String statusStr){
 		try {
 			BasicItem basicItem = basicItemService.getBasicItem(id);
 			basicItemService.saveUsingStatus(basicItem, statusStr);
@@ -232,22 +252,27 @@ public class BasicItemController {
 		}
 	}
 	
-	//创建表
-	@ResponseBody
-	@RequestMapping("/createTab")
-	public AjaxPageResponse createTab(){
-		try {
-			basicItemService.createTabCol();
-			return AjaxPageResponse.CLOSE_AND_REFRESH_PAGE("操作成功", "basicItem_list");
-		} catch (Exception e) {
-			logger.error("操作失败", e);
-			return AjaxPageResponse.FAILD("操作失败");
+		//创建表
+		@ApiOperation(value="创建表", notes="创建实体存储")
+		@ResponseBody
+		@RequestMapping(value="/createTab", method=RequestMethod.POST)
+		public AjaxPageResponse createTab(){
+			try {
+				basicItemService.createTabCol();
+				return AjaxPageResponse.CLOSE_AND_REFRESH_PAGE("操作成功", "basicItem_list");
+			} catch (Exception e) {
+				logger.error("操作失败", e);
+				return AjaxPageResponse.FAILD("操作失败");
+			}
 		}
-	}
 	
 		//删除实体， 属性
+		@ApiOperation(value="删除", notes="删除节点")
+		@ApiImplicitParams({
+			@ApiImplicitParam(name="id", value="节点id", required=true, dataType="String", paramType="query")
+		})
 		@ResponseBody
-		@RequestMapping("/delete")
+		@RequestMapping(value="/delete", method=RequestMethod.POST)
 		public AjaxPageResponse delete(String id){
 			try {
 				AjaxPageResponse response = new AjaxPageResponse();
