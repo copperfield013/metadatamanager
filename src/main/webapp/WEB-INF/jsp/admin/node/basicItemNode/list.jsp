@@ -10,7 +10,7 @@
 				<input type="text" class="form-control" name="abcattr" value="${criteria.abcattr }" />
 			</div>
 			<button type="submit" class="btn btn-default">查询</button>
-			<a class="btn btn-primary tab" href="#" title="创建" target="dictMapping_add" >创建</a>
+			<a class="btn btn-primary tab" href="admin/node/basicItemNode/operate" title="创建" target="dictMapping_add" >创建</a>
 		</form>
 	</nav>
 	<div class="row list-area">
