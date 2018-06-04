@@ -73,7 +73,6 @@ public class BasicItemNodeController {
 		return AdminConstants.JSP_NODE + "/basicItemNode/list.jsp";
 	}
 	
-		@ResponseBody
 		@RequestMapping("/operate")
 		public String operate(){
 			
