@@ -6,18 +6,12 @@
 
 <div id="operate">
 		
-		<div class="entity_list clear-fix">				
-			<div title="code:IBTE001, 中文名称:人口信息4,  英文名称:people" class="entity_attr">				
-				人口信息4						
-			</div>			
-				
-			<div title="code:IBTE002, 中文名称:测试1,  英文名称:test1" class="entity_attr">				
-				测试1						
-			</div>			
-				
-			<div title="code:IBTE003, 中文名称:新增1,  英文名称:newadd1" class="entity_attr">				
-				新增1					
-			</div>												
+		<div class="entity_list clear-fix">		
+			<c:forEach items="${list }" var="item">
+				<div title="code:${item.code }, 中文名称:${item.cnName },  英文名称:${item.enName }" class="entity_attr">				
+						${item.cnName }				
+				</div>
+			</c:forEach>
 		</div>
 		
         <div class="entity-edit-wrap">
