@@ -1,5 +1,20 @@
 
-seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF){	
+seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF){
+	
+	var $page = $("#operate");
+	//去掉默认的contextmenu事件，否则会和右键事件同时出现。
+//    document.oncontextmenu = function(e){
+//        e.preventDefault();
+//    };
+//    document.onmousedown = function(e){
+//        if(e.button ==2){
+//            alert("你点了右键");
+//        }else if(e.button ==0){
+//            alert("你点了左键");
+//        }else if(e.button ==1){
+//            alert("你点了滚轮");
+//        }
+//    }
 	
 	/**
      * 获取实体信息方法 示例     
@@ -13,8 +28,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 			 $CPF.closeLoading(); //必写
 		 });
 	}
-	
-	
+		
     /**
      * 跟实体添加页面弹出方法
      * @param {当前点击元素,dom对象} el 
@@ -232,14 +246,14 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
      * remove 添加页方法
       */
     function removePop() {
-        $(".card").remove();
-        $(".tag-card").remove();
-        $(".delete-list").remove();
-        $(".delete-list-c").remove();
-        $(".icon-add").removeClass("active");
-        $(".icon-add-tag").removeClass("active");
-        $(".icon-trash").removeClass("active");
-        $(".icon-trash-sm").removeClass("active");
+        $(".card", $page).remove();
+        $(".tag-card", $page).remove();
+        $(".delete-list", $page).remove();
+        $(".delete-list-c", $page).remove();
+        $(".icon-add", $page).removeClass("active");
+        $(".icon-add-tag", $page).removeClass("active");
+        $(".icon-trash", $page).removeClass("active");
+        $(".icon-trash-sm", $page).removeClass("active");
 
     };
 
@@ -462,14 +476,19 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
     });
 
     //input事件绑定
-    $(".edit-input").on("blur", function () {
+    $(".edit-input", $page).on("blur", function () {
         //传输给后台                  
     });
     
     //实体选择点击事件绑定
     $("#operate").on("click", ".entity_attr", function() {
-    	$(this).addClass("active")
-    		.siblings().removeClass("active");
+    	var $attrArray = $(".entity_attr",$page);
+    	for(var i=0; i<$attrArray.length; i++) {
+    		if($($attrArray[i]).hasClass("active")) { //已经有选择过的了 就不能再点击选择了
+    			return;
+    		}
+    	}    	
+    	$(this).addClass("active");    		
     	getEntity();
     })
 
@@ -489,7 +508,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
         }
     })
 
-    //跟实体添加事件绑定
+    //根实体添加事件绑定
     $("#operate").on("click", ".icon-add, .icon-add-abc", function (e) {
         e.stopPropagation();
         removePop();
