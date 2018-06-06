@@ -62,18 +62,12 @@ public class BasicItemNodeController {
 
 	@ResponseBody
 	@RequestMapping("/saveOrUpdate")
-	public AjaxPageResponse saveOrUpdate(BasicItemNode basicItemNode) {
-		try {
-			
+	public String saveOrUpdate(BasicItemNode basicItemNode) {
 			basicItemNodeService.saveOrUpdate(basicItemNode);
-
-			AjaxPageResponse response = new AjaxPageResponse();
-			response.setNotice("操作成功");
-			response.setNoticeType(NoticeType.SUC);
-			return response;
-		} catch (Exception e) {
-			return AjaxPageResponse.FAILD("操作失败");
-		}
+			Map<String, Object> map = new HashMap<String, Object>();
+			map.put("node", basicItemNode);
+			JSONObject jobj = new JSONObject(map);
+			return jobj.toString();
 	}
 
 	@ResponseBody
