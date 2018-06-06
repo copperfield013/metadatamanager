@@ -10,6 +10,8 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Repository;
 
+import com.abc.mapping.node.NodeType;
+
 import cn.sowell.copframe.dao.deferedQuery.DeferedParamQuery;
 import cn.sowell.copframe.dao.deferedQuery.sqlFunc.WrapForCountFunction;
 import cn.sowell.copframe.dao.utils.QueryUtils;
@@ -88,5 +90,26 @@ public class BasicItemNodeDaoImpl implements BasicItemNodeDao {
 	@Override
 	public void executeSql(String sql) {
 		sFactory.getCurrentSession().createSQLQuery(sql).executeUpdate();
+	}
+
+	@Override
+	public Integer getOrder(BasicItemNode basicItemNode) {
+		List list = null;
+		Integer order;
+		if (NodeType.ABC.getName().equals(basicItemNode.getType())) {//是一个实体
+			String hql = " FROM BasicItemNode WHERE type=:type AND parentId is null ORDER BY order DESC";
+			list = sFactory.getCurrentSession().createQuery(hql).setParameter("type", 1).list();
+		} else {
+			String hql = " FROM BasicItemNode WHERE parentId=:parentId";
+			list = sFactory.getCurrentSession().createQuery(hql).setParameter("parentId", basicItemNode.getParentId()).list();
+		}
+		
+		if (list.isEmpty()) {
+			order = 100;
+		} else {
+			order = (Integer) list.get(0) + 100;
+		}
+		
+		return order;
 	}
 }

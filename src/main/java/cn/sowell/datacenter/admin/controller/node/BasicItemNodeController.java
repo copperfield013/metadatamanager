@@ -61,11 +61,11 @@ public class BasicItemNodeController {
 	}
 
 	@ResponseBody
-	@RequestMapping("/do_add")
-	public AjaxPageResponse doAdd(BasicItemNode criteria) {
+	@RequestMapping("/saveOrUpdate")
+	public AjaxPageResponse saveOrUpdate(BasicItemNode basicItemNode) {
 		try {
 			
-			basicItemNodeService.create(criteria);
+			basicItemNodeService.saveOrUpdate(basicItemNode);
 
 			AjaxPageResponse response = new AjaxPageResponse();
 			response.setNotice("操作成功");
@@ -87,7 +87,7 @@ public class BasicItemNodeController {
 		}
 	}
 
-	// ajax 获取实体列表
+/*	// ajax 获取实体列表
 	@ResponseBody
 	@RequestMapping("/entityList")
 	public String entityList() {
@@ -100,7 +100,7 @@ public class BasicItemNodeController {
 		map.put("entity", list);
 		JSONObject jobj = new JSONObject(map);
 		return jobj.toString();
-	}
+	}*/
 
 	// ajax 获取NodeOpsType
 	@ApiOperation(notes = "getNodeOpsType", httpMethod = "POST", value = "添加一个新的群组")

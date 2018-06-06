@@ -1,13 +1,10 @@
 package cn.sowell.datacenter.model.node.service.impl;
 
-import java.util.Iterator;
 import java.util.List;
 
 import javax.annotation.Resource;
 
-import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
 import org.springframework.stereotype.Service;
 
 import com.abc.mapping.node.NodeType;
@@ -34,8 +31,17 @@ public class BasicItemNodeServiceImpl implements BasicItemNodeService {
 	}
 
 	@Override
-	public void create(BasicItemNode basicItemNode) {
-		basicItemNodeDao.insert(basicItemNode);
+	public void saveOrUpdate(BasicItemNode basicItemNode) {
+		//判断是添加，还是修改， 生成排序的值
+		if (basicItemNode.getId() == null) {//添加
+			//需要生成排序的值
+			//排序值的生成规则的书写
+			Integer order = basicItemNodeDao.getOrder(basicItemNode);
+			basicItemNode.setOrder(order);
+			basicItemNodeDao.insert(basicItemNode);
+		} else {//修改
+			basicItemNodeDao.update(basicItemNode);
+		}
 	}
 
 	@Override

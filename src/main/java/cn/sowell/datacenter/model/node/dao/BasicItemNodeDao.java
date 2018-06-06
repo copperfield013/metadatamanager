@@ -54,6 +54,13 @@ public interface BasicItemNodeDao {
 	List<BasicItemNode> getChildByPid(String parentId);
 	
 	public void executeSql(String sql);
+
+	/**
+	 * 获取当前父亲下面的排序值
+	 * @param basicItemNode
+	 * @return
+	 */
+	Integer getOrder(BasicItemNode basicItemNode);
 	
 	
 }

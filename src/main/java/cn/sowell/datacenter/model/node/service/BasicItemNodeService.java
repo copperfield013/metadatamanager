@@ -20,7 +20,7 @@ public interface BasicItemNodeService {
 	 * 创建一个BasicItemNode对象
 	 * @param BasicItemNode
 	 */
-	void create(BasicItemNode basicItem);
+	void saveOrUpdate(BasicItemNode basicItem);
 
 	BasicItemNode getOne(Integer id);
 
