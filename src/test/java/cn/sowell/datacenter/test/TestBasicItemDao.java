@@ -1,6 +1,9 @@
 package cn.sowell.datacenter.test;
 
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.annotation.Resource;
 
 import org.hibernate.SessionFactory;
@@ -13,10 +16,12 @@ import com.abc.mapping.node.NodeOpsType;
 import com.abc.mapping.node.NodeType;
 import com.abc.util.ValueTypeConstant;
 import com.abc.variable.Global;
+import com.alibaba.fastjson.JSONObject;
 
 import cn.sowell.datacenter.model.dictionary.service.BasicItemService;
 import cn.sowell.datacenter.model.dictionary.service.DictionaryBasicItemService;
 import cn.sowell.datacenter.model.dictionary.service.RecordRelationTypeService;
+import cn.sowell.datacenter.model.node.pojo.BasicItemNode;
 import cn.sowell.datacenter.model.node.service.BasicItemNodeService;
 
 @ContextConfiguration(locations = "classpath*:spring-config/spring-junit.xml")
@@ -37,13 +42,14 @@ public class TestBasicItemDao {
 	
 	@Test
 	public void fun() {
-		String LeftRecordRelaCode = "TE10000R999";
-		int indexOf = LeftRecordRelaCode.indexOf("R");
-		String rightRecordRelaCode = LeftRecordRelaCode.substring(indexOf+1);
+		NodeOpsType nodeOpsType = NodeOpsType.getNodeOpsType("写");
 		
-		int code = Integer.parseInt(rightRecordRelaCode) + 1;
-        String format = String.format("%03d", code);  
-        System.out.println(format);
+		String name = nodeOpsType.getName();
+		
+		
+		int index = nodeOpsType.getIndex();
+		
+		
 	}
 	
 	@Test
@@ -75,11 +81,5 @@ public class TestBasicItemDao {
 	@Test
 	public void fun2() {
 		
-		
-		
-		/*BasicItemNode current = basicItemNodeService.getOne(919);
-		
-		basicItemNodeService.nodeSort(current, 920, 921);*/
-		//basicItemNodeService.excuExtend("915");
 	}
 }   

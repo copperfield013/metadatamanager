@@ -7,6 +7,7 @@ import javax.annotation.Resource;
 import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Service;
 
+import com.abc.mapping.node.NodeOps;
 import com.abc.mapping.node.NodeType;
 
 import cn.sowell.copframe.dto.page.PageInfo;
@@ -38,6 +39,11 @@ public class BasicItemNodeServiceImpl implements BasicItemNodeService {
 			//排序值的生成规则的书写
 			Integer order = basicItemNodeDao.getOrder(basicItemNode);
 			basicItemNode.setOrder(order);
+			
+			
+			
+			
+			
 			basicItemNodeDao.insert(basicItemNode);
 		} else {//修改
 			basicItemNodeDao.update(basicItemNode);
