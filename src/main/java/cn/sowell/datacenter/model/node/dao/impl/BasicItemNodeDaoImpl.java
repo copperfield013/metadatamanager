@@ -94,7 +94,7 @@ public class BasicItemNodeDaoImpl implements BasicItemNodeDao {
 
 	@Override
 	public Integer getOrder(BasicItemNode basicItemNode) {
-		List list = null;
+		List<BasicItemNode> list = null;
 		Integer order;
 		if (NodeType.ABC.getName().equals(basicItemNode.getType())) {//是一个实体
 			String hql = " FROM BasicItemNode WHERE type=:type AND parentId is null ORDER BY order DESC";
@@ -107,7 +107,7 @@ public class BasicItemNodeDaoImpl implements BasicItemNodeDao {
 		if (list.isEmpty()) {
 			order = 100;
 		} else {
-			order = (Integer) list.get(0) + 100;
+			order = (Integer) list.get(0).getOrder() + 100;
 		}
 		
 		return order;
