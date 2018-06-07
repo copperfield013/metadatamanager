@@ -22,6 +22,8 @@ body {
 }
 #operate {
     position: relative;
+    width: 100%;
+    height: 100%;
 }
 #operate .entity_list {
 	padding-top: 2em;
@@ -64,12 +66,14 @@ body {
 }
 #operate .edit-input {
     border: none;    
-    height: 98%;
+    height: 70%;
     outline: none;   
     color: #363636; 
     background-color: inherit;
     width: 180px;
+    padding-left: 1em;
 }
+
 #operate .icon-label {
     float: left;
     border-top-left-radius: 4px;
@@ -293,7 +297,27 @@ body {
     height: 16px;
     background-image: url("../images/save.png");
 }
-/* µ¯³ö±êÇ© */
+#operate .icon-toleft {   
+    background-image: url("../images/toleft.png");
+}
+#operate .icon-toleft.ban {   
+    background-image: url("../images/toleft-ban.png");
+}
+#operate .icon-toright {   
+    background-image: url("../images/toright.png");
+}
+#operate .icon-toright.ban {   
+    background-image: url("../images/toright-ban.png");
+}
+#operate .icon.icon-trash-sm,
+#operate .icon.icon-save  {
+    display: none;
+} 
+#operate .edit .icon.icon-trash-sm, 
+#operate .edit .icon.icon-save {
+    display: inline-block;
+}
+/* å¼¹å‡ºæ ‡ç­¾ */
 #operate .card {
     width: 184px;        
     color: #363636;
@@ -336,7 +360,7 @@ body {
 #operate .card .card-list:hover .icon-card-relative {
     background-image: url("../images/relative.png");
 }
-/* Ìí¼Ó±êÇ©µ¯³öÒ³ */
+/* æ·»åŠ æ ‡ç­¾å¼¹å‡ºé¡µ */
 #operate .tag-card {
     width: 180px;        
     color: #363636;
@@ -426,7 +450,7 @@ body {
     -webkit-transition: all .2s cubic-bezier(.12,.4,.29,1.46) .1s;
     transition: all .2s cubic-bezier(.12,.4,.29,1.46) .1s;
 }
-/* ÆøÅÝ¶Ô»°¿ò1 */
+/* æ°”æ³¡å¯¹è¯æ¡†1 */
 #operate .delete-list {
     position: absolute;
     background-image: url("../images/pop-1.png"); 
@@ -466,7 +490,7 @@ body {
     background-color: #ffffff;
     margin-right: 8px;
 }
-/* ÆøÅÝ¶Ô»°¿òc */
+/* æ°”æ³¡å¯¹è¯æ¡†c */
 #operate .delete-list-c {
     position: absolute;
     background-image: url("../images/pop-c.png"); 
@@ -520,16 +544,15 @@ body {
     background-color: #ffffff;
     margin: 0 auto;
     border-top-left-radius: 4px;
-    border-top-right-radius: 4px;
-    margin-top: 20px;
-    padding-bottom: 40px;
-    display: none;    
+    border-top-right-radius: 4px;    
+    padding-bottom: 40px;  
+    display: none;  
 }
 #operate .entity-edit-wrap.active {
 	display: block;
 }
 
-/* Ñ¡ÔñµÄÊµÌåÍ·²¿ */
+/* é€‰æ‹©çš„å®žä½“å¤´éƒ¨ */
 #operate .entity-title {
     width: 100%;
     height: 64px;
@@ -550,9 +573,14 @@ body {
     position: absolute;
     top: 0;
     bottom: 0;
-    left: 280px;
-    right: 100px;
+    left: 230px;
+    right: 200px;
     padding-top: 8px;
+    overflow: hidden;
+}
+#operate .add-tag .tag-content>ul {
+    float: left;    
+    transition: margin-left .3s linear;
 }
 #operate .add-tag .tag-content li{
     position: relative;
@@ -562,28 +590,50 @@ body {
     margin-right: 8px;
     border: 1px solid #f0f1f1;
     float: left;
-    border-radius: 4px;
+    border-radius: 4px;    
 }
-#operate .add-tag .tag-content li.icon {
+#operate .add-tag .label-bar>.icon {
+    position: absolute;
     width: 11px;
     height: 14px;
+    padding: 0;
+    border: none; 
+    display: none;    
+}
+#operate .add-tag .label-bar>.icon.active {
+    display: block;
+}
+#operate .add-tag .label-bar>.icon.icon-toleft {
+    left: 200px;
+    top: 16px;
+}
+#operate .add-tag .label-bar>.icon.icon-toright {
+    right: 170px;
+    top: 16px;
 }
 #operate .add-tag .tag-content li .icon-delete {
+    width: 16px;
+    height: 16px;
+    margin-top: 0;
     display: none;
     cursor: pointer;
 }
-#operate .add-tag .tag-content li.active {
+#operate .add-tag .edit .tag-content li {
     border-color: #1890ff;
     color: #1890ff;
 }
-#operate .add-tag .tag-content li.active .icon-delete {
+#operate .add-tag .edit .tag-content li .icon-delete {
     display: block;
 }
 #operate .entity-title .edit-input {
     font-size: 22px;    
     width: 200px;
-    margin-right: 190px;
+    margin-right: 150px;
     cursor: pointer;
+}
+#operate .entity-title .entity-only-title {
+	font-size: 22px;
+	color: #9e9e9e;
 }
 #operate .btn-wrap {
     float: right;
@@ -595,7 +645,7 @@ body {
     padding-right: 80px;   
 }
 #operate .drag-wrap .add-tag {
-    margin: 8px 0 0 40px;
+   
 }
 #operate .drag-wrap-repeat {
     padding-left: 40px;
@@ -610,9 +660,9 @@ body {
     margin-top: 8px;    
 }
 #operate .drag-wrap .edit-input {
-    font-size: 18px;
+    font-size: 16px;
 }
-/* ×éÄÚÊôÐÔ */
+/* ç»„å†…å±žæ€§ */
 #operate .attr-group-drag-wrap,
 #operate .more-attr-drag-wrap,
 #operate .attr-relative-drag-wrap {

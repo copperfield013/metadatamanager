@@ -8,27 +8,25 @@
 		
 		<div class="entity_list clear-fix">		
 			<c:forEach items="${list }" var="item">
-				<div title="code:${item.code }, 中文名称:${item.cnName },  英文名称:${item.enName }" class="entity_attr">				
+				<div title="code:${item.code }, 中文名称:${item.cnName },  英文名称:${item.enName }" 
+					 data-cnName="${item.cnName }"  
+					 data-code="${item.code }" class="entity_attr">				
 						${item.cnName }				
 				</div>
 			</c:forEach>
 		</div>
 		
-        <div class="entity-edit-wrap">
+        <div class="entity-edit-wrap edit">
             <!-- 实体标题:begin -->
-            <div class="entity-title collapse-header">
+            <div class="entity-title collapse-header" data-order="" data-id="">
                 <div class="icon-label-master">
                     <i class="icon-root icon"></i>
                     <span class="text">ABC</span>
                 </div>
-                <input name="name" type="text" class="edit-input" value="人口信息">
-                <select name="entityName" id="">
-                    <option value="人口1">人口1</option>
-                    <option value="人口2">人口2</option>
-                    <option value="人口3">人口3</option>
-                    <option value="人口4">人口4</option>
-                </select>
+                <input name="name" type="text" class="edit-input" value="">
+                <span class="entity-only-title"></span>
                 <div class="btn-wrap">
+                	<i class="icon icon-save"></i>
                     <i class="icon icon-add"></i>
                     <i class="icon icon-trash"></i>
                     <i class="icon icon-arrow"></i>

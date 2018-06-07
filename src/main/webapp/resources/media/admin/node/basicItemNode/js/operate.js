@@ -2,40 +2,26 @@
 seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF){
 	
 	var $page = $("#operate");
-	//去掉默认的contextmenu事件，否则会和右键事件同时出现。
-//    document.oncontextmenu = function(e){
-//        e.preventDefault();
-//    };
-//    document.onmousedown = function(e){
-//        if(e.button ==2){
-//            alert("你点了右键");
-//        }else if(e.button ==0){
-//            alert("你点了左键");
-//        }else if(e.button ==1){
-//            alert("你点了滚轮");
-//        }
-//    }
+
 	
 	/**
      * 获取实体信息方法 示例     
      */
-	function getEntity() {
-		$CPF.showLoading();  //必写
-		 Ajax.ajax('admin/dictionary/dictParentItem/getDictPitem', '', function(data) {			 
-			 $("#operate .entity-edit-wrap").addClass("active");
-			//操作,渲染实体
-			 
-			 $CPF.closeLoading(); //必写
-		 });
+	function getEntity(entity) {		
+		var cnName = $(entity).attr("data-cnname");		
+		$("#operate .entity-title>.edit-input").val(cnName);
+		$("#operate .entity-title>.entity-only-title").html(cnName);
+		$("#operate .entity-edit-wrap").addClass("active");
 	}
-		
+	
     /**
      * 跟实体添加页面弹出方法
      * @param {当前点击元素,dom对象} el 
      */
     function pop(el) {
         var addTagLength = $(el).closest(".collapse-header")
-            .next(".add-tag").length;
+            .siblings(".collapse-content")
+            .children(".add-tag").length;
         var relativeLength = $(el).closest(".collapse-header")
             .siblings(".collapse-content")
             .children(".attr-relative").length;
@@ -84,14 +70,14 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
         var wrap = $("#operate");
         var offsetx = $(el).offset().left;
         var offsety = $(el).offset().top;
-        var top = offsety + 10;
-        var left = offsetx - 90;       
+        var wrapOffsetx = wrap.offset().left;
+        var wrapOffsety = wrap.offset().top;
+        var top = offsety - wrapOffsety + 30;
+        var left = offsetx -wrapOffsetx - 90;
         var popHtml = $(html).appendTo(wrap);
-        var wrapTop = wrap.offset().top;
-        var wrapLeft = wrap.offset().left;
         popHtml.css({
-            "top": top - wrapTop + 20,
-            "left": left - wrapLeft
+            "top": top,
+            "left": left
         });
 
     };
@@ -124,14 +110,14 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
         var wrap = $("#operate");
         var offsetx = $(el).offset().left;
         var offsety = $(el).offset().top;
-        var top = offsety + 10;
-        var left = offsetx - 90;
+        var wrapOffsetx = wrap.offset().left;
+        var wrapOffsety = wrap.offset().top;
+        var top = offsety - wrapOffsety + 30;
+        var left = offsetx - wrapOffsetx - 90;
         var popHtml = $(html).appendTo(wrap);
-        var wrapTop = wrap.offset().top;
-        var wrapLeft = wrap.offset().left;
         popHtml.css({
-            "top": top - wrapTop + 20,
-            "left": left - wrapLeft
+            "top": top,
+            "left": left
         });
     };
 
@@ -139,76 +125,85 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
      * 添加标签页面弹出方法
     */
     function popTag(el) {
-        var html = "<ul class='tag-card'>"+
-            "<li class='tag-card-list'>" +
-            "<span class='tag-checkbox'>" +
-            "<input type='checkbox' class='tag-checkbox-input' value='1'>" +
-            "<span class='tag-checkbox-inner'></span>" +
-            "</span>" +
-            "<span class='text'>标签一</span>" +
-            "</li>" +
-            "<li class='tag-card-list'>" +
-            "<span class='tag-checkbox'>" +
-            "<input type='checkbox' class='tag-checkbox-input' value='2'>" +
-            "<span class='tag-checkbox-inner'></span>" +
-            "</span>" +
-            "<span class='text'>标签2</span>" +
-            "</li>" +
-            "<li class='tag-card-list'>" +
-            "<span class='tag-checkbox'>" +
-            "<input type='checkbox' class='tag-checkbox-input' value='3'>" +
-            "<span class='tag-checkbox-inner'></span>" +
-            "</span>" +
-            "<span class='text'>标签3</span>" +
-            "</li>" +
-            "<li class='tag-card-list'>" +
-            "<span class='tag-checkbox'>" +
-            "<input type='checkbox' class='tag-checkbox-input' value='4'>" +
-            "<span class='tag-checkbox-inner'></span>" +
-            "</span>" +
-            "<span class='text'>标签4</span>" +
-            "</li>"+
-            "</ul>"
-
-        var wrap = $("#operate");
-        var offsetx = $(el).offset().left;
-        var offsety = $(el).offset().top;
-        var top = offsety + 10;
-        var left = offsetx - 90;
-        var popHtml = $(html).appendTo(wrap);
-        var wrapTop = wrap.offset().top;
-        var wrapLeft = wrap.offset().left;
-        popHtml.css({
-            "top": top - wrapTop + 20,
-            "left": left - wrapLeft
-        });
+        var $tag = $(el).closest(".label-bar.tag")
+            .find(".tag-content").find("li:not(.icon)");
+        var hasArray = [];
+        for (var i = 0; i < $tag.length; i++) {
+            hasArray.push($($tag[i]).children("span").text());
+        };        
+        $CPF.showLoading();
+		Ajax.ajax('admin/node/basicItemNode/getCommLab', '', function(data) {
+			var data = data.commLab;
+			var html = "<ul class='tag-card'>";
+			var has; //判断是否已经选中
+			for(var i=0; i<data.length; i++) {
+				has = false; //每次都重置
+				for(var j=0; j<hasArray.length; j++) {
+					if(hasArray[j] == data[i].name) {
+						has = true;
+						break;
+					}
+				};
+				if(has) {
+					 html += "<li class='tag-card-list'>" +
+			            "<span class='tag-checkbox tag-checkbox-checked'>" +
+			            "<input data-id='"+data[i].id+"' type='checkbox' class='tag-checkbox-input' value='"+data[i].name+"'>" +
+			            "<span class='tag-checkbox-inner'></span>" +
+			            "</span>" +
+			            "<span>"+data[i].name+"</span>" +
+			            "</li>" 
+				}else {
+					 html += "<li class='tag-card-list'>" +
+			            "<span class='tag-checkbox'>" +
+			            "<input data-id='"+data[i].id+"' type='checkbox' class='tag-checkbox-input' value='"+data[i].name+"'>" +
+			            "<span class='tag-checkbox-inner'></span>" +
+			            "</span>" +
+			            "<span>"+data[i].name+"</span>" +
+			            "</li>" 
+				}				
+			};
+			html += "</ul>"
+			var wrap = $("#operate");
+		    var offsetx = $(el).offset().left;
+		    var offsety = $(el).offset().top;
+		    var wrapOffsetx = wrap.offset().left;
+		    var wrapOffsety = wrap.offset().top;
+		    var top = offsety - wrapOffsety + 25;
+		    var left = offsetx - wrapOffsetx - 90;
+		    var popHtml = $(html).appendTo(wrap);
+		    popHtml.css({
+		        "top": top,
+		        "left": left
+		     });
+		    $CPF.closeLoading();
+	    });		                
     };
 
     /**
      * 删除属性标签页弹出方法
       */
     function popAttr(el) {
-        var html = "<div class='delete-list'>"+
-                        "<p>"+
-                            "<i class='icon icon-mark'></i><span class='text'>确定要删除此条数据?</span>"+
-                        "</p>"+
-                        "<div class='delete-list-btn'>"+
-                            "<span class='opera cancel'>取消</span>"+
-                            "<span class='opera confirm'>确认</span>"+
-                        "</div>"+
-                    "</div>"
+        var html = "<div class='delete-list'>" +
+            "<p>" +
+            "<i class='icon icon-mark'></i><span class='text'>确定要删除此条数据?</span>" +
+            "</p>" +
+            "<div class='delete-list-btn'>" +
+            "<span class='opera cancel'>取消</span>" +
+            "<span class='opera confirm'>确认</span>" +
+            "</div>" +
+            "</div>"
 
         var wrap = $("#operate");
         var offsetx = $(el).offset().left;
         var offsety = $(el).offset().top;
-        var top = offsety - 144;
-        var left = offsetx - 121;
+        var wrapOffsetx = wrap.offset().left;
+        var wrapOffsety = wrap.offset().top;
+        var top = offsety - wrapOffsety - 114;
+        var left = offsetx - wrapOffsetx - 121;
         var popHtml = $(html).appendTo(wrap);
-        var wrapTop = wrap.offset().top;
-        var wrapLeft = wrap.offset().left;
         popHtml.css({
-            "top": top - wrapTop + 20,
-            "left": left - wrapLeft
+            "top": top,
+            "left": left
         });
     }
 
@@ -216,28 +211,28 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
      * 删除组别标签页弹出方法
       */
     function popGroupAttr(el) {
-        var html = "<div class='delete-list-c'>"+
-                        "<p>"+
-                            "<i class='icon icon-mark'></i><span class='text'>确定同时删除组和组内内容?</span>"+                
-                        "</p>"+
-                        "<div class='delete-list-btn'>"+
-                            "<span class='opera cancel'>取消</span>"+
-                            "<span class='opera confirm'>确认</span>"+
-                            "<span class='opera only-group'>仅删除组</span>"+
-                        "</div>"+
-                    "</div>"
+        var html = "<div class='delete-list-c'>" +
+            "<p>" +
+            "<i class='icon icon-mark'></i><span class='text'>确定同时删除组和组内内容?</span>" +
+            "</p>" +
+            "<div class='delete-list-btn'>" +
+            "<span class='opera cancel'>取消</span>" +
+            "<span class='opera confirm'>确认</span>" +
+            "<span class='opera only-group'>仅删除组</span>" +
+            "</div>" +
+            "</div>"
 
         var wrap = $("#operate");
         var offsetx = $(el).offset().left;
         var offsety = $(el).offset().top;
-        var top = offsety - 154;
-        var left = offsetx - 121;
+        var wrapOffsetx = wrap.offset().left;
+        var wrapOffsety = wrap.offset().top;
+        var top = offsety - wrapOffsety - 124;
+        var left = offsetx - wrapOffsetx - 121;
         var popHtml = $(html).appendTo(wrap);
-        var wrapTop = wrap.offset().top;
-        var wrapLeft = wrap.offset().left;
         popHtml.css({
-            "top": top - wrapTop + 20,
-            "left": left - wrapLeft
+            "top": top,
+            "left": left
         });
     }
 
@@ -246,38 +241,102 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
      * remove 添加页方法
       */
     function removePop() {
-        $(".card", $page).remove();
-        $(".tag-card", $page).remove();
-        $(".delete-list", $page).remove();
-        $(".delete-list-c", $page).remove();
-        $(".icon-add", $page).removeClass("active");
-        $(".icon-add-tag", $page).removeClass("active");
-        $(".icon-trash", $page).removeClass("active");
-        $(".icon-trash-sm", $page).removeClass("active");
+        $(".card").remove();
+        $(".tag-card").remove();
+        $(".delete-list").remove();
+        $(".delete-list-c").remove();
+        $(".icon-add").removeClass("active");
+        $(".icon-add-tag").removeClass("active");
+        $(".icon-trash").removeClass("active");
+        $(".icon-trash-sm").removeClass("active");
 
     };
 
+    //标签页标签ul长度设置
+    function menuWidth(ul) {
+        var menuW = 0;
+        var $li = $(ul).children("li");
+        for (var i = 0; i < $li.length; i++) {
+            menuW += parseFloat($($li[i]).css("width")) + 8;
+        }
+        if(menuW == 0){
+        	menuW = "auto"
+        }
+        $(ul).width(menuW);
+    }
+
+    //标签删除的方法
+    function tagRemoveTag(el, text) {
+        var $tagUl = $(el).closest(".label-bar.tag")
+            .find(".tag-content")
+            .children("ul");
+        var $li = $tagUl.children("li");
+        for (var i = 0; i < $li.length; i++) {
+            if ($($li[i]).children("span").text() == text) {
+                $($li[i]).remove();
+                menuWidth($tagUl[0]);
+                return;
+            }
+        }
+    }
+
+    //标签添加上去的方法
+    function tagAddTag(el, text, id) {
+        var $tagUl = $(el).closest(".label-bar.tag")
+            .find(".tag-content")
+            .children("ul");
+        var html = "<li data-id='" + id + "' data-text='" + text + "'>" +
+            "<span>" + text + "</span>" +
+            "<i class='icon icon-delete'></i>" +
+            "</li>"
+        $tagUl.append(html);
+        menuWidth($tagUl[0]);
+    }
+
+    //标签两边箭头的展现和隐藏
+    function judegArrow(ul) {
+        var ulWidth = parseFloat($(ul).width());
+        var wrapWidth = parseFloat($(ul).parent(".tag-content").width());
+        if (ulWidth > wrapWidth) {
+            $(ul).closest(".label-bar.tag").find(".icon-toleft")
+                .addClass("active");
+            $(ul).closest(".label-bar.tag").find(".icon-toright")
+                .addClass("active");
+        } else {
+            $(ul).closest(".label-bar.tag").find(".icon-toleft")
+                .removeClass("active");
+            $(ul).closest(".label-bar.tag").find(".icon-toright")
+                .removeClass("active");
+        }
+    }
 
     /**
      * 添加标签方法
      * @param {当前点击元素对应的加号} el
       */
-    function addTag(el) {        
-        var $header = $(el).closest(".collapse-header");
-        var tagHtml = "<div class='add-tag no-dragger clear-fix'>" +
+    function addTag(el) {
+        var $content = $(el).closest(".collapse-header").siblings(".collapse-content");
+        var tagHtml = "<li class='add-tag clear-fix'>" +
             "<div class='icon-label tag'>" +
             "<i class='icon icon-tag'></i>" +
             "<span class='text'>标签</span>" +
             "</div>" +
-            "<div class='label-bar tag'>" +
-            "<input type='text' readonly class='edit-input' value='标签名称'>" +
+            "<div class='label-bar tag edit' data-order='' data-id=''>" +
+            "<input type='text' class='edit-input' value='标签名称'>" +
+            "<span class='icon icon-toleft'></span>" +
+            "<div class='tag-content'>" +
+            "<ul class='clear-fix'>" +
+            "</ul>" +
+            "</div>" +
+            "<span class='icon icon-toright ban'></span>" +
             "<div class='btn-wrap'>" +
+            "<i class='icon tag icon-save'></i>" +
             "<i class='icon tag icon-add-tag'></i>" +
             "<i class='icon-simulate-trashsm'></i>" +
             "</div>" +
             "</div>" +
-            "</div>"            
-        $header.after(tagHtml);
+            "</li>"
+        $content.prepend(tagHtml);
     };
 
     /**
@@ -285,36 +344,51 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
       */
     function addAttr(el) {
         var $content = $(el).closest(".collapse-header").siblings(".collapse-content");
-        var attrHtml = "<li class='add-attr clear-fix'>" +
-            "<div class='icon-label attr'>" +
+        var entityId = $(".entity_attr", $page).attr("data-code");
+        $CPF.showLoading();
+		Ajax.ajax('admin/node/basicItemNode/getComm?entityId', {
+			entityId: entityId
+		}, function(data) {			
+			var data = data.comm;
+			var attrHtml = "<li class='add-attr clear-fix'>" +
+            "<div class='icon-label attr' data-order='' data-id=''>" +
             "<i class='icon icon-attr'></i>" +
             "<span class='text'>属性</span>" +
             "</div>" +
-            "<div class='label-bar attr'>" +
+            "<div class='label-bar attr edit' data-order='' data-id=''>" +
             "<input type='text' class='edit-input' value='属性名'>" +
-            "<select name='' id=''>" +
-            "<option value='孩子5'>孩子5</option>" +
-            "<option value='孩子4'>孩子4</option>" +
-            "<option value='孩子3'>孩子3</option>" +
-            "<option value='孩子2'>孩子2</option>" +
-            "</select>" +
-            "<select name='' id=''>" +
-            "<option value='string'>string</option>" +
-            "<option value='number'>number</option>" +
-            "<option value='enum'>enum</option>" +
-            "</select>" +
-            "<select name='' id=''>" +
-            "<option value='读'>读</option>" +
-            "<option value='写'>写</option>" +
-            "</select>" +
-            "<div class='btn-wrap'>" +
-            "<i class='icon icon-save'></i>" +
-            "<i class='icon icon-trash-sm'></i>" +
-            "<i class='icon-simulate-trashsm'></i>" +
-            "</div>" +
-            "</div>" +
-            "</li>"
-        $content.prepend(attrHtml);
+            "<select class='abc-attr'>"            
+            for(var i=0; i<data.length; i++) {
+            	attrHtml += "<option data-id='"+data[i][0]+"' value='"+data[i][1]+"'>"+data[i][1]+"</option>";                
+            }
+			attrHtml += "</select>";
+			attrHtml += "<select class='data-type'>";            
+		    Ajax.ajax('admin/node/basicItemNode/getDataType', '', function(data){		    	
+		    	var data = data.dataType;
+		    	for(var i=0; i<data.length; i++) {
+	            	attrHtml += "<option value='"+data[i]+"'>"+data[i]+"</option>";          
+	            };
+	            attrHtml += "</select>";
+				attrHtml += "<select class='node-ops-type'>";
+				Ajax.ajax('admin/node/basicItemNode/getNodeOpsType', '', function(data){		    	
+			    	var data = data.nodeOpsType;
+			    	for(var i=0; i<data.length; i++) {
+		            	attrHtml += "<option value='"+data[i]+"'>"+data[i]+"</option>";          
+		            };
+		            attrHtml += "</select>";
+		            attrHtml += "<div class='btn-wrap'>" +
+		            "<i class='icon icon-save'></i>" +
+		            "<i class='icon icon-trash-sm'></i>" +
+		            "<i class='icon-simulate-trashsm'></i>" +
+		            "</div>" +
+		            "</div>" +
+		            "</li>";
+		            $content.prepend(attrHtml);
+		            $CPF.closeLoading();
+			    })
+			    
+		    })
+	    });		                      
     };
 
     /**
@@ -323,12 +397,12 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
     function addGroup(el) {
         var $content = $(el).closest(".collapse-header").siblings(".collapse-content");
         var attrGroupHtml = "<li class='attr-group'>" +
-            "<div class='attr-group-title collapse-header'>" +
+            "<div class='attr-group-title collapse-header' data-order='' data-id=''>" +
             "<div class='icon-label attr-group'>" +
             "<i class='icon icon-attr-group'></i>" +
             "<span class='text'>属性组</span>" +
             "</div>" +
-            "<div class='label-bar attr-group'>" +
+            "<div class='label-bar attr-group edit'>" +
             "<input type='text' class='edit-input' value='属性组名称'>" +
             "<div class='btn-wrap'>" +
             "<i class='icon icon-save'></i>" +
@@ -351,11 +425,11 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
         var $content = $(el).closest(".collapse-header").siblings(".collapse-content");
         var moreAttrHtml = "<li class='more-attr'>" +
             "<div class='more-attr-title collapse-header'>" +
-            "<div class='icon-label more-attr'>" +
+            "<div class='icon-label more-attr' data-order='' data-id=''>" +
             "<i class='icon icon-more-attr'></i>" +
             "<span class='text'>多值属性</span>" +
             "</div>" +
-            "<div class='label-bar more-attr'>" +
+            "<div class='label-bar more-attr edit'>" +
             "<input type='text' class='edit-input' value='多值属性名称'>" +
             "<select name='' id=''>" +
             "<option value='孩子5'>孩子5</option>" +
@@ -393,10 +467,10 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
         var $content = $(el).closest(".collapse-header").siblings(".collapse-content");
         var relativeHtml = "<li class='attr-relative'>" +
             "<div class='attr-relative-title collapse-header'>" +
-            "<div class='icon-label attr-relative'>" +
+            "<div class='icon-label attr-relative' data-order='' data-id=''>" +
             "<i class='icon icon-attr-relative'></i><span class='text'>关系</span>" +
             "</div>" +
-            "<div class='label-bar attr-relative'>" +
+            "<div class='label-bar attr-relative edit'>" +
             "<input type='text' class='edit-input' value='关系名称'>" +
             "<select name='entityName' id=''>" +
             "<option value='人口1'>人口1</option>" +
@@ -410,28 +484,28 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
             "<i class='icon icon-arrow-sm'></i>" +
             "</div>" +
             "</div>" +
-            "</div>" +
-            "<div class='add-tag no-dragger clear-fix'>" +
+            "</div>" +            
+            "<ul class='attr-relative-drag-wrap collapse-content collapse-content-active'>" +
+            "<li class='add-tag clear-fix'>" +
             "<div class='icon-label tag'>" +
             "<i class='icon icon-tag'></i>" +
             "<span class='text'>标签</span>" +
             "</div>" +
             "<div class='label-bar tag'>" +
-            "<input type='text' readonly class='edit-input' value='标签名称'>" +
+            "<input type='text' class='edit-input' value='标签名称'>" +
             "<div class='btn-wrap'>" +
             "<i class='icon tag icon-add-tag'></i>" +
             "<i class='icon-simulate-trashsm'></i>" +
             "</div>" +
             "</div>" +
-            "</div>" +
-            "<ul class='attr-relative-drag-wrap collapse-content collapse-content-active'>" +
+            "</li>" +
             "<li class='entity-ch-wrap'>" +
             "<div class='attr-abc-title collapse-header'>" +
             "<div class='icon-label abc'>" +
             "<i class='icon icon-abc'></i><span class='text'>abc</span>" +
             "</div>" +
             "<div class='label-bar abc'>" +
-            "<input type='text' class='edit-input' value='abc'>" +           
+            "<input type='text' class='edit-input' value='abc'>" +
             "<div class='btn-wrap'>" +
             "<i class='icon icon-add-abc'></i>" +
             "<i class='icon icon-trash-sm'></i>" +
@@ -452,8 +526,8 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
         var $content = $(el).closest(".label-bar").parent("li");
         $content.remove();
         removePop();
-    }  
-    
+    }
+
     //删除整体数据确认方法
     function confirmDeleteAll(el) {
         var $content = $(el).closest(".collapse-header").parent("li");
@@ -462,7 +536,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
     }
 
     //仅删除组确认方法
-    function confirmDeleteOnly(el) {        
+    function confirmDeleteOnly(el) {
         var html = $(el).closest(".collapse-header").siblings(".collapse-content").html();
         var $group = $(el).closest(".collapse-header").parent("li");
         $group.after(html);
@@ -471,26 +545,187 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 
     }
 
-    $(document).on("click", function () {
-        removePop();                
-    });
+    //提醒有未保存的节点
+    function judgeSave() {
+        var editBar = $("#operate").find(".label-bar.edit");
+        var editEntity = $("#operate").find(".entity-edit-wrap.edit");
+        if(editBar.length > 0 || editEntity.length > 0) {
+            alert("请先保存正在编辑的节点");
+            return true;
+        }
+    }
+    
+    //根实体保存修改方法
+    function entitySave(el) {    	
+    	var $entityTitle = $(el).closest(".entity-title");    	
+    	var type = 1;
+    	var name = $entityTitle.children(".edit-input").val();
+    	var abcattr = $(".entity_attr.active", $page).attr("data-cnName");
+    	var abcattr_code = $(".entity_attr.active", $page).attr("data-code");
+    	var order = $entityTitle.attr("data-order");
+    	var id = $entityTitle.attr("data-id")
+    	var dataType = "STRING";
+    	var opt = 2; 
+    	$CPF.showLoading();
+		Ajax.ajax(' admin/node/basicItemNode/saveOrUpdate', {
+			 type: type,
+			 name: name,
+			 abcattr: abcattr,
+			 abcattr_code: abcattr_code,
+			 dataType: dataType,
+			 opt: 2,
+			 order: order
+		 }, function(data) {
+			 var data = data.node;
+			 //设置跟实体的order和id
+			 var order = data.order;
+			 var id = data.id;
+			 $entityTitle.attr("data-order",order)
+			 	.attr("data-id", id);
+			 $CPF.closeLoading();
+	    });
+    }
+    
+    //标签保存修改方法
+    function tagSave(el) {
+    	var $tagBar = $(el).closest(".label-bar");
+    	var type = 3;
+    	var dataType = "STRING";
+    	var opt = 2;
+    	var name = $tagBar.children(".edit-input").val();    	
+    	var order = $tagBar.attr("data-order");
+    	var id = $tagBar.attr("data-id");
+    	var parentId = $tagBar.closest(".collapse-content").prev(".collapse-header")
+    						.attr("data-id"); 
+    	var abcattr = [];
+    	var abcattr_code = [];
+    	var $tags = $tagBar.find(".tag-content").children("ul").children("li");
+    	for(var i=0; i<$tags.length; i++) {
+    		abcattr_code.push($($tags[i]).attr("data-id"));
+    		abcattr.push($($tags[i]).attr("data-text"));
+    	}
+    	abcattr = abcattr.join(",");
+    	abcattr_code = abcattr_code.join(",");
+    	$CPF.showLoading();
+    	Ajax.ajax(' admin/node/basicItemNode/saveOrUpdate', {
+			 type: type,
+			 name: name,
+			 abcattr: abcattr,
+			 abcattr_code: abcattr_code,
+			 dataType: dataType,
+			 opt: 2,
+			 order: order,
+			 parentId: parentId,
+			 id: id
+		 }, function(data) {
+			 var data = data.node;
+			 //设置当前节点order和id
+			 var order = data.order;
+			 var id = data.id;
+			 $tagBar.attr("data-order",order)
+			 	.attr("data-id", id);
+			 $CPF.closeLoading();
+		});
+    };
+    
+    //属性保存修改方法
+    function attrSave(el) {
+    	var $attrBar = $(el).closest(".label-bar");
+    	var type = 2;
+    	var dataType = $attrBar.children(".data-type").find("option:selected").val();
+    	var opt = $attrBar.children(".node-ops-type").find("option:selected").val();
+    	var name = $attrBar.children(".edit-input").val();    	
+    	var order = $attrBar.attr("data-order");
+    	var id = $attrBar.attr("data-id");
+    	var parentId = $attrBar.closest(".collapse-content").prev(".collapse-header")
+    						.attr("data-id"); 
+    	var abcattr = $attrBar.children(".abc-attr").find("option:selected").val();
+    	var abcattr_code = $attrBar.children(".abc-attr").find("option:selected").attr("data-id");
+    	
+//    	switch (opt) {
+//	        case "读":
+//	            opt = 1;
+//	            break;
+//	        case "写":
+//	            opt = 2;
+//	            break;
+//	        case "补":
+//	            opt = 3;
+//	            break;
+//	        case "增":
+//	            opt = 4;
+//	            break;
+//	        case "并":
+//	            opt = 5;
+//	            break;
+//	        default:
+//	            break;
+//	    }    	
+    	
+    	$CPF.showLoading();
+    	Ajax.ajax('admin/node/basicItemNode/saveOrUpdate', {
+			 type: type,
+			 name: name,
+			 abcattr: abcattr,
+			 abcattr_code: abcattr_code,
+			 dataType: dataType,
+			 opt: opt,
+			 order: order,
+			 parentId: parentId,
+			 id: id
+		 }, function(data) {
+			 var data = data.node;
+			 //设置当前节点order和id
+			 var order = data.order;
+			 var id = data.id;
+			 $attrBar.attr("data-order",order)
+			 	.attr("data-id", id);
+			 $CPF.closeLoading();
+		});
+    }
+    
+    //属性组保存修改方法
+    function attrGroupSave(el) {
+    	var $attrGroupBar = $(el).closest(".label-bar");
+    	var type = 6;    	
+    	var name = $attrGroupBar.children(".edit-input").val();    	
+    	var order = $attrGroupBar.closest(".collapse-header").attr("data-order");
+    	var id = $attrGroupBar.closest(".collapse-header").attr("data-id");
+    	var parentId = $attrGroupBar.closest(".collapse-content").prev(".collapse-header")
+    						.attr("data-id"); 
+    	        	
+    	$CPF.showLoading();
+    	Ajax.ajax('admin/node/basicItemNode/saveOrUpdate', {
+			 type: type,
+			 name: name,			
+			 order: order,
+			 parentId: parentId,
+			 dataType: "STRING",
+			 abcattr: name,			 
+			 opt: 2,
+			 id: id
+		 }, function(data) {
+			 var data = data.node;
+			 //设置当前节点order和id
+			 var order = data.order;
+			 var id = data.id;
+			 $attrGroupBar.closest(".collapse-header")
+			 	.attr("data-order",order)
+			 	.attr("data-id", id);
+			 $CPF.closeLoading();
+		});
+    }
+    
 
-    //input事件绑定
-    $(".edit-input", $page).on("blur", function () {
-        //传输给后台                  
+    $page.on("click", function () {    	
+        removePop();
     });
     
-    //实体选择点击事件绑定
-    $("#operate").on("click", ".entity_attr", function() {
-    	var $attrArray = $(".entity_attr",$page);
-    	for(var i=0; i<$attrArray.length; i++) {
-    		if($($attrArray[i]).hasClass("active")) { //已经有选择过的了 就不能再点击选择了
-    			return;
-    		}
-    	}    	
-    	$(this).addClass("active");    		
-    	getEntity();
-    })
+
+    //input事件绑定
+    $(".edit-input").on("blur", function () {
+        //传输给后台                  
+    });
 
     //收缩事件绑定
     $("#operate").on("click", ".icon-arrow, .icon-arrow-sm, .icon-label", function () {
@@ -508,9 +743,13 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
         }
     })
 
-    //根实体添加事件绑定
+    //跟实体添加事件绑定
     $("#operate").on("click", ".icon-add, .icon-add-abc", function (e) {
         e.stopPropagation();
+        var hasSave = judgeSave();
+        if(hasSave){
+            return;
+        }
         removePop();
         pop(this);
         $(this).addClass("active")
@@ -519,14 +758,19 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
     //属性组 多值属性 添加事件绑定
     $("#operate").on("click", ".icon-add-sm", function (e) {
         e.stopPropagation();
-        removePop();        
+        var hasSave = judgeSave();
+        if(hasSave){
+            return;
+        }
+        removePop();
         popsm(this);
         $(this).addClass("active")
     });
 
     //标签添加
     $("#operate").on("click", ".icon-add-tag", function (e) {
-        e.stopPropagation();        
+        e.stopPropagation();
+        $(this).closest(".label-bar.tag").addClass("edit");
         removePop();
         popTag(this);
         $(this).addClass("active");
@@ -534,15 +778,15 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 
 
     //删除属性事件绑定
-    $("#operate").on("click", ".icon-trash, .icon-trash-sm", function(e) {
+    $("#operate").on("click", ".icon-trash, .icon-trash-sm", function (e) {
         e.stopPropagation();
         removePop();
         var $header = $(this).closest(".attr-group");
-        if($header.length > 0) { //delete-list-c
+        if ($header.length > 0) { //delete-list-c
             popGroupAttr(this);
-        }else { //delete-list
+        } else { //delete-list
             popAttr(this);
-        }        
+        }
         $(this).addClass("active")
     })
 
@@ -553,7 +797,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
             var el = $("#operate").find(".icon-add.active")[0];
         } else if ($("#operate").find(".icon-add-sm.active").length > 0) {
             var el = $("#operate").find(".icon-add-sm.active")[0];
-        } else if($("#operate").find(".icon-add-abc.active").length > 0) {
+        } else if ($("#operate").find(".icon-add-abc.active").length > 0) {
             var el = $("#operate").find(".icon-add-abc.active")[0];
         }
         if ($(this).hasClass("add-tag")) {
@@ -574,38 +818,127 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
     //添加标签弹出页中的事件绑定
     $("#operate").on("click", ".tag-checkbox-input", function (e) {
         e.stopPropagation();
+        var el = $("#operate").find(".icon-add-tag.active")[0];
+        var text = $(this).val();
+        var id = $(this).attr("data-id");
+        var ul = $(el).closest(".label-bar.tag").find("ul");
         var $parent = $(this).parent(".tag-checkbox");
         if ($parent.hasClass("tag-checkbox-checked")) {
             $parent.removeClass("tag-checkbox-checked");
+            tagRemoveTag(el, text);
         } else {
             $parent.addClass("tag-checkbox-checked");
-        }
+            tagAddTag(el, text, id);
+        };
+        judegArrow(ul)
     });
+
+    //标签向左移动事件绑定
+    $("#operate").on("click", ".icon-toleft", function () {
+        if ($(this).hasClass("ban")) {
+            return;
+        }
+        var $ul = $(this).next(".tag-content").children("ul");
+        var marginLeft = parseFloat($ul.css("marginLeft"));
+        var ulWidth = parseFloat($ul.css("width"));
+        var wrapWidth = parseFloat($ul.parent(".tag-content").css("width"));
+        $("#operate").find(".icon-toright").removeClass("ban");
+        if (ulWidth - wrapWidth + marginLeft < 80) {
+            marginLeft = wrapWidth - ulWidth;
+            $(this).addClass("ban");
+        } else {
+            marginLeft = marginLeft - 80;
+        }
+        $ul.css("marginLeft", marginLeft);
+    })
+
+    //标签向右移动事件绑定
+    $("#operate").on("click", ".icon-toright", function () {
+        if ($(this).hasClass("ban")) {
+            return;
+        }
+        var $ul = $(this).prev(".tag-content").children("ul");
+        var marginLeft = parseFloat($ul.css("marginLeft"));
+        $("#operate").find(".icon-toleft").removeClass("ban");
+        if (marginLeft > -80) {
+            marginLeft = 0;
+            $(this).addClass("ban");
+        } else {
+            marginLeft = marginLeft + 80;
+        }
+        $ul.css("marginLeft", marginLeft);
+    })
+    
+    //标签删除图标点击事件绑定
+    $("#operate").on("click", ".tag-content .icon-delete", function(){
+    	$(this).parent("li").remove();
+    })
 
     //删除数据弹出页中的事件绑定
     $("#operate").on("click", ".delete-list .opera, .delete-list-c .opera", function (e) {
-        e.stopPropagation();   
+        e.stopPropagation();
         if ($("#operate").find(".icon-trash-sm.active").length > 0) {
             var el = $("#operate").find(".icon-trash-sm.active")[0];
         } else if ($("#operate").find(".con-trash.active").length > 0) {
             var el = $("#operate").find(".icon-trash.active")[0];
-        } 
-        if($(this).hasClass("cancel")) {
+        }
+        if ($(this).hasClass("cancel")) {
             removePop();
-        }else if($(this).hasClass("confirm")) {
+        } else if ($(this).hasClass("confirm")) {
             var $header = $(el).closest(".collapse-header");
-            if($header.length > 0 ) {
+            if ($header.length > 0) {
                 confirmDeleteAll(el);
-            }else {
+            } else {
                 confirmDeleteSingle(el);
-            }      
-        }else if($(this).hasClass("only-group")) {                       
+            }
+        } else if ($(this).hasClass("only-group")) {
             confirmDeleteOnly(el);
-        }else {
+        } else {
             removePop();
         }
 
     })
+
+    //双击编辑
+    $("#operate").on("dblclick", ".label-bar", function(){
+        $(this).addClass("edit");
+    })
+
+    //保存
+    $("#operate").on("click", ".icon-save", function() {
+        $(this).closest(".label-bar").removeClass("edit");
+        $(this).closest(".entity-edit-wrap").removeClass("edit");
+        var entityTitle = $(this).closest(".entity-title");
+        var labelBar = $(this).closest(".label-bar");
+        if(entityTitle.length > 0) {
+        	entitySave(this);
+        	return;
+        }
+        if(labelBar.hasClass("tag")) {        	
+        	tagSave(this);
+        }else if(labelBar.hasClass("attr")) {
+        	attrSave(this);
+        }else if(labelBar.hasClass("more-attr")) {
+        	console.log("more-attr");
+        }else if(labelBar.hasClass("attr-group")) {
+        	attrGroupSave(this);
+        }else if(labelBar.hasClass("attr-relative")) {
+        	console.log("attr-relative");
+        }
+    })
+    
+    //实体选择点击事件绑定
+    $("#operate").on("click", ".entity_attr", function() {
+    	var $attrArray = $(".entity_attr",$page);
+    	for(var i=0; i<$attrArray.length; i++) {
+    		if($($attrArray[i]).hasClass("active")) { //已经有选择过的了 就不能再点击选择了
+    			return;
+    		}
+    	}    	
+    	$(this).addClass("active");    		
+    	getEntity(this);
+    })
+
 
 
     var dragWrap1 = document.getElementById("drag-1");
@@ -626,5 +959,10 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 
         }
     });
+
+    
+    
+
+    
 
 })

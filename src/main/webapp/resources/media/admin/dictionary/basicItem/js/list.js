@@ -1,4 +1,5 @@
 seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
+	var $page = $("#entity-wrap");
 	//验证 不能为空
 	function notNull(data) {
     	var reg = /^\s*$/g;
@@ -150,7 +151,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
 	 
 	 
     //创建表
-   $("#createTab").click(function() {
+   $("#createTab", $page).click(function() {
     	Dialog.confirm("点击是， 则生成数据库表，字段", function(isYes) {
     		if (isYes) {
     			$CPF.showLoading();
@@ -163,7 +164,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
     });
    
    //删除实体 
-   $(".entity-list").on("click", ".delete_entity", function() {
+   $(".entity-list", $page).on("click", ".delete_entity", function() {
 	   var entityid = $(this).parent().parent().attr("entityId");
 	   Dialog.confirm("删除可能会引起数据错误， 是否确认删除", function(isYes) {
 	   		if (isYes) {
@@ -177,7 +178,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
    });
    
    //删除属性
-   $(".entity-list").on("click", ".delete_attr", function() {
+   $(".entity-list", $page).on("click", ".delete_attr", function() {
 	   var entityid = $(this).parent().parent().attr("entityId");
 	   
 	   var patentId = $(this).attr("patentId");
@@ -194,7 +195,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
    });
    
    //删除关系
-   $(".entity-list").on("click", ".delete_rela", function() {
+   $(".entity-list", $page).on("click", ".delete_rela", function() {
 	   var typeCode = $(this).parent().parent().attr("typeCode");
 	   
 	   var patentId = $(this).attr("patentId");
@@ -211,7 +212,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
    });
    
     //点击 添加实体 显示div
-    $("#add_entity").click(function() {
+    $("#add_entity", $page).click(function() {
     	$("#entity_opera_form1").find("#code").val("");
     	$("#entity_opera_form1").find("#cnName").val("");
     	$("#entity_opera_form1").find("#enName").val("");
@@ -223,7 +224,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
         $(".opera_entity").show();
     });
     //点击 添加分组 显示div
-    $("#add_group").click(function() {
+    $("#add_group", $page).click(function() {
     	$opera = $(this).closest('.entity_ch_head').siblings('.opera_group');
     	$opera.find("#add_group_mes").html("");
     	$opera.find("#add_group_mes").html("添加分组信息");
@@ -231,7 +232,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
     	$opera.show();
     });
     //点击 添加 多值属性 自身显示div
-    $("#add_more").click(function() {
+    $("#add_more", $page).click(function() {
     	$opera = $(this).closest('.entity_ch_head').siblings('.opera_more');
     	$opera.find("#add_more_mes").html("");
     	$opera.find("#add_more_mes").html("添加多值属性信息");
@@ -245,7 +246,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
     });
     
     //选中数据类型为  枚举   触发事件   普通属性
-    $(".common_proper").on("change", ".enum_dataType_one", function() {
+    $(".common_proper", $page).on("change", ".enum_dataType_one", function() {
     	var $this = $(this);
     	var options=$(".enum_dataType_one option:selected");  //获取选中的项
     	var $form = $this.closest(".opera_comm").find("#comm_opera_form1");
@@ -307,7 +308,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
     });
     
   //选中数据类型为  枚举   触发事件
-    $(".more_proper").on("change", ".enum_daType_two", function() {
+    $(".more_proper", $page).on("change", ".enum_daType_two", function() {
     	var options=$(this).find("option:selected");    	
     	var $form  = $(this).parent().parent();
     	if ("枚举" == options.val()) {    		
@@ -369,7 +370,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
     
     
     //点击 添加普通属性加号 显示div
-    $(".common_proper").on("click", ".add_comm", function() {
+    $(".common_proper", $page).on("click", ".add_comm", function() {
     	var $this = $(this);
     	var $newAdd = $this.closest(".new_add");
     	var $form = $newAdd.find(".opera_comm").find("#comm_opera_form1");
@@ -404,7 +405,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
         $form.find("#dataRange").val("32");
     });
     //点击 添加多值属性孩子加号 显示div
-    $(".more_proper").on("click", ".add_more_child", function() {
+    $(".more_proper", $page).on("click", ".add_more_child", function() {
     	var $this = $(this);
     	var $newAdd = $this.closest('.new_add');
     	$this.siblings('.entity_attr').removeClass('pitch');
@@ -434,7 +435,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
         $form.find("#span_enum").remove(); 
     });
     //点击确认， 添加一条二级属性
-    $(".more_proper").on("click", "#twoLevelAttr_but_confirm", function() {
+    $(".more_proper", $page).on("click", "#twoLevelAttr_but_confirm", function() {
         var $form = $(this).closest('.twoLevelAttr_show').find('form');
         var id = $form.find("#id").val();
         var name = $form.find("#name").val();
@@ -464,7 +465,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
     
     
     //点击 添加二级属性  显示div
-    $(".more_proper").on("click", "#add_twoLevelAttr", function() {
+    $(".more_proper", $page).on("click", "#add_twoLevelAttr", function() {
         var $form = $(this).closest('.new_add').find(".twoLevelAttr_show").find("#twoLevelAttr_form1");
         $form.find("#dictionaryAttr").empty();
         $form.find("#valueAttr").empty();
@@ -494,7 +495,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
         $(this).closest('.new_add').find(".twoLevelAttr_show").show();
     });
     //点击  编辑二级属性  显示div
-    $(".more_proper").on("click", "#edit_twoLevelAttr", function() {
+    $(".more_proper", $page).on("click", "#edit_twoLevelAttr", function() {
         var $form = $(this).closest('.new_add').find(".twoLevelAttr_show").find("#twoLevelAttr_form1");
         var twoLevelId = $(this).attr("twoLevelId");
         Ajax.ajax('admin/dictionary/basicItem/getTwoLevelAttr', {
@@ -540,7 +541,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
         $(this).closest('.new_add').find(".twoLevelAttr_show").show();
     });
     //点击 查看二级属性  显示div
-    $(".more_proper").on("click", "#twoLevelAttr", function() {    	
+    $(".more_proper", $page).on("click", "#twoLevelAttr", function() {    	
         var twoLevelId = $(this).attr("twoLevelId");
         var $twochile = $(this).closest(".new_add").find(".twoLevelAttr_child");
         if($(this).hasClass("active")) {
@@ -584,7 +585,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
         }        
     });
     //点击 确认  二级属性的孩子 
-    $(".more_proper").on("click", "#twoLevelAttr_child_but_confirm", function() {
+    $(".more_proper", $page).on("click", "#twoLevelAttr_child_but_confirm", function() {
         var $form = $(this).closest(".twoLevelAttr_child_show").find('form');        
         var name = $form.find("#name").val();
         var mappingId = $form.find("#mappingId").val();
@@ -620,7 +621,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
        
     });
     //点击 添加 二级属性的孩子 显示div
-    $(".more_proper").on("click", ".add_twoLevelAttr_children", function() {
+    $(".more_proper", $page).on("click", ".add_twoLevelAttr_children", function() {
         var mappingId = $(this).find('img').attr("mappingid");           
         var $form = $(".twoLevelAttr_child_show").find("#twoLevelAttr_child_form1");
         $form.find("#mappingId").val(mappingId);
@@ -638,7 +639,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
         $(this).closest('.new_add').find(".twoLevelAttr_child_show").show();
     });
     //点击 添加关系加号 显示div
-    $(".entity_relation").on("click", ".add_entity_relation", function() {
+    $(".entity_relation", $page).on("click", ".add_entity_relation", function() {
     	var $form = $(".opera_relation").find("#entity_relation_opera_form");
     	
     	$form.find('#rela_right').show();
@@ -663,12 +664,12 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
         
     });
     // 点击取消  取消添加关系
-    $(".entity_relation").on("click", "#relation_but_cancel", function() {
+    $(".entity_relation", $page).on("click", "#relation_but_cancel", function() {
         $(".opera_relation").hide();
         $(".entity_relation_list").children(".add_entity_relation").removeClass("pitch");
     });
     //点击取消 ， 取消添加实体
-    $("#entity_but_cancel").click(function() {
+    $("#entity_but_cancel", $page).click(function() {
         var $form1 = $(this).closest(".opera_entity").find("form");
         $("#add_entity").closest(".entity_attr").removeClass("pitch").siblings().removeClass("pitch");
         $form1.find("#code").removeAttr("readonly");
@@ -678,7 +679,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
         $(this).closest(".opera_entity").hide();
     });
     //点击取消 ， 取消添加分组
-    $(".common_proper").on("click", "#group_but_cancel", function() {    	
+    $(".common_proper", $page).on("click", "#group_but_cancel", function() {    	
         var $form1 = $(this).closest(".opera_group").find('form');
         $form1.find("#code").removeAttr("readonly");
         $form1.find("#cnName").val("");
@@ -686,7 +687,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
         $(this).closest(".opera_group").hide();
     });
     //点击取消 ， 取消添加多值属性自身
-    $(".more_proper").on("click", "#more_but_cancel", function() {
+    $(".more_proper", $page).on("click", "#more_but_cancel", function() {
         var $form1 = $(this).closest(".opera_more").find("form");
         $form1.find("#code").removeAttr("readonly");
         $form1.find("#cnName").val("");
@@ -696,7 +697,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
         $(this).closest(".opera_more").hide();
     });
     //点击取消 ， 取消添加普通属性
-    $(".common_proper").on("click", "#comm_but_cancel", function() {
+    $(".common_proper", $page).on("click", "#comm_but_cancel", function() {
         var $form1 = $(this).closest(".opera_comm").find("form");        
         $(this).closest('.new_add').find('.entity_attr').removeClass('pitch');
         $form1.find("#code").removeAttr("readonly");
@@ -707,7 +708,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
         $(this).closest(".opera_comm").hide();
     });
     //点击取消 ， 取消添加多值属性的孩子
-    $(".more_proper").on("click", "#more_child_but_cancel", function() {
+    $(".more_proper", $page).on("click", "#more_child_but_cancel", function() {
         var $form1 = $(this).parent();
         $(this).closest('.new_add').find('.entity_attr').removeClass('pitch');
         $form1.find("#code").removeAttr("readonly");
@@ -718,7 +719,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
         $(this).parent().parent().hide();
     });
     //点击取消 ， 取消添加多值属性的孩子
-    $(".more_proper").on("click", "#twoLevelAttr_but_cancel", function() {
+    $(".more_proper", $page).on("click", "#twoLevelAttr_but_cancel", function() {
     	$(".add_twoLevelAttr_children").removeClass("pitch");
         var $form1 = $(this).parent();
         $form1.find("#id").val("");
@@ -727,7 +728,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
         $(this).parent().parent().hide();
     });
     //点击确认， 进行添加分组
-    $(".common_proper").on("click", "#group_but_confirm", function() {
+    $(".common_proper", $page).on("click", "#group_but_confirm", function() {
     	var formdom = $(this).closest(".opera_group").find("#group_opera_form1")[0];
         var fData = new FormData(formdom);
         var entityId = $(".common_proper").attr("parentid");
@@ -749,7 +750,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
         }
     });
     //点击确认， 进行添加多值属性自身
-    $(".more_proper").on("click", "#more_but_confirm", function() {
+    $(".more_proper", $page).on("click", "#more_but_confirm", function() {
     	var formdom = $(this).closest(".opera_more").find("#more_opera_form1")[0];
         var fData = new FormData(formdom);
         var entityId = $(".more_proper").attr("parentId");
@@ -765,7 +766,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
         }
     });
     //点击确认， 进行添加普通属性
-    $(".common_proper").on("click", "#comm_but_confirm", function() {
+    $(".common_proper", $page).on("click", "#comm_but_confirm", function() {
         //comm_opera_form1
         //设置隐藏元素的值
         var parentId = $(".common_proper").attr("parentId");
@@ -824,7 +825,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
     });
     
   //添加对称关系
-    $(".entity_relation").on("click", "#add_rela_symmetry", function() {
+    $(".entity_relation", $page).on("click", "#add_rela_symmetry", function() {
     	if ($(this).is(':checked')) {
     		$(this).parent().parent().siblings('#rela_right').hide();
     		$(this).parent().parent().siblings('#rela_ni_code').hide();
@@ -842,7 +843,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
     });
     
     //点击确认， 进行添加关系
-    $(".entity_relation").on("click", "#relation_but_confirm", function() {
+    $(".entity_relation", $page).on("click", "#relation_but_confirm", function() {
         //comm_opera_form1
     	var $form = $(this).closest(".entity_relation").find('form');
     	
@@ -874,7 +875,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
        
     });
     //点击确认， 进行添加多值属性的孩子
-    $(".more_proper").on("click", "#more_child_but_confirm", function() {
+    $(".more_proper", $page).on("click", "#more_child_but_confirm", function() {
         //设置隐藏元素的值
     	var $form = $(this).closest('.opera_more_child').find('form');
         var groupName = $form.attr("groupName");
@@ -917,7 +918,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
         }
     });
     //点击确认， 进行添加操作
-    $("#entity_but_confirm").click(function() {
+    $("#entity_but_confirm", $page).click(function() {
     	var formdom = $(this).closest(".opera_entity").find("#entity_opera_form1")[0];
         var fData = new FormData(formdom);  
         
@@ -929,7 +930,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
     });
     
     //给 实体列表  注册鼠标点击事件  让自己的ul显示出来    
-    var $list = $(".entity_list");
+    var $list = $(".entity_list", $page);
     $list.on('click', '.entity_attr', function() {
     	var $this = $(this).closest(".entity_attr");    	
     	if($this.hasClass("entity_attr_img")){
@@ -947,7 +948,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
     	
     })
     //普通属性显示 ul
-    $(".common_proper").on("click", ".entity_attr", function() {
+    $(".common_proper", $page).on("click", ".entity_attr", function() {
     	var $this = $(this).closest(".entity_attr");
     	if($this.hasClass("entity_attr_img")){
     		$this.addClass('pitch').siblings()
@@ -963,7 +964,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
     	}    	
     });
     //多值属性显示 ul
-    $(".more_proper").on("click", ".entity_attr", function() {
+    $(".more_proper", $page).on("click", ".entity_attr", function() {
     	var $this = $(this).closest(".entity_attr");
     	if($this.hasClass("entity_attr_img")){
     		$this.addClass('pitch').siblings()
@@ -983,12 +984,12 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
 		$(this).find("ul").toggle();
 	}); */
     //实体关系   显示 ul
-    $(".entity_relation").on("click", ".entity_relation_li", function() {
+    $(".entity_relation", $page).on("click", ".entity_relation_li", function() {
         $(this).find("ul").toggle();
     });
   
     //编辑实体获取 id    
-    $(".edit_entity").click(function() {
+    $(".edit_entity", $page).click(function() {
     	$('.entity_attr').removeClass('active').removeClass('pitch');
     	$(this).closest('.entity_attr').addClass('pitch');
         var entityId = $(this).parent().parent().attr("entityId");
@@ -1009,7 +1010,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
         });
     });
     //编辑普通属性获取 id    
-    $(".common_proper").on("click", ".edit_common", function() {
+    $(".common_proper", $page).on("click", ".edit_common", function() {
     	var $this = $(this);
     	var $newAdd = $this.closest(".new_add");
     	var $form1 =$newAdd.find("form");
@@ -1095,7 +1096,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
         });                                    
     });
     //编辑多值属性的孩子  获取 id    
-    $(".more_proper").on("click", ".edit_more_child", function() {
+    $(".more_proper", $page).on("click", ".edit_more_child", function() {
     	var $this = $(this);  
     	var $newAdd = $this.closest('.new_add');
     	$this.closest(".entity_attr").addClass('pitch').siblings(".entity_attr").removeClass('pitch');
@@ -1178,7 +1179,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
         });        
     });
     //编辑分组 获取 id
-    $(".common_proper").on("click", "#edit_group", function() {
+    $(".common_proper", $page).on("click", "#edit_group", function() {
     	
         var groupId = $(this).attr("groupId");
         var $this = $(this);
@@ -1196,7 +1197,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
         });
     });
     //编辑多值属性自身 获取id
-    $(".more_proper").on("click", "#edit_more", function() {
+    $(".more_proper", $page).on("click", "#edit_more", function() {
     	var $this = $(this);
     	var $newAdd = $this.closest(".new_add ");
         var groupId = $(this).attr("groupId");
@@ -1216,14 +1217,14 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
         });
     });
     //过期实体获取 id    
-    $(".change_status").click(function() {
+    $(".change_status", $page).click(function() {
         var entityId = $(this).parent().parent().attr("entityid");
         var status = $(this).parent().parent().attr("status");
         
         saveStatus(entityId, status);
     });
     //过期普通属性
-    $(".common_proper").on("click", ".common_change_status", function() {
+    $(".common_proper", $page).on("click", ".common_change_status", function() {
         var commId = $(this).closest('.entity_ul').attr("entityid");        
         var status = $(this).closest('.entity_ul').attr("status");        
         var entityId = $(".common_proper").attr("parentid");
@@ -1232,7 +1233,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
         enityAttr(entityId);
     });
     //过期 多值属性 属性
-    $(".more_proper").on("click", ".more_child_change_status", function() {
+    $(".more_proper", $page).on("click", ".more_child_change_status", function() {
         var commId = $(this).parent().parent().attr("entityid");
         var status = $(this).parent().parent().attr("status");        
         var entityId = $(".common_proper").attr("parentid");
@@ -1248,7 +1249,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
         }, function(jsonData) {});
     }
     //在实体列表页面右键点击   的时候
-    $(".get_entity_attr").click(function() {
+    $(".get_entity_attr", $page).click(function() {
     	$('.entity_attr').removeClass('active').removeClass('pitch');
     	$(this).closest('.entity_attr').addClass('pitch');
         var entityId = $(this).parent().parent().attr("entityId");
@@ -1273,7 +1274,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
         
     });
     //document 绑定事件
-    $(document).on('click', function(e) {    	
+    $page.on('click', function(e) {    	
     	var $target = $(e.target);
     	if($target.hasClass('entity_attr') || $target.hasClass('status')) {
     		return;
