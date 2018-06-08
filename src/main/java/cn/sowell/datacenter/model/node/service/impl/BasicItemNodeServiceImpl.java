@@ -72,6 +72,10 @@ public class BasicItemNodeServiceImpl implements BasicItemNodeService {
 					List<BasicItemNode> childByPid = basicItemNodeDao.getChildByPid(String.valueOf(btn.getId()));
 					for (BasicItemNode basicItemNode : childByPid) {
 						basicItemNode.setParentId(btn.getParentId());
+						//给孩子换父亲， 并把父亲的所有孩子重新排序
+						BasicItemNode pNode = basicItemNodeDao.get(BasicItemNode.class, Integer.parseInt(btn.getParentId()));
+						Integer order = basicItemNodeDao.getOrder(pNode);
+						basicItemNode.setOrder(order);
 						basicItemNodeDao.update(basicItemNode);
 					}
 				}
@@ -108,11 +112,8 @@ public class BasicItemNodeServiceImpl implements BasicItemNodeService {
 			Integer order = (beforeNode.getOrder() + afterNode.getOrder()) / 2;
 			current.setOrder(500);
 		}
-		if (current.getId() == null) {
-			basicItemNodeDao.insert(current);
-		} else {
-			basicItemNodeDao.update(current);
-		}
+			
+		basicItemNodeDao.update(current);
 		} catch (DataIntegrityViolationException e) {
 			excuExtend(current.getParentId());
 		} 
