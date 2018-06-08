@@ -49,7 +49,6 @@ public class BasicItemServiceImpl implements BasicItemService {
 	SessionFactory sFactory;
 	
 	
-	
 	@Override
 	public List<BasicItem> queryList(BasicItemCriteria criteria) {
 		return basicItemDao.queryList(criteria);
