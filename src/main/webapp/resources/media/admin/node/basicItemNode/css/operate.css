@@ -200,12 +200,14 @@ body {
     height: 14px;
     background-image: url("../images/add-sm.png");    
 }
-#operate .tag.icon-add-tag {
+#operate .tag.icon-add-tag,
+#operate .tag.icon-add-tag-relative {
     margin: 0 40px 0 24px; 
     width: 14px;
     height: 14px;
     background-image: url("../images/add-sm.png"); 
 }
+
 #operate .icon-add-abc {    
     width: 14px;
     height: 14px;
