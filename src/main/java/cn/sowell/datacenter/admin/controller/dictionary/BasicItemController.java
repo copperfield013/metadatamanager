@@ -116,7 +116,7 @@ public class BasicItemController {
 	@ApiOperation(value="添加", notes="新增实体,新增普通属性， 多值属性， 分组")
 	@ResponseBody
 	@RequestMapping(value="/do_add", method=RequestMethod.POST)
-	public AjaxPageResponse doAdd(@ApiParam(name="basicItem对象", value="传入json格式", required=true)BasicItem basicItem){
+	public AjaxPageResponse doAdd(@ApiParam(name="BasicItem", value="传入json格式", required=true)BasicItem basicItem){
 			String dType = basicItem.getDataType();
 			String dataType = "";
 			String comm = null;
