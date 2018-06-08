@@ -67,6 +67,7 @@ public class BasicItemController {
 	TowlevelattrService towlevelattrService;
 	
 	Logger logger = Logger.getLogger(BasicItemController.class);
+	@ApiIgnore
 	@org.springframework.web.bind.annotation.InitBinder
 	public void InitBinder(ServletRequestDataBinder binder) {
 		System.out.println("执行了InitBinder方法");
@@ -75,7 +76,7 @@ public class BasicItemController {
 		binder.registerCustomEditor(Date.class, null, new CustomDateEditor(dateFormat, true));
 	}
 
-	
+	@ApiIgnore
 	@RequestMapping("/list")
 	public String list(BasicItemCriteria criteria, Model model){
 		criteria.setDataType("记录类型");
@@ -99,6 +100,7 @@ public class BasicItemController {
 		return jobj.toString();
 	}
 	
+	@ApiIgnore
 	@ResponseBody
 	@RequestMapping("/getDataType")
 	public String getDataType(BasicItem	basicItem){
@@ -307,6 +309,7 @@ public class BasicItemController {
 			}
 		}
 	
+	@ApiIgnore
 	@ResponseBody
 	@RequestMapping("/getDataByPid")
 	public String getDataByPid(String id){
@@ -319,6 +322,7 @@ public class BasicItemController {
 	}
 	
 	//添加一个二级属性
+	@ApiIgnore
 	@ResponseBody
 	@RequestMapping("/saveTwoLevelAttr")
 	public void saveTwoLevelAttr(TowlevelattrMultiattrMapping tmm){
@@ -327,6 +331,7 @@ public class BasicItemController {
 	}
 	
 	//添加一个二级属性的孩子
+	@ApiIgnore
 	@ResponseBody
 	@RequestMapping("/saveTwoLevelAttrChild")
 	public void saveTwoLevelAttrChild(Towlevelattr criteria){
@@ -335,6 +340,7 @@ public class BasicItemController {
 	}
 	
 	//根据id查询一个二级属性
+	@ApiIgnore
 	@ResponseBody
 	@RequestMapping("/getTwoLevelAttr")
 	public String getTwoLevelAttr(Long id){
@@ -350,6 +356,7 @@ public class BasicItemController {
 	}
 	
 		//根据twolevelId   查询出字典里面的字段
+		@ApiIgnore
 		@ResponseBody
 		@RequestMapping("/getDictCode")
 		public String getDictCode(Long id){
@@ -362,6 +369,7 @@ public class BasicItemController {
 		}
 		
 		//获取多值属性的父亲， 传入参数为多值属性的code
+		@ApiIgnore
 		@ResponseBody
 		@RequestMapping("/getMoreParent")
 		public String getMoreParent(String code){
@@ -372,6 +380,7 @@ public class BasicItemController {
 		}	
 		
 		//添加普通属性，c_cn_name 和当前实体下的二级属性的孩子的名称不能相同
+		@ApiIgnore
 		@ResponseBody
 		@RequestMapping("/getSameCount")
 		public String getSameCount(String cnName, String parent){
@@ -384,6 +393,7 @@ public class BasicItemController {
 		}
 		
 		//添加二级属性的孩子， 二级属性孩子的名称和当前实体普通属性的名称不能相同
+		@ApiIgnore
 		@ResponseBody
 		@RequestMapping("/getTwoSameCount")
 		public String getTwoSameCount(String name, String entityId){
