@@ -207,6 +207,16 @@ public class BasicItemNodeController {
 		criteria.setUsingState(1);
 		List<BasicItem> list = basicItemService.queryList(criteria);
 		model.addAttribute("list", list);
+		return AdminConstants.JSP_NODE + "/basicItemNode/operate.jsp";
+	}
+	
+	@RequestMapping("/edit")
+	public String edit(String nodeId, Model model) {
+		BasicItemCriteria criteria = new BasicItemCriteria();
+		criteria.setDataType("记录类型");
+		criteria.setUsingState(1);
+		List<BasicItem> list = basicItemService.queryList(criteria);
+		model.addAttribute("list", list);
 		
 		BasicItemNode btNode = null;
 		if (nodeId != null) {
@@ -214,7 +224,7 @@ public class BasicItemNodeController {
 		}
 		
 		model.addAttribute("btNode", btNode);
-		return AdminConstants.JSP_NODE + "/basicItemNode/operate.jsp";
+		return AdminConstants.JSP_NODE + "/basicItemNode/edit.jsp";
 	}
 	
 	//通过父节点id， 获取孩子
