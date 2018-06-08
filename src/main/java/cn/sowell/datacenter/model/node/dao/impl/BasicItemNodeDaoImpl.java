@@ -96,7 +96,7 @@ public class BasicItemNodeDaoImpl implements BasicItemNodeDao {
 	public Integer getOrder(BasicItemNode basicItemNode) {
 		List<BasicItemNode> list = null;
 		Integer order;
-		if (NodeType.ABC.getName().equals(basicItemNode.getType())) {//是一个实体
+		if (NodeType.ABC.equals(NodeType.getNodeType(basicItemNode.getType()))) {//是一个实体
 			String hql = " FROM BasicItemNode WHERE type=:type AND parentId is null ORDER BY order DESC";
 			list = sFactory.getCurrentSession().createQuery(hql).setParameter("type", 1).list();
 		} else {

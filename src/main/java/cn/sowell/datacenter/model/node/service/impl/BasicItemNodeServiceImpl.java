@@ -74,13 +74,18 @@ public class BasicItemNodeServiceImpl implements BasicItemNodeService {
 				if (!(true == isDelChil)) {
 					//只删除分组， 不删除孩子
 					//获取所有孩子， 给孩子更改父亲， 父亲就是分组的父亲
+					
+					List<BasicItemNode> pchil = basicItemNodeDao.getChildByPid(btn.getParentId());
+					BasicItemNode btend = pchil.get(pchil.size()-1);
+					int order = btend.getOrder();
+					
 					List<BasicItemNode> childByPid = basicItemNodeDao.getChildByPid(String.valueOf(btn.getId()));
 					for (BasicItemNode basicItemNode : childByPid) {
 						basicItemNode.setParentId(btn.getParentId());
 						//给孩子换父亲， 并把父亲的所有孩子重新排序
-						BasicItemNode pNode = basicItemNodeDao.get(BasicItemNode.class, Integer.parseInt(btn.getParentId()));
-						Integer order = basicItemNodeDao.getOrder(pNode);
+						order += 100;
 						basicItemNode.setOrder(order);
+						
 						basicItemNodeDao.update(basicItemNode);
 					}
 				}
