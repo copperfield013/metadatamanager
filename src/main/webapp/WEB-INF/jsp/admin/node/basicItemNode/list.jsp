@@ -10,8 +10,8 @@
 				<input type="text" class="form-control" name="abcattr" value="${criteria.abcattr }" />
 			</div>
 			<button type="submit" class="btn btn-default">查询</button>
-			<a class="btn btn-primary tab" href="admin/node/basicItemNode/operate" title="创建" target="dictMapping_add" >创建</a>
-		</form>
+			<a class="btn btn-primary tab" href="admin/node/basicItemNode/operate?nodeid=null" title="创建" target="dictMapping_add" >创建</a>
+		</form>s
 	</nav>
 	<div class="row list-area">
 		<table class="table">
@@ -30,7 +30,7 @@
 						<td>${item.name }</td>
 						<td>${item.abcattr }</td>
 						<td>
-							<a href="javascript:;" itemId="${item.id }" title="修改" id="edit">修改</a>
+							<a href="admin/node/basicItemNode/operate?nodeid=${item.id }" itemId="${item.id }" title="修改" id="edit">修改</a>
 						</td>
 					</tr>
 				</c:forEach>

@@ -566,31 +566,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 		    $content.prepend(relativeHtml);
 		    $CPF.closeLoading();			    
 	    });                                 
-    };
-
-    //删除单条属性数据确认方法 
-    function confirmDeleteSingle(el) {
-        var $content = $(el).closest(".label-bar").parent("li");
-        $content.remove();
-        removePop();
-    }
-
-    //删除整体数据确认方法
-    function confirmDeleteAll(el) {
-        var $content = $(el).closest(".collapse-header").parent("li");
-        $content.remove();
-        removePop();
-    }
-
-    //仅删除组确认方法
-    function confirmDeleteOnly(el) {
-        var html = $(el).closest(".collapse-header").siblings(".collapse-content").html();
-        var $group = $(el).closest(".collapse-header").parent("li");
-        $group.after(html);
-        $group.remove();
-        removePop();
-
-    }
+    };    
 
     //提醒有未保存的节点
     function judgeSave() {
@@ -610,7 +586,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
     	var abcattr = $(".entity_attr.active", $page).attr("data-cnName");
     	var abcattrCode = $(".entity_attr.active", $page).attr("data-code");
     	var order = $entityTitle.attr("data-order");
-    	var id = $entityTitle.attr("data-id")
+    	var id = $entityTitle.attr("data-id");
     	var dataType = "STRING";
     	var opt = 2; 
     	$CPF.showLoading();
@@ -934,7 +910,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
     };
     
     //删除的请求方法
-    function deleteAjax(id, boolean, callback) {
+    function deleteAjax(id, boolean, callback) {    	
     	$CPF.showLoading();
     	Ajax.ajax('admin/node/basicItemNode/do_delete', {			
 			 id: id,
@@ -942,6 +918,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 		 }, function(data) {
 			 console.log(data);
 			 callback();
+			 removePop();
 			 $CPF.closeLoading();
 		});
     };
@@ -964,23 +941,35 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
     
     //属性删除方法
     function attrDelete(el) {
+    	console.log(el);
     	var $attrBar = $(el).closest(".label-bar");
+    	console.log($attrBar)
     	var id = $attrBar.attr("data-id");
     	var isDelChil = false;
     	var callback = function() {
     		$attrBar.parent(".add-attr").remove();    		
-    	};
+    	};    	
     	deleteAjax(id, isDelChil, callback);
     }
     
     //属性组删除方法
-    function attrDelete(el, isDelChil) {
+    function attrGroupDelete(el, isDelChil) {
     	var $attrGroupBar = $(el).closest(".label-bar");
     	var id = $attrGroupBar.closest(".collapse-header").attr("data-id");
     	var isDelChil = isDelChil;
-    	var callback = function() {
-    		$attrGroupBar.closest(".attr-group").remove();    		
-    	};
+    	if(isDelChil) {
+    		var callback = function() {
+        		$attrGroupBar.closest("li.attr-group").remove();    		
+        	};
+    	}else {
+    		var callback = function() {
+        		var html = $attrGroupBar.closest("li.attr-group")
+        					.children(".collapse-content").html();
+        		$attrGroupBar.closest("li.attr-group")
+        			.after(html);
+        		$attrGroupBar.closest("li.attr-group").remove();
+        	};
+    	}    	
     	deleteAjax(id, isDelChil, callback);
     };
     
@@ -989,9 +978,19 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
     	var $moreAttrBar = $(el).closest(".label-bar");
     	var id = $attrGroupBar.closest(".collapse-header").attr("data-id");
     	var isDelChil = isDelChil;
-    	var callback = function() {
-    		$moreAttrBar.closest(".more-attr").remove();    		
-    	};
+    	if(isDelChil) {
+    		var callback = function() {
+        		$moreAttrBar.closest("li.more-attr").remove();    		
+        	};
+    	}else {
+    		var callback = function() {
+        		var html = $moreAttrBar.closest("li.more-attr")
+        					.children(".collapse-content").html();
+        		$moreAttrBar.closest("li.more-attr")
+        			.after(html);
+        		$moreAttrBar.closest("li.more-attr").remove();
+        	};
+    	}    
     	deleteAjax(id, isDelChil, callback);
     };   
     
@@ -1010,12 +1009,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
     $page.on("click", function () {    	
         removePop();
     });
-    
-
-    //input事件绑定
-    $(".edit-input").on("blur", function () {
-        //传输给后台                  
-    });
+      
 
     //收缩事件绑定
     $("#operate").on("click", ".icon-arrow, .icon-arrow-sm, .icon-label", function () {
@@ -1171,32 +1165,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
     //标签删除图标点击事件绑定
     $("#operate").on("click", ".tag-content .icon-delete", function(){
     	$(this).parent("li").remove();
-    })
-
-    //删除数据弹出页中的事件绑定
-    $("#operate").on("click", ".delete-list .opera, .delete-list-c .opera", function (e) {
-        e.stopPropagation();
-        if ($("#operate").find(".icon-trash-sm.active").length > 0) {
-            var el = $("#operate").find(".icon-trash-sm.active")[0];
-        } else if ($("#operate").find(".con-trash.active").length > 0) {
-            var el = $("#operate").find(".icon-trash.active")[0];
-        }
-        if ($(this).hasClass("cancel")) {
-            removePop();
-        } else if ($(this).hasClass("confirm")) {
-            var $header = $(el).closest(".collapse-header");
-            if ($header.length > 0) {
-                confirmDeleteAll(el);
-            } else {
-                confirmDeleteSingle(el);
-            }
-        } else if ($(this).hasClass("only-group")) {
-            confirmDeleteOnly(el);
-        } else {
-            removePop();
-        }
-
-    })
+    })    
 
     //双击编辑
     $("#operate").on("dblclick", ".label-bar", function(){
@@ -1232,27 +1201,38 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
         }
     });
     
-    //删除
-    $("#operate").on("click", ".icon-trash, .icon-trash-sm", function() {        
-        var entityTitle = $(this).closest(".entity-title");
-        var labelBar = $(this).closest(".label-bar");
+    //删除-全部
+    $("#operate").on("click", ".opera.confirm", function(e) { 
+    	e.stopPropagation();
+    	
+        var entityTitle = $(".icon-trash.active").closest(".entity-title");
+        var labelBar = $(".icon-trash-sm.active").closest(".label-bar");
         if(entityTitle.length > 0) {
-        	
+        	var el = $(".icon-trash.active")[0];
+        	entityDelete(el);
         	return;
         }
-        if(labelBar.hasClass("tag")) {   
-        	
-        }else if(labelBar.hasClass("attr")) {
-        	
-        	
+        var el = $(".icon-trash-sm.active")[0];
+        if(labelBar.hasClass("attr")) { 
+        	console.log(el);
+        	attrDelete(el);        	
         }else if(labelBar.hasClass("more-attr")) {
-        	;
+        	moreAttrDelete(el, true);
         }else if(labelBar.hasClass("attr-group")) {
-        	
+        	attrGroupDelete(el, true);
         }else if(labelBar.hasClass("attr-relative")) {
-        	;
-        }else if(labelBar.hasClass("abc")) {
-        	
+        	relativeDelete(el);
+        }
+    })
+    
+    //删除-仅组
+    $("#operate").on("click", ".opera.only-group", function() { 
+    	var el = $(".icon-trash.active")[0];       
+        var labelBar = $(".icon-trash-sm.active").closest(".label-bar");        
+        if(labelBar.hasClass("more-attr")) {
+        	moreAttrDelete(el, false);
+        }else if(labelBar.hasClass("attr-group")) {
+        	attrGroupDelete(el, false);
         }
     })
     
