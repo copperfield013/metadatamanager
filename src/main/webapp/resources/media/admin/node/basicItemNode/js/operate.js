@@ -19,9 +19,6 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
      * @param {当前点击元素,dom对象} el 
      */
     function pop(el) {
-//        var addTagLength = $(el).closest(".collapse-header")
-//            .siblings(".collapse-content")
-//            .children(".add-tag").length;
         var relativeLength = $(el).closest(".collapse-header")
             .siblings(".collapse-content")
             .children(".attr-relative").length;
@@ -452,6 +449,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
       */
     function addGroup(el) {
         var $content = $(el).closest(".collapse-header").siblings(".collapse-content");
+        var dragWrapLen = $(".drag-wrap").length + 1 ;
         var attrGroupHtml = "<li class='attr-group'>" +
             "<div class='attr-group-title collapse-header' data-order='' data-id=''>" +
             "<div class='icon-label attr-group'>" +
@@ -462,16 +460,17 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
             "<input type='text' class='edit-input' value='属性组名称'>" +
             "<div class='btn-wrap'>" +
             "<i class='icon icon-save'></i>" +
-            "<i class='icon icon-add-sm'></i>" +
+            "<i class='icon icon-add-sm group'></i>" +
             "<i class='icon icon-trash-sm'></i>" +
             "<i class='icon icon-arrow-sm'></i>" +
             "</div>" +
             "</div>" +
             "</div>" +
-            "<ul class='attr-group-drag-wrap collapse-content collapse-content-active'>" +
+            "<ul class='attr-group-drag-wrap drag-wrap collapse-content collapse-content-active' id='drag-"+dragWrapLen+"'>" +
             "</ul>" +
             "</li>"
         $content.prepend(attrGroupHtml);
+        drag($(".drag-wrap").length);
     };
 
     /**
@@ -480,6 +479,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
     function addMoreAttr(el) {
         var $content = $(el).closest(".collapse-header").siblings(".collapse-content");
         var entityId = $(".entity_attr", $page).attr("data-code");
+        var dragWrapLen = $(".drag-wrap").length + 1 ;
         $CPF.showLoading();
 		Ajax.ajax('admin/node/basicItemNode/getComm?entityId', {
 			entityId: entityId
@@ -514,16 +514,17 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 		            moreAttrHtml += "</select>";
 		            moreAttrHtml += "<div class='btn-wrap'>" +
 		            "<i class='icon icon-save'></i>" +
-		            "<i class='icon icon-add-sm'></i>" +
+		            "<i class='icon icon-add-sm group'></i>" +
 		            "<i class='icon icon-trash-sm'></i>" +
 		            "<i class='icon icon-arrow-sm'></i>" +
 		            "</div>" +
 		            "</div>" +
 		            "</div>" +
-		            "<ul class='more-attr-drag-wrap collapse-content collapse-content-active'>" +
+		            "<ul class='more-attr-drag-wrap drag-wrap collapse-content collapse-content-active' id='drag-"+dragWrapLen+"'>" +
 		            "</ul>" +
 		            "</li>"
 		            $content.prepend(moreAttrHtml);
+		            drag($(".drag-wrap").length);
 		            $CPF.closeLoading();
 			    })
 			    
@@ -560,7 +561,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
             "</div>" +
             "</div>" +
             "</div>" +            
-            "<ul class='attr-relative-drag-wrap collapse-content collapse-content-active'>" +
+            "<ul class='attr-relative-drag-wrap drag-wrap collapse-content collapse-content-active'>" +
             "</ul>" +
             "</li>";         
 		    $content.prepend(relativeHtml);
@@ -858,7 +859,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 	            "<span class='entity-only-title' data-abcattr-code='"+abcattrCode+"' data-abcattr='"+abcattr+"'>"+abcattr+"</span>"+
 	            "<div class='btn-wrap'>" +
 	            "<i class='icon icon-save'></i>" +
-	            "<i class='icon icon-add-abc'></i>" +
+	            "<i class='icon icon-add-abc group'></i>" +
 	            "<i class='icon icon-trash-sm'></i>" +
 	            "<i class='icon icon-arrow-sm'></i>" +
 	            "</div>" +
@@ -915,11 +916,15 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
     	Ajax.ajax('admin/node/basicItemNode/do_delete', {			
 			 id: id,
 			 isDelChil: boolean
-		 }, function(data) {
-			 console.log(data);
+		 }, function(data) {	
+			 					 
 			 callback();
 			 removePop();
 			 $CPF.closeLoading();
+		}, function() {
+			console.log(11111);
+			removePop();
+			$CPF.closeLoading();
 		});
     };
     
@@ -940,10 +945,8 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
     }
     
     //属性删除方法
-    function attrDelete(el) {
-    	console.log(el);
-    	var $attrBar = $(el).closest(".label-bar");
-    	console.log($attrBar)
+    function attrDelete(el) {    	
+    	var $attrBar = $(el).closest(".label-bar");    	
     	var id = $attrBar.attr("data-id");
     	var isDelChil = false;
     	var callback = function() {
@@ -956,12 +959,12 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
     function attrGroupDelete(el, isDelChil) {
     	var $attrGroupBar = $(el).closest(".label-bar");
     	var id = $attrGroupBar.closest(".collapse-header").attr("data-id");
-    	var isDelChil = isDelChil;
-    	if(isDelChil) {
+    	var isDelChil = isDelChil;    	
+    	if(isDelChil) {    		
     		var callback = function() {
         		$attrGroupBar.closest("li.attr-group").remove();    		
         	};
-    	}else {
+    	}else {    		
     		var callback = function() {
         		var html = $attrGroupBar.closest("li.attr-group")
         					.children(".collapse-content").html();
@@ -1203,8 +1206,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
     
     //删除-全部
     $("#operate").on("click", ".opera.confirm", function(e) { 
-    	e.stopPropagation();
-    	
+    	e.stopPropagation();    	
         var entityTitle = $(".icon-trash.active").closest(".entity-title");
         var labelBar = $(".icon-trash-sm.active").closest(".label-bar");
         if(entityTitle.length > 0) {
@@ -1226,8 +1228,9 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
     })
     
     //删除-仅组
-    $("#operate").on("click", ".opera.only-group", function() { 
-    	var el = $(".icon-trash.active")[0];       
+    $("#operate").on("click", ".opera.only-group", function(e) { 
+    	e.stopPropagation();
+    	var el = $(".icon-trash-sm.active")[0];       
         var labelBar = $(".icon-trash-sm.active").closest(".label-bar");        
         if(labelBar.hasClass("more-attr")) {
         	moreAttrDelete(el, false);
@@ -1247,31 +1250,33 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
     	$(this).addClass("active");    		
     	getEntity(this);
     })
-
-
-
-    var dragWrap1 = document.getElementById("drag-1");
-    var sortable = Sortable.create(dragWrap1, {
-        group: {
-            name: "drag-1",
-            pull: false,
-            put: false,
-        },
-        filter: ".no-dragger",
-        forceFallback: true,
-        sort: true,
-        animation: 100,
-        onStart: function (evt) {
-
-        },
-        onEnd: function (evt) {
-
-        }
-    });
-
     
     
+    //拖拽排序方法
+    function drag(length) {
+    	for(var i=0; i<length; i++) {    		
+    		var dragWrap = document.getElementById("drag-"+(i+1));    		
+    		Sortable.create(dragWrap, {
+    	        group: {
+    	            name: "drag-1",
+    	            pull: false,
+    	            put: false,
+    	        },
+    	        filter: ".no-dragger",
+    	        forceFallback: true,
+    	        sort: true,
+    	        animation: 100,
+    	        onStart: function (evt) {
 
+    	        },
+    	        onEnd: function (evt) {
+
+    	        }
+    	    });     
+    	}
+    };
     
-
+    drag($(".drag-wrap").length)
+    
+    
 })

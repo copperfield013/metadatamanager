@@ -184,11 +184,17 @@ body {
     background-image: url("../images/trash.png");
     margin: 0 112px 0 24px;    
 }
+#operate .icon-trash:hover {
+	background-image: url("../images/trash-hover.png");
+}
 #operate .icon-trash-sm {
     width: 14px;
     height: 15px;
     background-image: url("../images/trash-sm.png");
     margin: 0 40px 0 24px;    
+}
+#operate .icon-trash-sm:hover {
+	background-image: url("../images/trash-sm-hover.png");
 }
 #operate .icon-add {
     width: 16px;
@@ -199,6 +205,14 @@ body {
     width: 14px;
     height: 14px;
     background-image: url("../images/add-sm.png");    
+}
+#operate .icon-add:hover {
+	background-image: url("../images/add-hover.png");
+}
+#operate .icon-add-sm:hover,
+#operate .icon-add-tag:hover,
+#operate .icon-add-abc:hover {
+	background-image: url("../images/add-sm-hover.png");
 }
 #operate .tag.icon-add-tag,
 #operate .tag.icon-add-tag-relative {
@@ -315,11 +329,19 @@ body {
 #operate .icon.icon-save  {
     display: none;
 } 
+#operate .icon-add-sm.group,
+#operate .edit .icon-add-abc.group {
+	margin-right: 78px;
+}
 #operate .edit .icon.icon-trash-sm, 
 #operate .edit .icon.icon-save {
     display: inline-block;
 }
-/* 弹出标签 */
+#operate .edit .icon-add-sm.group,
+#operate .edit .icon-add-abc.group {
+	margin-right: 0;
+}
+/* 寮瑰嚭鏍囩 */
 #operate .card {
     width: 184px;        
     color: #363636;
@@ -362,7 +384,7 @@ body {
 #operate .card .card-list:hover .icon-card-relative {
     background-image: url("../images/relative.png");
 }
-/* 添加标签弹出页 */
+/* 娣诲姞鏍囩寮瑰嚭椤� */
 #operate .tag-card {
     width: 180px;        
     color: #363636;
@@ -452,7 +474,7 @@ body {
     -webkit-transition: all .2s cubic-bezier(.12,.4,.29,1.46) .1s;
     transition: all .2s cubic-bezier(.12,.4,.29,1.46) .1s;
 }
-/* 气泡对话框1 */
+
 #operate .delete-list {
     position: absolute;
     background-image: url("../images/pop-1.png"); 
@@ -492,7 +514,7 @@ body {
     background-color: #ffffff;
     margin-right: 8px;
 }
-/* 气泡对话框c */
+
 #operate .delete-list-c {
     position: absolute;
     background-image: url("../images/pop-c.png"); 
@@ -554,7 +576,7 @@ body {
 	display: block;
 }
 
-/* 选择的实体头部 */
+
 #operate .entity-title {
     width: 100%;
     height: 64px;
@@ -642,7 +664,7 @@ body {
     margin-right: 40px;
 }
 
-#operate .drag-wrap {
+#operate .drag-wrap-1 {
     padding-left: 80px; 
     padding-right: 80px;   
 }
@@ -664,7 +686,7 @@ body {
 #operate .drag-wrap .edit-input {
     font-size: 16px;
 }
-/* 组内属性 */
+
 #operate .attr-group-drag-wrap,
 #operate .more-attr-drag-wrap,
 #operate .attr-relative-drag-wrap {

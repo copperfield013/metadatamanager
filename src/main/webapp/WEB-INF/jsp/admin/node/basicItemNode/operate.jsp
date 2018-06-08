@@ -36,7 +36,7 @@
             <!-- 标签 不能拖拽 始终在第一个-->
            
             <!-- 拖拽排序wrap -->
-            <ul class="drag-wrap collapse-content  collapse-content-active" id="drag-1">
+            <ul class="drag-wrap drag-wrap-1 collapse-content  collapse-content-active" id="drag-1">
                 <!-- 属性-->
                
                 <!-- 属性组 -->
