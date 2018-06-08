@@ -83,7 +83,7 @@ public class BasicItemNodeDaoImpl implements BasicItemNodeDao {
 
 	@Override
 	public List<BasicItemNode> getChildByPid(String parentId) {
-		String hql = " FROM BasicItemNode WHERE parentId=:parentId";
+		String hql = " FROM BasicItemNode WHERE parentId=:parentId ORDER BY order ASC";
 		return	sFactory.getCurrentSession().createQuery(hql).setParameter("parentId", parentId).list();
 	}
 
