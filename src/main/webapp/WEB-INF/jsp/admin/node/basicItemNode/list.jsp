@@ -30,7 +30,7 @@
 						<td>${item.name }</td>
 						<td>${item.abcattr }</td>
 						<td>
-							<a href="javascript:;" itemId="${item.id }" title="修改" id="edit">修改</a>
+							<a class="btn-primary tab" href="admin/node/basicItemNode/edit?nodeId=${item.id }" title="修改" target="dictMapping_edit" >修改</a>
 						</td>
 					</tr>
 				</c:forEach>
@@ -43,13 +43,5 @@
 	seajs.use(['dialog','utils'], function(Dialog, Utils){
 		var $page = $('#demo-list');
 		Utils.datepicker($('#date', $page));
-		
-		$("tbody").on("click", "#edit", function() {
-            var itemId=$(this).attr("itemId");
-            Dialog.openDialog("admin/node/basicItemNode/edit?nodeId=" + itemId, "修改", undefined, {
-                width :600,
-                height : 300
-            });
-        });
 	});
 </script>
