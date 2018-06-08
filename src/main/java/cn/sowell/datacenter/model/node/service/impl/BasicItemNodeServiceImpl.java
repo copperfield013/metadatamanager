@@ -46,7 +46,12 @@ public class BasicItemNodeServiceImpl implements BasicItemNodeService {
 			basicItemNode.setOrder(order);
 			basicItemNodeDao.insert(basicItemNode);
 		} else {//修改
+			
+			BasicItemNode btNode = basicItemNodeDao.get(BasicItemNode.class, basicItemNode.getId());
+			basicItemNode.setOrder(btNode.getOrder());
+			sFactory.getCurrentSession().evict(btNode);
 			basicItemNodeDao.update(basicItemNode);
+			
 		}
 	}
 
