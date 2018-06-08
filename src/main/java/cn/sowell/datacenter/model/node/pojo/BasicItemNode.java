@@ -24,6 +24,9 @@ public class BasicItemNode {
 
 	@Column(name = "abcattr")
 	private String abcattr;
+	
+	@Column(name="abcattr_code")
+	private String abcattrCode;
 
 	@Column(name = "data_type")
 	private String dataType;
@@ -110,6 +113,14 @@ public class BasicItemNode {
 
 	public void setParentId(String parentId) {
 		this.parentId = parentId;
+	}
+
+	public String getAbcattrCode() {
+		return abcattrCode;
+	}
+
+	public void setAbcattrCode(String abcattrCode) {
+		this.abcattrCode = abcattrCode;
 	}
 
 }

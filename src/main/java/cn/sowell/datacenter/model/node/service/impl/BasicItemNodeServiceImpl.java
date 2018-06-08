@@ -21,7 +21,6 @@ import cn.sowell.datacenter.model.node.service.BasicItemNodeService;
 @Service
 public class BasicItemNodeServiceImpl implements BasicItemNodeService {
 
-	private static final String Integer = null;
 	@Resource
 	BasicItemNodeDao basicItemNodeDao;
 	
@@ -36,13 +35,15 @@ public class BasicItemNodeServiceImpl implements BasicItemNodeService {
 	@Override
 	public void saveOrUpdate(BasicItemNode basicItemNode) {
 		//判断是添加，还是修改， 生成排序的值
+		NodeOpsType nodeOpsType = NodeOpsType.getNodeOpsType(Integer.parseInt(basicItemNode.getOpt()));
+		
+		String opt = nodeOpsType.getName();
+		basicItemNode.setOpt(opt);
 		if (basicItemNode.getId() == null) {//添加
 			//需要生成排序的值
 			//排序值的生成规则的书写
 			Integer order = basicItemNodeDao.getOrder(basicItemNode);
 			basicItemNode.setOrder(order);
-			String opt = NodeOpsType.getNodeOpsType(basicItemNode.getOpt()).getName();
-			basicItemNode.setOpt(opt);
 			basicItemNodeDao.insert(basicItemNode);
 		} else {//修改
 			basicItemNodeDao.update(basicItemNode);

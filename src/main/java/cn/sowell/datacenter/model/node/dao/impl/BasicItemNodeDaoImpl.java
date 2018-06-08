@@ -100,7 +100,7 @@ public class BasicItemNodeDaoImpl implements BasicItemNodeDao {
 			String hql = " FROM BasicItemNode WHERE type=:type AND parentId is null ORDER BY order DESC";
 			list = sFactory.getCurrentSession().createQuery(hql).setParameter("type", 1).list();
 		} else {
-			String hql = " FROM BasicItemNode WHERE parentId=:parentId";
+			String hql = " FROM BasicItemNode WHERE parentId=:parentId  ORDER BY order DESC";
 			list = sFactory.getCurrentSession().createQuery(hql).setParameter("parentId", basicItemNode.getParentId()).list();
 		}
 		
