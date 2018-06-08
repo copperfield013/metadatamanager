@@ -4,16 +4,16 @@
 <script src="media/admin/node/basicItemNode/js/Sortable.min.js"></script>
 <script src="media/admin/node/basicItemNode/js/operate.js"></script>
 
-<div id="operate" data-btnode="${btNode}">
+<div id="operateEdit" data-btnode="${btNode}">
 		
 		<div class="entity_list clear-fix">		
-			<c:forEach items="${list }" var="item">
-				<div title="code:${item.code }, 中文名称:${item.cnName },  英文名称:${item.enName }" 
-					 data-cnName="${item.cnName }"  
-					 data-code="${item.code }" class="entity_attr">				
-						${item.cnName }				
+			
+				<div title="code:${basicItem.code }, 中文名称:${basicItem.cnName },  英文名称:${basicItem.enName }" 
+					 data-cnName="${basicItem.cnName }"  
+					 data-code="${basicItem.code }" class="entity_attr">				
+						${basicItem.cnName }				
 				</div>
-			</c:forEach>
+			
 		</div>
 		
         <div class="entity-edit-wrap edit">
