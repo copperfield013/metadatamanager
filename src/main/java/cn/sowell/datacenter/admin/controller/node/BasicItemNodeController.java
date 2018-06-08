@@ -81,7 +81,7 @@ public class BasicItemNodeController {
 		}
 	}
 
-/*	// ajax 获取实体列表
+	// ajax 获取实体列表
 	@ResponseBody
 	@RequestMapping("/entityList")
 	public String entityList() {
@@ -94,7 +94,7 @@ public class BasicItemNodeController {
 		map.put("entity", list);
 		JSONObject jobj = new JSONObject(map);
 		return jobj.toString();
-	}*/
+	}
 
 	// ajax 获取NodeOpsType
 	@ApiOperation(notes = "getNodeOpsType", httpMethod = "POST", value = "添加一个新的群组")
@@ -202,14 +202,37 @@ public class BasicItemNodeController {
 	}
 
 	@RequestMapping("/operate")
-	public String operate(Model model) {
+	public String operate(String nodeId, Model model) {
 		BasicItemCriteria criteria = new BasicItemCriteria();
 		criteria.setDataType("记录类型");
 		criteria.setUsingState(1);
 		List<BasicItem> list = basicItemService.queryList(criteria);
 		model.addAttribute("list", list);
 		
+		BasicItemNode btNode = null;
+		if (nodeId != null) {
+			btNode = basicItemNodeService.getOne(Integer.parseInt(nodeId));
+		}
+		
+		model.addAttribute("btNode", btNode);
 		return AdminConstants.JSP_NODE + "/basicItemNode/operate.jsp";
 	}
+	
+	//通过父节点id， 获取孩子
+	@ResponseBody
+	@RequestMapping("/getChildNode")
+	public String getChildNode(String nodeId) {
+		List<BasicItemNode> list = basicItemNodeService.getChildNode(nodeId);
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("childNode", list);
+		JSONObject jobj = new JSONObject(map);
+		return jobj.toString();
+	}
 
+	//排序
+	@RequestMapping("/nodeSort")
+	public void nodeSort(BasicItemNode btNode, Integer beforeId, Integer afterId) {
+		basicItemNodeService.nodeSort(btNode, beforeId, afterId);
+	}
+		
 }

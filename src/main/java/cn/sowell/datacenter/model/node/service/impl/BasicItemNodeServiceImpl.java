@@ -5,9 +5,11 @@ import java.util.List;
 import javax.annotation.Resource;
 
 import org.hibernate.SessionFactory;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import com.abc.mapping.node.NodeOps;
+import com.abc.mapping.node.NodeOpsType;
 import com.abc.mapping.node.NodeType;
 
 import cn.sowell.copframe.dto.page.PageInfo;
@@ -39,11 +41,8 @@ public class BasicItemNodeServiceImpl implements BasicItemNodeService {
 			//排序值的生成规则的书写
 			Integer order = basicItemNodeDao.getOrder(basicItemNode);
 			basicItemNode.setOrder(order);
-			
-			
-			
-			
-			
+			String opt = NodeOpsType.getNodeOpsType(basicItemNode.getOpt()).getName();
+			basicItemNode.setOpt(opt);
 			basicItemNodeDao.insert(basicItemNode);
 		} else {//修改
 			basicItemNodeDao.update(basicItemNode);
@@ -89,10 +88,10 @@ public class BasicItemNodeServiceImpl implements BasicItemNodeService {
 
 	
 	@Override
-	public String nodeSort(BasicItemNode current, Integer beforeId, Integer afterId) {
-		//第一个孩子， 没有前驱， 没有后继
-		
-		if (beforeId == null && afterId == null) {//没有前驱， 没有后继, 父亲的第一个孩子
+	public void nodeSort(BasicItemNode current, Integer beforeId, Integer afterId) {
+		try {
+			//第一个孩子， 没有前驱， 没有后继
+			if (beforeId == null && afterId == null) {//没有前驱， 没有后继, 父亲的第一个孩子
 				current.setOrder(100);
 		} else if (beforeId == null && afterId != null) {//没有前驱， 但是有后继
 			BasicItemNode afterNode = basicItemNodeDao.get(BasicItemNode.class, afterId);
@@ -113,8 +112,10 @@ public class BasicItemNodeServiceImpl implements BasicItemNodeService {
 		} else {
 			basicItemNodeDao.update(current);
 		}
+		} catch (DataIntegrityViolationException e) {
+			excuExtend(current.getParentId());
+		} 
 		
-		return null;
 	}
 
 	@Override
@@ -139,5 +140,10 @@ public class BasicItemNodeServiceImpl implements BasicItemNodeService {
 			sb.append("  WHERE id IN ("+ids+") ");
 			
 			basicItemNodeDao.executeSql(sb.toString());
+	}
+
+	@Override
+	public List<BasicItemNode> getChildNode(String nodeId) {
+		return basicItemNodeDao.getChildByPid(nodeId);
 	}
 }

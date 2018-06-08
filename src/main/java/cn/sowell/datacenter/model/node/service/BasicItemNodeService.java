@@ -47,10 +47,17 @@ public interface BasicItemNodeService {
 	 * @param afterId  后继id
 	 * @return   
 	 */
-	public String nodeSort(BasicItemNode current, Integer beforeId, Integer afterId);
+	public void nodeSort(BasicItemNode current, Integer beforeId, Integer afterId);
 	/**
 	 * 扩展语句
 	 */
 	public void excuExtend(String parentId);
+	
+	/**
+	 * 通过
+	 * @param nodeId
+	 * @return
+	 */
+	List<BasicItemNode> getChildNode(String nodeId);
 	
 }
