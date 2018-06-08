@@ -1013,7 +1013,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
       
 
     //收缩事件绑定
-    $("#operate").on("click", ".icon-arrow, .icon-arrow-sm, .icon-label", function () {
+    $("#operate").on("click", ".icon-arrow, .icon-arrow-sm", function () {
         var $content = $(this).closest(".collapse-header")
             .siblings(".collapse-content");
         $(this).toggleClass("active");

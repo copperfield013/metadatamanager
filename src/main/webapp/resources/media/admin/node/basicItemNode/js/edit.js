@@ -1,16 +1,38 @@
 
 seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF){
 	
-	var $page = $("#operate");	
+	var $page = $("#operateEditEdit");	
+	var nodeId = $(".entity_attr.active", $page).attr("data-code");
+	
+	$CPF.showLoading();
+    //获取实体下的孩子
+    Ajax.ajax('admin/node/basicItemNode/getChildNode', {
+		nodeId: nodeId
+	 }, function(data) {
+		 console.log(data);
+		 var data = data.childNode;
+		 for(var i=0; i<data.length; i++) {
+			 if(data[i].type == 2) {
+				 
+			 }else if(data[i].type == 3) {
+				 
+			 }else if(data[i].type == 4) {
+				 
+			 }else if(data[i].type == 5) {
+				 
+			 }
+		 }
+		 $CPF.closeLoading();
+    });	    
 	
 	/**
      * 获取实体信息方法 示例     
      */
 	function getEntity(entity) {		
 		var cnName = $(entity).attr("data-cnname");		
-		$("#operate .entity-title>.edit-input").val(cnName);
-		$("#operate .entity-title>.entity-only-title").html(cnName);
-		$("#operate .entity-edit-wrap").addClass("active");
+		$("#operateEdit .entity-title>.edit-input").val(cnName);
+		$("#operateEdit .entity-title>.entity-only-title").html(cnName);
+		$("#operateEdit .entity-edit-wrap").addClass("active");
 	}
 	
     /**
@@ -48,7 +70,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
                 "</ul>";
         }
 
-        var wrap = $("#operate");
+        var wrap = $("#operateEdit");
         var offsetx = $(el).offset().left;
         var offsety = $(el).offset().top;
         var wrapOffsetx = wrap.offset().left;
@@ -88,7 +110,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
                 "</ul>";
         }
 
-        var wrap = $("#operate");
+        var wrap = $("#operateEdit");
         var offsetx = $(el).offset().left;
         var offsety = $(el).offset().top;
         var wrapOffsetx = wrap.offset().left;
@@ -145,7 +167,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 				}				
 			};
 			html += "</ul>"
-			var wrap = $("#operate");
+			var wrap = $("#operateEdit");
 		    var offsetx = $(el).offset().left;
 		    var offsety = $(el).offset().top;
 		    var wrapOffsetx = wrap.offset().left;
@@ -216,7 +238,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 				}				
 			};
 			html += "</ul>"
-			var wrap = $("#operate");
+			var wrap = $("#operateEdit");
 		    var offsetx = $(el).offset().left;
 		    var offsety = $(el).offset().top;
 		    var wrapOffsetx = wrap.offset().left;
@@ -246,7 +268,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
             "</div>" +
             "</div>"
 
-        var wrap = $("#operate");
+        var wrap = $("#operateEdit");
         var offsetx = $(el).offset().left;
         var offsety = $(el).offset().top;
         var wrapOffsetx = wrap.offset().left;
@@ -275,7 +297,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
             "</div>" +
             "</div>"
 
-        var wrap = $("#operate");
+        var wrap = $("#operateEdit");
         var offsetx = $(el).offset().left;
         var offsety = $(el).offset().top;
         var wrapOffsetx = wrap.offset().left;
@@ -466,7 +488,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
             "</div>" +
             "</div>" +
             "</div>" +
-            "<ul class='attr-group-drag-wrap drag-wrap collapse-content collapse-content-active' id='drag-"+dragWrapLen+"'>" +
+            "<ul class='attr-group-drag-wrap drag-wrap collapse-content collapse-content-inactive' id='drag-"+dragWrapLen+"'>" +
             "</ul>" +
             "</li>"
         $content.prepend(attrGroupHtml);
@@ -520,7 +542,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 		            "</div>" +
 		            "</div>" +
 		            "</div>" +
-		            "<ul class='more-attr-drag-wrap drag-wrap collapse-content collapse-content-active' id='drag-"+dragWrapLen+"'>" +
+		            "<ul class='more-attr-drag-wrap drag-wrap collapse-content collapse-content-inactive' id='drag-"+dragWrapLen+"'>" +
 		            "</ul>" +
 		            "</li>"
 		            $content.prepend(moreAttrHtml);
@@ -562,7 +584,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
             "</div>" +
             "</div>" +
             "</div>" +            
-            "<ul class='attr-relative-drag-wrap drag-wrap collapse-content collapse-content-active' id='drag-"+dragWrapLen+"'>" +
+            "<ul class='attr-relative-drag-wrap drag-wrap collapse-content collapse-content-inactive' id='drag-"+dragWrapLen+"'>" +
             "</ul>" +
             "</li>";         
 		    $content.prepend(relativeHtml);
@@ -573,8 +595,8 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 
     //提醒有未保存的节点
     function judgeSave() {
-        var editBar = $("#operate").find(".label-bar.edit");
-        var editEntity = $("#operate").find(".entity-edit-wrap.edit");
+        var editBar = $("#operateEdit").find(".label-bar.edit");
+        var editEntity = $("#operateEdit").find(".entity-edit-wrap.edit");
         if(editBar.length > 0 || editEntity.length > 0) {
             alert("请先保存正在编辑的节点");
             return true;
@@ -867,7 +889,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 	            "</div>" +
 	            "</div>" +
 	            "</div>" +
-	            "<ul class='drag-wrap-repeat drag-wrap collapse-content collapse-content-active' id='"+dragWrapLen+"'>" +
+	            "<ul class='drag-wrap-repeat drag-wrap collapse-content collapse-content-inactive' id='"+dragWrapLen+"'>" +
 	            "</ul>" +
 	            "</li>"				            
 	          $relativeBar.parent(".collapse-header").next(".collapse-content").append(html);
@@ -1013,7 +1035,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
       
 
     //收缩事件绑定
-    $("#operate").on("click", ".icon-arrow, .icon-arrow-sm, .icon-label", function () {
+    $("#operateEdit").on("click", ".icon-arrow, .icon-arrow-sm", function () {
         var $content = $(this).closest(".collapse-header")
             .siblings(".collapse-content");
         $(this).toggleClass("active");
@@ -1029,7 +1051,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
     })
 
     //跟实体添加事件绑定
-    $("#operate").on("click", ".icon-add, .icon-add-abc", function (e) {
+    $("#operateEdit").on("click", ".icon-add, .icon-add-abc", function (e) {
         e.stopPropagation();
         var hasSave = judgeSave();
         if(hasSave){
@@ -1041,7 +1063,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
     });
 
     //属性组 多值属性 添加事件绑定
-    $("#operate").on("click", ".icon-add-sm", function (e) {
+    $("#operateEdit").on("click", ".icon-add-sm", function (e) {
         e.stopPropagation();
         var hasSave = judgeSave();
         if(hasSave){
@@ -1053,7 +1075,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
     });
 
     //标签添加
-    $("#operate").on("click", ".icon-add-tag", function (e) {
+    $("#operateEdit").on("click", ".icon-add-tag", function (e) {
         e.stopPropagation();
         $(this).closest(".label-bar.tag").addClass("edit");
         removePop();
@@ -1062,7 +1084,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
     });
     
     //关系下标签添加
-    $("#operate").on("click", ".icon-add-tag-relative", function (e) {
+    $("#operateEdit").on("click", ".icon-add-tag-relative", function (e) {
         e.stopPropagation();
         $(this).closest(".label-bar.tag").addClass("edit");
         removePop();
@@ -1072,7 +1094,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 
 
     //删除属性事件绑定
-    $("#operate").on("click", ".icon-trash, .icon-trash-sm", function (e) {
+    $("#operateEdit").on("click", ".icon-trash, .icon-trash-sm", function (e) {
         e.stopPropagation();
         removePop();
         var $header = $(this).closest(".attr-group");
@@ -1085,14 +1107,14 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
     })
 
     //添加页中的事件绑定
-    $("#operate").on("click", ".card>li.card-list", function (e) {
+    $("#operateEdit").on("click", ".card>li.card-list", function (e) {
         e.stopPropagation();
-        if ($("#operate").find(".icon-add.active").length > 0) {
-            var el = $("#operate").find(".icon-add.active")[0];
-        } else if ($("#operate").find(".icon-add-sm.active").length > 0) {
-            var el = $("#operate").find(".icon-add-sm.active")[0];
-        } else if ($("#operate").find(".icon-add-abc.active").length > 0) {
-            var el = $("#operate").find(".icon-add-abc.active")[0];
+        if ($("#operateEdit").find(".icon-add.active").length > 0) {
+            var el = $("#operateEdit").find(".icon-add.active")[0];
+        } else if ($("#operateEdit").find(".icon-add-sm.active").length > 0) {
+            var el = $("#operateEdit").find(".icon-add-sm.active")[0];
+        } else if ($("#operateEdit").find(".icon-add-abc.active").length > 0) {
+            var el = $("#operateEdit").find(".icon-add-abc.active")[0];
         }
         if ($(this).hasClass("add-tag")) {
             addTag(el);
@@ -1110,9 +1132,9 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
     });
 
     //添加标签弹出页中的事件绑定
-    $("#operate").on("click", ".tag-checkbox-input", function (e) {
+    $("#operateEdit").on("click", ".tag-checkbox-input", function (e) {
         e.stopPropagation();
-        var el = $("#operate").find(".icon-add-tag.active")[0];
+        var el = $("#operateEdit").find(".icon-add-tag.active")[0];
         var text = $(this).val();
         var id = $(this).attr("data-id");
         var ul = $(el).closest(".label-bar.tag").find("ul");
@@ -1128,7 +1150,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
     });
 
     //标签向左移动事件绑定
-    $("#operate").on("click", ".icon-toleft", function () {
+    $("#operateEdit").on("click", ".icon-toleft", function () {
         if ($(this).hasClass("ban")) {
             return;
         }
@@ -1136,7 +1158,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
         var marginLeft = parseFloat($ul.css("marginLeft"));
         var ulWidth = parseFloat($ul.css("width"));
         var wrapWidth = parseFloat($ul.parent(".tag-content").css("width"));
-        $("#operate").find(".icon-toright").removeClass("ban");
+        $("#operateEdit").find(".icon-toright").removeClass("ban");
         if (ulWidth - wrapWidth + marginLeft < 80) {
             marginLeft = wrapWidth - ulWidth;
             $(this).addClass("ban");
@@ -1147,13 +1169,13 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
     })
 
     //标签向右移动事件绑定
-    $("#operate").on("click", ".icon-toright", function () {
+    $("#operateEdit").on("click", ".icon-toright", function () {
         if ($(this).hasClass("ban")) {
             return;
         }
         var $ul = $(this).prev(".tag-content").children("ul");
         var marginLeft = parseFloat($ul.css("marginLeft"));
-        $("#operate").find(".icon-toleft").removeClass("ban");
+        $("#operateEdit").find(".icon-toleft").removeClass("ban");
         if (marginLeft > -80) {
             marginLeft = 0;
             $(this).addClass("ban");
@@ -1164,12 +1186,12 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
     })
     
     //标签删除图标点击事件绑定
-    $("#operate").on("click", ".tag-content .icon-delete", function(){
+    $("#operateEdit").on("click", ".tag-content .icon-delete", function(){
     	$(this).parent("li").remove();
     })    
 
     //双击编辑
-    $("#operate").on("dblclick", ".label-bar", function(){
+    $("#operateEdit").on("dblclick", ".label-bar", function(){
     	var hasSave = judgeSave();
     	if(hasSave){
     		return;
@@ -1178,7 +1200,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
     })
 
     //保存
-    $("#operate").on("click", ".icon-save", function() {
+    $("#operateEdit").on("click", ".icon-save", function() {
         $(this).closest(".label-bar").removeClass("edit");
         $(this).closest(".entity-edit-wrap").removeClass("edit");
         var entityTitle = $(this).closest(".entity-title");
@@ -1203,7 +1225,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
     });
     
     //删除-全部
-    $("#operate").on("click", ".opera.confirm", function(e) { 
+    $("#operateEdit").on("click", ".opera.confirm", function(e) { 
     	e.stopPropagation();    	
         var entityTitle = $(".icon-trash.active").closest(".entity-title");
         var labelBar = $(".icon-trash-sm.active").closest(".label-bar");
@@ -1226,7 +1248,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
     })
     
     //删除-仅组
-    $("#operate").on("click", ".opera.only-group", function(e) { 
+    $("#operateEdit").on("click", ".opera.only-group", function(e) { 
     	e.stopPropagation();
     	var el = $(".icon-trash-sm.active")[0];       
         var labelBar = $(".icon-trash-sm.active").closest(".label-bar");        
@@ -1238,7 +1260,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
     })
     
     //实体选择点击事件绑定
-    $("#operate").on("click", ".entity_attr", function() {
+    $("#operateEdit").on("click", ".entity_attr", function() {
     	var $attrArray = $(".entity_attr",$page);
     	for(var i=0; i<$attrArray.length; i++) {
     		if($($attrArray[i]).hasClass("active")) { //已经有选择过的了 就不能再点击选择了
@@ -1309,7 +1331,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 	    });     
     };
     
-    drag($(".drag-wrap").length);
+    drag($(".drag-wrap").length);       
     
     
 })
