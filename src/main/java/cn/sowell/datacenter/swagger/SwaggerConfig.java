@@ -29,7 +29,6 @@ public class SwaggerConfig {
 				.title("数据建模开放文档")
 				.description("HTTP对外开放接口")
 				.version("1.0.0")
-				.termsOfServiceUrl("http://xxx.xxx.com")
 				.build();
 	}
 
