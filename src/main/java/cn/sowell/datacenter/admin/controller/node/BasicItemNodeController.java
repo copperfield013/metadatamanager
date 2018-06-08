@@ -201,7 +201,7 @@ public class BasicItemNodeController {
 	}
 
 	@RequestMapping("/operate")
-	public String operate(String nodeId, Model model) {
+	public String operate(Model model) {
 		BasicItemCriteria criteria = new BasicItemCriteria();
 		criteria.setDataType("记录类型");
 		criteria.setUsingState(1);
@@ -212,18 +212,11 @@ public class BasicItemNodeController {
 	
 	@RequestMapping("/edit")
 	public String edit(String nodeId, Model model) {
-		BasicItemCriteria criteria = new BasicItemCriteria();
-		criteria.setDataType("记录类型");
-		criteria.setUsingState(1);
-		List<BasicItem> list = basicItemService.queryList(criteria);
-		model.addAttribute("list", list);
-		
-		BasicItemNode btNode = null;
-		if (nodeId != null) {
-			btNode = basicItemNodeService.getOne(Integer.parseInt(nodeId));
-		}
+		BasicItemNode btNode = basicItemNodeService.getOne(Integer.parseInt(nodeId));
+		BasicItem basicItem = basicItemService.getBasicItem(btNode.getAbcattrCode());
 		
 		model.addAttribute("btNode", btNode);
+		model.addAttribute("basicItem", basicItem);
 		return AdminConstants.JSP_NODE + "/basicItemNode/edit.jsp";
 	}
 	
