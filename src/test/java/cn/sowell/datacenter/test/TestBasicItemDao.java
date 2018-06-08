@@ -1,8 +1,7 @@
 package cn.sowell.datacenter.test;
 
 
-import java.util.HashMap;
-import java.util.Map;
+import java.net.MalformedURLException;
 
 import javax.annotation.Resource;
 
@@ -16,7 +15,6 @@ import com.abc.mapping.node.NodeOpsType;
 import com.abc.mapping.node.NodeType;
 import com.abc.util.ValueTypeConstant;
 import com.abc.variable.Global;
-import com.alibaba.fastjson.JSONObject;
 
 import cn.sowell.datacenter.model.dictionary.service.BasicItemService;
 import cn.sowell.datacenter.model.dictionary.service.DictionaryBasicItemService;
@@ -41,13 +39,19 @@ public class TestBasicItemDao {
 	RecordRelationTypeService recordRelationTypeService;
 	
 	@Test
-	public void fun() {
-		NodeOpsType nodeOpsType = NodeOpsType.getNodeOpsType("写");
+	public void fun() throws MalformedURLException {
+		System.out.println();
+		NodeOpsType nodeOpsType1 = NodeOpsType.getNodeOpsType(1);
+		NodeOpsType nodeOpsType2 = NodeOpsType.getNodeOpsType(2);
 		
-		String name = nodeOpsType.getName();
+		NodeOpsType nodeOpsType3 = NodeOpsType.getNodeOpsType(3);
 		
+		NodeOpsType nodeOpsType4 = NodeOpsType.getNodeOpsType(4);
+		NodeOpsType nodeOpsType5 = NodeOpsType.getNodeOpsType(5);
+		NodeOpsType nodeOpsType6 = NodeOpsType.getNodeOpsType(6);
 		
-		int index = nodeOpsType.getIndex();
+		System.out.println();
+		
 		
 		
 	}
@@ -78,8 +82,5 @@ public class TestBasicItemDao {
 		System.out.println(pOSITION_CODE);
 	}
 	  
-	@Test
-	public void fun2() {
-		
-	}
+	
 }   
