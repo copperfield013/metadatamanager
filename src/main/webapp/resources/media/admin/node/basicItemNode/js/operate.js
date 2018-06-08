@@ -19,27 +19,13 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
      * @param {当前点击元素,dom对象} el 
      */
     function pop(el) {
-        var addTagLength = $(el).closest(".collapse-header")
-            .siblings(".collapse-content")
-            .children(".add-tag").length;
+//        var addTagLength = $(el).closest(".collapse-header")
+//            .siblings(".collapse-content")
+//            .children(".add-tag").length;
         var relativeLength = $(el).closest(".collapse-header")
             .siblings(".collapse-content")
             .children(".attr-relative").length;
-        var html = "<ul class='card'>";
-        if (addTagLength > 0) {
-            html += "<li class='card-list add-attr'>" +
-                "<i class='icon icon-card-attr'></i>" +
-                "<span class='text'>添加属性</span>" +
-                "</li>" +
-                "<li class='card-list add-attr-group'>" +
-                "<i class='icon icon-card-attr-group'></i>" +
-                "<span class='text'>添加属性组</span>" +
-                "</li>" +
-                "<li class='card-list add-more-attr'>" +
-                "<i class='icon icon-card-more-attr'></i>" +
-                "<span class='text'>添加多值属性</span>" +
-                "</li>"
-        } else {
+        var html = "<ul class='card'>";        
             html += "<li class='card-list add-tag'>" +
                 "<i class='icon icon-card-tag'></i>" +
                 "<span class='text'>添加标签</span>" +
@@ -56,7 +42,6 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
                 "<i class='icon icon-card-more-attr'></i>" +
                 "<span class='text'>添加多值属性</span>" +
                 "</li>"
-        };
         if (relativeLength > 0) {
             html += "</ul>";
         } else {
@@ -156,6 +141,77 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 					 html += "<li class='tag-card-list'>" +
 			            "<span class='tag-checkbox'>" +
 			            "<input data-id='"+data[i].id+"' type='checkbox' class='tag-checkbox-input' value='"+data[i].name+"'>" +
+			            "<span class='tag-checkbox-inner'></span>" +
+			            "</span>" +
+			            "<span>"+data[i].name+"</span>" +
+			            "</li>" 
+				}				
+			};
+			html += "</ul>"
+			var wrap = $("#operate");
+		    var offsetx = $(el).offset().left;
+		    var offsety = $(el).offset().top;
+		    var wrapOffsetx = wrap.offset().left;
+		    var wrapOffsety = wrap.offset().top;
+		    var top = offsety - wrapOffsety + 25;
+		    var left = offsetx - wrapOffsetx - 90;
+		    var popHtml = $(html).appendTo(wrap);
+		    popHtml.css({
+		        "top": top,
+		        "left": left
+		     });
+		    $CPF.closeLoading();
+	    });		                
+    };
+    
+    /**
+     * 添加关系下标签页面弹出方法
+    */
+    function popRelativeTag(el) {
+        var $tag = $(el).closest(".label-bar.tag")
+            .find(".tag-content").find("li:not(.icon)");
+        var hasArray = [];
+        for (var i = 0; i < $tag.length; i++) {
+            hasArray.push($($tag[i]).children("span").text());
+        };     
+        var leftRecordType = $(".entity_attr.active").attr("data-code");        
+        var rightRecordType = $(el).closest(".label-bar.tag")
+        						.closest(".collapse-content")
+        						.prev(".collapse-header")
+        						.find(".abc-attr")
+        						.find("option:selected")
+        						.attr("data-id");               
+        $CPF.showLoading();
+		Ajax.ajax('admin/node/basicItemNode/getLabRela', {
+			leftRecordType: leftRecordType, 
+			rightRecordType: rightRecordType
+		}, function(data) {			
+			var data = data.labRela;
+			if(data.length == 0) {
+				alert("需先在数据模型中添加关系");
+			};
+			var html = "<ul class='tag-card'>";
+			var has; //判断是否已经选中
+			for(var i=0; i<data.length; i++) {
+				has = false; //每次都重置
+				for(var j=0; j<hasArray.length; j++) {
+					if(hasArray[j] == data[i].name) {
+						has = true;
+						break;
+					}
+				};
+				if(has) {
+					 html += "<li class='tag-card-list'>" +
+			            "<span class='tag-checkbox tag-checkbox-checked'>" +
+			            "<input data-id='"+data[i].typeCode+"' type='checkbox' class='tag-checkbox-input' value='"+data[i].name+"'>" +
+			            "<span class='tag-checkbox-inner'></span>" +
+			            "</span>" +
+			            "<span>"+data[i].name+"</span>" +
+			            "</li>" 
+				}else {
+					 html += "<li class='tag-card-list'>" +
+			            "<span class='tag-checkbox'>" +
+			            "<input data-id='"+data[i].typeCode+"' type='checkbox' class='tag-checkbox-input' value='"+data[i].name+"'>" +
 			            "<span class='tag-checkbox-inner'></span>" +
 			            "</span>" +
 			            "<span>"+data[i].name+"</span>" +
@@ -499,8 +555,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
             }
             relativeHtml += "</select>" +
             "<div class='btn-wrap'>" +
-            "<i class='icon icon-save'></i>" +
-            "<i class='icon icon-trash-sm'></i>" +
+            "<i class='icon icon-save'></i>" +            
             "<i class='icon icon-arrow-sm'></i>" +
             "</div>" +
             "</div>" +
@@ -553,7 +608,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
     	var type = 1;
     	var name = $entityTitle.children(".edit-input").val();
     	var abcattr = $(".entity_attr.active", $page).attr("data-cnName");
-    	var abcattr_code = $(".entity_attr.active", $page).attr("data-code");
+    	var abcattrCode = $(".entity_attr.active", $page).attr("data-code");
     	var order = $entityTitle.attr("data-order");
     	var id = $entityTitle.attr("data-id")
     	var dataType = "STRING";
@@ -563,7 +618,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 			 type: type,
 			 name: name,
 			 abcattr: abcattr,
-			 abcattr_code: abcattr_code,
+			 abcattrCode: abcattrCode,
 			 dataType: dataType,
 			 opt: opt,
 			 order: order
@@ -590,20 +645,20 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
     	var parentId = $tagBar.closest(".collapse-content").prev(".collapse-header")
     						.attr("data-id"); 
     	var abcattr = [];
-    	var abcattr_code = [];
+    	var abcattrCode = [];
     	var $tags = $tagBar.find(".tag-content").children("ul").children("li");
     	for(var i=0; i<$tags.length; i++) {
-    		abcattr_code.push($($tags[i]).attr("data-id"));
+    		abcattrCode.push($($tags[i]).attr("data-id"));
     		abcattr.push($($tags[i]).attr("data-text"));
     	}
     	abcattr = abcattr.join(",");
-    	abcattr_code = abcattr_code.join(",");
+    	abcattrCode = abcattrCode.join(",");
     	$CPF.showLoading();
     	Ajax.ajax(' admin/node/basicItemNode/saveOrUpdate', {
 			 type: type,
 			 name: name,
 			 abcattr: abcattr,
-			 abcattr_code: abcattr_code,
+			 abcattrCode: abcattrCode,
 			 dataType: dataType,
 			 opt: opt,
 			 order: order,
@@ -632,7 +687,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
     	var parentId = $attrBar.closest(".collapse-content").prev(".collapse-header")
     						.attr("data-id"); 
     	var abcattr = $attrBar.children(".abc-attr").find("option:selected").val();
-    	var abcattr_code = $attrBar.children(".abc-attr").find("option:selected").attr("data-id");
+    	var abcattrCode = $attrBar.children(".abc-attr").find("option:selected").attr("data-id");
     	switch (opt) {
 	        case "读":
 	            opt = 1;
@@ -657,7 +712,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 			 type: type,
 			 name: name,
 			 abcattr: abcattr,
-			 abcattr_code: abcattr_code,
+			 abcattrCode: abcattrCode,
 			 dataType: dataType,
 			 opt: opt,
 			 order: order,
@@ -719,7 +774,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
     	var parentId = $moreAttrBar.closest(".collapse-content").prev(".collapse-header")
     						.attr("data-id"); 
     	var abcattr = $moreAttrBar.children(".abc-attr").find("option:selected").val();
-    	var abcattr_code = $moreAttrBar.children(".abc-attr").find("option:selected").attr("data-id");    	  
+    	var abcattrCode = $moreAttrBar.children(".abc-attr").find("option:selected").attr("data-id");    	  
     	switch (opt) {
 	        case "读":
 	            opt = 1;
@@ -744,7 +799,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 			 type: type,
 			 name: name,
 			 abcattr: abcattr,
-			 abcattr_code: abcattr_code,
+			 abcattrCode: abcattrCode,
 			 dataType: dataType,
 			 opt: opt,
 			 order: order,
@@ -770,7 +825,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
     	var opt = 2;
     	var name = $relativeBar.children(".edit-input").val();  
     	var abcattr = $relativeBar.children(".abc-attr").find("option:selected").val();
-    	var abcattr_code = $relativeBar.children(".abc-attr").find("option:selected").attr("data-id");
+    	var abcattrCode = $relativeBar.children(".abc-attr").find("option:selected").attr("data-id");
     	var order = $relativeBar.closest(".collapse-header").attr("data-order");
     	var id = $relativeBar.closest(".collapse-header").attr("data-id");
     	var parentId = $relativeBar.closest(".collapse-content").prev(".collapse-header")
@@ -781,7 +836,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 			 type: type,
 			 name: name,
 			 abcattr: abcattr,	
-			 abcattr_code: abcattr_code,
+			 abcattrCode: abcattrCode,
 			 dataType: dataType,
 			 opt: opt,
 			 order: order,
@@ -812,7 +867,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 	            "<span class='icon icon-toright ban'></span>" +
 	            "<div class='btn-wrap'>" +
 	            "<i class='icon tag icon-save'></i>" +
-	            "<i class='icon tag icon-add-tag'></i>" +
+	            "<i class='icon tag icon-add-tag-relative'></i>" +
 	            "<i class='icon-simulate-trashsm'></i>" +
 	            "</div>" +
 	            "</div>" +
@@ -824,7 +879,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 	            "</div>" +
 	            "<div class='label-bar abc edit'>" +
 	            "<input class='edit-input' value='"+abcattr+"'>"+
-	            "<span class='entity-only-title' data-abcattr-code='"+abcattr_code+"' data-abcattr='"+abcattr+"'>"+abcattr+"</span>"+
+	            "<span class='entity-only-title' data-abcattr-code='"+abcattrCode+"' data-abcattr='"+abcattr+"'>"+abcattr+"</span>"+
 	            "<div class='btn-wrap'>" +
 	            "<i class='icon icon-save'></i>" +
 	            "<i class='icon icon-add-abc'></i>" +
@@ -853,14 +908,14 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
     	var parentId = $abcBar.closest(".collapse-content").prev(".collapse-header")
     						.attr("data-id"); 
     	var abcattr = $abcBar.children(".entity-only-title").attr("data-abcattr");    	
-    	var abcattr_code = $abcBar.children(".entity-only-title").attr("data-abcattr-code");    	  
+    	var abcattrCode = $abcBar.children(".entity-only-title").attr("data-abcattr-code");    	  
     	
     	$CPF.showLoading();
     	Ajax.ajax('admin/node/basicItemNode/saveOrUpdate', {
 			 type: type,
 			 name: name,
 			 abcattr: abcattr,
-			 abcattr_code: abcattr_code,
+			 abcattrCode: abcattrCode,
 			 dataType: dataType,
 			 opt: opt,
 			 order: order,
@@ -877,6 +932,80 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 			 $CPF.closeLoading();
 		});
     };
+    
+    //删除的请求方法
+    function deleteAjax(id, boolean, callback) {
+    	$CPF.showLoading();
+    	Ajax.ajax('admin/node/basicItemNode/do_delete', {			
+			 id: id,
+			 isDelChil: boolean
+		 }, function(data) {
+			 console.log(data);
+			 callback();
+			 $CPF.closeLoading();
+		});
+    };
+    
+    //跟实体删除方法
+    
+    //跟实体删除方法
+    function entityDelete(el) {
+    	var $entityTitle = $(el).closest(".label-bar");
+    	var id = $entityTitle.attr("data-id");
+    	var isDelChil = true;
+    	var callback = function() {
+    		$entityTitle.next(".collapse-content").html();
+    		$entityTitle.parent(".entity-edit-wrap")
+    			.removeClass("active")
+    			.addClass("edit");
+    	};
+    	deleteAjax(id, isDelChil, callback);
+    }
+    
+    //属性删除方法
+    function attrDelete(el) {
+    	var $attrBar = $(el).closest(".label-bar");
+    	var id = $attrBar.attr("data-id");
+    	var isDelChil = false;
+    	var callback = function() {
+    		$attrBar.parent(".add-attr").remove();    		
+    	};
+    	deleteAjax(id, isDelChil, callback);
+    }
+    
+    //属性组删除方法
+    function attrDelete(el, isDelChil) {
+    	var $attrGroupBar = $(el).closest(".label-bar");
+    	var id = $attrGroupBar.closest(".collapse-header").attr("data-id");
+    	var isDelChil = isDelChil;
+    	var callback = function() {
+    		$attrGroupBar.closest(".attr-group").remove();    		
+    	};
+    	deleteAjax(id, isDelChil, callback);
+    };
+    
+    //多值属性删除方法
+    function moreAttrDelete(el, isDelChil) {
+    	var $moreAttrBar = $(el).closest(".label-bar");
+    	var id = $attrGroupBar.closest(".collapse-header").attr("data-id");
+    	var isDelChil = isDelChil;
+    	var callback = function() {
+    		$moreAttrBar.closest(".more-attr").remove();    		
+    	};
+    	deleteAjax(id, isDelChil, callback);
+    };   
+    
+    //关系删除方法
+    function relativeDelete(el) {
+    	var $relativeBar = $(el).closest(".label-bar");
+    	var id = $attrGroupBar.closest(".collapse-header").attr("data-id");
+    	var isDelChil = isDelChil;
+    	var callback = function() {
+    		$moreAttrBar.closest(".more-attr").remove();    		
+    	};
+    	deleteAjax(id, isDelChil, callback);
+    };   
+        
 
     $page.on("click", function () {    	
         removePop();
@@ -934,6 +1063,15 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
         $(this).closest(".label-bar.tag").addClass("edit");
         removePop();
         popTag(this);
+        $(this).addClass("active");
+    });
+    
+    //关系下标签添加
+    $("#operate").on("click", ".icon-add-tag-relative", function (e) {
+        e.stopPropagation();
+        $(this).closest(".label-bar.tag").addClass("edit");
+        removePop();
+        popRelativeTag(this);
         $(this).addClass("active");
     });
 
@@ -1091,6 +1229,30 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
         	relativeSave(this);
         }else if(labelBar.hasClass("abc")) {
         	abcSave(this);
+        }
+    });
+    
+    //删除
+    $("#operate").on("click", ".icon-trash, .icon-trash-sm", function() {        
+        var entityTitle = $(this).closest(".entity-title");
+        var labelBar = $(this).closest(".label-bar");
+        if(entityTitle.length > 0) {
+        	
+        	return;
+        }
+        if(labelBar.hasClass("tag")) {   
+        	
+        }else if(labelBar.hasClass("attr")) {
+        	
+        	
+        }else if(labelBar.hasClass("more-attr")) {
+        	;
+        }else if(labelBar.hasClass("attr-group")) {
+        	
+        }else if(labelBar.hasClass("attr-relative")) {
+        	;
+        }else if(labelBar.hasClass("abc")) {
+        	
         }
     })
     
