@@ -16,7 +16,6 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import springfox.documentation.annotations.ApiIgnore;
 
-@ApiModel(value="basicItem对象", description="basicItem对象信息")
 @Entity
 @Table(name = "t_c_basic_item")
 public class BasicItem {
