@@ -66,12 +66,12 @@ public class BasicItemNodeServiceImpl implements BasicItemNodeService {
 	}
 
 	@Override
-	public void delete(Integer id, String isDelChil) {
+	public void delete(Integer id, boolean isDelChil) {
 		BasicItemNode btn = basicItemNodeDao.get(BasicItemNode.class, id);
 		NodeType nodeType = NodeType.getNodeType(btn.getType());
 		switch (nodeType) {
 			case ATTRGROUP:
-				if (!"true".equals(isDelChil)) {
+				if (!(true == isDelChil)) {
 					//只删除分组， 不删除孩子
 					//获取所有孩子， 给孩子更改父亲， 父亲就是分组的父亲
 					List<BasicItemNode> childByPid = basicItemNodeDao.getChildByPid(String.valueOf(btn.getId()));

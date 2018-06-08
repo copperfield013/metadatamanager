@@ -71,7 +71,7 @@ public class BasicItemNodeController {
 
 	@ResponseBody
 	@RequestMapping("/do_delete")
-	public AjaxPageResponse doDelte(Integer id, String isDelChil) {
+	public AjaxPageResponse doDelte(Integer id, boolean isDelChil) {
 		try {
 			basicItemNodeService.delete(id, isDelChil);
 			return AjaxPageResponse.REFRESH_LOCAL("删除成功");

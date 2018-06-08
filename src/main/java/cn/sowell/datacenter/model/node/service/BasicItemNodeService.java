@@ -37,7 +37,7 @@ public interface BasicItemNodeService {
 	 * 
 	 */
 	 
-	void delete(Integer id, String isDelChil);
+	void delete(Integer id, boolean isDelChil);
 	
 	/**
 	 * 节点排序
