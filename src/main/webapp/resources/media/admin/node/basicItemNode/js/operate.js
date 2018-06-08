@@ -916,15 +916,15 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
     	Ajax.ajax('admin/node/basicItemNode/do_delete', {			
 			 id: id,
 			 isDelChil: boolean
-		 }, function(data) {	
-			 					 
+		 }, function(data) {				 
+			 if(typeof(data.notice) === "undefined") {
+				 removePop();
+				 $CPF.closeLoading();
+				 return;
+			 };	
 			 callback();
 			 removePop();
 			 $CPF.closeLoading();
-		}, function() {
-			console.log(11111);
-			removePop();
-			$CPF.closeLoading();
 		});
     };
     
