@@ -34,7 +34,6 @@ import cn.sowell.datacenter.model.node.service.BasicItemNodeService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
-@Api(value = "配置文件controller")
 @Controller
 @RequestMapping(AdminConstants.URI_NODE + "/basicItemNode")
 public class BasicItemNodeController {
@@ -231,8 +230,11 @@ public class BasicItemNodeController {
 
 	//排序
 	@RequestMapping("/nodeSort")
-	public void nodeSort(BasicItemNode btNode, Integer beforeId, Integer afterId) {
-		basicItemNodeService.nodeSort(btNode, beforeId, afterId);
+	public void nodeSort(Integer currentId, Integer beforeId, Integer afterId) {
+		BasicItemNode current = null;
+		basicItemNodeService.getOne(currentId);
+		
+		basicItemNodeService.nodeSort(current, beforeId, afterId);
 	}
 		
 }
