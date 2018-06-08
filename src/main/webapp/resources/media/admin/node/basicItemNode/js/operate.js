@@ -2,7 +2,7 @@
 seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF){
 	
 	var $page = $("#operate");
-
+	
 	
 	/**
      * 获取实体信息方法 示例     
@@ -115,6 +115,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
         };        
         $CPF.showLoading();
 		Ajax.ajax('admin/node/basicItemNode/getCommLab', '', function(data) {
+			console.log(data);
 			var data = data.commLab;
 			var html = "<ul class='tag-card'>";
 			var has; //判断是否已经选中
@@ -538,6 +539,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
     function addRelative(el) {
         var $content = $(el).closest(".collapse-header").siblings(".collapse-content");
         var entityId = $(".entity_attr", $page).attr("data-code");
+        var dragWrapLen = $(".drag-wrap").length + 1 ;
         $CPF.showLoading();
 		Ajax.ajax('admin/node/basicItemNode/getComm?entityId', {
 			entityId: entityId
@@ -561,10 +563,11 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
             "</div>" +
             "</div>" +
             "</div>" +            
-            "<ul class='attr-relative-drag-wrap drag-wrap collapse-content collapse-content-active'>" +
+            "<ul class='attr-relative-drag-wrap drag-wrap collapse-content collapse-content-active' id='drag-"+dragWrapLen+"'>" +
             "</ul>" +
             "</li>";         
 		    $content.prepend(relativeHtml);
+		    drag($(".drag-wrap").length);
 		    $CPF.closeLoading();			    
 	    });                                 
     };    
@@ -806,8 +809,8 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
     	var order = $relativeBar.closest(".collapse-header").attr("data-order");
     	var id = $relativeBar.closest(".collapse-header").attr("data-id");
     	var parentId = $relativeBar.closest(".collapse-content").prev(".collapse-header")
-    						.attr("data-id");     	    	 
-    	
+    						.attr("data-id");  
+    	var dragWrapLen = $(".drag-wrap").length + 1 ;
     	$CPF.showLoading();
     	Ajax.ajax('admin/node/basicItemNode/saveOrUpdate', {
 			 type: type,
@@ -865,10 +868,11 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 	            "</div>" +
 	            "</div>" +
 	            "</div>" +
-	            "<ul class='drag-wrap-repeat collapse-content collapse-content-active'>" +
+	            "<ul class='drag-wrap-repeat drag-wrap collapse-content collapse-content-active' id='"+dragWrapLen+"'>" +
 	            "</ul>" +
 	            "</li>"				            
 	          $relativeBar.parent(".collapse-header").next(".collapse-content").append(html);
+			  drag($(".drag-wrap").length);
 			  $CPF.closeLoading();
 		});
     };
@@ -917,11 +921,6 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 			 id: id,
 			 isDelChil: boolean
 		 }, function(data) {				 
-			 if(typeof(data.notice) === "undefined") {
-				 removePop();
-				 $CPF.closeLoading();
-				 return;
-			 };	
 			 callback();
 			 removePop();
 			 $CPF.closeLoading();
@@ -1254,29 +1253,64 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
     
     //拖拽排序方法
     function drag(length) {
-    	for(var i=0; i<length; i++) {    		
-    		var dragWrap = document.getElementById("drag-"+(i+1));    		
-    		Sortable.create(dragWrap, {
-    	        group: {
-    	            name: "drag-1",
-    	            pull: false,
-    	            put: false,
-    	        },
-    	        filter: ".no-dragger",
-    	        forceFallback: true,
-    	        sort: true,
-    	        animation: 100,
-    	        onStart: function (evt) {
+    	var dragWrap = document.getElementById("drag-"+length); 
+		var name = "drag-"+length;
+		console.log(dragWrap);
+		console.log(name);
+    	Sortable.create(dragWrap, {
+	        group: {
+	            name: name,
+	            pull: false,
+	            put: false
+	        },
+	        filter: ".no-dragger",	        
+	        sort: true,
+	        animation: 100,
+	        onStart: function (evt) {
 
-    	        },
-    	        onEnd: function (evt) {
-
-    	        }
-    	    });     
-    	}
+	        },
+	        onEnd: function (evt) {
+	        	var current = $(evt.item);
+	        	var before = $(evt.item).prev("li");
+	        	var after = $(evt.item).next("li");
+	        	var currentId
+	        	var beforeId;
+	        	var afterId;	        	
+	        	if(before.length == 0) {
+	        		beforeId = null;
+	        	}else if(before.hasClass(".attr-group") || before.hasClass(".more-attr") || before.hasClass(".attr-relative") || before.hasClass(".attr-abc")){	        		
+	        		beforeId = before.children(".collapse-header").attr("data-id");
+	        	}else {
+	        		beforeId = before.children(".label-bar").attr("data-id");
+	        	}
+	        	
+	        	if(after.length == 0) {
+	        		afterId = null;
+	        	}else if(after.hasClass("attr-group") || after.hasClass("more-attr") || after.hasClass("attr-relative") || after.hasClass("attr-abc")){
+	        		afterId = after.children(".collapse-header").attr("data-id");
+	        	}else {
+	        		afterId = after.children(".label-bar").attr("data-id");
+	        	}
+	        	
+	        	if(current.hasClass("attr-group") || current.hasClass("more-attr") || current.hasClass("attr-relative") || current.hasClass("attr-abc")){	        			        		
+	        		currentId = current.children(".collapse-header").attr("data-id");
+	        	}else {	        		
+	        		currentId = current.children(".label-bar").attr("data-id");
+	        	}
+	        	$CPF.showLoading();
+	    		Ajax.ajax('admin/node/basicItemNode/nodeSort', {
+	    			currentId: currentId,
+	    			beforeId: beforeId,
+	    			afterId: afterId
+	    		 }, function(data) {
+	    			 console.log(data);
+	    			 $CPF.closeLoading();
+	    	    });	        	
+	        }
+	    });     
     };
     
-    drag($(".drag-wrap").length)
+    drag($(".drag-wrap").length);
     
     
 })
