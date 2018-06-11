@@ -1296,12 +1296,6 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 	        	}else {	        		
 	        		currentId = current.children(".label-bar").attr("data-id");
 	        	}
-	        	
-	        	
-	        	alert(currentId);
-	        	alert(beforeId);
-	        	alert(afterId);
-	        	
 	        	$CPF.showLoading();
 	    		Ajax.ajax('admin/node/basicItemNode/nodeSort', {
 	    			currentId: currentId,
