@@ -14,7 +14,7 @@
 				</div>			
 		</div>
 		
-        <div class="entity-edit-wrap edit">
+        <div class="entity-edit-wrap active">
             <!-- 实体标题:begin -->
             <div class="entity-title collapse-header" data-order="${btNode.order}" data-id="${btNode.id}">
                 <div class="icon-label-master">
@@ -34,7 +34,7 @@
             <!-- 标签 不能拖拽 始终在第一个-->
            
             <!-- 拖拽排序wrap -->
-            <ul class="drag-wrap drag-wrap-1 collapse-content  collapse-content-inactive" id="drag-1">
+            <ul class="dragEdit-wrap dragEdit-wrap-1 collapse-content  collapse-content-active" id="dragEdit-1">
                 <!-- 属性-->
                
                 <!-- 属性组 -->

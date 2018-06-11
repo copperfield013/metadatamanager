@@ -867,7 +867,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 	            "</div>" +
 	            "</div>" +
 	            "</div>" +
-	            "<ul class='drag-wrap-repeat drag-wrap collapse-content collapse-content-active' id='"+dragWrapLen+"'>" +
+	            "<ul class='drag-wrap-repeat drag-wrap collapse-content collapse-content-active' id='drag-"+dragWrapLen+"'>" +
 	            "</ul>" +
 	            "</li>"				            
 	          $relativeBar.parent(".collapse-header").next(".collapse-content").append(html);

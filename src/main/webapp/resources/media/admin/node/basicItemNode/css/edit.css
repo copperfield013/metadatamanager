@@ -664,42 +664,42 @@ body {
     margin-right: 40px;
 }
 
-#operateEdit .drag-wrap-1 {
+#operateEdit .dragEdit-wrap-1 {
     padding-left: 80px; 
     padding-right: 80px;   
 }
-#operateEdit .drag-wrap .add-tag {
+#operateEdit .dragEdit-wrap .add-tag {
    
 }
-#operateEdit .drag-wrap-repeat {
+#operateEdit .dragEdit-wrap-repeat {
     padding-left: 40px;
 }
-#operateEdit .drag-wrap-repeat-more {
+#operateEdit .dragEdit-wrap-repeat-more {
     padding-left: 0px;
 }
 
-#operateEdit .drag-wrap>li,
-#operateEdit .drag-wrap-repeat>li,
-#operateEdit .drag-wrap-repeat-more>li {
+#operateEdit .dragEdit-wrap>li,
+#operateEdit .dragEdit-wrap-repeat>li,
+#operateEdit .dragEdit-wrap-repeat-more>li {
     margin-top: 8px;    
 }
-#operateEdit .drag-wrap .edit-input {
+#operateEdit .dragEdit-wrap .edit-input {
     font-size: 16px;
 }
 
-#operateEdit .attr-group-drag-wrap,
-#operateEdit .more-attr-drag-wrap,
-#operateEdit .attr-relative-drag-wrap {
+#operateEdit .attr-group-dragEdit-wrap,
+#operateEdit .more-attr-dragEdit-wrap,
+#operateEdit .attr-relative-dragEdit-wrap {
     padding-left: 40px;
 }
-#operateEdit .drag-wrap-repeat-more  .attr-group-drag-wrap,
-#operateEdit .drag-wrap-repeat-more  .more-attr-drag-wrap,
-#operateEdit .drag-wrap-repeat-more  .attr-relative-drag-wrap {
+#operateEdit .dragEdit-wrap-repeat-more  .attr-group-dragEdit-wrap,
+#operateEdit .dragEdit-wrap-repeat-more  .more-attr-dragEdit-wrap,
+#operateEdit .dragEdit-wrap-repeat-more  .attr-relative-dragEdit-wrap {
     padding-left: 0px;
 }
-#operateEdit .attr-group-drag-wrap>li,
-#operateEdit .more-attr-drag-wrap>li,
-#operateEdit .attr-relative-drag-wrap>li {
+#operateEdit .attr-group-dragEdit-wrap>li,
+#operateEdit .more-attr-dragEdit-wrap>li,
+#operateEdit .attr-relative-dragEdit-wrap>li {
     margin-top: 8px;
 }
 

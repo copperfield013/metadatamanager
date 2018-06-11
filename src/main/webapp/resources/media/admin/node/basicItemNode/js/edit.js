@@ -1,8 +1,8 @@
 
 seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF){
 	
-	var $page = $("#operateEditEdit");	
-	var nodeId = $(".entity_attr.active", $page).attr("data-code");
+	var $page = $("#operateEdit");	
+	var nodeId = $(".entity-title", $page).attr("data-id");
 	
 	$CPF.showLoading();
     //获取实体下的孩子
@@ -23,8 +23,73 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 			 }
 		 }
 		 $CPF.closeLoading();
-    });	    
+    });	 
+    
+    //普通属性初始化方法
+    function initAttr(abcattr,dataType,id,name,opt,order,parent) {
+    	Ajax.ajax('admin/node/basicItemNode/getComm?entityId', {
+			entityId: entityId
+		}, function(data) {			
+			var data = data.comm;
+			var attrHtml = "<li class='add-attr clear-fix'>" +
+            "<div class='icon-label attr' data-order='' data-id=''>" +
+            "<i class='icon icon-attr'></i>" +
+            "<span class='text'>属性</span>" +
+            "</div>" +
+            "<div class='label-bar attr edit' data-order='' data-id=''>" +
+            "<input type='text' class='edit-input' value='"+name+"'>" +
+            "<select class='abc-attr'>"            
+            for(var i=0; i<data.length; i++) {
+            	if(data[i][1] == abcattr) {
+            		attrHtml += "<option data-id='"+data[i][0]+"' value='"+data[i][1]+"' selected>"+data[i][1]+"</option>";
+            	}else {
+            		attrHtml += "<option data-id='"+data[i][0]+"' value='"+data[i][1]+"'>"+data[i][1]+"</option>";
+            	}
+            	                
+            }
+			attrHtml += "</select>";
+			attrHtml += "<select class='data-type'>";            
+		    Ajax.ajax('admin/node/basicItemNode/getDataType', '', function(data){		    	
+		    	var data = data.dataType;
+		    	for(var i=0; i<data.length; i++) {
+		    		if(data[i] == dataType) {
+		    			attrHtml += "<option value='"+data[i]+"' selected>"+data[i]+"</option>";
+		    		}else {
+		    			attrHtml += "<option value='"+data[i]+"'>"+data[i]+"</option>";
+		    		}
+	            	          
+	            };
+	            attrHtml += "</select>";
+				attrHtml += "<select class='node-ops-type'>";
+				Ajax.ajax('admin/node/basicItemNode/getNodeOpsType', '', function(data){		    	
+			    	var data = data.nodeOpsType;
+			    	for(var i=0; i<data.length; i++) {
+			    		if(data[i] == opt) {
+			    			attrHtml += "<option value='"+data[i]+"' selected>"+data[i]+"</option>";
+			    		}else {
+			    			attrHtml += "<option value='"+data[i]+"'>"+data[i]+"</option>";
+			    		}
+		            	          
+		            };
+		            attrHtml += "</select>";
+		            attrHtml += "<div class='btn-wrap'>" +
+		            "<i class='icon icon-save'></i>" +
+		            "<i class='icon icon-trash-sm'></i>" +
+		            "<i class='icon-simulate-trashsm'></i>" +
+		            "</div>" +
+		            "</div>" +
+		            "</li>";
+		            $parent.prepend(attrHtml);		            
+			    })			    
+		    })
+	    });	
+    }
 	
+    //标签初始化方法
+    function initTag() {
+    	
+    }
+    
 	/**
      * 获取实体信息方法 示例     
      */
@@ -471,7 +536,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
       */
     function addGroup(el) {
         var $content = $(el).closest(".collapse-header").siblings(".collapse-content");
-        var dragWrapLen = $(".drag-wrap").length + 1 ;
+        var dragWrapLen = $(".dragEdit-wrap").length + 1 ;
         var attrGroupHtml = "<li class='attr-group'>" +
             "<div class='attr-group-title collapse-header' data-order='' data-id=''>" +
             "<div class='icon-label attr-group'>" +
@@ -488,11 +553,11 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
             "</div>" +
             "</div>" +
             "</div>" +
-            "<ul class='attr-group-drag-wrap drag-wrap collapse-content collapse-content-inactive' id='drag-"+dragWrapLen+"'>" +
+            "<ul class='attr-group-drag-wrap dragEdit-wrap collapse-content collapse-content-active' id='dragEdit-"+dragWrapLen+"'>" +
             "</ul>" +
             "</li>"
         $content.prepend(attrGroupHtml);
-        drag($(".drag-wrap").length);
+        drag($(".dragEdit-wrap").length);
     };
 
     /**
@@ -501,7 +566,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
     function addMoreAttr(el) {
         var $content = $(el).closest(".collapse-header").siblings(".collapse-content");
         var entityId = $(".entity_attr", $page).attr("data-code");
-        var dragWrapLen = $(".drag-wrap").length + 1 ;
+        var dragWrapLen = $(".dragEdit-wrap").length + 1 ;
         $CPF.showLoading();
 		Ajax.ajax('admin/node/basicItemNode/getComm?entityId', {
 			entityId: entityId
@@ -542,11 +607,11 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 		            "</div>" +
 		            "</div>" +
 		            "</div>" +
-		            "<ul class='more-attr-drag-wrap drag-wrap collapse-content collapse-content-inactive' id='drag-"+dragWrapLen+"'>" +
+		            "<ul class='more-attr-drag-wrap dragEdit-wrap collapse-content collapse-content-active' id='dragEdit-"+dragWrapLen+"'>" +
 		            "</ul>" +
 		            "</li>"
 		            $content.prepend(moreAttrHtml);
-		            drag($(".drag-wrap").length);
+		            drag($(".dragEdit-wrap").length);
 		            $CPF.closeLoading();
 			    })
 			    
@@ -560,7 +625,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
     function addRelative(el) {
         var $content = $(el).closest(".collapse-header").siblings(".collapse-content");
         var entityId = $(".entity_attr", $page).attr("data-code");
-        var dragWrapLen = $(".drag-wrap").length + 1 ;
+        var dragWrapLen = $(".dragEdit-wrap").length + 1 ;
         $CPF.showLoading();
 		Ajax.ajax('admin/node/basicItemNode/getComm?entityId', {
 			entityId: entityId
@@ -584,11 +649,11 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
             "</div>" +
             "</div>" +
             "</div>" +            
-            "<ul class='attr-relative-drag-wrap drag-wrap collapse-content collapse-content-inactive' id='drag-"+dragWrapLen+"'>" +
+            "<ul class='attr-relative-drag-wrap dragEdit-wrap collapse-content collapse-content-active' id='dragEdit-"+dragWrapLen+"'>" +
             "</ul>" +
             "</li>";         
 		    $content.prepend(relativeHtml);
-		    drag($(".drag-wrap").length);
+		    drag($(".dragEdit-wrap").length);
 		    $CPF.closeLoading();			    
 	    });                                 
     };    
@@ -831,7 +896,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
     	var id = $relativeBar.closest(".collapse-header").attr("data-id");
     	var parentId = $relativeBar.closest(".collapse-content").prev(".collapse-header")
     						.attr("data-id");  
-    	var dragWrapLen = $(".drag-wrap").length + 1 ;
+    	var dragWrapLen = $(".dragEdit-wrap").length + 1 ;
     	$CPF.showLoading();
     	Ajax.ajax('admin/node/basicItemNode/saveOrUpdate', {
 			 type: type,
@@ -889,11 +954,11 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 	            "</div>" +
 	            "</div>" +
 	            "</div>" +
-	            "<ul class='drag-wrap-repeat drag-wrap collapse-content collapse-content-inactive' id='"+dragWrapLen+"'>" +
+	            "<ul class='drag-wrap-repeat dragEdit-wrap collapse-content collapse-content-active' id='dragEdit-"+dragWrapLen+"'>" +
 	            "</ul>" +
 	            "</li>"				            
 	          $relativeBar.parent(".collapse-header").next(".collapse-content").append(html);
-			  drag($(".drag-wrap").length);
+			  drag($(".dragEdit-wrap").length);
 			  $CPF.closeLoading();
 		});
     };
@@ -1274,10 +1339,9 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
     
     //拖拽排序方法
     function drag(length) {
-    	var dragWrap = document.getElementById("drag-"+length); 
-		var name = "drag-"+length;
-		console.log(dragWrap);
-		console.log(name);
+    	
+    	var dragWrap = document.getElementById("dragEdit-"+length); 
+		var name = "dragEdit-"+length;		
     	Sortable.create(dragWrap, {
 	        group: {
 	            name: name,
@@ -1331,7 +1395,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 	    });     
     };
     
-    drag($(".drag-wrap").length);       
+    drag($(".dragEdit-wrap").length);       
     
     
 })
