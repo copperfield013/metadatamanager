@@ -1350,8 +1350,11 @@
 		var evt,
 			sortable = fromEl[expando],
 			onMoveFn = sortable.options.onMove,
-			retVal;
-
+			retVal;		
+		if(dragRect.x - targetRect.x >= 20) {
+			retVal = false;
+			return retVal;
+		}
 		evt = document.createEvent('Event');
 		evt.initEvent('move', true, true);
 

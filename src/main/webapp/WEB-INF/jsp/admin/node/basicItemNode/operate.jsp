@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html;charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ include file="/WEB-INF/jsp/common/base_empty.jsp"%>
 <link rel="stylesheet" href="media/admin/node/basicItemNode/css/operate.css">
-<script src="media/admin/node/basicItemNode/js/Sortable.min.js"></script>
+<script src="media/admin/node/basicItemNode/js/Sortable.js"></script>
 <script src="media/admin/node/basicItemNode/js/operate.js"></script>
 
 <div id="operate" data-btnode="${btNode}">

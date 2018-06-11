@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html;charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ include file="/WEB-INF/jsp/common/base_empty.jsp"%>
 <link rel="stylesheet" href="media/admin/node/basicItemNode/css/edit.css">
-<script src="media/admin/node/basicItemNode/js/Sortable.min.js"></script>
+<script src="media/admin/node/basicItemNode/js/Sortable.js"></script>
 <script src="media/admin/node/basicItemNode/js/edit.js"></script>
 
 <div id="operateEdit" data-btnode="${btNode}">
@@ -21,7 +21,7 @@
                     <i class="icon-root icon"></i>
                     <span class="text">ABC</span>
                 </div>
-                <input name="name" type="text" class="edit-input" value="${btNode.name}">
+                <input name="name" type="text" disabled class="edit-input" value="${btNode.name}">
                 <span class="entity-only-title"></span>
                 <div class="btn-wrap">
                 	<i class="icon icon-save"></i>

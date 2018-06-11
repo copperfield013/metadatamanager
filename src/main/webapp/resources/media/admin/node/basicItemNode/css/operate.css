@@ -201,12 +201,12 @@
 	background-image: url("../images/add-hover.png");
 }
 #operate .icon-add-sm:hover,
-#operate .icon-add-tag:hover,
+#operate .tag.icon-add-tag:hover,
 #operate .icon-add-abc:hover {
 	background-image: url("../images/add-sm-hover.png");
 }
-#operate .tag.icon-add-tag,
-#operate .tag.icon-add-tag-relative {
+#operate .icon-add-tag,
+#operate .icon-add-tag-relative {
     margin: 0 40px 0 24px; 
     width: 14px;
     height: 14px;
@@ -321,7 +321,7 @@
     display: none;
 } 
 #operate .icon-add-sm.group,
-#operate .edit .icon-add-abc.group {
+#operate .icon-add-abc.group {
 	margin-right: 78px;
 }
 #operate .edit .icon.icon-trash-sm, 
@@ -332,7 +332,6 @@
 #operate .edit .icon-add-abc.group {
 	margin-right: 0;
 }
-/* 寮瑰嚭鏍囩 */
 #operate .card {
     width: 184px;        
     color: #363636;
@@ -375,7 +374,6 @@
 #operate .card .card-list:hover .icon-card-relative {
     background-image: url("../images/relative.png");
 }
-/* 娣诲姞鏍囩寮瑰嚭椤� */
 #operate .tag-card {
     width: 180px;        
     color: #363636;

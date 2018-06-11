@@ -375,7 +375,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
             "<span class='text'>标签</span>" +
             "</div>" +
             "<div class='label-bar tag edit' data-order='' data-id=''>" +
-            "<input type='text' class='edit-input' value='标签名称'>" +
+            "<input type='text' class='edit-input text' value='标签名称'>" +
             "<span class='icon icon-toleft'></span>" +
             "<div class='tag-content'>" +
             "<ul class='clear-fix'>" +
@@ -397,7 +397,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
       */
     function addAttr(el) {
         var $content = $(el).closest(".collapse-header").siblings(".collapse-content");
-        var entityId = $(".entity_attr", $page).attr("data-code");
+        var entityId = $(".entity_attr.active", $page).attr("data-code");
         $CPF.showLoading();
 		Ajax.ajax('admin/node/basicItemNode/getComm?entityId', {
 			entityId: entityId
@@ -409,7 +409,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
             "<span class='text'>属性</span>" +
             "</div>" +
             "<div class='label-bar attr edit' data-order='' data-id=''>" +
-            "<input type='text' class='edit-input' value='属性名'>" +
+            "<input type='text' class='edit-input text' value='属性名'>" +
             "<select class='abc-attr'>"            
             for(var i=0; i<data.length; i++) {
             	attrHtml += "<option data-id='"+data[i][0]+"' value='"+data[i][1]+"'>"+data[i][1]+"</option>";                
@@ -457,7 +457,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
             "<span class='text'>属性组</span>" +
             "</div>" +
             "<div class='label-bar attr-group edit'>" +
-            "<input type='text' class='edit-input' value='属性组名称'>" +
+            "<input type='text' class='edit-input text' value='属性组名称'>" +
             "<div class='btn-wrap'>" +
             "<i class='icon icon-save'></i>" +
             "<i class='icon icon-add-sm group'></i>" +
@@ -477,8 +477,8 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
      * 添加多值属性方法
       */
     function addMoreAttr(el) {
-        var $content = $(el).closest(".collapse-header").siblings(".collapse-content");
-        var entityId = $(".entity_attr", $page).attr("data-code");
+        var $content = $(el).closest(".collapse-header").siblings(".collapse-content");        
+        var entityId = $(".entity_attr.active", $page).attr("data-code");
         var dragWrapLen = $(".drag-wrap").length + 1 ;
         $CPF.showLoading();
 		Ajax.ajax('admin/node/basicItemNode/getComm?entityId', {
@@ -492,7 +492,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
             "<span class='text'>多值属性</span>" +
             "</div>" +
             "<div class='label-bar more-attr edit'>" +
-            "<input type='text' class='edit-input' value='多值属性名称'>" +
+            "<input type='text' class='edit-input text' value='多值属性名称'>" +
             "<select class='abc-attr'>"
             for(var i=0; i<data.length; i++) {
             	moreAttrHtml += "<option data-id='"+data[i][0]+"' value='"+data[i][1]+"'>"+data[i][1]+"</option>";                
@@ -537,7 +537,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
       */
     function addRelative(el) {
         var $content = $(el).closest(".collapse-header").siblings(".collapse-content");
-        var entityId = $(".entity_attr", $page).attr("data-code");
+        var entityId = $(".entity_attr.active", $page).attr("data-code");
         var dragWrapLen = $(".drag-wrap").length + 1 ;
         $CPF.showLoading();
 		Ajax.ajax('admin/node/basicItemNode/getComm?entityId', {
@@ -550,7 +550,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
             "<i class='icon icon-attr-relative'></i><span class='text'>关系</span>" +
             "</div>" +
             "<div class='label-bar attr-relative edit'>" +
-            "<input type='text' class='edit-input' value='关系名称'>" +
+            "<input type='text' class='edit-input text' value='关系名称'>" +
             "<select class='abc-attr'>"
             for(var i=0; i<data.length; i++) {
             	relativeHtml += "<option data-id='"+data[i][0]+"' value='"+data[i][1]+"'>"+data[i][1]+"</option>";                
@@ -837,7 +837,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 	            "<span class='text'>标签</span>" +
 	            "</div>" +
 	            "<div class='label-bar tag edit' data-order='' data-id=''>" +
-	            "<input type='text' class='edit-input' value='标签名称'>" +
+	            "<input type='text' class='edit-input text' value='标签名称'>" +
 	            "<span class='icon icon-toleft'></span>" +
 	            "<div class='tag-content'>" +
 	            "<ul class='clear-fix'>" +
@@ -857,7 +857,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 	            "<i class='icon icon-abc'></i><span class='text'>ABC</span>" +
 	            "</div>" +
 	            "<div class='label-bar abc edit'>" +
-	            "<input class='edit-input' value='"+abcattr+"'>"+
+	            "<input class='edit-input text' value='"+abcattr+"'>"+
 	            "<span class='entity-only-title' data-abcattr-code='"+abcattrCode+"' data-abcattr='"+abcattr+"'>"+abcattr+"</span>"+
 	            "<div class='btn-wrap'>" +
 	            "<i class='icon icon-save'></i>" +
@@ -1174,6 +1174,8 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
     	if(hasSave){
     		return;
     	}
+    	$(this).find(".edit-input").removeAttr("disabled");
+    	$(this).find("select").removeAttr("disabled");
         $(this).addClass("edit");
     })
 
@@ -1181,6 +1183,8 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
     $("#operate").on("click", ".icon-save", function() {
         $(this).closest(".label-bar").removeClass("edit");
         $(this).closest(".entity-edit-wrap").removeClass("edit");
+        $(this).closest(".label-bar").find(".edit-input").attr("disabled", "true");
+        $(this).closest(".label-bar").find("select").attr("disabled", "true");
         var entityTitle = $(this).closest(".entity-title");
         var labelBar = $(this).closest(".label-bar");
         if(entityTitle.length > 0) {
@@ -1274,16 +1278,16 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 	        	var after = $(evt.item).next("li");
 	        	var currentId = "";
 	        	var beforeId = "";
-	        	var afterId = "";	        	
-	        	if(before.length == 0) {
+	        	var afterId = "";	  	        		        
+	        	if(before.length == 0) {	        		
 	        		beforeId = "";
-	        	}else if(before.hasClass(".attr-group") || before.hasClass(".more-attr") || before.hasClass(".attr-relative") || before.hasClass(".attr-abc")){	        		
+	        	}else if(before.hasClass("attr-group") || before.hasClass("more-attr") || before.hasClass("attr-relative") || before.hasClass("attr-abc")){	        			        		
 	        		beforeId = before.children(".collapse-header").attr("data-id");
-	        	}else {
+	        	}else {	        		
 	        		beforeId = before.children(".label-bar").attr("data-id");
 	        	}
 	        	
-	        	if(after.length == 0) {
+	        	if(after.length == 0) {	        		
 	        		afterId = "";
 	        	}else if(after.hasClass("attr-group") || after.hasClass("more-attr") || after.hasClass("attr-relative") || after.hasClass("attr-abc")){
 	        		afterId = after.children(".collapse-header").attr("data-id");
@@ -1310,6 +1314,6 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
     };
     
     drag($(".drag-wrap").length);
-    
+    console.log(1);
     
 })

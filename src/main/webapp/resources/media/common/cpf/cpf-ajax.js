@@ -175,14 +175,15 @@ define(function(require, exports, module){
 		require('console')
 			.debug('发送请求到' + url)
 			.debug(fData)
-			;
+			;		
 		return $.ajax({
 		    url: 		url,
 		    type: 		param.method,
+		    async:      param.async,
 		    cache: 		false,
 		    data: 		fData,
 		    processData: false,
-		    contentType: false,
+		    contentType: false,		    
 		    beforeSend	: function(){
 		    	console.log(arguments);
 		    },

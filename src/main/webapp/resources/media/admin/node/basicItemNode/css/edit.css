@@ -210,12 +210,12 @@ body {
 	background-image: url("../images/add-hover.png");
 }
 #operateEdit .icon-add-sm:hover,
-#operateEdit .icon-add-tag:hover,
+#operateEdit .tag.icon-add-tag:hover,
 #operateEdit .icon-add-abc:hover {
 	background-image: url("../images/add-sm-hover.png");
 }
-#operateEdit .tag.icon-add-tag,
-#operateEdit .tag.icon-add-tag-relative {
+#operateEdit .icon-add-tag,
+#operateEdit .icon-add-tag-relative {
     margin: 0 40px 0 24px; 
     width: 14px;
     height: 14px;
@@ -330,7 +330,7 @@ body {
     display: none;
 } 
 #operateEdit .icon-add-sm.group,
-#operateEdit .edit .icon-add-abc.group {
+#operateEdit .icon-add-abc.group {
 	margin-right: 78px;
 }
 #operateEdit .edit .icon.icon-trash-sm, 
@@ -341,7 +341,6 @@ body {
 #operateEdit .edit .icon-add-abc.group {
 	margin-right: 0;
 }
-/* 寮瑰嚭鏍囩 */
 #operateEdit .card {
     width: 184px;        
     color: #363636;
@@ -384,7 +383,7 @@ body {
 #operateEdit .card .card-list:hover .icon-card-relative {
     background-image: url("../images/relative.png");
 }
-/* 娣诲姞鏍囩寮瑰嚭椤� */
+
 #operateEdit .tag-card {
     width: 180px;        
     color: #363636;
@@ -671,35 +670,35 @@ body {
 #operateEdit .dragEdit-wrap .add-tag {
    
 }
-#operateEdit .dragEdit-wrap-repeat {
+#operateEdit .drag-wrap-repeat {
     padding-left: 40px;
 }
-#operateEdit .dragEdit-wrap-repeat-more {
+#operateEdit .drag-wrap-repeat-more {
     padding-left: 0px;
 }
 
 #operateEdit .dragEdit-wrap>li,
-#operateEdit .dragEdit-wrap-repeat>li,
-#operateEdit .dragEdit-wrap-repeat-more>li {
+#operateEdit .drag-wrap-repeat>li,
+#operateEdit .drag-wrap-repeat-more>li {
     margin-top: 8px;    
 }
 #operateEdit .dragEdit-wrap .edit-input {
     font-size: 16px;
 }
 
-#operateEdit .attr-group-dragEdit-wrap,
-#operateEdit .more-attr-dragEdit-wrap,
-#operateEdit .attr-relative-dragEdit-wrap {
+#operateEdit .attr-group-drag-wrap,
+#operateEdit .more-attr-drag-wrap,
+#operateEdit .attr-relative-drag-wrap {
     padding-left: 40px;
 }
-#operateEdit .dragEdit-wrap-repeat-more  .attr-group-dragEdit-wrap,
-#operateEdit .dragEdit-wrap-repeat-more  .more-attr-dragEdit-wrap,
-#operateEdit .dragEdit-wrap-repeat-more  .attr-relative-dragEdit-wrap {
+#operateEdit .drag-wrap-repeat-more  .attr-group-drag-wrap,
+#operateEdit .drag-wrap-repeat-more  .more-attr-drag-wrap,
+#operateEdit .drag-wrap-repeat-more  .attr-relative-drag-wrap {
     padding-left: 0px;
 }
-#operateEdit .attr-group-dragEdit-wrap>li,
-#operateEdit .more-attr-dragEdit-wrap>li,
-#operateEdit .attr-relative-dragEdit-wrap>li {
+#operateEdit .attr-group-drag-wrap>li,
+#operateEdit .more-attr-drag-wrap>li,
+#operateEdit .attr-relative-drag-wrap>li {
     margin-top: 8px;
 }
 
