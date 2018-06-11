@@ -1272,9 +1272,9 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 	        	var current = $(evt.item);
 	        	var before = $(evt.item).prev("li");
 	        	var after = $(evt.item).next("li");
-	        	var currentId;
-	        	var beforeId;
-	        	var afterId;	        	
+	        	var currentId = "";
+	        	var beforeId = "";
+	        	var afterId = "";	        	
 	        	if(before.length == 0) {
 	        		beforeId = "";
 	        	}else if(before.hasClass(".attr-group") || before.hasClass(".more-attr") || before.hasClass(".attr-relative") || before.hasClass(".attr-abc")){	        		
