@@ -1272,11 +1272,11 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 	        	var current = $(evt.item);
 	        	var before = $(evt.item).prev("li");
 	        	var after = $(evt.item).next("li");
-	        	var currentId
+	        	var currentId;
 	        	var beforeId;
 	        	var afterId;	        	
 	        	if(before.length == 0) {
-	        		beforeId = null;
+	        		beforeId = "";
 	        	}else if(before.hasClass(".attr-group") || before.hasClass(".more-attr") || before.hasClass(".attr-relative") || before.hasClass(".attr-abc")){	        		
 	        		beforeId = before.children(".collapse-header").attr("data-id");
 	        	}else {
@@ -1284,7 +1284,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 	        	}
 	        	
 	        	if(after.length == 0) {
-	        		afterId = null;
+	        		afterId = "";
 	        	}else if(after.hasClass("attr-group") || after.hasClass("more-attr") || after.hasClass("attr-relative") || after.hasClass("attr-abc")){
 	        		afterId = after.children(".collapse-header").attr("data-id");
 	        	}else {
@@ -1296,6 +1296,12 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 	        	}else {	        		
 	        		currentId = current.children(".label-bar").attr("data-id");
 	        	}
+	        	
+	        	
+	        	alert(currentId);
+	        	alert(beforeId);
+	        	alert(afterId);
+	        	
 	        	$CPF.showLoading();
 	    		Ajax.ajax('admin/node/basicItemNode/nodeSort', {
 	    			currentId: currentId,

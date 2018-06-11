@@ -233,10 +233,8 @@ public class BasicItemNodeController {
 
 	//排序
 	@RequestMapping("/nodeSort")
-	public void nodeSort(Integer currentId, Integer beforeId, Integer afterId) {
-		BasicItemNode current = null;
-		basicItemNodeService.getOne(currentId);
-		
+	public void nodeSort(String currentId, String beforeId, String afterId) {
+		BasicItemNode current = basicItemNodeService.getOne(Integer.parseInt(currentId));
 		basicItemNodeService.nodeSort(current, beforeId, afterId);
 	}
 		

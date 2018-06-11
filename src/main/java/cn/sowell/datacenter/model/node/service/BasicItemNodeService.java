@@ -47,7 +47,7 @@ public interface BasicItemNodeService {
 	 * @param afterId  后继id
 	 * @return   
 	 */
-	public void nodeSort(BasicItemNode current, Integer beforeId, Integer afterId);
+	public void nodeSort(BasicItemNode current, String beforeId, String afterId);
 	/**
 	 * 扩展语句
 	 */

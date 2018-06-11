@@ -103,24 +103,24 @@ public class BasicItemNodeServiceImpl implements BasicItemNodeService {
 
 	
 	@Override
-	public void nodeSort(BasicItemNode current, Integer beforeId, Integer afterId) {
+	public void nodeSort(BasicItemNode current, String beforeId, String afterId) {
 		try {
 			//第一个孩子， 没有前驱， 没有后继
-			if (beforeId == null && afterId == null) {//没有前驱， 没有后继, 父亲的第一个孩子
+		if (beforeId.isEmpty()&& afterId.isEmpty()) {//没有前驱， 没有后继, 父亲的第一个孩子
 				current.setOrder(100);
-		} else if (beforeId == null && afterId != null) {//没有前驱， 但是有后继
-			BasicItemNode afterNode = basicItemNodeDao.get(BasicItemNode.class, afterId);
+		} else if (beforeId.isEmpty()&& !afterId.isEmpty()) {//没有前驱， 但是有后继
+			BasicItemNode afterNode = basicItemNodeDao.get(BasicItemNode.class, Integer.parseInt(afterId));
 			Integer order = (afterNode.getOrder() + 1) / 2;
 			current.setOrder(order);
-		}else if (beforeId != null && afterId == null) {//没有后继，但是有前驱
-			BasicItemNode beforeNode = basicItemNodeDao.get(BasicItemNode.class, beforeId);
+		}else if (!beforeId.isEmpty() && afterId.isEmpty()) {//没有后继，但是有前驱
+			BasicItemNode beforeNode = basicItemNodeDao.get(BasicItemNode.class, Integer.parseInt(beforeId));
 			Integer order = beforeNode.getOrder() + 200;
 			current.setOrder(order);
-		} else if (beforeId != null && afterId != null) {
-			BasicItemNode beforeNode = basicItemNodeDao.get(BasicItemNode.class, beforeId);
-			BasicItemNode afterNode = basicItemNodeDao.get(BasicItemNode.class, afterId);
+		} else if (!beforeId.isEmpty() && !afterId.isEmpty()) {
+			BasicItemNode beforeNode = basicItemNodeDao.get(BasicItemNode.class, Integer.parseInt(beforeId));
+			BasicItemNode afterNode = basicItemNodeDao.get(BasicItemNode.class, Integer.parseInt(afterId));
 			Integer order = (beforeNode.getOrder() + afterNode.getOrder()) / 2;
-			current.setOrder(500);
+			current.setOrder(order);
 		}
 			
 		basicItemNodeDao.update(current);
