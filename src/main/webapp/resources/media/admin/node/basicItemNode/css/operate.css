@@ -656,13 +656,13 @@
     display: block;
 }
 #operate .entity-title .edit-input {
-    font-size: 22px;    
+    font-size: 20px;    
     width: 200px;
     margin-right: 150px;
     cursor: pointer;
 }
 #operate .entity-title .entity-only-title {
-	font-size: 22px;
+	font-size: 20px;
 	color: #9e9e9e;
 }
 #operate .btn-wrap {

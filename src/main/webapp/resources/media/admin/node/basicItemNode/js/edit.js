@@ -1032,6 +1032,13 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
     //标签保存修改方法
     function tagSave(el) {
     	var $tagBar = $(el).closest(".label-bar");
+    	if($(el).next(".icon-add-tag-relative").length > 0) { //关系下的标签 
+    		if($tagBar.children(".tag-content").children("ul").children("li").length == 0) {
+    			alert("请至少选择一个关系");    			
+    			$tagBar.addClass("edit");
+    			return;
+    		}
+    	}
     	var type = 3;
     	var dataType = "STRING";
     	var opt = 2;
@@ -1366,7 +1373,12 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
     			.removeClass("active")
     			.addClass("edit");
     	};
-    	deleteAjax(id, isDelChil, callback);
+    	if($entityTitle.hasClass("al-save")) {
+    		deleteAjax(id, isDelChil, callback);
+    	}else {
+    		callback();
+    		removePop();
+    	}
     }
     
     //属性删除方法
@@ -1377,7 +1389,12 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
     	var callback = function() {
     		$attrBar.parent(".add-attr").remove();    		
     	};    	
-    	deleteAjax(id, isDelChil, callback);
+    	if($attrBar.hasClass("al-save")) {
+    		deleteAjax(id, isDelChil, callback);
+    	}else {
+    		callback();
+    		removePop();
+    	}    
     }
     
     //属性组删除方法
@@ -1398,7 +1415,12 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
         		$attrGroupBar.closest("li.attr-group").remove();
         	};
     	}    	
-    	deleteAjax(id, isDelChil, callback);
+    	if($attrGroupDelete.hasClass(".al-save")) {
+    		deleteAjax(id, isDelChil, callback);	
+    	}else {
+    		callback();
+    		removePop();
+    	}
     };
     
     //多值属性删除方法
@@ -1419,7 +1441,12 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
         		$moreAttrBar.closest("li.more-attr").remove();
         	};
     	}    
-    	deleteAjax(id, isDelChil, callback);
+    	if($moreAttrBar.hasClass("al-save")) {
+    		deleteAjax(id, isDelChil, callback);	
+    	}else {
+    		callback();
+    		removePop();
+    	}  
     };   
     
     //关系删除方法
@@ -1430,7 +1457,12 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
     	var callback = function() {
     		$relativeBar.closest("li.attr-relative").remove();    		
     	};
-    	deleteAjax(id, isDelChil, callback);
+    	if($relativeBar.hasClass("al-save")){
+    		deleteAjax(id, isDelChil, callback);	
+    	}else {
+    		callback();
+    		removePop();
+    	}  
     };   
         
 
@@ -1546,18 +1578,24 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 
     //添加标签弹出页中的事件绑定
     $("#operateEdit").on("click", ".tag-checkbox-input", function (e) {
+    	console.log(1);
         e.stopPropagation();
-        var el = $("#operateEdit").find(".icon-add-tag.active")[0];
+        var el = $("#operate").find(".icon-add-tag.active");
+        if(el.length == 0) {
+        	el = $("#operate").find(".icon-add-tag-relative.active")[0];
+        }else {
+        	el = $("#operate").find(".icon-add-tag.active");
+        }   
         var text = $(this).val();
         var id = $(this).attr("data-id");
         var ul = $(el).closest(".label-bar.tag").find("ul");
         var $parent = $(this).parent(".tag-checkbox");
         if ($parent.hasClass("tag-checkbox-checked")) {
             $parent.removeClass("tag-checkbox-checked");
-            tagRemoveTag(el, text);
+            tagRemoveTag(el, text);            
         } else {
             $parent.addClass("tag-checkbox-checked");
-            tagAddTag(el, text, id);
+            tagAddTag(el, text, id);            
         };
         judegArrow(ul)
     });
@@ -1641,6 +1679,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
         }else if(labelBar.hasClass("abc")) {
         	abcSave(this);
         }
+        labelBar.addClass("al-save");
     });
     
     //删除-全部
