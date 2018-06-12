@@ -105,25 +105,24 @@ public class BasicItemNodeServiceImpl implements BasicItemNodeService {
 	
 	@Override
 	public void nodeSort(BasicItemNode current, String beforeId, String afterId) {
-			//第一个孩子， 没有前驱， 没有后继
-		if (beforeId.isEmpty()&& afterId.isEmpty()) {//没有前驱， 没有后继, 父亲的第一个孩子
-				current.setOrder(100);
-		} else if (beforeId.isEmpty()&& !afterId.isEmpty()) {//没有前驱， 但是有后继
-			BasicItemNode afterNode = basicItemNodeDao.get(BasicItemNode.class, Integer.parseInt(afterId));
-			Integer order = (afterNode.getOrder() + 1) / 2;
-			current.setOrder(order);
-		}else if (!beforeId.isEmpty() && afterId.isEmpty()) {//没有后继，但是有前驱
-			BasicItemNode beforeNode = basicItemNodeDao.get(BasicItemNode.class, Integer.parseInt(beforeId));
-			Integer order = beforeNode.getOrder() + 200;
-			current.setOrder(order);
-		} else if (!beforeId.isEmpty() && !afterId.isEmpty()) {
-			BasicItemNode beforeNode = basicItemNodeDao.get(BasicItemNode.class, Integer.parseInt(beforeId));
-			BasicItemNode afterNode = basicItemNodeDao.get(BasicItemNode.class, Integer.parseInt(afterId));
-			Integer order = (beforeNode.getOrder() + afterNode.getOrder()) / 2;
-			current.setOrder(order);
-		}
+		try {	//第一个孩子， 没有前驱， 没有后继
+			if (beforeId.isEmpty()&& afterId.isEmpty()) {//没有前驱， 没有后继, 父亲的第一个孩子
+					current.setOrder(100);
+			} else if (beforeId.isEmpty()&& !afterId.isEmpty()) {//没有前驱， 但是有后继
+				BasicItemNode afterNode = basicItemNodeDao.get(BasicItemNode.class, Integer.parseInt(afterId));
+				Integer order = (afterNode.getOrder() + 1) / 2;
+				current.setOrder(order);
+			}else if (!beforeId.isEmpty() && afterId.isEmpty()) {//没有后继，但是有前驱
+				BasicItemNode beforeNode = basicItemNodeDao.get(BasicItemNode.class, Integer.parseInt(beforeId));
+				Integer order = beforeNode.getOrder() + 200;
+				current.setOrder(order);
+			} else if (!beforeId.isEmpty() && !afterId.isEmpty()) {
+				BasicItemNode beforeNode = basicItemNodeDao.get(BasicItemNode.class, Integer.parseInt(beforeId));
+				BasicItemNode afterNode = basicItemNodeDao.get(BasicItemNode.class, Integer.parseInt(afterId));
+				Integer order = (beforeNode.getOrder() + afterNode.getOrder()) / 2;
+				current.setOrder(order);
+			}
 		
-		try {
 			basicItemNodeDao.update(current);
 		} catch (DataIntegrityViolationException e) {
 			System.out.println("1111111");

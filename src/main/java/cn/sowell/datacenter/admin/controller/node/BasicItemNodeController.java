@@ -204,7 +204,6 @@ public class BasicItemNodeController {
         @ApiResponse(code = 200, message = "OK", response = RecordRelationTypes.class),
         @ApiResponse(code = 401, message = "操作失败", response = String.class) })
     @RequestMapping(value = "/getLabRela",
-        consumes = { "application/json" },
         method = RequestMethod.POST)
 	public ResponseEntity<RecordRelationTypes> getLabRela(String leftRecordType, String rightRecordType) {
 		List<RecordRelationType> list = recordRelationTypeService.getEntityRelaByBitemId(leftRecordType,
