@@ -410,7 +410,8 @@
 				options = _this.options,
 				ownerDocument = el.ownerDocument,
 				dragStartFn;
-
+			var editBar = $("#operateEdit").find(".label-bar.edit");
+	        var editEntity = $("#operateEdit").find(".entity-edit-wrap.edit");	       
 			if (target && !dragEl && (target.parentNode === el)) {
 				tapEvt = evt;
 
@@ -529,6 +530,14 @@
 		},
 
 		_dragStarted: function () {
+			var editBar = $(".label-bar.edit");
+	        var editEntity = $.find(".entity-edit-wrap.edit");
+			if(editBar.length > 0 || editEntity.length > 0) {	
+				//我的添加
+					       
+		        alert("请先保存正在编辑的节点");
+				return;
+		    }
 			if (rootEl && dragEl) {
 				var options = this.options;
 
@@ -1350,11 +1359,13 @@
 		var evt,
 			sortable = fromEl[expando],
 			onMoveFn = sortable.options.onMove,
-			retVal;		
+			retVal;	
+		//我的增加
 		if(dragRect.x - targetRect.x >= 20) {
 			retVal = false;
 			return retVal;
 		}
+		
 		evt = document.createEvent('Event');
 		evt.initEvent('move', true, true);
 

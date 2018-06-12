@@ -542,10 +542,8 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
         var entityId = $(".entity_attr.active", $page).attr("data-code");
         var dragWrapLen = $(".drag-wrap").length + 1 ;
         $CPF.showLoading();
-		Ajax.ajax('admin/node/basicItemNode/getComm?entityId', {
-			entityId: entityId
-		}, function(data) {			
-			var data = data.comm;			            
+		Ajax.ajax('admin/node/basicItemNode/entityList', "", function(data) {			
+			var data = data.entity;			            
             var relativeHtml = "<li class='attr-relative'>" +
             "<div class='attr-relative-title collapse-header' data-order='' data-id=''>" +
             "<div class='icon-label attr-relative'>" +
@@ -555,7 +553,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
             "<input type='text' class='edit-input text' value='关系名称'>" +
             "<select class='abc-attr'>"
             for(var i=0; i<data.length; i++) {
-            	relativeHtml += "<option data-id='"+data[i][0]+"' value='"+data[i][1]+"'>"+data[i][1]+"</option>";                
+            	relativeHtml += "<option data-id='"+data[i].code+"' value='"+data[i].cnName+"'>"+data[i].cnName+"</option>";                
             }
             relativeHtml += "</select>" +
             "<div class='btn-wrap'>" +
@@ -860,7 +858,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 	            "</div>" +
 	            "</li>" +
 	            "<li class='entity-ch-wrap "+nest+"'>" +
-	            "<div class='attr-abc-title collapsse-header' data-order='' data-id=''>" +
+	            "<div class='attr-abc-title collapse-header' data-order='' data-id=''>" +
 	            "<div class='icon-label abc'>" +
 	            "<i class='icon icon-abc'></i><span class='text'>ABC</span>" +
 	            "</div>" +
@@ -940,7 +938,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
     
     //跟实体删除方法
     function entityDelete(el) {
-    	var $entityTitle = $(el).closest(".label-bar");
+    	var $entityTitle = $(el).closest(".entity-title");
     	var id = $entityTitle.attr("data-id");
     	var isDelChil = true;
     	var callback = function() {
@@ -1281,9 +1279,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 	        filter: ".no-dragger",	        
 	        sort: true,
 	        animation: 100,
-	        onStart: function (evt) {
-//	        	judgeSave();
-	        	return;
+	        onStart: function (evt) {	        		        	
 	        },
 	        onEnd: function (evt) {
 	        	var current = $(evt.item);

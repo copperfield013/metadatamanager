@@ -528,8 +528,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
             hasArray.push($($tag[i]).children("span").text());
         };        
         $CPF.showLoading();
-		Ajax.ajax('admin/node/basicItemNode/getCommLab', '', function(data) {
-			console.log(data);
+		Ajax.ajax('admin/node/basicItemNode/getCommLab', '', function(data) {			
 			var data = data.commLab;
 			var html = "<ul class='tag-card'>";
 			var has; //判断是否已经选中
@@ -958,9 +957,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
         var entityId = $(".entity_attr.active", $page).attr("data-code");
         var dragWrapLen = $(".dragEdit-wrap").length + 1 ;
         $CPF.showLoading();
-		Ajax.ajax('admin/node/basicItemNode/getComm?entityId', {
-			entityId: entityId
-		}, function(data) {			
+		Ajax.ajax('admin/node/basicItemNode/getComm?entityId'," ", function(data) {			
 			var data = data.comm;			            
             var relativeHtml = "<li class='attr-relative'>" +
             "<div class='attr-relative-title collapse-header' data-order='' data-id=''>" +
@@ -971,7 +968,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
             "<input type='text' class='edit-input text' value='关系名称'>" +
             "<select class='abc-attr'>"
             for(var i=0; i<data.length; i++) {
-            	relativeHtml += "<option data-id='"+data[i][0]+"' value='"+data[i][1]+"'>"+data[i][1]+"</option>";                
+            	relativeHtml += "<option data-id='"+data[i].code+"' value='"+data[i].cnName+"'>"+data[i].cnName+"</option>";                
             }
             relativeHtml += "</select>" +
             "<div class='btn-wrap'>" +
@@ -1360,7 +1357,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
     
     //跟实体删除方法
     function entityDelete(el) {
-    	var $entityTitle = $(el).closest(".label-bar");
+    	var $entityTitle = $(el).closest(".entity-title");
     	var id = $entityTitle.attr("data-id");
     	var isDelChil = true;
     	var callback = function() {
