@@ -226,7 +226,9 @@
     height: 14px;
     background-image: url("../images/add-sm.png"); 
 }
-
+#operate .edit .icon-add-tag.tag {
+	margin: 0;
+}
 #operate .icon-add-abc {    
     width: 14px;
     height: 14px;
@@ -336,7 +338,7 @@
 } 
 #operate .icon-add-sm.group,
 #operate .icon-add-abc.group {
-	margin-right: 78px;
+	margin-right: 40px;
 }
 #operate .edit .icon.icon-trash-sm, 
 #operate .edit .icon.icon-save {
@@ -346,8 +348,8 @@
 	margin-right: 0;
 }
 #operate .edit .icon-add-abc.group {
-	margin-right: 37px;
-	margin-left: 23px;
+	margin-right: 40px;
+	margin-left: 24px;
 }
 #operate .card {
     width: 184px;        

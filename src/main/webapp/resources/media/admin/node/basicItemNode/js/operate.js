@@ -382,7 +382,8 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
             "<div class='btn-wrap'>" +
             "<i class='icon tag icon-save'></i>" +
             "<i class='icon tag icon-add-tag'></i>" +
-            "<i class='icon-simulate-trashsm'></i>" +
+            "<i class='icon icon-trash-sm'></i>" +
+            "<i class='icon icon-simulate-trashsm'></i>" + 
             "</div>" +
             "</div>" +
             "</li>"
@@ -635,6 +636,12 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
     	if($(el).next(".icon-add-tag-relative").length > 0) { //关系下的标签 
     		if($tagBar.children(".tag-content").children("ul").children("li").length == 0) {
     			alert("请至少选择一个关系");    			
+    			$tagBar.addClass("edit");
+    			return;
+    		}
+    	}else {
+    		if($tagBar.children(".tag-content").children("ul").children("li").length == 0) {
+    			alert("请至少选择一个标签");    			
     			$tagBar.addClass("edit");
     			return;
     		}
@@ -1061,7 +1068,23 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
     		callback();
     		removePop();
     	}    	
-    };   
+    }; 
+    
+    //tag删除
+    function tagDelete(el) {
+    	var $tagBar = $(el).closest(".label-bar");
+    	var id = $tagBar.attr("data-id");
+    	var isDelChil = true;
+    	var callback = function() {
+    		$tagBar.closest("li.add-tag").remove();    		
+    	};
+    	if($tagBar.hasClass("al-save")){
+    		deleteAjax(id, isDelChil, callback);	
+    	}else {
+    		callback();
+    		removePop();
+    	}  
+    }
         
 
     $page.on("click", function () {    	
@@ -1304,6 +1327,8 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
         	moreAttrDelete(el, false);
         }else if(labelBar.hasClass("attr-group")) {
         	attrGroupDelete(el, false);
+        }else if(labelBar.hasClass("attr-tag")) {
+        	tagDelete(el);
         }
     })
     

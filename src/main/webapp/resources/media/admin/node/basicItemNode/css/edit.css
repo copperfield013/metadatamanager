@@ -235,7 +235,9 @@ body {
     height: 14px;
     background-image: url("../images/add-sm.png"); 
 }
-
+#operateEdit .edit .icon-add-tag {
+	margin: 0;
+}
 #operateEdit .icon-add-abc {    
     width: 14px;
     height: 14px;
@@ -345,7 +347,7 @@ body {
 } 
 #operateEdit .icon-add-sm.group,
 #operateEdit .icon-add-abc.group {
-	margin-right: 78px;
+	margin-right: 40px;
 }
 #operateEdit .edit .icon.icon-trash-sm, 
 #operateEdit .edit .icon.icon-save {
@@ -355,8 +357,8 @@ body {
 	margin-right: 0;
 }
 #operateEdit .edit .icon-add-abc.group {
-	margin-right: 37px;
-	margin-left: 23px;
+	margin-right: 40px;
+	margin-left: 24px;
 }
 
 #operateEdit .card {
