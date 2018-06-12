@@ -37,16 +37,13 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
                 "<li class='card-list add-more-attr'>" +
                 "<i class='icon icon-card-more-attr'></i>" +
                 "<span class='text'>添加多值属性</span>" +
-                "</li>"
-        if (relativeLength > 0) {
-            html += "</ul>";
-        } else {
-            html += "<li class='card-list add-relative'>" +
+                "</li>"+
+                "<li class='card-list add-relative'>" +
                 "<i class='icon icon-card-relative'></i>" +
                 "<span class='text'>添加关系</span>" +
                 "</li>" +
                 "</ul>";
-        }
+
 
         var wrap = $("#operate");
         var offsetx = $(el).offset().left;
@@ -558,7 +555,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
     function addRelative(el) {
         var $content = $(el).closest(".collapse-header").siblings(".collapse-content");
         var entityId = $(".entity_attr.active", $page).attr("data-code");
-        var dragWrapLen = $(".drag-wrap").length + 1 ;
+        var dragWrapLen = $(".drag-wrap").length + 1;
         $CPF.showLoading();
 		Ajax.ajax('admin/node/basicItemNode/entityList', "", function(data) {			
 			var data = data.entity;			            
@@ -1235,10 +1232,10 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 
     //双击编辑
     $("#operate").on("dblclick", ".label-bar", function(){
-    	var hasSave = judgeSave();
-    	if(hasSave){
-    		return;
-    	}
+//    	var hasSave = judgeSave();
+//    	if(hasSave){
+//    		return;
+//    	}
     	if(!$(this).hasClass(".attr-relative")){
     		$(this).find(".edit-input").removeAttr("disabled");
         	$(this).find("select").removeAttr("disabled");
@@ -1326,16 +1323,15 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
     //拖拽排序方法
     function drag(length) {
     	var dragWrap = document.getElementById("drag-"+length); 
-		var name = "drag-"+length;
-		console.log(dragWrap);
-		console.log(name);
+		var name = "drag-"+length;		
     	Sortable.create(dragWrap, {
 	        group: {
 	            name: name,
 	            pull: false,
 	            put: false
 	        },
-	        filter: ".no-dragger",	        
+	        filter: ".no-dragger",	
+	        handle: ".icon-label",
 	        sort: true,
 	        animation: 100,
 	        onStart: function (evt) {	        		        	

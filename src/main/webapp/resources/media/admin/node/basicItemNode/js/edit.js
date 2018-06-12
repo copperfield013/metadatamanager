@@ -109,7 +109,8 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 	            pull: false,
 	            put: false
 	        },
-	        filter: ".no-dragger",	        
+	        filter: ".no-dragger",	
+	        handle: ".icon-label",
 	        sort: true,
 	        animation: 100,
 	        onStart: function (evt) {
@@ -452,16 +453,13 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
                 "<li class='card-list add-more-attr'>" +
                 "<i class='icon icon-card-more-attr'></i>" +
                 "<span class='text'>添加多值属性</span>" +
-                "</li>"
-        if (relativeLength > 0) {
-            html += "</ul>";
-        } else {
-            html += "<li class='card-list add-relative'>" +
+                "</li>"+
+                "<li class='card-list add-relative'>" +
                 "<i class='icon icon-card-relative'></i>" +
                 "<span class='text'>添加关系</span>" +
                 "</li>" +
                 "</ul>";
-        }
+        
 
         var wrap = $("#operateEdit");
         var offsetx = $(el).offset().left;
@@ -833,14 +831,23 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 		    Ajax.ajax('admin/node/basicItemNode/getDataType', '', function(data){		    	
 		    	var data = data.dataType;
 		    	for(var i=0; i<data.length; i++) {
-	            	attrHtml += "<option value='"+data[i]+"'>"+data[i]+"</option>";          
+		    		if(data[i] === "STRING") {
+		    			attrHtml += "<option value='"+data[i]+"' selected>"+data[i]+"</option>"; 	
+		    		}else {
+		    			attrHtml += "<option value='"+data[i]+"'>"+data[i]+"</option>"; 
+		    		}	            	        
 	            };
 	            attrHtml += "</select>";
 				attrHtml += "<select class='node-ops-type'>";
 				Ajax.ajax('admin/node/basicItemNode/getNodeOpsType', '', function(data){		    	
 			    	var data = data.nodeOpsType;
 			    	for(var i=0; i<data.length; i++) {
-		            	attrHtml += "<option value='"+data[i]+"'>"+data[i]+"</option>";          
+			    		if(data[i] === "写") {
+			    			attrHtml += "<option value='"+data[i]+"' selected>"+data[i]+"</option>";  	
+			    		}else {
+			    			attrHtml += "<option value='"+data[i]+"'>"+data[i]+"</option>"; 
+			    		}
+		            	         
 		            };
 		            attrHtml += "</select>";
 		            attrHtml += "<div class='btn-wrap'>" +
@@ -918,14 +925,23 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 		    Ajax.ajax('admin/node/basicItemNode/getDataType', '', function(data){		    	
 		    	var data = data.dataType;
 		    	for(var i=0; i<data.length; i++) {
-		    		moreAttrHtml += "<option value='"+data[i]+"'>"+data[i]+"</option>";          
+		    		if(data[i] === "STRING") {
+		    			moreAttrHtml += "<option value='"+data[i]+"' selected>"+data[i]+"</option>";
+		    		}else {
+		    			moreAttrHtml += "<option value='"+data[i]+"'>"+data[i]+"</option>";
+		    		}		    		         
 	            };
 	            moreAttrHtml += "</select>";
 	            moreAttrHtml += "<select class='node-ops-type'>";
 				Ajax.ajax('admin/node/basicItemNode/getNodeOpsType', '', function(data){		    	
 			    	var data = data.nodeOpsType;
 			    	for(var i=0; i<data.length; i++) {
-			    		moreAttrHtml += "<option value='"+data[i]+"'>"+data[i]+"</option>";          
+			    		if(data[i] === "写"){
+			    			moreAttrHtml += "<option value='"+data[i]+"' selected>"+data[i]+"</option>";
+			    		}else {
+			    			moreAttrHtml += "<option value='"+data[i]+"'>"+data[i]+"</option>";	
+			    		}
+			    		          
 		            };
 		            moreAttrHtml += "</select>";
 		            moreAttrHtml += "<div class='btn-wrap'>" +
@@ -1643,10 +1659,10 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 
     //双击编辑
     $("#operateEdit").on("dblclick", ".label-bar", function(){
-    	var hasSave = judgeSave();
-    	if(hasSave){
-    		return;
-    	}
+//    	var hasSave = judgeSave();
+//    	if(hasSave){
+//    		return;
+//    	}
     	if(!$(this).hasClass("attr-relative")){
     		$(this).find(".edit-input").removeAttr("disabled");
         	$(this).find("select").removeAttr("disabled");

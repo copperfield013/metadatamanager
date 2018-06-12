@@ -530,11 +530,11 @@
 		},
 
 		_dragStarted: function () {
-			var editBar = $(".label-bar.edit");
-	        var editEntity = $.find(".entity-edit-wrap.edit");
+			var $page = $(".main-tab-content.cpf-page-content.active");
+			var editBar = $(".label-bar.edit", $page);
+	        var editEntity = $.find(".entity-edit-wrap.edit", $page);
 			if(editBar.length > 0 || editEntity.length > 0) {	
-				//我的添加
-					       
+				//我的添加					      
 		        alert("请先保存正在编辑的节点");
 				return;
 		    }
