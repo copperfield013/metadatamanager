@@ -113,7 +113,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 	        sort: true,
 	        animation: 100,
 	        onStart: function (evt) {
-
+//	        	judgeSave();
 	        },
 	        onEnd: function (evt) {
 	        	var current = $(evt.item);
