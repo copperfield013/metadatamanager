@@ -274,9 +274,13 @@ public class BasicItemNodeController {
     @RequestMapping(value = "/nodeSort",
         method = RequestMethod.POST)
    public ResponseEntity<String> nodeSort(String currentId, String beforeId, String afterId){
-		 BasicItemNode current = basicItemNodeService.getOne(Integer.parseInt(currentId));
-		 basicItemNodeService.nodeSort(current, beforeId, afterId);
-		 System.out.println();
+		BasicItemNode current = basicItemNodeService.getOne(Integer.parseInt(currentId));
+		 try {
+			 basicItemNodeService.nodeSort(current, beforeId, afterId);
+		} catch (Exception e) {
+			basicItemNodeService.excuExtend(current.getParentId());
+		}
+		 
          return new ResponseEntity<String>("1", HttpStatus.OK);
 	}
 
