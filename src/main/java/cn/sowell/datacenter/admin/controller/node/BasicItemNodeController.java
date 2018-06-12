@@ -258,7 +258,6 @@ public class BasicItemNodeController {
         @ApiResponse(code = 200, message = "OK", response = BasicItemNodes.class),
         @ApiResponse(code = 400, message = "操作失败", response = String.class) })
     @RequestMapping(value = "/getChildNode",
-        consumes = { "application/json" },
         method = RequestMethod.POST)
 	public ResponseEntity<BasicItemNodes> getChildNode(String nodeId) {
 		List<BasicItemNode> list = basicItemNodeService.getChildNode(nodeId);
@@ -287,7 +286,6 @@ public class BasicItemNodeController {
         @ApiResponse(code = 200, message = "操作成功", response = BasicItems.class),
         @ApiResponse(code = 400, message = "操作失败", response = String.class) })
     @RequestMapping(value = "/entityList",
-        consumes = { "application/json" },
         method = {RequestMethod.POST})
 	public ResponseEntity<BasicItems> entityList() {
 		BasicItemCriteria criteria = new BasicItemCriteria();
