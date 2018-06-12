@@ -30,6 +30,8 @@ import cn.sowell.copframe.dto.page.PageInfo;
 import cn.sowell.datacenter.admin.controller.AdminConstants;
 import cn.sowell.datacenter.admin.controller.node.api.BasicItemNodes;
 import cn.sowell.datacenter.admin.controller.node.api.BasicItems;
+import cn.sowell.datacenter.admin.controller.node.api.DictionaryBasicItems;
+import cn.sowell.datacenter.admin.controller.node.api.RecordRelationTypes;
 import cn.sowell.datacenter.model.dictionary.criteria.BasicItemCriteria;
 import cn.sowell.datacenter.model.dictionary.pojo.BasicItem;
 import cn.sowell.datacenter.model.dictionary.pojo.DictionaryBasicItem;
@@ -200,31 +202,35 @@ public class BasicItemNodeController {
 
 	// 获取lab关系名称, 关系下边的lab
 	@ResponseBody
-	@ApiOperation(value = "获取lab关系名称, 关系下边的lab", nickname = "getLabRela", notes = "关系名称",tags={ "configurationFiles", })
+	@ApiOperation(value = "获取lab关系名称, 关系下边的lab", nickname = "getLabRela", notes = "关系名称", response = RecordRelationTypes.class, tags={ "configurationFiles", })
+    @ApiResponses(value = { 
+        @ApiResponse(code = 200, message = "OK", response = RecordRelationTypes.class),
+        @ApiResponse(code = 401, message = "操作失败", response = String.class) })
     @RequestMapping(value = "/getLabRela",
         consumes = { "application/json" },
         method = RequestMethod.POST)
-	public String getLabRela(String leftRecordType, String rightRecordType) {
+	public ResponseEntity<RecordRelationTypes> getLabRela(String leftRecordType, String rightRecordType) {
 		List<RecordRelationType> list = recordRelationTypeService.getEntityRelaByBitemId(leftRecordType,
 				rightRecordType);
-		Map<String, Object> map = new HashMap<String, Object>();
-		map.put("labRela", list);
-		JSONObject jobj = new JSONObject(map);
-		return jobj.toString();
+		RecordRelationTypes recordRelTypes = new RecordRelationTypes();
+		recordRelTypes.labRela(list);
+		return new ResponseEntity<RecordRelationTypes>(recordRelTypes, HttpStatus.OK);
 	}
 
 	// 获取标签名称， 实体下面和属性组下边的标签， 从DictionaryBasicItem
 	@ResponseBody
-	@ApiOperation(value = "获取标签名称,实体下面和属性组下边的标签", nickname = "getCommLab", notes = "标签名称",tags={ "configurationFiles", })
+	@ApiOperation(value = "获取标签名称,实体下面和属性组下边的标签", nickname = "getCommLab", notes = "标签名称", response = DictionaryBasicItems.class, tags={ "configurationFiles", })
+    @ApiResponses(value = { 
+        @ApiResponse(code = 200, message = "OK", response = DictionaryBasicItems.class),
+        @ApiResponse(code = 400, message = "操作失败", response = String.class) })
     @RequestMapping(value = "/getCommLab",
         consumes = { "application/json" },
         method = RequestMethod.POST)
-	public String getCommLab() {
+	public ResponseEntity<DictionaryBasicItems> getCommLab() {
 		List<DictionaryBasicItem> list = dictBitemServices.getDictBasicItemByParent(125);
-		Map<String, Object> map = new HashMap<String, Object>();
-		map.put("commLab", list);
-		JSONObject jobj = new JSONObject(map);
-		return jobj.toString();
+		DictionaryBasicItems dictBasicItems = new DictionaryBasicItems();
+		dictBasicItems.commLab(list);
+		return new ResponseEntity<DictionaryBasicItems>(dictBasicItems, HttpStatus.OK);
 	}
 
 	//TODO.....
