@@ -28,6 +28,20 @@ body {
 #operateEdit .entity_list {
 	padding-top: 2em;
 }
+#operateEdit .select2-container.select2-container-disabled .select2-choice,
+#operateEdit .select2-container.select2-container-disabled .select2-choice .select2-arrow {
+	background-color: inherit;
+	border: none;
+}
+#operateEdit .edit .select2-container.select2-container-disabled .select2-choice {
+	border: 1px solid #ddd;
+}
+#operateEdit .select2-container .select2-choice .select2-arrow b:before {
+	display: none;
+}
+#operateEdit .edit .select2-container .select2-choice .select2-arrow b:before {
+	display: block;
+}
 #operateEdit .entity_attr {
 	position: relative;
     float: left;
@@ -337,10 +351,14 @@ body {
 #operateEdit .edit .icon.icon-save {
     display: inline-block;
 }
-#operateEdit .edit .icon-add-sm.group,
-#operateEdit .edit .icon-add-abc.group {
+#operateEdit .edit .icon-add-sm.group {
 	margin-right: 0;
 }
+#operateEdit .edit .icon-add-abc.group {
+	margin-right: 37px;
+	margin-left: 23px;
+}
+
 #operateEdit .card {
     width: 184px;        
     color: #363636;
@@ -673,6 +691,9 @@ body {
 #operateEdit .drag-wrap-repeat {
     padding-left: 40px;
 }
+#operateEdit .repeat .drag-wrap-repeat {
+    padding-left: 0;
+}
 #operateEdit .drag-wrap-repeat-more {
     padding-left: 0px;
 }
@@ -689,6 +710,11 @@ body {
 #operateEdit .attr-group-drag-wrap,
 #operateEdit .more-attr-drag-wrap,
 #operateEdit .attr-relative-drag-wrap {
+    padding-left: 40px;
+}
+#operateEdit .repeat .attr-group-drag-wrap,
+#operateEdit .repeat .more-attr-drag-wrap,
+#operateEdit .repeat .attr-relative-drag-wrap {
     padding-left: 40px;
 }
 #operateEdit .drag-wrap-repeat-more  .attr-group-drag-wrap,

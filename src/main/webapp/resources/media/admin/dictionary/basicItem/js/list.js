@@ -1482,8 +1482,8 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
             	"width": "100%",
             	"margin-right": "0"
             });
-            $("select").css("width","30%");                        
-            $("select").select2();
+            $("select", $page).css("width","30%");                        
+            $("select", $page).select2();
         });
     }
     

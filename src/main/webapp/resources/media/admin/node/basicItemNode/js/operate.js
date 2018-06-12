@@ -436,7 +436,8 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 		            "</div>" +
 		            "</div>" +
 		            "</li>";
-		            $content.prepend(attrHtml);
+		            var $html = $(attrHtml).prependTo($content);
+		            $html.find("select").css({"width":"15%","marginLeft":"16px"}).select2();		            
 		            $CPF.closeLoading();
 			    })
 			    
@@ -523,7 +524,8 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 		            "<ul class='more-attr-drag-wrap drag-wrap collapse-content collapse-content-active' id='drag-"+dragWrapLen+"'>" +
 		            "</ul>" +
 		            "</li>"
-		            $content.prepend(moreAttrHtml);
+		            var $html = $(moreAttrHtml).prependTo($content);
+		            $html.find("select").css({"width":"15%","marginLeft":"16px"}).select2();
 		            drag($(".drag-wrap").length);
 		            $CPF.closeLoading();
 			    })
@@ -557,7 +559,8 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
             }
             relativeHtml += "</select>" +
             "<div class='btn-wrap'>" +
-            "<i class='icon icon-save'></i>" +            
+            "<i class='icon icon-save'></i>" +   
+            "<i class='icon icon-trash-sm'></i>" +
             "<i class='icon icon-arrow-sm'></i>" +
             "</div>" +
             "</div>" +
@@ -565,7 +568,8 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
             "<ul class='attr-relative-drag-wrap drag-wrap collapse-content collapse-content-active' id='drag-"+dragWrapLen+"'>" +
             "</ul>" +
             "</li>";         
-		    $content.prepend(relativeHtml);
+            var $html = $(relativeHtml).prependTo($content);
+            $html.find("select").css({"width":"15%","marginLeft":"16px"}).select2();
 		    drag($(".drag-wrap").length);
 		    $CPF.closeLoading();			    
 	    });                                 
@@ -829,7 +833,11 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 			 $relativeBar.closest(".collapse-header")
 			 	.attr("data-order",order)
 			 	.attr("data-id", id);
-			 
+			 var chLength = $(".entity-ch-wrap", $page).length;
+			 var nest = "no-repeat";
+			 if(chLength >= 2) {
+				 nest = "repeat"
+			 }
 			 //展现出关系下的标签和abc HTML			 
 			 var html = "<li class='add-tag clear-fix'>" +
 	            "<div class='icon-label tag'>" +
@@ -851,8 +859,8 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 	            "</div>" +
 	            "</div>" +
 	            "</li>" +
-	            "<li class='entity-ch-wrap'>" +
-	            "<div class='attr-abc-title collapse-header' data-order='' data-id=''>" +
+	            "<li class='entity-ch-wrap "+nest+"'>" +
+	            "<div class='attr-abc-title collapsse-header' data-order='' data-id=''>" +
 	            "<div class='icon-label abc'>" +
 	            "<i class='icon icon-abc'></i><span class='text'>ABC</span>" +
 	            "</div>" +
@@ -861,16 +869,19 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 	            "<span class='entity-only-title' data-abcattr-code='"+abcattrCode+"' data-abcattr='"+abcattr+"'>"+abcattr+"</span>"+
 	            "<div class='btn-wrap'>" +
 	            "<i class='icon icon-save'></i>" +
-	            "<i class='icon icon-add-abc group'></i>" +
-	            "<i class='icon icon-trash-sm'></i>" +
+	            "<i class='icon icon-add-abc group'></i>" +	            
 	            "<i class='icon icon-arrow-sm'></i>" +
 	            "</div>" +
 	            "</div>" +
 	            "</div>" +
 	            "<ul class='drag-wrap-repeat drag-wrap collapse-content collapse-content-active' id='drag-"+dragWrapLen+"'>" +
 	            "</ul>" +
-	            "</li>"				            
-	          $relativeBar.parent(".collapse-header").next(".collapse-content").append(html);
+	            "</li>"	
+	          var $content = $relativeBar.parent(".collapse-header").next(".collapse-content");						 
+			  if($content.children().length == 0){
+				  var $html = $(html).appendTo($content);
+		          $html.find("select").css({"width":"15%","marginLeft":"16px"}).select2();
+			  }	          
 			  drag($(".drag-wrap").length);
 			  $CPF.closeLoading();
 		});
@@ -926,7 +937,6 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 		});
     };
     
-    //跟实体删除方法
     
     //跟实体删除方法
     function entityDelete(el) {
@@ -998,10 +1008,10 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
     //关系删除方法
     function relativeDelete(el) {
     	var $relativeBar = $(el).closest(".label-bar");
-    	var id = $attrGroupBar.closest(".collapse-header").attr("data-id");
-    	var isDelChil = isDelChil;
+    	var id = $relativeBar.closest(".collapse-header").attr("data-id");
+    	var isDelChil = true;
     	var callback = function() {
-    		$moreAttrBar.closest(".more-attr").remove();    		
+    		$relativeBar.closest("li.attr-relative").remove();    		
     	};
     	deleteAjax(id, isDelChil, callback);
     };   
@@ -1174,8 +1184,10 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
     	if(hasSave){
     		return;
     	}
-    	$(this).find(".edit-input").removeAttr("disabled");
-    	$(this).find("select").removeAttr("disabled");
+    	if(!$(this).hasClass(".attr-relative")){
+    		$(this).find(".edit-input").removeAttr("disabled");
+        	$(this).find("select").removeAttr("disabled");
+    	}    	
         $(this).addClass("edit");
     })
 
@@ -1279,17 +1291,20 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 	        	var currentId = "";
 	        	var beforeId = "";
 	        	var afterId = "";	  	        		        
-	        	if(before.length == 0) {	        		
+	        	if(before.length == 0) {	
+	        		console.log(before)
 	        		beforeId = "";
-	        	}else if(before.hasClass("attr-group") || before.hasClass("more-attr") || before.hasClass("attr-relative") || before.hasClass("attr-abc")){	        			        		
+	        	}else if(before.hasClass("attr-group") || before.hasClass("more-attr") || before.hasClass("attr-relative") ||  before.hasClass("entity-ch-wrap")){	        			        		
+	        		console.log(before);
 	        		beforeId = before.children(".collapse-header").attr("data-id");
 	        	}else {	        		
 	        		beforeId = before.children(".label-bar").attr("data-id");
+	        		console.log(before);
 	        	}
 	        	
 	        	if(after.length == 0) {	        		
 	        		afterId = "";
-	        	}else if(after.hasClass("attr-group") || after.hasClass("more-attr") || after.hasClass("attr-relative") || after.hasClass("attr-abc")){
+	        	}else if(after.hasClass("attr-group") || after.hasClass("more-attr") || after.hasClass("attr-relative") || after.hasClass("entity-ch-wrap")){
 	        		afterId = after.children(".collapse-header").attr("data-id");
 	        	}else {
 	        		afterId = after.children(".label-bar").attr("data-id");

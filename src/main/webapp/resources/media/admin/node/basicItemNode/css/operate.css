@@ -16,6 +16,20 @@
     height: 100%;
     font-family: 'SimSun', 'Microsoft YaHei';
 }
+#operate .select2-container.select2-container-disabled .select2-choice,
+#operate .select2-container.select2-container-disabled .select2-choice .select2-arrow {
+	background-color: inherit;
+	border: none;
+}
+#operate .edit .select2-container.select2-container-disabled .select2-choice {
+	border: 1px solid #ddd;
+}
+#operate .select2-container .select2-choice .select2-arrow b:before {
+	display: none;
+}
+#operate .edit .select2-container .select2-choice .select2-arrow b:before {
+	display: block;
+}
 #operate .entity_list {
 	padding-top: 2em;
 }
@@ -328,9 +342,12 @@
 #operate .edit .icon.icon-save {
     display: inline-block;
 }
-#operate .edit .icon-add-sm.group,
-#operate .edit .icon-add-abc.group {
+#operate .edit .icon-add-sm.group {
 	margin-right: 0;
+}
+#operate .edit .icon-add-abc.group {
+	margin-right: 37px;
+	margin-left: 23px;
 }
 #operate .card {
     width: 184px;        
@@ -663,6 +680,9 @@
 #operate .drag-wrap-repeat {
     padding-left: 40px;
 }
+#operate .repeat .drag-wrap-repeat {
+	padding-left: 0;
+}
 #operate .drag-wrap-repeat-more {
     padding-left: 0px;
 }
@@ -680,6 +700,11 @@
 #operate .more-attr-drag-wrap,
 #operate .attr-relative-drag-wrap {
     padding-left: 40px;
+}
+#operate .repeat .attr-group-drag-wrap,
+#operate .repeat .more-attr-drag-wrap,
+#operate .repeat .attr-relative-drag-wrap {
+    padding-left: 0;
 }
 #operate .drag-wrap-repeat-more  .attr-group-drag-wrap,
 #operate .drag-wrap-repeat-more  .more-attr-drag-wrap,
