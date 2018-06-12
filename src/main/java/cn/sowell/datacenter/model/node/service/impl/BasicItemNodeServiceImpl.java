@@ -1,5 +1,6 @@
 package cn.sowell.datacenter.model.node.service.impl;
 
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -8,10 +9,10 @@ import org.hibernate.SessionFactory;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
-import com.abc.mapping.node.NodeOps;
 import com.abc.mapping.node.NodeOpsType;
 import com.abc.mapping.node.NodeType;
 
+import ch.qos.logback.core.net.SyslogOutputStream;
 import cn.sowell.copframe.dto.page.PageInfo;
 import cn.sowell.datacenter.model.node.criteria.BasicItemNodeCriteria;
 import cn.sowell.datacenter.model.node.dao.BasicItemNodeDao;
@@ -104,7 +105,6 @@ public class BasicItemNodeServiceImpl implements BasicItemNodeService {
 	
 	@Override
 	public void nodeSort(BasicItemNode current, String beforeId, String afterId) {
-		try {
 			//第一个孩子， 没有前驱， 没有后继
 		if (beforeId.isEmpty()&& afterId.isEmpty()) {//没有前驱， 没有后继, 父亲的第一个孩子
 				current.setOrder(100);
@@ -122,9 +122,11 @@ public class BasicItemNodeServiceImpl implements BasicItemNodeService {
 			Integer order = (beforeNode.getOrder() + afterNode.getOrder()) / 2;
 			current.setOrder(order);
 		}
-			
-		basicItemNodeDao.update(current);
+		
+		try {
+			basicItemNodeDao.update(current);
 		} catch (DataIntegrityViolationException e) {
+			System.out.println("1111111");
 			excuExtend(current.getParentId());
 		} 
 		

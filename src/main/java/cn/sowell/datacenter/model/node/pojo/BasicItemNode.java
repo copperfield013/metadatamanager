@@ -7,39 +7,49 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import io.swagger.annotations.ApiModelProperty;
+
 @Entity
 @Table(name = "t_c_basic_item_node")
 public class BasicItemNode {
 	
+	@ApiModelProperty(value="主键")
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id")
 	private Integer id;
 
+	@ApiModelProperty(value = "类型")
 	@Column(name = "type")
 	private Integer type;
 
+	@ApiModelProperty(value = "名称")
 	@Column(name = "name")
 	private String name;
 
+	 @ApiModelProperty(value = "映射名称")
 	@Column(name = "abcattr")
 	private String abcattr;
 	
 	@Column(name="abcattr_code")
 	private String abcattrCode;
 
+	 @ApiModelProperty(value = "数据类型")
 	@Column(name = "data_type")
 	private String dataType;
 
 	@Column(name = "subdomain")
 	private String subdomain;
 
+	@ApiModelProperty(value = "读，写， 并等")
 	@Column(name = "opt")
 	private String opt;
 
+	@ApiModelProperty(value = "排序字段")
 	@Column(name = "c_order")
 	private Integer order;
 
+	@ApiModelProperty(value = "父id")
 	@Column(name = "parent_id")
 	private String parentId;
 	

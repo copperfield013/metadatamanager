@@ -18,7 +18,7 @@ public interface BasicItemNodeService {
 
 	/**
 	 * 创建一个BasicItemNode对象
-	 * @param BasicItemNode
+	 * @param BasicItemNodeApi
 	 */
 	void saveOrUpdate(BasicItemNode basicItem);
 

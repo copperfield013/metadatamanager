@@ -52,7 +52,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import springfox.documentation.annotations.ApiIgnore;
 
-@Api(value="entityManager", description="实体管理接口")
+/*@Api(tags="entityManager", description="实体管理接口")*/
 @Controller
 @RequestMapping(AdminConstants.URI_DICTIONARY + "/basicItem")
 public class BasicItemController {
@@ -66,17 +66,7 @@ public class BasicItemController {
 	@Resource
 	TowlevelattrService towlevelattrService;
 	
-	Logger logger = Logger.getLogger(BasicItemController.class);
-	@ApiIgnore
-	@org.springframework.web.bind.annotation.InitBinder
-	public void InitBinder(ServletRequestDataBinder binder) {
-		System.out.println("执行了InitBinder方法");
-		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-		dateFormat.setLenient(false);
-		binder.registerCustomEditor(Date.class, null, new CustomDateEditor(dateFormat, true));
-	}
-
-	@ApiIgnore
+	
 	@RequestMapping("/list")
 	public String list(BasicItemCriteria criteria, Model model){
 		criteria.setDataType("记录类型");
@@ -189,7 +179,6 @@ public class BasicItemController {
                         return AjaxPageResponse.FAILD("主键重复, 请重新添加");
                     }
                 } catch (Exception e) {
-                    logger.error("操作失败", e);
                     return AjaxPageResponse.FAILD("操作失败");
                 }
             }
@@ -217,7 +206,6 @@ public class BasicItemController {
 			basicItemService.update(basicItem);
 			return AjaxPageResponse.CLOSE_AND_REFRESH_PAGE("修改成功", "basicItem_list");
 		} catch (Exception e) {
-			logger.error("修改失败", e);
 			return AjaxPageResponse.FAILD("修改失败");
 		}
 	}
@@ -256,7 +244,6 @@ public class BasicItemController {
 				return response;
 			}
 		} catch (Exception e) {
-			logger.error("操作失败", e);
 			return AjaxPageResponse.FAILD("操作失败");
 		}
 	}
@@ -270,7 +257,6 @@ public class BasicItemController {
 				basicItemService.createTabCol();
 				return AjaxPageResponse.CLOSE_AND_REFRESH_PAGE("操作成功", "basicItem_list");
 			} catch (Exception e) {
-				logger.error("操作失败", e);
 				return AjaxPageResponse.FAILD("操作失败");
 			}
 		}
@@ -304,7 +290,6 @@ public class BasicItemController {
 					}
 				}
 			} catch (Exception e) {
-				logger.error("删除失败", e);
 				return AjaxPageResponse.FAILD("删除失败");
 			}
 		}

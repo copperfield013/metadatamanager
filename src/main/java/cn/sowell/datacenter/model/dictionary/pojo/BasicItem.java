@@ -61,7 +61,7 @@ public class BasicItem {
 	  
 	 @ApiModelProperty(value="数据格式", name="DataForm")
 	  @Column(name="c_data_form")
-	  private String DataForm;//数据格式-目前没用到
+	  private String dataForm;//数据格式-目前没用到
 	  
 	 @ApiModelProperty(value="枚举id", name="dictParentId")
 	  @Column(name="c_dict_parent_id")
@@ -133,7 +133,7 @@ public class BasicItem {
 	}
 
 	public String getDataForm() {
-		return DataForm;
+		return dataForm;
 	}
 
 	public Integer getDictParentId() {
@@ -185,7 +185,7 @@ public class BasicItem {
 	}
 
 	public void setDataForm(String dataForm) {
-		DataForm = dataForm;
+		dataForm = dataForm;
 	}
 
 	public void setDictParentId(Integer dictParentId) {

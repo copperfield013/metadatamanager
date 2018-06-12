@@ -7,30 +7,39 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import io.swagger.annotations.ApiModelProperty;
+
 @Entity
 @Table(name = "t_c_dictionary_basic_item")
 public class DictionaryBasicItem {
 
+	@ApiModelProperty(value="主键id")
 	@Id
 	@Column(name = "id")
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Integer id;
 	
+	@ApiModelProperty(value="父名称")
 	@Column(name = "parent_name")
 	private String parentName;
 	
+	@ApiModelProperty(value="父id")
 	@Column(name = "parent_id")
 	private Integer parentId;
 	
+	@ApiModelProperty(value="父亲下的孩子的排序code")
 	@Column(name = "c_code")
 	private Integer code;
 	
+	@ApiModelProperty(value="名称")
 	@Column(name = "c_name")
 	private String name;
 	
+	@ApiModelProperty(value="英文名称")
 	@Column(name = "c_en_name")
 	private String enName;
 	
+	@ApiModelProperty(value="状态")
 	@Column(name = "c_status")
 	private String status;
 
