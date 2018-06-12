@@ -1,19 +1,16 @@
 package cn.sowell.datacenter.admin.controller.node;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -224,7 +221,6 @@ public class BasicItemNodeController {
         @ApiResponse(code = 200, message = "OK", response = DictionaryBasicItems.class),
         @ApiResponse(code = 400, message = "操作失败", response = String.class) })
     @RequestMapping(value = "/getCommLab",
-        consumes = { "application/json" },
         method = RequestMethod.POST)
 	public ResponseEntity<DictionaryBasicItems> getCommLab() {
 		List<DictionaryBasicItem> list = dictBitemServices.getDictBasicItemByParent(125);
