@@ -28,6 +28,7 @@ import cn.sowell.datacenter.admin.controller.AdminConstants;
 import cn.sowell.datacenter.admin.controller.node.api.BasicItemNodes;
 import cn.sowell.datacenter.admin.controller.node.api.BasicItems;
 import cn.sowell.datacenter.admin.controller.node.api.DictionaryBasicItems;
+import cn.sowell.datacenter.admin.controller.node.api.InlineResponse200;
 import cn.sowell.datacenter.admin.controller.node.api.RecordRelationTypes;
 import cn.sowell.datacenter.model.dictionary.criteria.BasicItemCriteria;
 import cn.sowell.datacenter.model.dictionary.pojo.BasicItem;
@@ -76,21 +77,28 @@ public class BasicItemNodeController {
 		return AdminConstants.JSP_NODE + "/basicItemNode/list.jsp";
 	}
 
-	@ApiIgnore
 	@ResponseBody
-	@RequestMapping("/saveOrUpdate")
-	public String saveOrUpdate(BasicItemNode basicItemNode) {
-		boolean check = basicItemNodeService.check(basicItemNode);
-		if (check) {//重复了
-			return "{\"state\": \"fail\"}";
-		} else {
-			basicItemNodeService.saveOrUpdate(basicItemNode);
-			Map<String, Object> map = new HashMap<String, Object>();
-			map.put("node", basicItemNode);
-			map.put("state", "success");
-			JSONObject jobj = new JSONObject(map);
-			return jobj.toString();
-		}
+	 @ApiOperation(value = "保存节点", nickname = "saveOrUpdate", notes = "保存节点信息", response = InlineResponse200.class, tags={ "configurationFiles", })
+    @ApiResponses(value = { 
+        @ApiResponse(code = 200, message = "OK", response = InlineResponse200.class),
+        @ApiResponse(code = 401, message = "操作失败", response = String.class) })
+    @RequestMapping(value = "/saveOrUpdate",
+        method = RequestMethod.POST)
+	public ResponseEntity<InlineResponse200> saveOrUpdate(BasicItemNode basicItemNode) {
+		 try {
+			 boolean check = basicItemNodeService.check(basicItemNode);
+			 InlineResponse200 inline = new InlineResponse200();
+			if (check) {//重复了
+				inline.setState("fail");
+			} else {
+				basicItemNodeService.saveOrUpdate(basicItemNode);
+				inline.setNode(basicItemNode);
+				inline.setState("success");
+			}
+             return new ResponseEntity<InlineResponse200>(inline, HttpStatus.OK);
+         } catch (Exception e) {
+             return new ResponseEntity<InlineResponse200>(HttpStatus.INTERNAL_SERVER_ERROR);
+         }
 	}
 
 	@ApiIgnore
