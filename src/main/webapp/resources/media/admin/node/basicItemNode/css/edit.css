@@ -413,7 +413,15 @@ body {
     overflow-x: hidden;
     overflow-y: auto;
     max-height: 200px; 
+    background-color: #ffffff;
 }
+#operateEdit .tag-search {
+	text-indent: 5px;
+}
+#operateEdit .tag-card-search {
+	text-align: center;
+    margin-top: 10px;
+} 
 #operateEdit .tag-card .tag-card-list {
     width: 100%;
     height: 40px;
@@ -422,6 +430,17 @@ body {
     cursor: pointer;
     background-color: #ffffff;
     position: relative;
+    display: block;
+}
+#operateEdit .tag-card .tag-card-info {
+	display: none;
+	text-align: center;
+}
+#operateEdit .tag-card .tag-card-info.tag-show {
+	display: block;
+}
+#operateEdit .tag-card .tag-card-list.tag-hide {
+	display: none;
 }
 #operateEdit .tag-card .tag-card-list:first-child {
     border-top-left-radius: 4px;

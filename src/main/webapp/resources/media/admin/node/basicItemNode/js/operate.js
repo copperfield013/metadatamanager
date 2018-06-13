@@ -129,7 +129,10 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 		Ajax.ajax('admin/node/basicItemNode/getCommLab', '', function(data) {
 			console.log(data);
 			var data = data.commLab;
-			var html = "<ul class='tag-card'>";
+			var html = "<ul class='tag-card'>"+						
+						"<li class='tag-card-search'>" +
+						"<input type='text' class='tag-search'>"+
+						"</li>"
 			var has; //判断是否已经选中
 			for(var i=0; i<data.length; i++) {
 				has = false; //每次都重置
@@ -157,7 +160,9 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 			            "</li>" 
 				}				
 			};
-			html += "</ul>"
+			html += "<li class='tag-card-info'>没有找到匹配项" +
+					"</li>"+
+					"</ul>"
 			var wrap = $("#operate");
 		    var offsetx = $(el).offset().left;
 		    var offsety = $(el).offset().top;
@@ -173,6 +178,32 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 		    $CPF.closeLoading();
 	    });		                
     };
+    
+    $("#operate").on("click", ".tag-search", function (e) {
+        e.stopPropagation();        
+    });
+    
+    //搜索标签点击事件绑定
+    $("#operate").on("input propertychange", ".tag-search", function (e) {
+        e.stopPropagation();               
+        
+        var val = $(this).val();         
+        val = val.replace(/\s+/g,"");  
+        var $searchLi = $(".tag-card", $page).find("li:contains("+val+")");        
+        if(val !== "") {     
+        	if($searchLi.length == 0) {
+            	$(".tag-card", $page).find("li").addClass("tag-hide");
+            	$(".tag-card-info", $page).addClass("tag-show");
+            	return;
+            }else {
+            	$(".tag-card", $page).find("li").addClass("tag-hide");        	
+            	$searchLi.removeClass("tag-hide");
+            	$(".tag-card-info", $page).removeClass("tag-show");
+            }        	  
+        }else {
+        	$(".tag-card", $page).find("li").removeClass("tag-hide");
+        }
+    });
     
     /**
      * 添加关系下标签页面弹出方法
@@ -307,6 +338,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
      * remove 添加页方法
       */
     function removePop() {
+    	console.log(2);
         $(".card").remove();
         $(".tag-card").remove();
         $(".delete-list").remove();
@@ -373,7 +405,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
     //标签两边箭头的展现和隐藏
     function judegArrow(ul) {
         var ulWidth = parseFloat($(ul).width());
-        var wrapWidth = parseFloat($(ul).parent(".tag-content").width());
+        var wrapWidth = parseFloat($(ul).parent(".tag-content").width());       
         if (ulWidth > wrapWidth) {
             $(ul).closest(".label-bar.tag").find(".icon-toleft")
                 .addClass("active");
@@ -1159,7 +1191,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
     }
         
 
-    $page.on("click", function () {    	
+    $page.on("click", function (e) {     	
         removePop();
     });
       
