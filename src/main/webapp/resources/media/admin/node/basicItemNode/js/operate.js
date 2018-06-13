@@ -3,6 +3,22 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 	
 	var $page = $("#operate");	
 	
+	function addUnfold(el) {
+		if($(el).hasClass("icon-add") && $(el).siblings(".icon-arrow").hasClass("active")) {
+        	$(el).siblings(".icon-arrow").trigger("click");
+        }else if($(el).hasClass("icon-add-sm") && $(el).siblings(".icon-arrow-sm").hasClass("active")){
+        	$(el).siblings(".icon-arrow-sm").trigger("click");
+        }
+	} 
+	
+	function saveSuccess(el) {
+		 $(el).closest(".label-bar").removeClass("edit");
+	     $(el).closest(".entity-edit-wrap").removeClass("edit");
+	     $(el).closest(".label-bar").find(".edit-input").attr("disabled", "true");
+	     $(el).closest(".label-bar").find("select").attr("disabled", "true");
+	     $(el).closest(".label-bar").addClass("al-save");
+	}
+	
 	/**
      * 获取实体信息方法 示例     
      */
@@ -320,14 +336,25 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
         var $tagUl = $(el).closest(".label-bar.tag")
             .find(".tag-content")
             .children("ul");
-        var $li = $tagUl.children("li");
+        var $li = $tagUl.children("li");        
         for (var i = 0; i < $li.length; i++) {
             if ($($li[i]).children("span").text() == text) {
                 $($li[i]).remove();
                 menuWidth($tagUl[0]);
+                var ulWidth = parseFloat($tagUl.css("width"));
+                var marginLeft = parseFloat($tagUl.css("margin-left"));
+                var contentWidth = parseFloat($tagUl.parent(".tag-content").css("width"));
+                
+                if(ulWidth + marginLeft < contentWidth) {                	
+                	var marginLeft = contentWidth - ulWidth;                	
+                	if(marginLeft > 0) {
+                		marginLeft = 0;
+                	}
+                	$tagUl.css("marginLeft",marginLeft);
+                }
                 return;
             }
-        }
+        }        
     }
 
     //标签添加上去的方法
@@ -387,7 +414,8 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
             "</div>" +
             "</div>" +
             "</li>"
-        $content.prepend(tagHtml);
+        $content.prepend(tagHtml);   
+        addUnfold(el)
     };
 
     /**
@@ -445,6 +473,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 		            "</li>";
 		            var $html = $(attrHtml).prependTo($content);
 		            $html.find("select").css({"width":"15%","marginLeft":"16px"}).select2();		            
+		            addUnfold(el);
 		            $CPF.closeLoading();
 			    })
 			    
@@ -478,6 +507,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
             "</ul>" +
             "</li>"
         $content.prepend(attrGroupHtml);
+        addUnfold(el)
         drag($(".drag-wrap").length);
     };
 
@@ -543,6 +573,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 		            var $html = $(moreAttrHtml).prependTo($content);
 		            $html.find("select").css({"width":"15%","marginLeft":"16px"}).select2();
 		            drag($(".drag-wrap").length);
+		            addUnfold(el);
 		            $CPF.closeLoading();
 			    })
 			    
@@ -584,7 +615,8 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
             "</li>";         
             var $html = $(relativeHtml).prependTo($content);
             $html.find("select").css({"width":"15%","marginLeft":"16px"}).select2();
-		    drag($(".drag-wrap").length);
+            addUnfold(el);
+            drag($(".drag-wrap").length);
 		    $CPF.closeLoading();			    
 	    });                                 
     };    
@@ -620,12 +652,18 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 			 opt: opt,
 			 order: order
 		 }, function(data) {
+			 if(data.state == "fail") {
+				 alert("属性名不能相同");
+				 $CPF.closeLoading();
+				 return;
+			 }
 			 var data = data.node;
 			 //设置跟实体的order和id
 			 var order = data.order;
 			 var id = data.id;
 			 $entityTitle.attr("data-order",order)
-			 	.attr("data-id", id);
+			 	.attr("data-id", id);	
+			 saveSuccess(el);
 			 $CPF.closeLoading();
 	    });
     }
@@ -654,33 +692,36 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
     	var id = $tagBar.attr("data-id");
     	var parentId = $tagBar.closest(".collapse-content").prev(".collapse-header")
     						.attr("data-id"); 
-    	var abcattr = [];
-    	var abcattrCode = [];
+    	var subdomain = [];      	
     	var $tags = $tagBar.find(".tag-content").children("ul").children("li");
-    	for(var i=0; i<$tags.length; i++) {
-    		abcattrCode.push($($tags[i]).attr("data-id"));
-    		abcattr.push($($tags[i]).attr("data-text"));
+    	for(var i=0; i<$tags.length; i++) {    		
+    		subdomain.push($($tags[i]).attr("data-text"));
     	}
-    	abcattr = abcattr.join(",");
-    	abcattrCode = abcattrCode.join(",");
+    	subdomain = subdomain.join(",");    	
     	$CPF.showLoading();
     	Ajax.ajax(' admin/node/basicItemNode/saveOrUpdate', {
 			 type: type,
 			 name: name,
-			 abcattr: abcattr,
-			 abcattrCode: abcattrCode,
+			 subdomain: subdomain,	
+			 abcattr: "",
 			 dataType: dataType,
 			 opt: opt,
 			 order: order,
 			 parentId: parentId,
 			 id: id
 		 }, function(data) {
+			 if(data.state == "fail") {
+				 alert("属性名不能相同");
+				 $CPF.closeLoading();
+				 return;
+			 }
 			 var data = data.node;
 			 //设置当前节点order和id
 			 var order = data.order;
 			 var id = data.id;
 			 $tagBar.attr("data-order",order)
 			 	.attr("data-id", id);
+			 saveSuccess(el)
 			 $CPF.closeLoading();
 		});
     };
@@ -729,12 +770,18 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 			 parentId: parentId,
 			 id: id
 		 }, function(data) {
+			 if(data.state == "fail") {
+				 alert("属性名不能相同");
+				 $CPF.closeLoading();
+				 return;
+			 }
 			 var data = data.node;
 			 //设置当前节点order和id
 			 var order = data.order;
 			 var id = data.id;
 			 $attrBar.attr("data-order",order)
 			 	.attr("data-id", id);
+			 saveSuccess(el)
 			 $CPF.closeLoading();
 		});
     };
@@ -761,6 +808,11 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 			 opt: opt,
 			 id: id
 		 }, function(data) {
+			 if(data.state == "fail") {
+				 alert("属性名不能相同");
+				 $CPF.closeLoading();
+				 return;
+			 }
 			 var data = data.node;
 			 //设置当前节点order和id
 			 var order = data.order;
@@ -768,6 +820,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 			 $attrGroupBar.closest(".collapse-header")
 			 	.attr("data-order",order)
 			 	.attr("data-id", id);
+			 saveSuccess(el)
 			 $CPF.closeLoading();
 		});
     };
@@ -816,6 +869,11 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 			 parentId: parentId,
 			 id: id
 		 }, function(data) {
+			 if(data.state == "fail") {
+				 alert("属性名不能相同");
+				 $CPF.closeLoading();
+				 return;
+			 }
 			 var data = data.node;
 			 //设置当前节点order和id
 			 var order = data.order;
@@ -823,6 +881,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 			 $moreAttrBar.closest(".collapse-header")
 			 	.attr("data-order",order)
 			 	.attr("data-id", id);
+			 saveSuccess(el)
 			 $CPF.closeLoading();
 		});
     };
@@ -853,6 +912,11 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 			 parentId: parentId,
 			 id: id
 		 }, function(data) {
+			 if(data.state == "fail") {
+				 alert("属性名不能相同");
+				 $CPF.closeLoading();
+				 return;
+			 }
 			 var data = data.node;
 			 //设置当前节点order和id
 			 var order = data.order;
@@ -908,8 +972,10 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 			  if($content.children().length == 0){
 				  var $html = $(html).appendTo($content);
 		          $html.find("select").css({"width":"15%","marginLeft":"16px"}).select2();
-			  }	          
+			  }	   
+			  saveSuccess(el);
 			  drag($(".drag-wrap").length);
+			  
 			  $CPF.closeLoading();
 		});
     };
@@ -940,6 +1006,11 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 			 parentId: parentId,
 			 id: id
 		 }, function(data) {
+			 if(data.state == "fail") {
+				 alert("属性名不能相同");
+				 $CPF.closeLoading();
+				 return;
+			 }
 			 var data = data.node;
 			 //设置当前节点order和id
 			 var order = data.order;
@@ -947,6 +1018,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 			 $abcBar.closest(".collapse-header")
 			 	.attr("data-order",order)
 			 	.attr("data-id", id);
+			 saveSuccess(el)
 			 $CPF.closeLoading();
 		});
     };
@@ -1093,7 +1165,8 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
       
 
     //收缩事件绑定
-    $("#operate").on("click", ".icon-arrow, .icon-arrow-sm", function () {
+    $("#operate").on("click", ".icon-arrow, .icon-arrow-sm", function (e) {
+    	e.stopPropagation();
         var $content = $(this).closest(".collapse-header")
             .siblings(".collapse-content");
         $(this).toggleClass("active");
@@ -1184,7 +1257,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
             addMoreAttr(el);
         } else if ($(this).hasClass("add-relative")) {
             addRelative(el);
-        }
+        }        
         removePop();
         $(el).removeClass("active");
     });
@@ -1208,7 +1281,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
         } else {
             $parent.addClass("tag-checkbox-checked");
             tagAddTag(el, text, id);            
-        };
+        };        
         judegArrow(ul)
     });
 
@@ -1250,7 +1323,22 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
     
     //标签删除图标点击事件绑定
     $("#operate").on("click", ".tag-content .icon-delete", function(){
+    	var $tagUl = $(this).closest(".tag-content")
+        .children("ul");     	
     	$(this).parent("li").remove();
+    	menuWidth($tagUl[0]);
+        judegArrow($tagUl);
+    	var ulWidth = parseFloat($tagUl.css("width"));
+        var marginLeft = parseFloat($tagUl.css("margin-left"));
+        var contentWidth = parseFloat($tagUl.parent(".tag-content").css("width"));
+        
+        if(ulWidth + marginLeft < contentWidth) {        	
+        	var marginLeft = contentWidth - ulWidth;        	        	        	
+        	if(marginLeft > 0) {
+        		marginLeft = 0;
+        	}
+        	$tagUl.css("marginLeft",marginLeft);
+        }
     })    
 
     //双击编辑
@@ -1267,11 +1355,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
     })
 
     //保存
-    $("#operate").on("click", ".icon-save", function() {
-        $(this).closest(".label-bar").removeClass("edit");
-        $(this).closest(".entity-edit-wrap").removeClass("edit");
-        $(this).closest(".label-bar").find(".edit-input").attr("disabled", "true");
-        $(this).closest(".label-bar").find("select").attr("disabled", "true");
+    $("#operate").on("click", ".icon-save", function() {        
         var entityTitle = $(this).closest(".entity-title");
         var labelBar = $(this).closest(".label-bar");
         if(entityTitle.length > 0) {
@@ -1291,8 +1375,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
         	relativeSave(this);
         }else if(labelBar.hasClass("abc")) {
         	abcSave(this);
-        }
-        labelBar.addClass("al-save");
+        }        
     });
     
     //删除-全部
@@ -1306,8 +1389,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
         	return;
         }
         var el = $(".icon-trash-sm.active")[0];
-        if(labelBar.hasClass("attr")) { 
-        	console.log(el);
+        if(labelBar.hasClass("attr")) {         	
         	attrDelete(el);        	
         }else if(labelBar.hasClass("more-attr")) {
         	moreAttrDelete(el, true);
@@ -1315,6 +1397,8 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
         	attrGroupDelete(el, true);
         }else if(labelBar.hasClass("attr-relative")) {
         	relativeDelete(el);
+        }else if(labelBar.hasClass("tag")) {        	
+        	tagDelete(el);
         }
     })
     
@@ -1327,8 +1411,6 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
         	moreAttrDelete(el, false);
         }else if(labelBar.hasClass("attr-group")) {
         	attrGroupDelete(el, false);
-        }else if(labelBar.hasClass("attr-tag")) {
-        	tagDelete(el);
         }
     })
     

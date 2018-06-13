@@ -616,8 +616,8 @@ body {
     position: absolute;
     top: 0;
     bottom: 0;
-    left: 230px;
-    right: 200px;
+    left: 220px;
+    right: 210px;
     padding-top: 7px;
     overflow: hidden;
 }
@@ -648,11 +648,11 @@ body {
 }
 #operateEdit .add-tag .label-bar>.icon.icon-toleft {
     left: 200px;
-    top: 16px;
+    top: 12px;
 }
 #operateEdit .add-tag .label-bar>.icon.icon-toright {
-    right: 170px;
-    top: 16px;
+    right: 185px;
+    top: 12px;
 }
 #operateEdit .add-tag .tag-content li .icon-delete {
     width: 16px;
