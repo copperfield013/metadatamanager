@@ -115,20 +115,38 @@ public class BasicItemNodeDaoImpl implements BasicItemNodeDao {
 
 	@Override
 	public List<String> getNameByPid(BasicItemNode basicItemNode) {
+		
+		
+		
 		if (NodeType.ABC.equals(NodeType.getNodeType(basicItemNode.getType()))) {//是一个实体
 			String sql = "SELECT name from t_c_basic_item_node	WHERE parent_id is null AND type=1";
 			return sFactory.getCurrentSession().createSQLQuery(sql).list();
-		} else {
-			String sql = "SELECT name from t_c_basic_item_node"
-					+ "	WHERE parent_id=:parentId "
-					+ "	UNION"
-					+ "	SELECT name from t_c_basic_item_node"
-					+ "	WHERE parent_id in("
-					+ "	SELECT id from t_c_basic_item_node"
-					+ "	WHERE parent_id=:parentId AND type =6	)";
+		}else {
 			
-			return sFactory.getCurrentSession().createSQLQuery(sql).setParameter("parentId", basicItemNode.getParentId()).list();
-		}
+			BasicItemNode pNode = get(BasicItemNode.class, Integer.parseInt(basicItemNode.getParentId()));
+			if (NodeType.ATTRGROUP.equals(NodeType.getNodeType(pNode.getType()))) {
+				String sql = "SELECT name from t_c_basic_item_node"
+						+ "	WHERE parent_id=:parentId "
+						+ "	UNION"
+						+ "	SELECT name from t_c_basic_item_node"
+						+ "	WHERE parent_id in("
+						+ "	SELECT id from t_c_basic_item_node"
+						+ "	WHERE parent_id=:parentId AND type =6	)";
+				return sFactory.getCurrentSession().createSQLQuery(sql).setParameter("parentId", pNode.getParentId()).list();
+			} else {
+				String sql = "SELECT name from t_c_basic_item_node"
+						+ "	WHERE parent_id=:parentId "
+						+ "	UNION"
+						+ "	SELECT name from t_c_basic_item_node"
+						+ "	WHERE parent_id in("
+						+ "	SELECT id from t_c_basic_item_node"
+						+ "	WHERE parent_id=:parentId AND type =6	)";
+				
+				return sFactory.getCurrentSession().createSQLQuery(sql).setParameter("parentId", basicItemNode.getParentId()).list();
+			
+			}
+			
+			}
 		
 	}
 }
