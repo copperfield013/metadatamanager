@@ -11,7 +11,7 @@
 			</div>
 			<button type="submit" class="btn btn-default">查询</button>
 			<a class="btn btn-primary tab" href="admin/node/basicItemNode/operate" title="创建" target="dictMapping_add" >创建</a>
-		</form>s
+		</form>
 	</nav>
 	<div class="row list-area">
 		<table class="table">
@@ -30,7 +30,8 @@
 						<td>${item.name }</td>
 						<td>${item.abcattr }</td>
 						<td>
-							<a class="btn-primary tab" href="admin/node/basicItemNode/edit?nodeId=${item.id }" title="修改" target="dictMapping_edit" >修改</a>
+							<a class="tab" href="admin/node/basicItemNode/edit?nodeId=${item.id }" title="修改" target="dictMapping_edit" >修改</a>
+							<a href="admin/node/basicItemNode/do_delete?id=${item.id }&isDelChil=false" confirm="确认删除？">删除</a>
 						</td>
 					</tr>
 				</c:forEach>
