@@ -80,11 +80,17 @@ public class BasicItemNodeController {
 	@ResponseBody
 	@RequestMapping("/saveOrUpdate")
 	public String saveOrUpdate(BasicItemNode basicItemNode) {
+		boolean check = basicItemNodeService.check(basicItemNode.getName(), basicItemNode.getParentId());
+		if (check) {//重复了
+			return "{\"state\": \"fail\"}";
+		} else {
 			basicItemNodeService.saveOrUpdate(basicItemNode);
 			Map<String, Object> map = new HashMap<String, Object>();
 			map.put("node", basicItemNode);
+			map.put("state", "success");
 			JSONObject jobj = new JSONObject(map);
 			return jobj.toString();
+		}
 	}
 
 	@ApiIgnore
@@ -296,7 +302,6 @@ public class BasicItemNodeController {
 		criteria.setDataType("记录类型");
 		criteria.setUsingState(1);
 		List<BasicItem> list = basicItemService.queryList(criteria);
-		
 		BasicItems btItems = new BasicItems();
 		btItems.entity(list);
 		return new ResponseEntity<BasicItems>(btItems, HttpStatus.OK);

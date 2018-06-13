@@ -60,4 +60,12 @@ public interface BasicItemNodeService {
 	 */
 	List<BasicItemNode> getChildNode(String nodeId);
 	
+	/**
+	 * 判断当前父节点下有没有重复的名字
+	 * @param name  
+	 * @param parentId
+	 * @return  重复返回true， 不重复放回false
+	 */
+	boolean check(String name, String parentId);
+	
 }

@@ -152,4 +152,10 @@ public class BasicItemNodeServiceImpl implements BasicItemNodeService {
 	public List<BasicItemNode> getChildNode(String nodeId) {
 		return basicItemNodeDao.getChildByPid(nodeId);
 	}
+
+	@Override
+	public boolean check(String name, String parentId) {
+		List<String> nameList = basicItemNodeDao.getNameByPid(parentId);
+		return nameList.contains(name);
+	}
 }

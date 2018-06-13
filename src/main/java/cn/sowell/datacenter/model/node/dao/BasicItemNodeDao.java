@@ -62,5 +62,10 @@ public interface BasicItemNodeDao {
 	 */
 	Integer getOrder(BasicItemNode basicItemNode);
 	
-	
+	/**
+	 * 获取当前实体下和实体下的属性组下的所有字段的名字
+	 * @param parentId
+	 * @return
+	 */
+	List<String> getNameByPid(String parentId);
 }

@@ -83,7 +83,7 @@ public class BasicItemNodeDaoImpl implements BasicItemNodeDao {
 
 	@Override
 	public List<BasicItemNode> getChildByPid(String parentId) {
-		String hql = " FROM BasicItemNode WHERE parentId=:parentId ORDER BY order ASC";
+		String hql = " FROM BasicItemNode WHERE parentId=:parentId ORDER BY order DESC";
 		return	sFactory.getCurrentSession().createQuery(hql).setParameter("parentId", parentId).list();
 	}
 
@@ -111,5 +111,18 @@ public class BasicItemNodeDaoImpl implements BasicItemNodeDao {
 		}
 		
 		return order;
+	}
+
+	@Override
+	public List<String> getNameByPid(String parentId) {
+		String sql = "SELECT name from t_c_basic_item_node"
+				+ "	WHERE parent_id=:parentId "
+				+ "	UNION"
+				+ "	SELECT name from t_c_basic_item_node"
+				+ "	WHERE parent_id in("
+				+ "	SELECT id from t_c_basic_item_node"
+				+ "	WHERE parent_id=:parentId AND type =6	)";
+		
+		return sFactory.getCurrentSession().createSQLQuery(sql).setParameter("parentId", parentId).list();
 	}
 }
