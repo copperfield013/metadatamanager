@@ -40,11 +40,11 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 				 if(data[i].type == 1) {
 					 initAbc(abcattr, abcattr_code, id, name, order, parent);
 				 }else if(data[i].type == 2) {				 
-					 initAttr(abcattr,dataType,id,name,opt,order,parent);
+					 initAttr(abcattr,dataType, id, name, opt, order, parent);
 				 }else if(data[i].type == 3) {					 
 					 initTag(subdomain,id,name,order,parent);
 				 }else if(data[i].type == 4) {
-					 initMoreAttr(abcattr,dataType,id,name,opt,order,parent);
+					 initMoreAttr(abcattr, dataType, id, name, opt, order, parent);
 				 }else if(data[i].type == 5) {
 					 initRelative(abcattr, abcattr_code, id, name, order, parent);
 				 }else if(data[i].type == 6) {
@@ -52,14 +52,16 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 				 }	
 				 $("select", $page).css({"width":"15%","marginLeft":"16px"}).select2();
 			 }	
-			 if(data.length === 0 && isRelative === true) {
+			 if(data.length === 0 && isRelative === true) {				 
 				 addRelativeChildren(bar);
+			 }else if(data.length === 1 && isRelative === true) {
+				 addRelativeOneC(bar);
 			 }
 			 $CPF.closeLoading();
 	    }, {async: false});	 
 	}
 	
-	function addRelativeChildren(bar) {
+	function addRelativeChildren(bar) {		
 		 var dragWrapLen = $(".dragEdit-wrap").length + 1 ;
 		 var abcattr = $(bar).find("select.abc-attr").children("option:selected").attr("value");
 		 var abcattrCode = $(bar).find("select.abc-attr").children("option:selected").attr("data-id");
@@ -112,6 +114,85 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 		   $html.find("select").css({"width":"15%","marginLeft":"16px"}).select2();
 		   drag($(".dragEdit-wrap").length);
 	};
+	
+	function addRelativeOneC(bar) {
+		 var dragWrapLen = $(".dragEdit-wrap").length + 1 ;
+		 var abcattr = $(bar).find("select.abc-attr").children("option:selected").attr("value");
+		 var abcattrCode = $(bar).find("select.abc-attr").children("option:selected").attr("data-id");
+		 var chLength = $(".entity-ch-wrap", $page).length;
+		 var nest = "no-repeat";
+		 var $content = $(bar).closest(".collapse-header").next(".collapse-content");
+		 var html ="";
+		 if(chLength >= 2) {
+			 nest = "repeat"
+		 }
+		 var isTag = $content.children("li").hasClass("add-tag");
+		 if(isTag){ //单纯添加abc
+			 html = "<li class='entity-ch-wrap "+nest+"'>" +
+	          "<div class='attr-abc-title collapse-header' data-order='' data-id=''>" +
+	          "<div class='icon-label abc'>" +
+	          "<i class='icon icon-abc'></i><span class='text'>ABC</span>" +
+	          "</div>" +
+	          "<div class='label-bar abc edit'>" +
+	          "<input class='edit-input text' value='"+abcattr+"'>"+
+	          "<span class='entity-only-title' data-abcattr-code='"+abcattrCode+"' data-abcattr='"+abcattr+"'>"+abcattr+"</span>"+
+	          "<div class='btn-wrap'>" +
+	          "<i class='icon icon-save'></i>" +
+	          "<i class='icon icon-add-abc group'></i>" +	            
+	          "<i class='icon icon-arrow-sm'></i>" +
+	          "</div>" +
+	          "</div>" +
+	          "</div>" +
+	          "<ul class='drag-wrap-repeat dragEdit-wrap collapse-content collapse-content-active' id='dragEdit-"+dragWrapLen+"'>" +
+	          "</ul>" +
+	          "</li>";	
+			 html = "<li class='add-tag clear-fix'>" +
+	          "<div class='icon-label tag'>" +
+	          "<i class='icon icon-tag'></i>" +
+	          "<span class='text'>标签</span>" +
+	          "</div>" +
+	          "<div class='label-bar tag edit' data-order='' data-id=''>" +
+	          "<input type='text' class='edit-input text' value='标签名称'>" +
+	          "<span class='icon icon-toleft'></span>" +
+	          "<div class='tag-content'>" +
+	          "<ul class='clear-fix'>" +
+	          "</ul>" +
+	          "</div>" +
+	          "<span class='icon icon-toright ban'></span>" +
+	          "<div class='btn-wrap'>" +
+	          "<i class='icon tag icon-save'></i>" +
+	          "<i class='icon tag icon-add-tag-relative'></i>" +
+	          "<i class='icon-simulate-trashsm'></i>" +
+	          "</div>" +
+	          "</div>" +
+	          "</li>" 
+	          var $html = $(html).appendTo($content);
+		 }else {  //单纯添加tag			 
+			 html = "<li class='add-tag clear-fix'>" +
+	          "<div class='icon-label tag'>" +
+	          "<i class='icon icon-tag'></i>" +
+	          "<span class='text'>标签</span>" +
+	          "</div>" +
+	          "<div class='label-bar tag edit' data-order='' data-id=''>" +
+	          "<input type='text' class='edit-input text' value='标签名称'>" +
+	          "<span class='icon icon-toleft'></span>" +
+	          "<div class='tag-content'>" +
+	          "<ul class='clear-fix'>" +
+	          "</ul>" +
+	          "</div>" +
+	          "<span class='icon icon-toright ban'></span>" +
+	          "<div class='btn-wrap'>" +
+	          "<i class='icon tag icon-save'></i>" +
+	          "<i class='icon tag icon-add-tag-relative'></i>" +
+	          "<i class='icon-simulate-trashsm'></i>" +
+	          "</div>" +
+	          "</div>" +
+	          "</li>" 
+			 var $html = $(html).prependTo($content);
+		 }		 					                            
+		 $html.find("select").css({"width":"15%","marginLeft":"16px"}).select2();
+		 drag($(".dragEdit-wrap").length);
+	};
     
 	 //拖拽排序方法
     function drag(length) {
@@ -127,6 +208,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 	        filter: ".no-dragger",	
 	        handle: ".icon-label",
 	        sort: true,
+	        forceFallback: true, 
 	        animation: 100,
 	        onStart: function (evt) {
 //	        	judgeSave();
@@ -408,7 +490,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
             "<input type='text' disabled class='edit-input text' value='"+name+"'>" +
             "<select disabled class='abc-attr'>" +         		            		
             "<option data-id='"+abcattr_code+"' value='"+abcattr+"' selected>"+abcattr+"</option>" +
-            "</select>" +
+            "</select>" +            
             "<div class='btn-wrap'>" +
             "<i class='icon icon-save'></i>" + 
             "<i class='icon icon-trash-sm'></i>" +
@@ -755,10 +837,11 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
     function menuWidth(ul) {
         var menuW = 0;
         var $li = $(ul).children("li");
+        var contentW = $(ul).parent(".tag-content").width();
         for (var i = 0; i < $li.length; i++) {
             menuW += parseFloat($($li[i]).css("width")) + 8;
         }
-        if(menuW == 0){
+        if(menuW == 0 || menuW < contentW){
         	menuW = "auto"
         }
         $(ul).width(menuW);

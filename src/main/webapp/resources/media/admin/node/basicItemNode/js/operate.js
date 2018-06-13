@@ -337,8 +337,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
     /**
      * remove 添加页方法
       */
-    function removePop() {
-    	console.log(2);
+    function removePop() {    	
         $(".card").remove();
         $(".tag-card").remove();
         $(".delete-list").remove();
@@ -354,10 +353,11 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
     function menuWidth(ul) {
         var menuW = 0;
         var $li = $(ul).children("li");
-        for (var i = 0; i < $li.length; i++) {
+        var contentW = $(ul).parent(".tag-content").width();
+        for (var i = 0; i < $li.length; i++) {        	
             menuW += parseFloat($($li[i]).css("width")) + 8;
         }
-        if(menuW == 0){
+        if(menuW == 0 || menuW < contentW ){
         	menuW = "auto"
         }
         $(ul).width(menuW);
@@ -1451,7 +1451,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 //    	if(hasSave){
 //    		return;
 //    	}
-    	if(!$(this).hasClass(".attr-relative")){
+    	if(!$(this).hasClass("attr-relative")){
     		$(this).find(".edit-input").removeAttr("disabled");
         	$(this).find("select").removeAttr("disabled");
     	}    	
@@ -1544,6 +1544,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 	        filter: ".no-dragger",	
 	        handle: ".icon-label",
 	        sort: true,
+	        forceFallback: true, 
 	        animation: 100,
 	        onStart: function (evt) {	        		        	
 	        },
