@@ -154,8 +154,17 @@ public class BasicItemNodeServiceImpl implements BasicItemNodeService {
 	}
 
 	@Override
-	public boolean check(String name, String parentId) {
-		List<String> nameList = basicItemNodeDao.getNameByPid(parentId);
+	public boolean check(Integer id, String name, String parentId) {
+		
+		List<String> nameList = null;
+		if (id == null) {
+			nameList = basicItemNodeDao.getNameByPid(parentId);
+		} else {
+			nameList = basicItemNodeDao.getNameByPid(parentId);
+			BasicItemNode basicItemNode = basicItemNodeDao.get(BasicItemNode.class, id);
+			nameList.remove(basicItemNode.getName());
+		}
+		
 		return nameList.contains(name);
 	}
 }

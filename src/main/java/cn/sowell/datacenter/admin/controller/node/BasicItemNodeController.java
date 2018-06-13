@@ -80,7 +80,7 @@ public class BasicItemNodeController {
 	@ResponseBody
 	@RequestMapping("/saveOrUpdate")
 	public String saveOrUpdate(BasicItemNode basicItemNode) {
-		boolean check = basicItemNodeService.check(basicItemNode.getName(), basicItemNode.getParentId());
+		boolean check = basicItemNodeService.check(basicItemNode.getId(), basicItemNode.getName(), basicItemNode.getParentId());
 		if (check) {//重复了
 			return "{\"state\": \"fail\"}";
 		} else {
