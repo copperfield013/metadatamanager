@@ -46,7 +46,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 				 }else if(data[i].type == 4) {
 					 initMoreAttr(abcattr,dataType,id,name,opt,order,parent);
 				 }else if(data[i].type == 5) {
-					 initRelative(abcattr, id, name, order, parent);
+					 initRelative(abcattr, abcattr_code, id, name, order, parent);
 				 }else if(data[i].type == 6) {
 					 initGroup(id, name, order, parent);
 				 }	
@@ -333,10 +333,10 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
     function initMoreAttr(abcattr,dataType,id,name,opt,order,parent) {    
     	var entityId = $(".entity_attr.active", $page).attr("data-code");     	
         var dragWrapLen = $(".dragEdit-wrap").length + 1 ;        
-		Ajax.ajax('admin/node/basicItemNode/getComm?entityId', {
+		Ajax.ajax('admin/node/basicItemNode/getRepeat?entityId', {
 			entityId: entityId
 		}, function(data) {			
-			var data = data.comm;			
+			var data = data.repeat;			
             var moreAttrHtml = "<li class='more-attr clear-fix'>" +
             "<div class='more-attr-title collapse-header' data-order='"+order+"' data-id='"+id+"'>" +
             "<div class='icon-label more-attr'>" +
@@ -345,13 +345,12 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
             "</div>" +
             "<div class='label-bar more-attr'>" +
             "<input type='text' disabled class='edit-input text' value='"+name+"'>" +
-            "<select disabled class='abc-attr'>"
-            console.log(data);
+            "<select disabled class='abc-attr'>"            
             for(var i=0; i<data.length; i++) {
             	if(data[i][1] == abcattr) {            		
-            		moreAttrHtml += "<option data-id='"+data[i][0]+"' value='"+data[i][1]+"' selected>"+data[i][1]+"</option>"; 
+            		moreAttrHtml += "<option data-id='"+data[i].code+"' value='"+data[i].cnName+"' selected>"+data[i].cnName+"</option>"; 
             	}else {            		
-            		moreAttrHtml += "<option data-id='"+data[i][0]+"' value='"+data[i][1]+"'>"+data[i][1]+"</option>"; 
+            		moreAttrHtml += "<option data-id='"+data[i].code+"' value='"+data[i].cnName+"'>"+data[i].cnName+"</option>"; 
             	}            	               
             }           
             moreAttrHtml += "</select>";
@@ -396,13 +395,10 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
     }
 
     //关系初始化方法
-    function initRelative(abcattr, id, name, order, parent) {
+    function initRelative(abcattr, abcattr_code, id, name, order, parent) {
     	var entityId = $(".entity_attr.active", $page).attr("data-code");
-        var dragWrapLen = $(".dragEdit-wrap").length + 1 ;        
-		Ajax.ajax('admin/node/basicItemNode/getComm?entityId', {
-			entityId: entityId
-		}, function(data) {			
-			var data = data.comm;			            
+        var dragWrapLen = $(".dragEdit-wrap").length + 1 ;        				
+					           
             var relativeHtml = "<li class='attr-relative'>" +
             "<div class='attr-relative-title collapse-header' data-order='"+order+"' data-id='"+id+"'>" +
             "<div class='icon-label attr-relative'>" +
@@ -410,15 +406,9 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
             "</div>" +
             "<div class='label-bar attr-relative'>" +
             "<input type='text' disabled class='edit-input text' value='"+name+"'>" +
-            "<select disabled class='abc-attr'>"
-            for(var i=0; i<data.length; i++) {
-            	if(data[i][1] == abcattr) {            		            		
-            		relativeHtml += "<option data-id='"+data[i][0]+"' value='"+data[i][1]+"' selected>"+data[i][1]+"</option>"; 
-            	}else {            		            		
-            		relativeHtml += "<option data-id='"+data[i][0]+"' value='"+data[i][1]+"'>"+data[i][1]+"</option>"; 
-            	}               	              
-            }
-            relativeHtml += "</select>" +
+            "<select disabled class='abc-attr'>" +         		            		
+            "<option data-id='"+abcattr_code+"' value='"+abcattr+"' selected>"+abcattr+"</option>" +
+            "</select>" +
             "<div class='btn-wrap'>" +
             "<i class='icon icon-save'></i>" + 
             "<i class='icon icon-trash-sm'></i>" +
@@ -430,8 +420,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
             "</ul>" +
             "</li>";         
 		    $(parent).prepend(relativeHtml);
-		    drag($(".dragEdit-wrap").length);		    			    
-	    }, {async: false});                                 
+		    drag($(".dragEdit-wrap").length);		    			                                    
     }
 	/**
      * 获取实体信息方法 示例     
@@ -932,7 +921,10 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
       */
     function addAttrM(el) {
         var $content = $(el).closest(".collapse-header").siblings(".collapse-content");
-        var repeatId = $(el).closest(".collapse-header").attr("data-id");
+        var repeatId = $(el).closest(".collapse-header")
+        			.find(".abc-attr")
+        			.find("option:selected")
+        			.attr("data-id");
         $CPF.showLoading();
 		Ajax.ajax('admin/node/basicItemNode/getRepeatChild?repeatId', {
 			repeatId: repeatId
@@ -1397,7 +1389,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
     };
     
     //关系保存修改方法
-    function relativeSave(el) {
+    function relativeSave(el) {    	
     	var $relativeBar = $(el).closest(".label-bar");
     	var type = 5;
     	var dataType = "STRING";
@@ -1478,14 +1470,20 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 	            "<ul class='drag-wrap-repeat dragEdit-wrap collapse-content collapse-content-active' id='dragEdit-"+dragWrapLen+"'>" +
 	            "</ul>" +
 	            "</li>"	
-	          var $content = $relativeBar.parent(".collapse-header").next(".collapse-content");		
-			  if($content.hasClass("collapse-content-inactive")){
-				  $relativeBar.find(".icon-arrow-sm").trigger("click");				  
-				  if($content.children().length == 0) {					  
-					  var $html = $(html).appendTo($content);
-			          $html.find("select").css({"width":"15%","marginLeft":"16px"}).select2();
+	         var $content = $relativeBar.parent(".collapse-header").next(".collapse-content");				 
+			 if($relativeBar.hasClass("al-seve")){
+				 if($content.hasClass("collapse-content-inactive")){				  
+					  $relativeBar.find(".icon-arrow-sm").trigger("click");					  
+					  if($content.children().length == 0) {						  
+						  var $html = $(html).appendTo($content);
+				          $html.find("select").css({"width":"15%","marginLeft":"16px"}).select2();
+					  }
 				  }
-			  }
+			 }else {
+				 var $html = $(html).appendTo($content);
+		         $html.find("select").css({"width":"15%","marginLeft":"16px"}).select2();
+			 }
+			 
 	          
 			  drag($(".dragEdit-wrap").length);
 			  saveSuccess(el)

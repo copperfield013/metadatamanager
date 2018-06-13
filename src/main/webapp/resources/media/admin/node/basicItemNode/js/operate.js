@@ -518,7 +518,10 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
       */
     function addAttrM(el) {
         var $content = $(el).closest(".collapse-header").siblings(".collapse-content");
-        var repeatId = $(el).closest(".collapse-header").attr("data-id");
+        var repeatId = $(el).closest(".collapse-header")
+					.find(".abc-attr")
+					.find("option:selected")
+					.attr("data-id");
         $CPF.showLoading();
 		Ajax.ajax('admin/node/basicItemNode/getRepeatChild?repeatId', {
 			repeatId: repeatId
