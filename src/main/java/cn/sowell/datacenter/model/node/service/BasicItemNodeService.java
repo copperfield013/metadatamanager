@@ -66,6 +66,6 @@ public interface BasicItemNodeService {
 	 * @param parentId
 	 * @return  重复返回true， 不重复放回false
 	 */
-	boolean check(Integer id, String name, String parentId);
+	boolean check(BasicItemNode basicItemNode);
 	
 }

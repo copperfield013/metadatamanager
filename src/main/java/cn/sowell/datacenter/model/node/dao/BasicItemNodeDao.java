@@ -67,5 +67,5 @@ public interface BasicItemNodeDao {
 	 * @param parentId
 	 * @return
 	 */
-	List<String> getNameByPid(String parentId);
+	List<String> getNameByPid(BasicItemNode basicItemNode);
 }

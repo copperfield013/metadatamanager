@@ -80,7 +80,7 @@ public class BasicItemNodeController {
 	@ResponseBody
 	@RequestMapping("/saveOrUpdate")
 	public String saveOrUpdate(BasicItemNode basicItemNode) {
-		boolean check = basicItemNodeService.check(basicItemNode.getId(), basicItemNode.getName(), basicItemNode.getParentId());
+		boolean check = basicItemNodeService.check(basicItemNode);
 		if (check) {//重复了
 			return "{\"state\": \"fail\"}";
 		} else {
@@ -282,7 +282,7 @@ public class BasicItemNodeController {
    public ResponseEntity<String> nodeSort(String currentId, String beforeId, String afterId){
 		BasicItemNode current = basicItemNodeService.getOne(Integer.parseInt(currentId));
 		 try {
-			 basicItemNodeService.nodeSort(current, beforeId, afterId);
+			basicItemNodeService.nodeSort(current, beforeId, afterId);
 		} catch (Exception e) {
 			basicItemNodeService.excuExtend(current.getParentId());
 		}
