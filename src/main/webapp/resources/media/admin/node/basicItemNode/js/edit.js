@@ -926,6 +926,70 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 		    })
 	    });		                      
     };
+    
+    /**
+     * 添加多值属性下属性方法
+      */
+    function addAttrM(el) {
+        var $content = $(el).closest(".collapse-header").siblings(".collapse-content");
+        var repeatId = $(el).closest(".collapse-header").attr("data-id");
+        $CPF.showLoading();
+		Ajax.ajax('admin/node/basicItemNode/getRepeatChild?repeatId', {
+			repeatId: repeatId
+		}, function(data) {			
+			var data = data.repeatChild;
+			var attrHtml = "<li class='add-attr clear-fix'>" +
+            "<div class='icon-label attr' data-order='' data-id=''>" +
+            "<i class='icon icon-attr'></i>" +
+            "<span class='text'>属性</span>" +
+            "</div>" +
+            "<div class='label-bar attr edit' data-order='' data-id=''>" +
+            "<input type='text' class='edit-input text' value='属性名'>" +
+            "<select class='abc-attr'>"            
+            for(var i=0; i<data.length; i++) {
+            	attrHtml += "<option data-id='"+data[i].code+"' value='"+data[i].cnName+"'>"+data[i].cnName+"</option>";                
+            }
+			attrHtml += "</select>";
+			attrHtml += "<select class='data-type'>";            
+		    Ajax.ajax('admin/node/basicItemNode/getDataType', '', function(data){		    	
+		    	var data = data.dataType;
+		    	for(var i=0; i<data.length; i++) {
+		    		if(data[i] === "STRING") {
+		    			attrHtml += "<option value='"+data[i]+"' selected>"+data[i]+"</option>"; 	
+		    		}else {
+		    			attrHtml += "<option value='"+data[i]+"'>"+data[i]+"</option>"; 
+		    		}	            	        
+	            };
+	            attrHtml += "</select>";
+				attrHtml += "<select class='node-ops-type'>";
+				Ajax.ajax('admin/node/basicItemNode/getNodeOpsType', '', function(data){		    	
+			    	var data = data.nodeOpsType;
+			    	for(var i=0; i<data.length; i++) {
+			    		if(data[i] === "写") {
+			    			attrHtml += "<option value='"+data[i]+"' selected>"+data[i]+"</option>";  	
+			    		}else {
+			    			attrHtml += "<option value='"+data[i]+"'>"+data[i]+"</option>"; 
+			    		}
+		            	         
+		            };
+		            attrHtml += "</select>";
+		            attrHtml += "<div class='btn-wrap'>" +
+		            "<i class='icon icon-save'></i>" +
+		            "<i class='icon icon-trash-sm'></i>" +
+		            "<i class='icon-simulate-trashsm'></i>" +
+		            "</div>" +
+		            "</div>" +
+		            "</li>";
+		            
+		            var $html = $(attrHtml).prependTo($content);
+		            $html.find("select").css({"width":"15%","marginLeft":"16px"}).select2();
+		            addUnfold(el);
+		            $CPF.closeLoading();
+			    })
+			    
+		    })
+	    });		                      
+    };
 
     /**
      * 添加属性组方法
@@ -965,10 +1029,10 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
         var entityId = $(".entity_attr.active", $page).attr("data-code");               
         var dragWrapLen = $(".dragEdit-wrap").length + 1 ;
         $CPF.showLoading();
-		Ajax.ajax('admin/node/basicItemNode/getComm?entityId', {
+		Ajax.ajax('admin/node/basicItemNode/getRepeat?entityId', {
 			entityId: entityId
 		}, function(data) {			
-			var data = data.comm;			
+			var data = data.repeat;			
             var moreAttrHtml = "<li class='more-attr clear-fix'>" +
             "<div class='more-attr-title collapse-header' data-order='' data-id=''>" +
             "<div class='icon-label more-attr'>" +
@@ -979,7 +1043,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
             "<input type='text' class='edit-input text' value='多值属性名称'>" +
             "<select class='abc-attr'>"
             for(var i=0; i<data.length; i++) {
-            	moreAttrHtml += "<option data-id='"+data[i][0]+"' value='"+data[i][1]+"'>"+data[i][1]+"</option>";                
+            	moreAttrHtml += "<option data-id='"+data[i].code+"' value='"+data[i].cnName+"'>"+data[i].cnName+"</option>";                
             }
             moreAttrHtml += "</select>";
             moreAttrHtml += "<select class='data-type'>";            
@@ -1703,8 +1767,13 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
         }
         if ($(this).hasClass("add-tag")) {
             addTag(el);
-        } else if ($(this).hasClass("add-attr")) {
-            addAttr(el);
+        } else if ($(this).hasClass("add-attr")) {        	
+        	if($(el).closest(".label-bar").hasClass("more-attr")){
+        		
+        		addAttrM(el);
+        	}else {
+        		addAttr(el);
+        	}          
         } else if ($(this).hasClass("add-attr-group")) {
             addGroup(el);
         } else if ($(this).hasClass("add-more-attr")) {
