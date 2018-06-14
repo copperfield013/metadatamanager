@@ -3,10 +3,12 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 	
 	var $page = $("#operateEdit");	
 	var nodeId = $(".entity-title", $page).attr("data-id");	
-	function addUnfold(el) {
+	function addUnfold(el) {		
 		if($(el).hasClass("icon-add") && $(el).siblings(".icon-arrow").hasClass("active")) {
-        	$(el).siblings(".icon-arrow").trigger("click");
+        	$(el).siblings(".icon-arrow").trigger("click");        	
         }else if($(el).hasClass("icon-add-sm") && $(el).siblings(".icon-arrow-sm").hasClass("active")){
+        	$(el).siblings(".icon-arrow-sm").trigger("click");
+        }else if($(el).hasClass("icon-add-abc") && $(el).siblings(".icon-arrow-sm").hasClass("active")){
         	$(el).siblings(".icon-arrow-sm").trigger("click");
         }
 	} 
@@ -44,7 +46,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 				 }else if(data[i].type == 2) {				 
 					 initAttr(abcattr,dataType, id, name, opt, order, parent);
 				 }else if(data[i].type == 3) {					 
-					 initTag(subdomain,id,name,order,parent);
+					 initTag(subdomain,id,name,order,parent, isRelative);
 				 }else if(data[i].type == 4) {
 					 initMoreAttr(abcattr, dataType, id, name, opt, order, parent);
 				 }else if(data[i].type == 5) {
@@ -52,13 +54,13 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 				 }else if(data[i].type == 6) {
 					 initGroup(id, name, order, parent);
 				 }	
+				 if(data.length === 0 && isRelative === true) {					 
+					 addRelativeChildren(bar);					
+				 }else if(data.length === 1 && isRelative === true) {
+					 addRelativeOneC(bar);					
+				 }
 				 $("select", $page).css({"width":"15%","marginLeft":"16px"}).select2();
-			 }	
-			 if(data.length === 0 && isRelative === true) {				 
-				 addRelativeChildren(bar);
-			 }else if(data.length === 1 && isRelative === true) {
-				 addRelativeOneC(bar);
-			 }
+			 }				 
 			 $CPF.closeLoading();
 	    }, {async: false});	 
 	}
@@ -147,27 +149,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 	          "</div>" +
 	          "<ul class='drag-wrap-repeat dragEdit-wrap collapse-content collapse-content-active' id='dragEdit-"+dragWrapLen+"'>" +
 	          "</ul>" +
-	          "</li>";	
-			 html = "<li class='add-tag clear-fix'>" +
-	          "<div class='icon-label tag'>" +
-	          "<i class='icon icon-tag'></i>" +
-	          "<span class='text'>标签</span>" +
-	          "</div>" +
-	          "<div class='label-bar tag edit' data-order='' data-id=''>" +
-	          "<input type='text' class='edit-input text' value='标签名称'>" +
-	          "<span class='icon icon-toleft'></span>" +
-	          "<div class='tag-content'>" +
-	          "<ul class='clear-fix'>" +
-	          "</ul>" +
-	          "</div>" +
-	          "<span class='icon icon-toright ban'></span>" +
-	          "<div class='btn-wrap'>" +
-	          "<i class='icon tag icon-save'></i>" +
-	          "<i class='icon tag icon-add-tag-relative'></i>" +
-	          "<i class='icon-simulate-trashsm'></i>" +
-	          "</div>" +
-	          "</div>" +
-	          "</li>" 
+	          "</li>";				 
 	          var $html = $(html).appendTo($content);
 		 }else {  //单纯添加tag			 
 			 html = "<li class='add-tag clear-fix'>" +
@@ -350,8 +332,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
     }
 	
     //标签初始化方法
-    function initTag(subdomain, id,name,order,parent) {
-    	console.log(subdomain);
+    function initTag(subdomain, id,name,order,parent,isRelative) {      	
     	subdomain = subdomain.split(",");    	
     	var tagHtml = "<li class='add-tag clear-fix'>" +
 	        "<div class='icon-label tag'>" +
@@ -376,14 +357,18 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 	        "</div>" +
 	        "<span class='icon icon-toright ban'></span>" +
 	        "<div class='btn-wrap'>" +
-	        "<i class='icon tag icon-save'></i>" +
-	        "<i class='icon tag icon-add-tag'></i>" +
-	        "<i class='icon icon-trash-sm'></i>" +
+	        "<i class='icon tag icon-save'></i>" 
+	        if(isRelative) {
+	        	tagHtml += "<i class='icon tag icon-add-tag-relative'></i>"
+	        }else {
+	        	tagHtml += "<i class='icon tag icon-add-tag'></i>"
+	        }
+	        
+	        tagHtml += "<i class='icon icon-trash-sm'></i>" +
 	        "</div>" +
 	        "</div>" +
 	        "</li>"
-	    var Tag = $(tagHtml).prependTo($(parent));
-	        console.log(Tag);
+	    var Tag = $(tagHtml).prependTo($(parent));	        
 	    menuWidth(Tag.find(".tag-content").children("ul")[0]);
     }
     
@@ -831,6 +816,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
         $(".delete-list-c").remove();
         $(".icon-add").removeClass("active");
         $(".icon-add-tag").removeClass("active");
+        $(".icon-add-tag-relative").removeClass("active");
         $(".icon-trash").removeClass("active");
         $(".icon-trash-sm").removeClass("active");
 
@@ -912,6 +898,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
      * @param {当前点击元素对应的加号} el
       */
     function addTag(el) {
+    	console.log("t1");
         var $content = $(el).closest(".collapse-header").siblings(".collapse-content");
         var tagHtml = "<li class='add-tag clear-fix'>" +
             "<div class='icon-label tag'>" +
@@ -1217,7 +1204,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
     };    
 
     //提醒有未保存的节点
-    function judgeSave() {
+    function judgeSave() {    	
         var editBar = $("#operateEdit").find(".label-bar.edit");
         var editEntity = $("#operateEdit").find(".entity-edit-wrap.edit");
         if(editBar.length > 0 || editEntity.length > 0) {
@@ -1245,7 +1232,8 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 			 abcattrCode: abcattrCode,
 			 dataType: dataType,
 			 opt: opt,
-			 order: order
+			 order: order,
+			 id: id
 		 }, function(data) {
 			 if(data.state == "fail") {
 				 alert("属性名不能相同");
@@ -1827,7 +1815,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
     $("#operateEdit").on("click", ".icon-add-tag-relative", function (e) {
         e.stopPropagation();
         $(this).closest(".label-bar.tag").addClass("edit");
-        removePop();
+        removePop();        
         popRelativeTag(this);
         $(this).addClass("active");
     });

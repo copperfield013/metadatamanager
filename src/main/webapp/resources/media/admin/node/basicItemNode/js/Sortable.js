@@ -317,8 +317,7 @@
 		if (this.nativeDraggable) {
 			_on(el, 'dragover', this);
 			_on(el, 'dragenter', this);
-		}
-
+		}		
 		touchDragOverListeners.push(this._onDragOver);
 
 		// Restore sorting
@@ -530,14 +529,7 @@
 		},
 
 		_dragStarted: function () {
-			var $page = $(".main-tab-content.cpf-page-content.active");
-			var editBar = $(".label-bar.edit", $page);
-	        var editEntity = $.find(".entity-edit-wrap.edit", $page);
-			if(editBar.length > 0 || editEntity.length > 0) {	
-				//我的添加					      
-		        alert("请先保存正在编辑的节点");
-				return;
-		    }
+			console.log(1);
 			if (rootEl && dragEl) {
 				var options = this.options;
 
@@ -604,7 +596,7 @@
 		},
 
 
-		_onTouchMove: function (/**TouchEvent*/evt) {
+		_onTouchMove: function (/**TouchEvent*/evt) {			
 			if (tapEvt) {
 				var	options = this.options,
 					fallbackTolerance = options.fallbackTolerance,
@@ -620,8 +612,7 @@
 						min(abs(touch.clientX - this._lastX), abs(touch.clientY - this._lastY)) < fallbackTolerance
 					) {
 						return;
-					}
-
+					}										
 					this._dragStarted();
 				}
 
@@ -671,7 +662,15 @@
 			}
 		},
 
-		_onDragStart: function (/**Event*/evt, /**boolean*/useFallback) {
+		_onDragStart: function (/**Event*/evt, /**boolean*/useFallback) {			
+			var $page = $(".main-tab-content.cpf-page-content.active");
+			var editBar = $(".label-bar.edit", $page);
+	        var editEntity = $.find(".entity-edit-wrap.edit", $page);
+			if(editBar.length > 0 || editEntity.length > 0) {	
+				//我的添加					      
+		        alert("请先保存正在编辑的节点");
+				return;
+		    }
 			var _this = this;
 			var dataTransfer = evt.dataTransfer;
 			var options = _this.options;
@@ -698,17 +697,17 @@
 
 			if (useFallback) {
 				if (useFallback === 'touch') {
-					// Bind touch events
+					// Bind touch events					
 					_on(document, 'touchmove', _this._onTouchMove);
 					_on(document, 'touchend', _this._onDrop);
 					_on(document, 'touchcancel', _this._onDrop);
 
-					if (options.supportPointer) {
+					if (options.supportPointer) {						
 						_on(document, 'pointermove', _this._onTouchMove);
 						_on(document, 'pointerup', _this._onDrop);
 					}
 				} else {
-					// Old brwoser
+					// Old brwoser								
 					_on(document, 'mousemove', _this._onTouchMove);
 					_on(document, 'mouseup', _this._onDrop);
 				}
@@ -732,7 +731,7 @@
 			}
 		},
 
-		_onDragOver: function (/**Event*/evt) {
+		_onDragOver: function (/**Event*/evt) {					
 			var el = this.el,
 				target,
 				dragRect,
@@ -923,8 +922,7 @@
 		},
 
 		_offUpEvents: function () {
-			var ownerDocument = this.el.ownerDocument;
-
+			var ownerDocument = this.el.ownerDocument;			
 			_off(document, 'touchmove', this._onTouchMove);
 			_off(document, 'pointermove', this._onTouchMove);
 			_off(ownerDocument, 'mouseup', this._onDrop);
@@ -935,10 +933,9 @@
 			_off(ownerDocument, 'selectstart', this);
 		},
 
-		_onDrop: function (/**Event*/evt) {
+		_onDrop: function (/**Event*/evt) {			
 			var el = this.el,
-				options = this.options;
-
+				options = this.options;			
 			clearInterval(this._loopId);
 			clearInterval(autoScroll.pid);
 			clearTimeout(this._dragStartTimer);
@@ -1071,7 +1068,7 @@
 
 				case 'dragover':
 				case 'dragenter':
-					if (dragEl) {
+					if (dragEl) {						
 						this._onDragOver(evt);
 						_globalDragOver(evt);
 					}
@@ -1196,8 +1193,7 @@
 			// Remove draggable attributes
 			Array.prototype.forEach.call(el.querySelectorAll('[draggable]'), function (el) {
 				el.removeAttribute('draggable');
-			});
-
+			});			
 			touchDragOverListeners.splice(touchDragOverListeners.indexOf(this._onDragOver), 1);
 
 			this._onDrop();
@@ -1364,8 +1360,8 @@
 		if(dragRect.x - targetRect.x >= 20) {
 			retVal = false;
 			return retVal;
-		}
-		
+		}		
+	
 		evt = document.createEvent('Event');
 		evt.initEvent('move', true, true);
 
@@ -1380,7 +1376,7 @@
 		evt.originalEvent = originalEvt;
 
 		fromEl.dispatchEvent(evt);
-
+		
 		if (onMoveFn) {
 			retVal = onMoveFn.call(sortable, evt, originalEvt);
 		}
@@ -1534,7 +1530,7 @@
 	}
 
 	// Fixed #973:
-	_on(document, 'touchmove', function (evt) {
+	_on(document, 'touchmove', function (evt) {		
 		if (Sortable.active) {
 			evt.preventDefault();
 		}

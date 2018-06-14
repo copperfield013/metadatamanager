@@ -8,6 +8,8 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
         	$(el).siblings(".icon-arrow").trigger("click");
         }else if($(el).hasClass("icon-add-sm") && $(el).siblings(".icon-arrow-sm").hasClass("active")){
         	$(el).siblings(".icon-arrow-sm").trigger("click");
+        }else if($(el).hasClass("icon-add-abc") && $(el).siblings(".icon-arrow-sm").hasClass("active")){
+        	$(el).siblings(".icon-arrow-sm").trigger("click");
         }
 	} 
 	
@@ -760,7 +762,8 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 			 abcattrCode: abcattrCode,
 			 dataType: dataType,
 			 opt: opt,
-			 order: order
+			 order: order,
+			 id: id
 		 }, function(data) {
 			 if(data.state == "fail") {
 				 alert("属性名不能相同");
