@@ -126,12 +126,11 @@ public class BasicItemNodeServiceImpl implements BasicItemNodeService {
 
 	@Override
 	public void excuExtend(String parentId) {
-		Integer count = 100;
+		/*Integer count = 100;
 		StringBuffer sb = new StringBuffer();
 			sb.append("UPDATE t_c_basic_item_node  SET c_order = CASE id ");
 			List<BasicItemNode> btNode = basicItemNodeDao.getChildByPid(parentId);
 			String ids = "";
-			
 			for (BasicItemNode bt : btNode) {
 				ids+= bt.getId() + ",";
 				
@@ -145,7 +144,19 @@ public class BasicItemNodeServiceImpl implements BasicItemNodeService {
 			sb.append(" END ");
 			sb.append("  WHERE id IN ("+ids+") ");
 			
-			basicItemNodeDao.executeSql(sb.toString());
+			basicItemNodeDao.executeSql(sb.toString());*/
+		
+		String sql = " START TRANSACTION;"
+				+ " SET @i=0;"
+				+ " UPDATE t_c_basic_item_node a "
+				+ " inner join"
+				+ " ( 	SELECT (@i:=@i+1) as i, b.* FROM t_c_basic_item_node b WHERE b.parent_id="+parentId+" ORDER BY i DESC "
+				+ " ORDER BY b.c_order ASC) c"
+				+ " on a.id=c.id"
+				+ " SET a.c_order=c.i*100;"
+				+ " COMMIT;";
+		
+		basicItemNodeDao.executeSql(sql);
 	}
 
 	@Override
@@ -166,5 +177,15 @@ public class BasicItemNodeServiceImpl implements BasicItemNodeService {
 		}
 		
 		return nameList.contains(basicItemNode.getName());
+	}
+
+	@Override
+	public List<BasicItemNode> getAllAbc() {
+		return basicItemNodeDao.getAllAbc();
+	}
+
+	@Override
+	public List<BasicItemNode> getAttribute(String abcId) {
+		return basicItemNodeDao.getAttribute(abcId);
 	}
 }

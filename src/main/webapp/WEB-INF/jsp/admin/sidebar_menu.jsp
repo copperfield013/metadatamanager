@@ -46,3 +46,17 @@
         </li>
     </ul>
 </li>
+<li>
+    <a href="#" class="menu-dropdown">
+        <i class="menu-icon fa fa-bookmark"></i>
+        <span class="menu-text">模块管理</span>
+        <i></i>
+    </a>
+    <ul class="submenu">
+        <li>
+            <a class="tab" href="admin/module/configModule/list" target="configModule_list" title="模块管理">
+                <span class="menu-text">模块管理</span>
+            </a>
+        </li>
+    </ul>
+</li>

@@ -81,4 +81,8 @@
 	</aop:config>
     
     <tx:annotation-driven transaction-manager="transactionManager"/>
+    
+	 <bean id="dBModuleConfigMediator" class="cn.sowell.datacenter.entityResolver.config.DBModuleConfigMediator">
+		<property name="sessionFactory" ref="sessionFactory"></property>
+	</bean>
 </beans>

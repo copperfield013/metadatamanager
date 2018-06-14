@@ -83,7 +83,7 @@ public class BasicItemNodeDaoImpl implements BasicItemNodeDao {
 
 	@Override
 	public List<BasicItemNode> getChildByPid(String parentId) {
-		String hql = " FROM BasicItemNode WHERE parentId=:parentId ORDER BY order DESC";
+		String hql = " FROM BasicItemNode WHERE parentId=:parentId ORDER BY order ASC";
 		return	sFactory.getCurrentSession().createQuery(hql).setParameter("parentId", parentId).list();
 	}
 
@@ -115,14 +115,10 @@ public class BasicItemNodeDaoImpl implements BasicItemNodeDao {
 
 	@Override
 	public List<String> getNameByPid(BasicItemNode basicItemNode) {
-		
-		
-		
 		if (NodeType.ABC.equals(NodeType.getNodeType(basicItemNode.getType()))) {//是一个实体
 			String sql = "SELECT name from t_c_basic_item_node	WHERE parent_id is null AND type=1";
 			return sFactory.getCurrentSession().createSQLQuery(sql).list();
 		}else {
-			
 			BasicItemNode pNode = get(BasicItemNode.class, Integer.parseInt(basicItemNode.getParentId()));
 			if (NodeType.ATTRGROUP.equals(NodeType.getNodeType(pNode.getType()))) {
 				String sql = "SELECT name from t_c_basic_item_node"
@@ -148,5 +144,21 @@ public class BasicItemNodeDaoImpl implements BasicItemNodeDao {
 			
 			}
 		
+	}
+
+	@Override
+	public List<BasicItemNode> getAllAbc() {
+		String hql = " FROM BasicItemNode WHERE parentId is null ORDER BY order ASC";
+		return	sFactory.getCurrentSession().createQuery(hql).list();
+	}
+
+	@Override
+	public List<BasicItemNode> getAttribute(String abcId) {
+		String sql = " SELECT * FROM t_c_basic_item_node WHERE parent_id=:abcId AND type=2"
+				+ " UNION "
+				+ " SELECT * FROM t_c_basic_item_node a WHERE parent_id in ( "
+				+ "	SELECT id FROM t_c_basic_item_node WHERE parent_id=:abcId AND type=6 "
+				+ " ) AND a.type=2";
+		return sFactory.getCurrentSession().createSQLQuery(sql).addEntity(BasicItemNode.class).setParameter("abcId", abcId).list();
 	}
 }

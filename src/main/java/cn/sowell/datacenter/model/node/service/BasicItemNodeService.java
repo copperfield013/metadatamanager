@@ -67,5 +67,17 @@ public interface BasicItemNodeService {
 	 * @return  重复返回true， 不重复放回false
 	 */
 	boolean check(BasicItemNode basicItemNode);
+
+	/**
+	 * 获取所有abc根节点
+	 * @return
+	 */
+	List<BasicItemNode> getAllAbc();
 	
+	/**
+	 * 根据abc的id，获取abc下面所有的attribute以及属性组下面的attribute
+	 * @param parentId
+	 * @return
+	 */
+	List<BasicItemNode> getAttribute(String abcId);
 }

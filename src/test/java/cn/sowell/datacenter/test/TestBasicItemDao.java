@@ -1,7 +1,6 @@
 package cn.sowell.datacenter.test;
 
-
-import java.net.MalformedURLException;
+import java.util.List;
 
 import javax.annotation.Resource;
 
@@ -11,11 +10,16 @@ import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import com.abc.mapping.conf.MappingContainer;
+import com.abc.mapping.node.ABCNode;
 import com.abc.mapping.node.NodeOpsType;
 import com.abc.mapping.node.NodeType;
 import com.abc.util.ValueTypeConstant;
-import com.abc.variable.Global;
+import com.alibaba.fastjson.JSONObject;
 
+import cn.sowell.datacenter.entityResolver.config.DBModuleConfigMediator;
+import cn.sowell.datacenter.entityResolver.config.ModuleConfigureMediator;
+import cn.sowell.datacenter.entityResolver.config.abst.Module;
 import cn.sowell.datacenter.model.dictionary.service.BasicItemService;
 import cn.sowell.datacenter.model.dictionary.service.DictionaryBasicItemService;
 import cn.sowell.datacenter.model.dictionary.service.RecordRelationTypeService;
@@ -38,20 +42,21 @@ public class TestBasicItemDao {
 	@Resource
 	RecordRelationTypeService recordRelationTypeService;
 	
+	/*@Resource
+	ModuleConfigureMediator dBModuleConfigMediator;*/
 	@Test
-	public void fun() throws MalformedURLException {
+	public void fun()  {
+			/*String currentId = "1114";
+			String beforeId = "1116";
+			String afterId = "";
+			BasicItemNode current = basicItemNodeService.getOne(Integer.parseInt(currentId));
+			basicItemNodeService.nodeSort(current, beforeId, afterId);
+		*/
 		System.out.println();
-		NodeOpsType nodeOpsType1 = NodeOpsType.getNodeOpsType(1);
-		NodeOpsType nodeOpsType2 = NodeOpsType.getNodeOpsType(2);
-		
-		NodeOpsType nodeOpsType3 = NodeOpsType.getNodeOpsType(3);
-		
-		NodeOpsType nodeOpsType4 = NodeOpsType.getNodeOpsType(4);
-		NodeOpsType nodeOpsType5 = NodeOpsType.getNodeOpsType(5);
-		NodeOpsType nodeOpsType6 = NodeOpsType.getNodeOpsType(6);
+		ABCNode abcNode = MappingContainer.getABCNode("人口信息");
 		
 		System.out.println();
-		
+		//basicItemNodeService.excuExtend("1423");
 		
 		
 	}
@@ -78,8 +83,6 @@ public class TestBasicItemDao {
 		System.out.println(abctRecord);
 		
 		System.out.println("=============");
-		Long pOSITION_CODE = Global.POSITION_CODE;
-		System.out.println(pOSITION_CODE);
 	}
 	  
 	
