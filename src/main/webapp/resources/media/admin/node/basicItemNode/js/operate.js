@@ -13,8 +13,10 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 	
 	function saveSuccess(el) {
 		 $(el).closest(".label-bar").removeClass("edit");
+		 $(el).closest(".entity-title").removeClass("edit");
 	     $(el).closest(".entity-edit-wrap").removeClass("edit");
 	     $(el).closest(".label-bar").find(".edit-input").attr("disabled", "true");
+	     $(el).closest(".entity-title").find(".edit-input").attr("disabled", "true");
 	     $(el).closest(".label-bar").find("select").attr("disabled", "true");
 	     $(el).closest(".label-bar").addClass("al-save");
 	}
@@ -82,8 +84,9 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
     function popsm(el) {
         var addTagLength = $(el).closest(".collapse-header")
             .next(".add-tag").length;
+        var isMoreAttr = $(el).closest(".collapse-header").hasClass("more-attr-title");
         var html = "<ul class='card'>";
-        if (addTagLength > 0) {
+        if (addTagLength > 0 || isMoreAttr) {
             html += "<li class='card-list add-attr'>" +
                 "<i class='icon icon-card-attr'></i>" +
                 "<span class='text'>添加属性</span>" +
@@ -456,6 +459,13 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
     function addAttr(el) {
         var $content = $(el).closest(".collapse-header").siblings(".collapse-content");
         var entityId = $(".entity_attr.active", $page).attr("data-code");
+        if($(el).closest(".collapse-header").hasClass("attr-abc-title")) {
+        	entityId = $(el).closest(".attr-relative")
+        		.find(".attr-relative-title")
+        		.find(".label-bar")
+        		.find(".abc-attr ")
+        		.find("option:selected").attr("data-id");
+        }
         $CPF.showLoading();
 		Ajax.ajax('admin/node/basicItemNode/getComm?entityId', {
 			entityId: entityId
@@ -1191,7 +1201,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
         		$attrGroupBar.closest("li.attr-group").remove();
         	};
     	}    
-    	if($attrGroupDelete.hasClass(".al-save")) {
+    	if($attrGroupDelete.hasClass("al-save")) {
     		deleteAjax(id, isDelChil, callback);	
     	}else {
     		callback();
@@ -1203,7 +1213,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
     //多值属性删除方法
     function moreAttrDelete(el, isDelChil) {
     	var $moreAttrBar = $(el).closest(".label-bar");
-    	var id = $attrGroupBar.closest(".collapse-header").attr("data-id");
+    	var id = $moreAttrBar.closest(".collapse-header").attr("data-id");
     	var isDelChil = isDelChil;
     	if(isDelChil) {
     		var callback = function() {
@@ -1328,8 +1338,8 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
     $("#operate").on("click", ".icon-trash, .icon-trash-sm", function (e) {
         e.stopPropagation();
         removePop();
-        var $header = $(this).closest(".label-bar");
-        if ($header.hasClass("attr-group")) { //delete-list-c
+        var $header = $(this).closest(".label-bar").hasClass("attr-group");
+        if ($header) { //delete-list-c
             popGroupAttr(this);
         } else { //delete-list
             popAttr(this);
@@ -1447,14 +1457,18 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 
     //双击编辑
     $("#operate").on("dblclick", ".label-bar", function(){
-//    	var hasSave = judgeSave();
-//    	if(hasSave){
-//    		return;
-//    	}
     	if(!$(this).hasClass("attr-relative")){
     		$(this).find(".edit-input").removeAttr("disabled");
         	$(this).find("select").removeAttr("disabled");
+    	}else {
+    		$(this).find(".edit-input").removeAttr("disabled");
     	}    	
+        $(this).addClass("edit");
+    })
+    
+    //双击编辑
+    $("#operate").on("dblclick", ".entity-title", function(){    	
+    	$(this).find(".edit-input").removeAttr("disabled");
         $(this).addClass("edit");
     })
 

@@ -118,25 +118,25 @@ body {
 }
 #operateEdit .icon-label.attr {
     background-color: #aeaeae;
-    width: 82px;
+    width: 98px;
 }
 #operateEdit .label-bar.attr {
-    margin-left: 82px;
+    margin-left: 98px;
 }
 #operateEdit .icon-label.tag {
     background-color: #f2b15d;
-    width: 82px;
+    width: 98px;
 }
 #operateEdit .label-bar.tag {
-    margin-left: 82px;
+    margin-left: 98px;
     position: relative;
 }
 #operateEdit .icon-label.abc {
     background-color: #6cc076;
-    width: 86px;
+    width: 98px;
 }
 #operateEdit .label-bar.abc {
-    margin-left: 86px;
+    margin-left: 98px;
 }
 #operateEdit .icon-label.attr-group {
     background-color: #5cbdfa;
@@ -148,18 +148,18 @@ body {
 }
 #operateEdit .icon-label.attr-relative {
     background-color: #5ed1e0;
-    width: 82px;
+    width: 98px;
 }
 #operateEdit .label-bar.attr-relative {
-    margin-left: 82px;
+    margin-left: 98px;
     background-color: #f0f1f1;
 }
 #operateEdit .icon-label.more-attr {
     background-color: #92b1ff;
-    width: 114px;
+    width: 98px;
 }
 #operateEdit .label-bar.more-attr {
-    margin-left: 114px;
+    margin-left: 98px;
     background-color: #f0f1f1;
 }
 #operateEdit .icon {

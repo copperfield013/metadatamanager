@@ -22,7 +22,7 @@
                     <i class="icon-root icon"></i>
                     <span class="text">ABC</span>
                 </div>
-                <input name="name" type="text" class="edit-input" value="${btNode.name}">
+                <input name="name" disabled type="text" class="edit-input" value="${btNode.name}">
                 <span class="entity-only-title">${btNode.abcattr}</span>
                 <div class="btn-wrap">
                 	<i class="icon icon-save"></i>
