@@ -1,6 +1,6 @@
 
 seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF){
-	
+	console.log("a");
 	var $page = $("#operateEdit");	
 	var nodeId = $(".entity-title", $page).attr("data-id");	
 	function addUnfold(el) {		
@@ -11,7 +11,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
         }else if($(el).hasClass("icon-add-abc") && $(el).siblings(".icon-arrow-sm").hasClass("active")){
         	$(el).siblings(".icon-arrow-sm").trigger("click");
         }
-	} 
+	} 	
 	function saveSuccess(el) {
 		 $(el).closest(".label-bar").removeClass("edit");
 		 $(el).closest(".entity-title").removeClass("edit");
@@ -106,11 +106,11 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
            "<div class='btn-wrap'>" +
            "<i class='icon icon-save'></i>" +
            "<i class='icon icon-add-abc group'></i>" +	            
-           "<i class='icon icon-arrow-sm'></i>" +
+           "<i class='icon icon-arrow-sm active'></i>" +
            "</div>" +
            "</div>" +
            "</div>" +
-           "<ul class='drag-wrap-repeat dragEdit-wrap collapse-content collapse-content-active' id='dragEdit-"+dragWrapLen+"'>" +
+           "<ul class='drag-wrap-repeat need-ajax dragEdit-wrap collapse-content collapse-content-inactive' id='dragEdit-"+dragWrapLen+"'>" +
            "</ul>" +
            "</li>"	      
            var $content = $(bar).closest(".collapse-header").next(".collapse-content");
@@ -143,11 +143,11 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 	          "<div class='btn-wrap'>" +
 	          "<i class='icon icon-save'></i>" +
 	          "<i class='icon icon-add-abc group'></i>" +	            
-	          "<i class='icon icon-arrow-sm'></i>" +
+	          "<i class='icon icon-arrow-sm active'></i>" +
 	          "</div>" +
 	          "</div>" +
 	          "</div>" +
-	          "<ul class='drag-wrap-repeat dragEdit-wrap collapse-content collapse-content-active' id='dragEdit-"+dragWrapLen+"'>" +
+	          "<ul class='drag-wrap-repeat need-ajax dragEdit-wrap collapse-content collapse-content-inactive' id='dragEdit-"+dragWrapLen+"'>" +
 	          "</ul>" +
 	          "</li>";				 
 	          var $html = $(html).appendTo($content);
@@ -261,11 +261,11 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 			        "<i class='icon icon-save'></i>" +
 			        "<i class='icon icon-add-abc group'></i>" +
 			        "<i class='icon icon-trash-sm'></i>" +
-			        "<i class='icon icon-arrow-sm'></i>" +
+			        "<i class='icon icon-arrow-sm active'></i>" +
 			        "</div>" +
 			        "</div>" +
 			        "</div>" +
-			        "<ul class='drag-wrap-repeat dragEdit-wrap collapse-content collapse-content-active' id='dragEdit-"+dragWrapLen+"'>" +
+			        "<ul class='drag-wrap-repeat need-ajax dragEdit-wrap collapse-content collapse-content-inactive' id='dragEdit-"+dragWrapLen+"'>" +
 			        "</ul>" +
 			        "</li>"	
 	    $(parent).prepend(abcHtml);
