@@ -161,4 +161,16 @@ public class BasicItemNodeDaoImpl implements BasicItemNodeDao {
 				+ " ) AND a.type=2";
 		return sFactory.getCurrentSession().createSQLQuery(sql).addEntity(BasicItemNode.class).setParameter("abcId", abcId).list();
 	}
+
+	@Override
+	public List<String> getNoteSort(String parentId) {
+		String sql = "SELECT     CONCAT(\"UPDATE t_c_basic_item_node SET c_order=\",(@i\\:=@i - 1)*100,\" WHERE id=\", b.id)"
+				+ " FROM    t_c_basic_item_node b,    (SELECT   @i\\:=(SELECT  MAX(ct)+1    FROM   (SELECT "
+				+ "  (MAX(c_order) DIV 100)+1 ct   FROM     t_c_basic_item_node b    WHERE    b.parent_id=:parentId UNION SELECT "
+				+ "     COUNT(*) ct     FROM     t_c_basic_item_node b      WHERE   b.parent_id=:parentId) a)    ) t2   "
+				+ "WHERE     b.parent_id=:parentId   ORDER BY b.c_order DESC";
+	
+		System.out.println();
+		return sFactory.getCurrentSession().createSQLQuery(sql).setParameter("parentId", parentId).list();
+	}
 }

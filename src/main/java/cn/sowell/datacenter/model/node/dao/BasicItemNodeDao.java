@@ -81,4 +81,11 @@ public interface BasicItemNodeDao {
 	 * @return
 	 */
 	List<BasicItemNode> getAttribute(String abcId);
+	
+	/**
+	 * 获取排序执行语句
+	 * @param parentId
+	 * @return
+	 */
+	List<String> getNoteSort(String parentId);
 }
