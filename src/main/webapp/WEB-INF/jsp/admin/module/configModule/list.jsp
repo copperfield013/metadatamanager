@@ -38,6 +38,7 @@
 							<a href="admin/module/configModule/disabled?name=${item.name }&endisabled=false" confirm="确认启用？">启用</a>
 							</c:if>
 							<a href="admin/module/configModule/do_delete?name=${item.name }" confirm="确认移除？">移除</a>
+							<a href="admin/module/configModule/refresh?name=${item.name }" confirm="确认刷新？">刷新</a>
 						</td>
 					</tr>
 				</c:forEach>

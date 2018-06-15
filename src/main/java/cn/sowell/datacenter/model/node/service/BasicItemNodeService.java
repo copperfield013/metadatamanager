@@ -80,4 +80,11 @@ public interface BasicItemNodeService {
 	 * @return
 	 */
 	List<BasicItemNode> getAttribute(String abcId);
+	
+	/**
+	 * 模块管理的刷新按钮
+	 * @param name
+	 * @return
+	 */
+	public String refresh(String name);
 }

@@ -7,6 +7,9 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -33,6 +36,9 @@ public class configModuleController {
 	
 	@Resource
 	BasicItemNodeService basicItemNodeService;
+	
+	@Resource
+	SessionFactory sFactory;
 	
 	@RequestMapping("/list")
 	public String list(QueryModuleCriteria criteria, Model model){
@@ -101,6 +107,20 @@ public class configModuleController {
 			return AjaxPageResponse.REFRESH_LOCAL("操作成功");
 		} catch (Exception e) {
 			return AjaxPageResponse.FAILD("操作失败");
+		}
+	}
+	
+	
+	@ResponseBody
+	@RequestMapping("/refresh")
+	public AjaxPageResponse refresh(String name){
+		
+		
+		try {
+			basicItemNodeService.refresh(name);
+			return AjaxPageResponse.REFRESH_LOCAL("刷新成功");
+		} catch (Exception e) {
+			return AjaxPageResponse.FAILD("刷新失败");
 		}
 	}
 	

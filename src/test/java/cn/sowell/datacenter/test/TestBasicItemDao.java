@@ -53,10 +53,10 @@ public class TestBasicItemDao {
 			basicItemNodeService.nodeSort(current, beforeId, afterId);
 		*/
 		System.out.println();
-		ABCNode abcNode = MappingContainer.getABCNode("人口信息");
+		/*ABCNode abcNode = MappingContainer.getABCNode("人口信息");*/
 		
 		System.out.println();
-		//basicItemNodeService.excuExtend("1423");
+		basicItemNodeService.excuExtend("1423");
 		
 		
 	}

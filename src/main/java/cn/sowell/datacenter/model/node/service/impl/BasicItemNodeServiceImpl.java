@@ -1,16 +1,20 @@
 package cn.sowell.datacenter.model.node.service.impl;
 
+import java.math.BigInteger;
 import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import com.abc.mapping.node.NodeOpsType;
 import com.abc.mapping.node.NodeType;
 
+import cn.sowell.copframe.dto.ajax.AjaxPageResponse;
 import cn.sowell.copframe.dto.page.PageInfo;
 import cn.sowell.datacenter.model.node.criteria.BasicItemNodeCriteria;
 import cn.sowell.datacenter.model.node.dao.BasicItemNodeDao;
@@ -161,5 +165,74 @@ public class BasicItemNodeServiceImpl implements BasicItemNodeService {
 	@Override
 	public List<BasicItemNode> getAttribute(String abcId) {
 		return basicItemNodeDao.getAttribute(abcId);
+	}
+
+	@Override
+	public String refresh(String name) {
+		
+		Session currentSession = null;
+		Transaction bx = null;
+		try {
+			currentSession = sFactory.getCurrentSession();
+			bx = currentSession.beginTransaction();
+			
+			
+			String compquerSql = "SELECT id FROM v_dictionary_composite_remove WHERE module=:name";
+			List<BigInteger> compquerList = currentSession.createSQLQuery(compquerSql).setParameter("name", name).list();
+			
+			if (!compquerList.isEmpty()) {
+				String compDelSql = "delete from t_dictionary_composite where id in(";
+				for (BigInteger str : compquerList) {
+					compDelSql += str + ",";
+				}
+				compDelSql= compDelSql.substring(0, compDelSql.length()-1);
+				compDelSql += ")";
+				
+				currentSession.createSQLQuery(compDelSql).executeUpdate();
+			}
+			
+			String compUpdateSql = "UPDATE t_dictionary_composite t"
+					+ " inner join ("
+					+ " SELECT * FROM v_dictionary_composite_update WHERE module=:name "
+					+ ") c "
+					+ "on t.id=c.id "
+					+ "SET t.c_is_array=c.is_array;";
+			String compInsertSql = "Insert into t_dictionary_composite (c_name, c_title, c_module, c_is_array) "
+					+ " select name,title,module, is_array from v_dictionary_composite_add ";
+			
+			currentSession.createSQLQuery(compUpdateSql).setParameter("name", name).executeUpdate();
+			currentSession.createSQLQuery(compInsertSql).executeUpdate();
+			
+			String fielquerSql = "SELECT id FROM v_dictionary_field_remove WHERE module=:name";
+			List<BigInteger> fielquerlist = currentSession.createSQLQuery(fielquerSql).setParameter("name", name).list();
+			
+			if (!fielquerlist.isEmpty()) {
+				String fielDelSql ="delete from t_dictionary_field where id in(";
+				
+				for (BigInteger str : fielquerlist) {
+					fielDelSql += str + ",";
+				}
+				fielDelSql= fielDelSql.substring(0, fielDelSql.length()-1);
+				fielDelSql += ")";
+				
+				currentSession.createSQLQuery(fielDelSql).executeUpdate();
+			}
+			String fielUpdateSql = "UPDATE t_dictionary_field t "
+					+ "inner join (SELECT * FROM v_dictionary_field_update WHERE module=:name"
+					+ ") c on t.id=c.id SET t.c_type=c.ttype, t.c_abc_type=c.abc_type, t.optgroup_id=c.optgroup_id";
+			String fielInsertSql ="Insert into t_dictionary_field (composite_id, c_full_key, c_title, c_input_type, c_abc_type,optgroup_id ) "
+					+ "select comp_id,full_key, title, ttype, abc_type, optgroup_id from v_dictionary_field_add";
+			
+			
+			currentSession.createSQLQuery(fielUpdateSql).setParameter("name", name).executeUpdate();
+			currentSession.createSQLQuery(fielInsertSql).executeUpdate();
+			
+			bx.commit();
+			return "ok";
+		} catch (Exception e) {
+			bx.rollback();
+			currentSession.close();
+			return "error";
+		}
 	}
 }
