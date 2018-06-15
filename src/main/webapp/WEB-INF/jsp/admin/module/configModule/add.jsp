@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html;charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ include file="/WEB-INF/jsp/common/base_empty.jsp"%>
+<script src="media/admin/plugins/beyond/js/select2/select2.js"></script>
 <div id="module_add">
 	<div class="page-header">
 		<div class="header-title">
@@ -26,9 +27,9 @@
 					<div class="form-group">
 						<label class="col-lg-2 control-label" for="mappingName">配置名称</label>
 						<div class="col-lg-5">
-							<select id="mappingName" name="mappingName">
+							<select style="width: 30%;" id="mappingName" class="ser-list" name="mappingName">
 								<c:forEach items="${abcList }" var="item">
-									<option value="${item.id }">${item.name }</option>
+									<option value="${item.name }" data-id="${item.id }">${item.name }</option>
 								</c:forEach>
 							</select>
 						</div>
@@ -36,9 +37,10 @@
 					<div class="form-group">
 						<label class="col-lg-2 control-label" for="codeName">编码字段</label>
 						<div class="col-lg-5">
-							<select id="codeName" name="codeName">
+							<select style="width: 30%;" id="codeName" class="ser-list" name="codeName">
+								<option selected="selected" value="">(默认)code</option>
 								<c:forEach items="${childNodeList }" var="item">
-									<option>${item.name }</option>
+									<option value="${item.name }">${item.name }</option>
 								</c:forEach>
 							</select>
 						</div>
@@ -46,9 +48,10 @@
 					<div class="form-group">
 						<label class="col-lg-2 control-label" for="titleName">名称字段</label>
 						<div class="col-lg-5">
-							<select id="titleName" name="titleName">
+							<select style="width: 30%;" id="titleName" class="ser-list" name="titleName">
+								<option selected="selected" value="">(默认)姓名</option>
 								<c:forEach items="${childNodeList }" var="item">
-									<option>${item.name }</option>
+									<option value="${item.name }">${item.name }</option>
 								</c:forEach>
 							</select>
 						</div>
@@ -67,25 +70,30 @@
 	seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF){
 		var $page = $('#module_add');
 		
-		$(".page-body", $page).on("click", "#mappingName", function (e) {
-			 $("#mappingName", $page).css({"width":"30%","marginLeft":"16px"}).select2();
+		$(".page-body", $page).on("click", ".ser-list", function (e) {
+			 $(".ser-list", $page).css({"width":"30%"}).select2();
 	    }); 
 	    
 	    $(".page-body", $page).on("change", "#mappingName", function() {
 	    	var $this = $(this);
-	    	var parentId = $this.val();
+	    	var options=$("#mappingName option:selected"); //获取选中的项
+	    	var parentId = options.attr("data-id");
+	    	
 	    	 Ajax.ajax('admin/module/configModule/childNodeList', {
 	    		 parentId:parentId
 	    	 }, function(data) {
 	    		 var child = data.childNodeList;
-	    		 var str = "";
+	    		 var str = "<option selected=\"selected\" value=\"\">(默认)code</option>";
+	    		 var str1 = "<option selected=\"selected\" value=\"\">(默认)姓名</option>";
 	    		 for (var p in child) { //遍历json数组时，这么写p为索引，0,1
-                     str = str + "<option value=\"" + child[p].id + "\">" + child[p].name + "</option>"; 
+                     str = str + "<option value=\"" + child[p].name + "\">" + child[p].name + "</option>";
+                     str1 = str1 + "<option value=\"" + child[p].name + "\">" + child[p].name + "</option>"; 
                  }
 	    		 
 	    		 $("#codeName").empty().append(str);
-	    		 $("#titleName").empty().append(str);
-	    		 
+	    		 $("#titleName").empty().append(str1);
+	    		 $("#codeName").options.selectedIndex = 0; //回到初始状态
+	    		 $("#titleName").options.selectedIndex = 0; //回到初始状态
 	    	 }) 
 	    });
 	});
