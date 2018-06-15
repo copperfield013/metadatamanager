@@ -21,6 +21,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 	     $(el).closest(".label-bar").find(".edit-input").attr("disabled", "true");
 	     $(el).closest(".entity-title").find(".edit-input").attr("disabled", "true");
 	     $(el).closest(".label-bar").find("select").attr("disabled", "true");
+	     $(el).closest(".entity-title").find("select").attr("disabled", "true");
 	     $(el).closest(".label-bar").addClass("al-save");
 	}
 	
@@ -31,7 +32,8 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 	    	nodePosType = data;
 	    	$CPF.closeLoading();
 	    }, {async: false})
-	}	
+	}
+		
 	
 	$CPF.showLoading();
 	getNodeOpsType();
@@ -46,6 +48,18 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 		$("#operate .entity-title>.edit-input").val(cnName);
 		$("#operate .entity-title>.entity-only-title").html(cnName);
 		$("#operate .entity-edit-wrap").addClass("active");
+		var $select = $("#operate .entity-edit-wrap").find(".node-ops-type");		
+		var html = "";						    			    	
+	    for(var i=0; i<nodePosType.length; i++) {
+	    	if(nodePosType[i] === "写") {
+	    		html += "<option value='"+nodePosType[i]+"' selected>"+nodePosType[i]+"</option>";  	
+	    	}else {
+	    		html += "<option value='"+nodePosType[i]+"'>"+nodePosType[i]+"</option>"; 
+	    	}
+            	         
+         };                
+         $select.append(html);              
+         $select.css({"width":"12%","font-size":"18px","marginLeft":"20px","margin-top": "-12px"}).select2();
 	}
 	
     /**
@@ -777,7 +791,26 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
     	var order = $entityTitle.attr("data-order");
     	var id = $entityTitle.attr("data-id");
     	var dataType = "STRING";
-    	var opt = 2; 
+    	var opt = $entityTitle.children(".node-ops-type").find("option:selected").val();
+    	switch (opt) {
+        	case "读":
+        		opt = 1;
+        		break;
+        	case "写":
+        		opt = 2;
+        		break;
+        	case "补":
+        		opt = 3;
+        		break;
+        	case "增":
+        		opt = 4;
+        		break;
+        	case "并":
+        		opt = 5;
+        		break;
+        	default:
+        		break;
+    	}
     	$CPF.showLoading();
 		Ajax.ajax(' admin/node/basicItemNode/saveOrUpdate', {
 			 type: type,
@@ -1593,6 +1626,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
     //双击编辑
     $("#operate").on("dblclick", ".entity-title", function(){    	
     	$(this).find(".edit-input").removeAttr("disabled");
+    	$(this).find("select").removeAttr("disabled");
         $(this).addClass("edit");
     })
 
@@ -1728,7 +1762,6 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 	    });     
     };
     
-    drag($(".drag-wrap").length);
-    console.log(1);
+    drag($(".drag-wrap").length);    
     
 })

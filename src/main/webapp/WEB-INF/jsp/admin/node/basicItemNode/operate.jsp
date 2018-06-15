@@ -17,15 +17,16 @@
 			</c:forEach>
 		</div>
 		
-        <div class="entity-edit-wrap edit">
+        <div class="entity-edit-wrap">
             <!-- 实体标题:begin -->
-            <div class="entity-title collapse-header" data-order="" data-id="">
+            <div class="entity-title collapse-header  edit" data-order="" data-id="">
                 <div class="icon-label-master">
                     <i class="icon-root icon"></i>
                     <span class="text">ABC</span>
                 </div>
-                <input name="name" type="text" class="edit-input" value="">
+                <input name="name" type="text" class="edit-input" value="">                
                 <span class="entity-only-title"></span>
+                <select class='node-ops-type'></select>
                 <div class="btn-wrap">
                 	<i class="icon icon-save"></i>
                     <i class="icon icon-add"></i>

@@ -24,6 +24,9 @@
                 </div>
                 <input name="name" disabled type="text" class="edit-input" value="${btNode.name}">
                 <span class="entity-only-title">${btNode.abcattr}</span>
+                <select disabled class='node-ops-type' data-val='${btNode.opt}'>
+                	
+                </select>
                 <div class="btn-wrap">
                 	<i class="icon icon-save"></i>
                     <i class="icon icon-add"></i>
