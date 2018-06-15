@@ -92,7 +92,7 @@ body {
     outline: none;   
     color: #363636; 
     background-color: inherit;
-    width: 180px;
+    width: 150px;
     padding-left: 1em;
 }
 
@@ -643,7 +643,7 @@ body {
     position: absolute;
     top: 0;
     bottom: 0;
-    left: 220px;
+    left: 260px;
     right: 210px;
     padding-top: 7px;
     overflow: hidden;
@@ -674,7 +674,7 @@ body {
     display: block;
 }
 #operateEdit .add-tag .label-bar>.icon.icon-toleft {
-    left: 200px;
+    left: 240px;
     top: 12px;
 }
 #operateEdit .add-tag .label-bar>.icon.icon-toright {

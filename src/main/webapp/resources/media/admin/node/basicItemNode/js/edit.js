@@ -1,6 +1,5 @@
 
 seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF){
-	console.log("a");
 	var $page = $("#operateEdit");	
 	var nodeId = $(".entity-title", $page).attr("data-id");	
 	function addUnfold(el) {		
@@ -22,6 +21,15 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 	     $(el).closest(".label-bar").addClass("al-save");
 	}
 	
+	function getNodeOpsType() {
+		$CPF.showLoading();
+		Ajax.ajax('admin/node/basicItemNode/getNodeOpsType', '', function(data){		    	
+	    	var data = data.nodeOpsType;
+	    	nodePosType = data;
+	    	$CPF.closeLoading();
+	    }, {async: false})
+	}	
+	
     //获取孩子的方法
 	function getChild(nodeId, isRelative, bar) {
 		$CPF.showLoading();
@@ -30,6 +38,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 		 }, function(data) {	
 			 var data = data.childNode;			
 			 var parentId = nodeId;
+			 var isAttrM = $(".collapse-header[data-id='"+nodeId+"']", $page).hasClass("more-attr-title");
 			 var parent = $(".collapse-header[data-id='"+nodeId+"']", $page).next(".collapse-content")[0];			 
 			 $(parent).removeClass("need-ajax");			 
 			 for(var i=0; i<data.length; i++) {					 
@@ -42,24 +51,28 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 				 var opt = data[i].opt;
 				 var order = data[i].order;		
 				 if(data[i].type == 1) {
-					 initAbc(abcattr, abcattr_code, id, name, order, parent);
-				 }else if(data[i].type == 2) {				 
-					 initAttr(abcattr,dataType, id, name, opt, order, parent);
+					 initAbc(abcattr, abcattr_code, id, name,opt, order, parent);
+				 }else if(data[i].type == 2) {	
+					 if(isAttrM) {						 
+						 initAttrM(abcattr,dataType, id, name, opt, order, parent);
+					 }else {
+						 initAttr(abcattr,dataType, id, name, opt, order, parent);
+					 }					 
 				 }else if(data[i].type == 3) {					 
-					 initTag(subdomain,id,name,order,parent, isRelative);
+					 initTag(subdomain,id,name,opt,order,parent, isRelative);
 				 }else if(data[i].type == 4) {
 					 initMoreAttr(abcattr, dataType, id, name, opt, order, parent);
 				 }else if(data[i].type == 5) {
-					 initRelative(abcattr, abcattr_code, id, name, order, parent);
+					 initRelative(abcattr, abcattr_code, id, name,opt, order, parent);
 				 }else if(data[i].type == 6) {
-					 initGroup(id, name, order, parent);
+					 initGroup(id, name,opt,order, parent);
 				 }	
 				 if(data.length === 0 && isRelative === true) {					 
 					 addRelativeChildren(bar);					
 				 }else if(data.length === 1 && isRelative === true) {
 					 addRelativeOneC(bar);					
 				 }
-				 $("select", $page).css({"width":"15%","marginLeft":"16px"}).select2();
+//				 $("select", $page).css({"width":"15%","marginLeft":"16px"}).select2();
 			 }				 
 			 $CPF.closeLoading();
 	    }, {async: false});	 
@@ -87,8 +100,18 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
            "<ul class='clear-fix'>" +
            "</ul>" +
            "</div>" +
-           "<span class='icon icon-toright ban'></span>" +
-           "<div class='btn-wrap'>" +
+           "<span class='icon icon-toright ban'></span>"
+           html += "<select disabled class='node-ops-type'>";						    			    	
+		    for(var i=0; i<nodePosType.length; i++) {
+		    	if(nodePosType[i] === "写") {
+		    		html += "<option value='"+nodePosType[i]+"' selected>"+nodePosType[i]+"</option>";  	
+		    	}else {
+		    		html += "<option value='"+nodePosType[i]+"'>"+nodePosType[i]+"</option>"; 
+		    	}
+	            	         
+	         };
+	         html += "</select>";
+	         html += "<div class='btn-wrap'>" +
            "<i class='icon tag icon-save'></i>" +
            "<i class='icon tag icon-add-tag-relative'></i>" +
            "<i class='icon-simulate-trashsm'></i>" +
@@ -102,8 +125,18 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
            "</div>" +
            "<div class='label-bar abc edit'>" +
            "<input class='edit-input text' value='"+abcattr+"'>"+
-           "<span class='entity-only-title' data-abcattr-code='"+abcattrCode+"' data-abcattr='"+abcattr+"'>"+abcattr+"</span>"+
-           "<div class='btn-wrap'>" +
+           "<span class='entity-only-title' data-abcattr-code='"+abcattrCode+"' data-abcattr='"+abcattr+"'>"+abcattr+"</span>";
+           html += "<select diabled class='node-ops-type'>";						    			    	
+		    for(var i=0; i<nodePosType.length; i++) {
+		    	if(nodePosType[i] === "写") {
+		    		html += "<option value='"+nodePosType[i]+"' selected>"+nodePosType[i]+"</option>";  	
+		    	}else {
+		    		html += "<option value='"+nodePosType[i]+"'>"+nodePosType[i]+"</option>"; 
+		    	}
+	            	         
+	         };
+	         html += "</select>";
+	         html += "<div class='btn-wrap'>" +
            "<i class='icon icon-save'></i>" +
            "<i class='icon icon-add-abc group'></i>" +	            
            "<i class='icon icon-arrow-sm active'></i>" +
@@ -139,8 +172,18 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 	          "</div>" +
 	          "<div class='label-bar abc edit'>" +
 	          "<input class='edit-input text' value='"+abcattr+"'>"+
-	          "<span class='entity-only-title' data-abcattr-code='"+abcattrCode+"' data-abcattr='"+abcattr+"'>"+abcattr+"</span>"+
-	          "<div class='btn-wrap'>" +
+	          "<span class='entity-only-title' data-abcattr-code='"+abcattrCode+"' data-abcattr='"+abcattr+"'>"+abcattr+"</span>";
+	          html += "<select class='node-ops-type'>";						    			    	
+			    for(var i=0; i<nodePosType.length; i++) {
+			    	if(nodePosType[i] === "写") {
+			    		html += "<option value='"+nodePosType[i]+"' selected>"+nodePosType[i]+"</option>";  	
+			    	}else {
+			    		html += "<option value='"+nodePosType[i]+"'>"+nodePosType[i]+"</option>"; 
+			    	}
+		            	         
+		         };
+		      html += "</select>";
+	          html +="<div class='btn-wrap'>" +
 	          "<i class='icon icon-save'></i>" +
 	          "<i class='icon icon-add-abc group'></i>" +	            
 	          "<i class='icon icon-arrow-sm active'></i>" +
@@ -151,6 +194,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 	          "</ul>" +
 	          "</li>";				 
 	          var $html = $(html).appendTo($content);
+	          $($html.find("select")[1]).css({"width":"15%","marginLeft":"60px"}).select2();
 		 }else {  //单纯添加tag			 
 			 html = "<li class='add-tag clear-fix'>" +
 	          "<div class='icon-label tag'>" +
@@ -164,15 +208,26 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 	          "<ul class='clear-fix'>" +
 	          "</ul>" +
 	          "</div>" +
-	          "<span class='icon icon-toright ban'></span>" +
-	          "<div class='btn-wrap'>" +
+	          "<span class='icon icon-toright ban'></span>";
+	          html += "<select class='node-ops-type'>";						    			    	
+			  for(var i=0; i<nodePosType.length; i++) {
+			    if(nodePosType[i] === "写") {
+			    	html += "<option value='"+nodePosType[i]+"' selected>"+nodePosType[i]+"</option>";  	
+			    }else {
+			    	html += "<option value='"+nodePosType[i]+"'>"+nodePosType[i]+"</option>"; 
+			    }
+		            	         
+		      };
+		      html += "</select>";
+		      html += "<div class='btn-wrap'>" +
 	          "<i class='icon tag icon-save'></i>" +
 	          "<i class='icon tag icon-add-tag-relative'></i>" +
 	          "<i class='icon-simulate-trashsm'></i>" +
 	          "</div>" +
 	          "</div>" +
 	          "</li>" 
-			 var $html = $(html).prependTo($content);
+			 var $html = $(html).prependTo($content);			  
+	         $($html.find("select")[0]).css({"width":"7%","marginLeft":"2px"}).select2();	          
 		 }		 					                            
 		 $html.find("select").css({"width":"15%","marginLeft":"16px"}).select2();
 		 drag($(".dragEdit-wrap").length);
@@ -238,11 +293,15 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 	    });     
     };
     
+    $CPF.showLoading();
+    getNodeOpsType();
     drag($(".dragEdit-wrap", $page).length);       
     getChild(nodeId, false);  //直接执行
     $(".label-bar", $page).addClass("al-save");
+    $CPF.closeLoading();
+    
     //abc初始化方法
-    function initAbc(abcattr, abcattr_code, id, name, order, parent) {
+    function initAbc(abcattr, abcattr_code, id, name, opt, order, parent) {
     	var dragWrapLen = $(".dragEdit-wrap", $page).length + 1 ;
     	var chLength = $(".entity-ch-wrap", $page).length;
 		 var nest = "no-repeat";
@@ -256,19 +315,29 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 			        "</div>" +
 			        "<div class='label-bar abc'>" +
 			        "<input class='edit-input text' value='"+name+"'>"+
-			        "<span class='entity-only-title' data-abcattr-code='"+abcattr_code+"' data-abcattr='"+abcattr+"'>"+abcattr+"</span>"+
-			        "<div class='btn-wrap'>" +
+			        "<span class='entity-only-title' data-abcattr-code='"+abcattr_code+"' data-abcattr='"+abcattr+"'>"+abcattr+"</span>"
+			        abcHtml += "<select disabled class='node-ops-type'>";						    			    	
+				    for(var i=0; i<nodePosType.length; i++) {
+				    	if(nodePosType[i] === "写") {
+				    		abcHtml += "<option value='"+nodePosType[i]+"' selected>"+nodePosType[i]+"</option>";  	
+				    	}else {
+				    		abcHtml += "<option value='"+nodePosType[i]+"'>"+nodePosType[i]+"</option>"; 
+				    	}
+			            	         
+			         };
+			         abcHtml += "</select>";
+			         abcHtml += "<div class='btn-wrap'>" +
 			        "<i class='icon icon-save'></i>" +
 			        "<i class='icon icon-add-abc group'></i>" +
-			        "<i class='icon icon-trash-sm'></i>" +
 			        "<i class='icon icon-arrow-sm active'></i>" +
 			        "</div>" +
 			        "</div>" +
 			        "</div>" +
 			        "<ul class='drag-wrap-repeat need-ajax dragEdit-wrap collapse-content collapse-content-inactive' id='dragEdit-"+dragWrapLen+"'>" +
 			        "</ul>" +
-			        "</li>"	
-	    $(parent).prepend(abcHtml);
+			        "</li>"		    
+	    var $html = $(abcHtml).appendTo($(parent));	    
+	    $html.find("select").css({"width":"15%","marginLeft":"60px"}).select2();
     }
     //普通属性初始化方法
     function initAttr(abcattr,dataType,id,name,opt,order,parent) {    	
@@ -285,7 +354,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
             "<div class='label-bar attr' data-order='"+order+"' data-id='"+id+"'>" +
             "<input type='text' disabled class='edit-input text' value='"+name+"'>" +
             "<select disabled class='abc-attr'>"            
-            for(var i=0; i<data.length; i++) {
+            for(var i=0; i<data.length; i++) {            	
             	if(data[i][1] == abcattr) {
             		attrHtml += "<option data-id='"+data[i][0]+"' value='"+data[i][1]+"' selected>"+data[i][1]+"</option>";
             	}else {
@@ -306,33 +375,94 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 	            	          
 	            };
 	            attrHtml += "</select>";
-				attrHtml += "<select disabled class='node-ops-type'>";
-				Ajax.ajax('admin/node/basicItemNode/getNodeOpsType', '', function(data){		    	
-			    	var data = data.nodeOpsType;
-			    	for(var i=0; i<data.length; i++) {
-			    		if(data[i] == opt) {
-			    			attrHtml += "<option value='"+data[i]+"' selected>"+data[i]+"</option>";
-			    		}else {
-			    			attrHtml += "<option value='"+data[i]+"'>"+data[i]+"</option>";
-			    		}
+				attrHtml += "<select disabled class='node-ops-type'>";						    			    	
+			    for(var i=0; i<nodePosType.length; i++) {
+			    	if(nodePosType[i] == opt) {
+			    		attrHtml += "<option value='"+nodePosType[i]+"' selected>"+nodePosType[i]+"</option>";
+			    	}else {
+			    		attrHtml += "<option value='"+nodePosType[i]+"'>"+nodePosType[i]+"</option>";
+			    	}
 		            	          
-		            };
-		            attrHtml += "</select>";
-		            attrHtml += "<div class='btn-wrap'>" +
-		            "<i class='icon icon-save'></i>" +
-		            "<i class='icon icon-trash-sm'></i>" +
-		            "<i class='icon-simulate-trashsm'></i>" +
-		            "</div>" +
-		            "</div>" +
-		            "</li>";		           
-		            $(parent).prepend(attrHtml);		            
-			    }, {async: false})			    
+		        };
+		        attrHtml += "</select>";
+		        attrHtml += "<div class='btn-wrap'>" +
+		        "<i class='icon icon-save'></i>" +
+		        "<i class='icon icon-trash-sm'></i>" +
+		        "<i class='icon-simulate-trashsm'></i>" +
+		        "</div>" +
+		        "</div>" +
+		        "</li>";		           		        
+		        var $html = $(attrHtml).prependTo($(parent));
+		        $html.find("select").css({"width":"15%","marginLeft":"16px"}).select2();
 		    }, {async: false})
 	    }, {async: false});	
     }
 	
+    //多值属性下的属性初始化方法
+    function initAttrM(abcattr,dataType,id,name,opt,order,parent) {  
+    	var repeatId = $(parent).prev(".collapse-header")
+			.find(".abc-attr")
+			.find("option:selected")
+			.attr("data-id");
+    	Ajax.ajax('admin/node/basicItemNode/getRepeatChild?repeatId', {
+    		repeatId: repeatId
+		}, function(data) {			
+			var data = data.repeatChild;
+			var attrHtml = "<li class='add-attr clear-fix'>" +
+            "<div class='icon-label attr'>" +
+            "<i class='icon icon-attr'></i>" +
+            "<span class='text'>属性</span>" +
+            "</div>" +
+            "<div class='label-bar attr' data-order='"+order+"' data-id='"+id+"'>" +
+            "<input type='text' disabled class='edit-input text' value='"+name+"'>" +
+            "<select disabled class='abc-attr'>"            
+            for(var i=0; i<data.length; i++) {            	
+            	if(data[i].cnName == abcattr) {
+            		attrHtml += "<option data-id='"+data[i].code+"' value='"+data[i].cnName+"' selected>"+data[i].cnName+"</option>";
+            	}else {
+            		attrHtml += "<option data-id='"+data[i].code+"' value='"+data[i].cnName+"'>"+data[i].cnName+"</option>";
+            	}
+            	                
+            }
+			attrHtml += "</select>";
+			attrHtml += "<select disabled class='data-type'>";            
+		    Ajax.ajax('admin/node/basicItemNode/getDataType', '', function(data){		    	
+		    	var data = data.dataType;
+		    	for(var i=0; i<data.length; i++) {
+		    		if(data[i] == dataType) {
+		    			attrHtml += "<option value='"+data[i]+"' selected>"+data[i]+"</option>";
+		    		}else {
+		    			attrHtml += "<option value='"+data[i]+"'>"+data[i]+"</option>";
+		    		}
+	            	          
+	            };
+	            attrHtml += "</select>";
+				attrHtml += "<select disabled class='node-ops-type'>";						    			    	
+			    for(var i=0; i<nodePosType.length; i++) {
+			    	if(nodePosType[i] == opt) {
+			    		attrHtml += "<option value='"+nodePosType[i]+"' selected>"+nodePosType[i]+"</option>";
+			    	}else {
+			    		attrHtml += "<option value='"+nodePosType[i]+"'>"+nodePosType[i]+"</option>";
+			    	}
+		            	          
+		        };
+		        attrHtml += "</select>";
+		        attrHtml += "<div class='btn-wrap'>" +
+		        "<i class='icon icon-save'></i>" +
+		        "<i class='icon icon-trash-sm'></i>" +
+		        "<i class='icon-simulate-trashsm'></i>" +
+		        "</div>" +
+		        "</div>" +
+		        "</li>";		           		        
+		        var $html = $(attrHtml).prependTo($(parent));
+		        $html.find("select").css({"width":"15%","marginLeft":"16px"}).select2();
+		    }, {async: false})
+	    }, {async: false});	
+    }
+    
+    
     //标签初始化方法
-    function initTag(subdomain, id,name,order,parent,isRelative) {      	
+    function initTag(subdomain, id,name,opt,order,parent,isRelative) {      	
     	subdomain = subdomain.split(",");    	
     	var tagHtml = "<li class='add-tag clear-fix'>" +
 	        "<div class='icon-label tag'>" +
@@ -355,8 +485,18 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 	        }	        
 	        tagHtml += "</ul>" +
 	        "</div>" +
-	        "<span class='icon icon-toright ban'></span>" +
-	        "<div class='btn-wrap'>" +
+	        "<span class='icon icon-toright ban'></span>";
+	        tagHtml += "<select disabled class='node-ops-type'>";						    			    	
+		    for(var i=0; i<nodePosType.length; i++) {
+		    	if(nodePosType[i] === opt) {
+		    		tagHtml += "<option value='"+nodePosType[i]+"' selected>"+nodePosType[i]+"</option>";  	
+		    	}else {
+		    		tagHtml += "<option value='"+nodePosType[i]+"'>"+nodePosType[i]+"</option>"; 
+		    	}
+	            	         
+	         };
+	         tagHtml += "</select>";
+	         tagHtml += "<div class='btn-wrap'>" +
 	        "<i class='icon tag icon-save'></i>" 
 	        if(isRelative) {
 	        	tagHtml += "<i class='icon tag icon-add-tag-relative'></i>"
@@ -370,10 +510,11 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 	        "</li>"
 	    var Tag = $(tagHtml).prependTo($(parent));	        
 	    menuWidth(Tag.find(".tag-content").children("ul")[0]);
+	    Tag.find("select").css({"width":"7%","marginLeft":"2px"}).select2();
     }
     
     //属性组初始化方法
-    function initGroup(id, name, order, parent) {
+    function initGroup(id, name,opt, order, parent) {
     	var dragWrapLen = $(".dragEdit-wrap").length + 1 ;
         var attrGroupHtml = "<li class='attr-group'>" +
             "<div class='attr-group-title collapse-header' data-order='"+order+"' data-id='"+id+"'>" +
@@ -382,8 +523,18 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
             "<span class='text'>属性组</span>" +
             "</div>" +
             "<div class='label-bar attr-group'>" +
-            "<input type='text' disabled class='edit-input text' value='"+name+"'>" +
-            "<div class='btn-wrap'>" +
+            "<input type='text' disabled class='edit-input text' value='"+name+"'>";
+            attrGroupHtml += "<select disabled class='node-ops-type'>";						    			    	
+		    for(var i=0; i<nodePosType.length; i++) {
+		    	if(nodePosType[i] === opt) {
+		    		attrGroupHtml += "<option value='"+nodePosType[i]+"' selected>"+nodePosType[i]+"</option>";  	
+		    	}else {
+		    		attrGroupHtml += "<option value='"+nodePosType[i]+"'>"+nodePosType[i]+"</option>"; 
+		    	}
+	            	         
+	         };
+	         attrGroupHtml += "</select>";
+	         attrGroupHtml += "<div class='btn-wrap'>" +
             "<i class='icon icon-save'></i>" +
             "<i class='icon icon-add-sm group'></i>" +
             "<i class='icon icon-trash-sm'></i>" +
@@ -393,8 +544,9 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
             "</div>" +
             "<ul class='attr-group-drag-wrap dragEdit-wrap collapse-content collapse-content-inactive need-ajax' id='dragEdit-"+dragWrapLen+"'>" +
             "</ul>" +
-            "</li>"
-        $(parent).prepend(attrGroupHtml);
+            "</li>"        
+	    var $html = $(attrGroupHtml).prependTo($(parent));
+	    $html.find("select").css({"width":"7%","marginLeft":"2"}).select2();
         drag($(".dragEdit-wrap").length);
     }
     
@@ -422,49 +574,35 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
             		moreAttrHtml += "<option data-id='"+data[i].code+"' value='"+data[i].cnName+"'>"+data[i].cnName+"</option>"; 
             	}            	               
             }           
-            moreAttrHtml += "</select>";
-            moreAttrHtml += "<select disabled class='data-type'>";            
-		    Ajax.ajax('admin/node/basicItemNode/getDataType', '', function(data){		    	
-		    	var data = data.dataType;
-		    	for(var i=0; i<data.length; i++) {
-		    		if(data[i][1] == dataType) {            		
-		    			moreAttrHtml += "<option value='"+data[i]+"' selected>"+data[i]+"</option>";       
-	            	}else {            		
-	            		moreAttrHtml += "<option value='"+data[i]+"'>"+data[i]+"</option>";       
-	            	}		    		    
-	            };
-	            moreAttrHtml += "</select>";
-	            moreAttrHtml += "<select disabled class='node-ops-type'>";
-				Ajax.ajax('admin/node/basicItemNode/getNodeOpsType', '', function(data){		    	
-			    	var data = data.nodeOpsType;
-			    	for(var i=0; i<data.length; i++) {
-			    		if(data[i][1] == opt) {            		
-			    			moreAttrHtml += "<option value='"+data[i]+"' selected>"+data[i]+"</option>";			    			
-		            	}else {            				            		
-		            		moreAttrHtml += "<option value='"+data[i]+"'>"+data[i]+"</option>";
-		            	}			    		         
-		            };
-		            moreAttrHtml += "</select>";
-		            moreAttrHtml += "<div class='btn-wrap'>" +
-		            "<i class='icon icon-save'></i>" +
-		            "<i class='icon icon-add-sm group'></i>" +
-		            "<i class='icon icon-trash-sm'></i>" +
-		            "<i class='icon icon-arrow-sm active'></i>" +
-		            "</div>" +
-		            "</div>" +
-		            "</div>" +
-		            "<ul class='more-attr-drag-wrap dragEdit-wrap collapse-content collapse-content-inactive need-ajax' id='dragEdit-"+dragWrapLen+"'>" +
-		            "</ul>" +
-		            "</li>"
-		            $(parent).prepend(moreAttrHtml);
-		            drag($(".dragEdit-wrap").length);
-			    }, {async: false})			    
-		    }, {async: false})
+            moreAttrHtml += "</select>";           
+	        moreAttrHtml += "<select disabled class='node-ops-type'>";						    			    
+			for(var i=0; i<nodePosType.length; i++) {
+			   if(nodePosType[i] == opt) {            		
+				    moreAttrHtml += "<option value='"+nodePosType[i]+"' selected>"+nodePosType[i]+"</option>";			    			
+		          }else {            				            		
+		            moreAttrHtml += "<option value='"+nodePosType[i]+"'>"+nodePosType[i]+"</option>";
+		          }			    		         
+		       };
+		   moreAttrHtml += "</select>";
+		   moreAttrHtml += "<div class='btn-wrap'>" +
+		   "<i class='icon icon-save'></i>" +
+		   "<i class='icon icon-add-sm group'></i>" +
+		   "<i class='icon icon-trash-sm'></i>" +
+		   "<i class='icon icon-arrow-sm active'></i>" +
+		   "</div>" +
+		   "</div>" +
+		   "</div>" +
+		   "<ul class='more-attr-drag-wrap dragEdit-wrap collapse-content collapse-content-inactive need-ajax' id='dragEdit-"+dragWrapLen+"'>" +
+		   "</ul>" +
+		   "</li>"		   
+		   var $html = $(moreAttrHtml).prependTo($(parent));		   
+		   $html.find("select").css({"width":"15%","marginLeft":"16px"}).select2();
+		   drag($(".dragEdit-wrap").length);			    		   
 	    }, {async: false});                                
     }
 
     //关系初始化方法
-    function initRelative(abcattr, abcattr_code, id, name, order, parent) {
+    function initRelative(abcattr, abcattr_code, id, name, opt,order, parent) {
     	var entityId = $(".entity_attr.active", $page).attr("data-code");
         var dragWrapLen = $(".dragEdit-wrap").length + 1 ;        				
 					           
@@ -477,8 +615,18 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
             "<input type='text' disabled class='edit-input text' value='"+name+"'>" +
             "<select disabled class='abc-attr'>" +         		            		
             "<option data-id='"+abcattr_code+"' value='"+abcattr+"' selected>"+abcattr+"</option>" +
-            "</select>" +            
-            "<div class='btn-wrap'>" +
+            "</select>" ; 
+            relativeHtml += "<select disabled class='node-ops-type'>";						    			    	
+		    for(var i=0; i<nodePosType.length; i++) {
+		    	if(nodePosType[i] === opt) {
+		    		relativeHtml += "<option value='"+nodePosType[i]+"' selected>"+nodePosType[i]+"</option>";  	
+		    	}else {
+		    		relativeHtml += "<option value='"+nodePosType[i]+"'>"+nodePosType[i]+"</option>"; 
+		    	}
+	            	         
+	         };
+	        relativeHtml += "</select>";
+	        relativeHtml += "<div class='btn-wrap'>" +
             "<i class='icon icon-save'></i>" + 
             "<i class='icon icon-trash-sm'></i>" +
             "<i class='icon icon-arrow-sm active'></i>" +
@@ -487,8 +635,9 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
             "</div>" +            
             "<ul class='need-ajax attr-relative-drag-wrap dragEdit-wrap collapse-content collapse-content-inactive' id='dragEdit-"+dragWrapLen+"'>" +
             "</ul>" +
-            "</li>";         
-		    $(parent).prepend(relativeHtml);
+            "</li>";         		    
+		    var $html = $(relativeHtml).prependTo($(parent));
+            $html.find("select").css({"width":"15%","marginLeft":"16px"}).select2();
 		    drag($(".dragEdit-wrap").length);		    			                                    
     }
 	/**
@@ -912,8 +1061,18 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
             "<ul class='clear-fix'>" +
             "</ul>" +
             "</div>" +
-            "<span class='icon icon-toright ban'></span>" +
-            "<div class='btn-wrap'>" +
+            "<span class='icon icon-toright ban'></span>" 
+            tagHtml += "<select class='node-ops-type'>";						    			    	
+		    for(var i=0; i<nodePosType.length; i++) {
+		    	if(nodePosType[i] === "写") {
+		    		tagHtml += "<option value='"+nodePosType[i]+"' selected>"+nodePosType[i]+"</option>";  	
+		    	}else {
+		    		tagHtml += "<option value='"+nodePosType[i]+"'>"+nodePosType[i]+"</option>"; 
+		    	}
+	            	         
+	         };
+	         tagHtml += "</select>";
+	         tagHtml += "<div class='btn-wrap'>" +
             "<i class='icon tag icon-save'></i>" +
             "<i class='icon tag icon-add-tag'></i>" +
             "<i class='icon icon-trash-sm'></i>" +
@@ -921,7 +1080,8 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
             "</div>" +
             "</div>" +
             "</li>"
-        $content.prepend(tagHtml);
+        var $html = $(tagHtml).prependTo($content);
+    	$html.find("select").css({"width":"7%","marginLeft":"2px"}).select2();
         addUnfold(el)
     };
 
@@ -966,32 +1126,28 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 		    		}	            	        
 	            };
 	            attrHtml += "</select>";
-				attrHtml += "<select class='node-ops-type'>";
-				Ajax.ajax('admin/node/basicItemNode/getNodeOpsType', '', function(data){		    	
-			    	var data = data.nodeOpsType;
-			    	for(var i=0; i<data.length; i++) {
-			    		if(data[i] === "写") {
-			    			attrHtml += "<option value='"+data[i]+"' selected>"+data[i]+"</option>";  	
-			    		}else {
-			    			attrHtml += "<option value='"+data[i]+"'>"+data[i]+"</option>"; 
-			    		}
+				attrHtml += "<select class='node-ops-type'>";						    			    	
+			    for(var i=0; i<nodePosType.length; i++) {
+			    	if(nodePosType[i] === "写") {
+			    		attrHtml += "<option value='"+nodePosType[i]+"' selected>"+nodePosType[i]+"</option>";  	
+			    	}else {
+			    		attrHtml += "<option value='"+nodePosType[i]+"'>"+nodePosType[i]+"</option>"; 
+			    	}
 		            	         
-		            };
-		            attrHtml += "</select>";
-		            attrHtml += "<div class='btn-wrap'>" +
-		            "<i class='icon icon-save'></i>" +
-		            "<i class='icon icon-trash-sm'></i>" +
-		            "<i class='icon-simulate-trashsm'></i>" +
-		            "</div>" +
-		            "</div>" +
-		            "</li>";
-		            
-		            var $html = $(attrHtml).prependTo($content);
-		            $html.find("select").css({"width":"15%","marginLeft":"16px"}).select2();
-		            addUnfold(el);
-		            $CPF.closeLoading();
-			    })
-			    
+		        };
+		        attrHtml += "</select>";
+		        attrHtml += "<div class='btn-wrap'>" +
+		        "<i class='icon icon-save'></i>" +
+		        "<i class='icon icon-trash-sm'></i>" +
+		        "<i class='icon-simulate-trashsm'></i>" +
+		        "</div>" +
+		        "</div>" +
+		        "</li>";
+		        
+		        var $html = $(attrHtml).prependTo($content);
+		        $html.find("select").css({"width":"15%","marginLeft":"16px"}).select2();
+		        addUnfold(el);
+		        $CPF.closeLoading();			    		   
 		    })
 	    });		                      
     };
@@ -1033,32 +1189,28 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 		    		}	            	        
 	            };
 	            attrHtml += "</select>";
-				attrHtml += "<select class='node-ops-type'>";
-				Ajax.ajax('admin/node/basicItemNode/getNodeOpsType', '', function(data){		    	
-			    	var data = data.nodeOpsType;
-			    	for(var i=0; i<data.length; i++) {
-			    		if(data[i] === "写") {
-			    			attrHtml += "<option value='"+data[i]+"' selected>"+data[i]+"</option>";  	
-			    		}else {
-			    			attrHtml += "<option value='"+data[i]+"'>"+data[i]+"</option>"; 
-			    		}
+				attrHtml += "<select class='node-ops-type'>";						    			    	
+			    for(var i=0; i<nodePosType.length; i++) {
+			    	if(nodePosType[i] === "写") {
+			    		attrHtml += "<option value='"+nodePosType[i]+"' selected>"+nodePosType[i]+"</option>";  	
+			    	}else {
+			    		attrHtml += "<option value='"+nodePosType[i]+"'>"+nodePosType[i]+"</option>"; 
+			    	}
 		            	         
-		            };
-		            attrHtml += "</select>";
-		            attrHtml += "<div class='btn-wrap'>" +
-		            "<i class='icon icon-save'></i>" +
-		            "<i class='icon icon-trash-sm'></i>" +
-		            "<i class='icon-simulate-trashsm'></i>" +
-		            "</div>" +
-		            "</div>" +
-		            "</li>";
+		        };
+		        attrHtml += "</select>";
+		        attrHtml += "<div class='btn-wrap'>" +
+		        "<i class='icon icon-save'></i>" +
+		        "<i class='icon icon-trash-sm'></i>" +
+		        "<i class='icon-simulate-trashsm'></i>" +
+		        "</div>" +
+		        "</div>" +
+		        "</li>";
 		            
-		            var $html = $(attrHtml).prependTo($content);
-		            $html.find("select").css({"width":"15%","marginLeft":"16px"}).select2();
-		            addUnfold(el);
-		            $CPF.closeLoading();
-			    })
-			    
+		        var $html = $(attrHtml).prependTo($content);
+		        $html.find("select").css({"width":"15%","marginLeft":"16px"}).select2();
+		        addUnfold(el);
+		        $CPF.closeLoading();			    			    
 		    })
 	    });		                      
     };
@@ -1076,8 +1228,18 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
             "<span class='text'>属性组</span>" +
             "</div>" +
             "<div class='label-bar attr-group edit'>" +
-            "<input type='text' class='edit-input text' value='属性组名称'>" +
-            "<div class='btn-wrap'>" +
+            "<input type='text' class='edit-input text' value='属性组名称'>"
+            attrGroupHtml += "<select class='node-ops-type'>";						    			    	
+		    for(var i=0; i<nodePosType.length; i++) {
+		    	if(nodePosType[i] === "写") {
+		    		attrGroupHtml += "<option value='"+nodePosType[i]+"' selected>"+nodePosType[i]+"</option>";  	
+		    	}else {
+		    		attrGroupHtml += "<option value='"+nodePosType[i]+"'>"+nodePosType[i]+"</option>"; 
+		    	}
+	            	         
+	         };
+	         attrGroupHtml += "</select>";
+	         attrGroupHtml += "<div class='btn-wrap'>" +
             "<i class='icon icon-save'></i>" +
             "<i class='icon icon-add-sm group'></i>" +
             "<i class='icon icon-trash-sm'></i>" +
@@ -1089,7 +1251,8 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
             "</ul>" +
             "</li>"        
         var $html = $(attrGroupHtml).prependTo($content);  
-        addUnfold(el)
+	    $html.find("select").css({"width":"7%","marginLeft":"2"}).select2();
+	    addUnfold(el)
         drag($(".dragEdit-wrap").length);
     };
 
@@ -1117,49 +1280,33 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
             for(var i=0; i<data.length; i++) {
             	moreAttrHtml += "<option data-id='"+data[i].code+"' value='"+data[i].cnName+"'>"+data[i].cnName+"</option>";                
             }
-            moreAttrHtml += "</select>";
-            moreAttrHtml += "<select class='data-type'>";            
-		    Ajax.ajax('admin/node/basicItemNode/getDataType', '', function(data){		    	
-		    	var data = data.dataType;
-		    	for(var i=0; i<data.length; i++) {
-		    		if(data[i] === "STRING") {
-		    			moreAttrHtml += "<option value='"+data[i]+"' selected>"+data[i]+"</option>";
-		    		}else {
-		    			moreAttrHtml += "<option value='"+data[i]+"'>"+data[i]+"</option>";
-		    		}		    		         
-	            };
-	            moreAttrHtml += "</select>";
-	            moreAttrHtml += "<select class='node-ops-type'>";
-				Ajax.ajax('admin/node/basicItemNode/getNodeOpsType', '', function(data){		    	
-			    	var data = data.nodeOpsType;
-			    	for(var i=0; i<data.length; i++) {
-			    		if(data[i] === "写"){
-			    			moreAttrHtml += "<option value='"+data[i]+"' selected>"+data[i]+"</option>";
-			    		}else {
-			    			moreAttrHtml += "<option value='"+data[i]+"'>"+data[i]+"</option>";	
-			    		}
+            moreAttrHtml += "</select>";                    		    	    			    
+	        moreAttrHtml += "<select class='node-ops-type'>";		    		    			    
+			for(var i=0; i<nodePosType.length; i++) {
+			    if(nodePosType[i] === "写"){
+			    	moreAttrHtml += "<option value='"+nodePosType[i]+"' selected>"+nodePosType[i]+"</option>";
+			    }else {
+			    	moreAttrHtml += "<option value='"+nodePosType[i]+"'>"+nodePosType[i]+"</option>";	
+			    }
 			    		          
-		            };
-		            moreAttrHtml += "</select>";
-		            moreAttrHtml += "<div class='btn-wrap'>" +
-		            "<i class='icon icon-save'></i>" +
-		            "<i class='icon icon-add-sm group'></i>" +
-		            "<i class='icon icon-trash-sm'></i>" +
-		            "<i class='icon icon-arrow-sm'></i>" +
-		            "</div>" +
-		            "</div>" +
-		            "</div>" +
-		            "<ul class='more-attr-drag-wrap dragEdit-wrap collapse-content collapse-content-active' id='dragEdit-"+dragWrapLen+"'>" +
-		            "</ul>" +
-		            "</li>"		            
-		            var $html = $(moreAttrHtml).prependTo($content);
-		            $html.find("select").css({"width":"15%","marginLeft":"16px"}).select2();
-		            drag($(".dragEdit-wrap").length);
-		            addUnfold(el);
-		            $CPF.closeLoading();
-			    })
-			    
-		    })
+		    };
+		    moreAttrHtml += "</select>";
+		    moreAttrHtml += "<div class='btn-wrap'>" +
+		    "<i class='icon icon-save'></i>" +
+		    "<i class='icon icon-add-sm group'></i>" +
+		    "<i class='icon icon-trash-sm'></i>" +
+		    "<i class='icon icon-arrow-sm'></i>" +
+		    "</div>" +
+		    "</div>" +
+		    "</div>" +
+		    "<ul class='more-attr-drag-wrap dragEdit-wrap collapse-content collapse-content-active' id='dragEdit-"+dragWrapLen+"'>" +
+		    "</ul>" +
+		    "</li>"		            
+		    var $html = $(moreAttrHtml).prependTo($content);
+		    $html.find("select").css({"width":"15%","marginLeft":"16px"}).select2();
+		    drag($(".dragEdit-wrap").length);
+		    addUnfold(el);
+		    $CPF.closeLoading();			 		    		  
 	    });                                       
     };
 
@@ -1184,8 +1331,18 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
             for(var i=0; i<data.length; i++) {
             	relativeHtml += "<option data-id='"+data[i].code+"' value='"+data[i].cnName+"'>"+data[i].cnName+"</option>";                
             }
-            relativeHtml += "</select>" +
-            "<div class='btn-wrap'>" +
+            relativeHtml += "</select>";
+            relativeHtml += "<select class='node-ops-type'>";						    			    	
+		    for(var i=0; i<nodePosType.length; i++) {
+		    	if(nodePosType[i] === "写") {
+		    		relativeHtml += "<option value='"+nodePosType[i]+"' selected>"+nodePosType[i]+"</option>";  	
+		    	}else {
+		    		relativeHtml += "<option value='"+nodePosType[i]+"'>"+nodePosType[i]+"</option>"; 
+		    	}
+	            	         
+	         };
+	        relativeHtml += "</select>";
+	        relativeHtml += "<div class='btn-wrap'>" +
             "<i class='icon icon-save'></i>" +  
             "<i class='icon icon-trash-sm'></i>" +
             "<i class='icon icon-arrow-sm'></i>" +
@@ -1269,7 +1426,26 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
     	}
     	var type = 3;
     	var dataType = "STRING";
-    	var opt = 2;
+    	var opt = $tagBar.children(".node-ops-type").find("option:selected").val();
+    	switch (opt) {
+        	case "读":
+        		opt = 1;
+        		break;
+        	case "写":
+        		opt = 2;
+        		break;
+        	case "补":
+        		opt = 3;
+        		break;
+        	case "增":
+        		opt = 4;
+        		break;
+        	case "并":
+        		opt = 5;
+        		break;
+        	default:
+        		break;
+    	}
     	var name = $tagBar.children(".edit-input").val();    	
     	var order = $tagBar.attr("data-order");
     	var id = $tagBar.attr("data-id");
@@ -1375,7 +1551,26 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
     	var type = 6;    	
     	var name = $attrGroupBar.children(".edit-input").val();    	
     	var order = $attrGroupBar.closest(".collapse-header").attr("data-order");
-    	var opt = 2;
+    	var opt = $attrGroupBar.children(".node-ops-type").find("option:selected").val();
+    	switch (opt) {
+        	case "读":
+        		opt = 1;
+        		break;
+        	case "写":
+        		opt = 2;
+        		break;
+        	case "补":
+        		opt = 3;
+        		break;
+        	case "增":
+        		opt = 4;
+        		break;
+        	case "并":
+        		opt = 5;
+        		break;
+        	default:
+        		break;
+    	}
     	var id = $attrGroupBar.closest(".collapse-header").attr("data-id");
     	var parentId = $attrGroupBar.closest(".collapse-content").prev(".collapse-header")
     						.attr("data-id"); 
@@ -1474,7 +1669,26 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
     	var $relativeBar = $(el).closest(".label-bar");
     	var type = 5;
     	var dataType = "STRING";
-    	var opt = 2;
+    	var opt = $relativeBar.children(".node-ops-type").find("option:selected").val();
+    	switch (opt) {
+        	case "读":
+        		opt = 1;
+        		break;
+        	case "写":
+        		opt = 2;
+        		break;
+        	case "补":
+        		opt = 3;
+        		break;
+        	case "增":
+        		opt = 4;
+        		break;
+        	case "并":
+        		opt = 5;
+        		break;
+        	default:
+        		break;
+    	}
     	var name = $relativeBar.children(".edit-input").val();  
     	var abcattr = $relativeBar.children(".abc-attr").find("option:selected").val();
     	var abcattrCode = $relativeBar.children(".abc-attr").find("option:selected").attr("data-id");
@@ -1525,8 +1739,18 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 	            "<ul class='clear-fix'>" +
 	            "</ul>" +
 	            "</div>" +
-	            "<span class='icon icon-toright ban'></span>" +
-	            "<div class='btn-wrap'>" +
+	            "<span class='icon icon-toright ban'></span>"
+	            html += "<select class='node-ops-type'>";						    			    	
+			    for(var i=0; i<nodePosType.length; i++) {
+			    	if(nodePosType[i] === "写") {
+			    		html += "<option value='"+nodePosType[i]+"' selected>"+nodePosType[i]+"</option>";  	
+			    	}else {
+			    		html += "<option value='"+nodePosType[i]+"'>"+nodePosType[i]+"</option>"; 
+			    	}
+		            	         
+		         };
+		         html += "</select>";
+		         html += "<div class='btn-wrap'>" +
 	            "<i class='icon tag icon-save'></i>" +
 	            "<i class='icon tag icon-add-tag-relative'></i>" +
 	            "<i class='icon-simulate-trashsm'></i>" +
@@ -1540,8 +1764,18 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 	            "</div>" +
 	            "<div class='label-bar abc edit'>" +
 	            "<input class='edit-input text' value='"+abcattr+"'>"+
-	            "<span class='entity-only-title' data-abcattr-code='"+abcattrCode+"' data-abcattr='"+abcattr+"'>"+abcattr+"</span>"+
-	            "<div class='btn-wrap'>" +
+	            "<span class='entity-only-title' data-abcattr-code='"+abcattrCode+"' data-abcattr='"+abcattr+"'>"+abcattr+"</span>";
+	            html += "<select class='node-ops-type'>";						    			    	
+			    for(var i=0; i<nodePosType.length; i++) {
+			    	if(nodePosType[i] === "写") {
+			    		html += "<option value='"+nodePosType[i]+"' selected>"+nodePosType[i]+"</option>";  	
+			    	}else {
+			    		html += "<option value='"+nodePosType[i]+"'>"+nodePosType[i]+"</option>"; 
+			    	}
+		            	         
+		         };
+		         html += "</select>";
+		         html += "<div class='btn-wrap'>" +
 	            "<i class='icon icon-save'></i>" +
 	            "<i class='icon icon-add-abc group'></i>" +	            
 	            "<i class='icon icon-arrow-sm'></i>" +
@@ -1557,15 +1791,17 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 					  $relativeBar.find(".icon-arrow-sm").trigger("click");					  
 					  if($content.children().length == 0) {						  
 						  var $html = $(html).appendTo($content);
-				          $html.find("select").css({"width":"15%","marginLeft":"16px"}).select2();
+						  console.log($($html.find("select")[0]));
+						  $($html.find("select")[0]).css({"width":"7%","marginLeft":"2px"}).select2();
+				          $($html.find("select")[1]).css({"width":"15%","marginLeft":"60px"}).select2();
 					  }
 				  }
 			 }else {				 
 				 var $html = $(html).appendTo($content);
-		         $html.find("select").css({"width":"15%","marginLeft":"16px"}).select2();
-			 }
-			 
-	          
+				 console.log($($html.find("select")[0]));
+				 $($html.find("select")[0]).css({"width":"7%","marginLeft":"2px"}).select2();
+		         $($html.find("select")[1]).css({"width":"15%","marginLeft":"60px"}).select2();
+			 }			 	         
 			  drag($(".dragEdit-wrap").length);
 			  saveSuccess(el)
 			  $CPF.closeLoading();
@@ -1577,7 +1813,26 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
     	var $abcBar = $(el).closest(".label-bar");
     	var type = 1;
     	var dataType = "STRING";
-    	var opt = 2;
+    	var opt = $abcBar.children(".node-ops-type").find("option:selected").val();
+    	switch (opt) {
+        	case "读":
+        		opt = 1;
+        		break;
+        	case "写":
+        		opt = 2;
+        		break;
+        	case "补":
+        		opt = 3;
+        		break;
+        	case "增":
+        		opt = 4;
+        		break;
+        	case "并":
+        		opt = 5;
+        		break;
+        	default:
+        		break;
+    	}
     	var name = $abcBar.children(".edit-input").val();    	
     	var order = $abcBar.closest(".collapse-header").attr("data-order");
     	var id = $abcBar.closest(".collapse-header").attr("data-id");

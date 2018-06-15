@@ -1,7 +1,8 @@
 
 seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF){
 	
-	var $page = $("#operate");	
+	var $page = $("#operate");
+	var nodePosType = [];
 	
 	function addUnfold(el) {
 		if($(el).hasClass("icon-add") && $(el).siblings(".icon-arrow").hasClass("active")) {
@@ -22,6 +23,20 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 	     $(el).closest(".label-bar").find("select").attr("disabled", "true");
 	     $(el).closest(".label-bar").addClass("al-save");
 	}
+	
+	function getNodeOpsType() {
+		$CPF.showLoading();
+		Ajax.ajax('admin/node/basicItemNode/getNodeOpsType', '', function(data){		    	
+	    	var data = data.nodeOpsType;
+	    	nodePosType = data;
+	    	$CPF.closeLoading();
+	    }, {async: false})
+	}	
+	
+	$CPF.showLoading();
+	getNodeOpsType();
+	$CPF.closeLoading();
+	
 	
 	/**
      * 获取实体信息方法 示例     
@@ -442,16 +457,27 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
             "<ul class='clear-fix'>" +
             "</ul>" +
             "</div>" +
-            "<span class='icon icon-toright ban'></span>" +
-            "<div class='btn-wrap'>" +
+            "<span class='icon icon-toright ban'></span>"
+            tagHtml += "<select class='node-ops-type'>";						    			    	
+		    for(var i=0; i<nodePosType.length; i++) {
+		    	if(nodePosType[i] === "写") {
+		    		tagHtml += "<option value='"+nodePosType[i]+"' selected>"+nodePosType[i]+"</option>";  	
+		    	}else {
+		    		tagHtml += "<option value='"+nodePosType[i]+"'>"+nodePosType[i]+"</option>"; 
+		    	}
+	            	         
+	         };
+	         tagHtml += "</select>";
+	         tagHtml += "<div class='btn-wrap'>" +
             "<i class='icon tag icon-save'></i>" +
             "<i class='icon tag icon-add-tag'></i>" +
             "<i class='icon icon-trash-sm'></i>" +
             "<i class='icon icon-simulate-trashsm'></i>" + 
             "</div>" +
             "</div>" +
-            "</li>"
-        $content.prepend(tagHtml);   
+            "</li>"        
+	    var $html = $(tagHtml).prependTo($content);
+	    $html.find("select").css({"width":"7%","marginLeft":"2px"}).select2();
         addUnfold(el)
     };
 
@@ -496,31 +522,27 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 		    		}	            	        
 	            };
 	            attrHtml += "</select>";
-				attrHtml += "<select class='node-ops-type'>";
-				Ajax.ajax('admin/node/basicItemNode/getNodeOpsType', '', function(data){		    	
-			    	var data = data.nodeOpsType;
-			    	for(var i=0; i<data.length; i++) {
-			    		if(data[i] === "写") {
-			    			attrHtml += "<option value='"+data[i]+"' selected>"+data[i]+"</option>";  	
-			    		}else {
-			    			attrHtml += "<option value='"+data[i]+"'>"+data[i]+"</option>"; 
-			    		}
+				attrHtml += "<select class='node-ops-type'>";						    			    	
+			    for(var i=0; i<nodePosType.length; i++) {
+			    	if(nodePosType[i] === "写") {
+			    		attrHtml += "<option value='"+nodePosType[i]+"' selected>"+nodePosType[i]+"</option>";  	
+			    	}else {
+			    		attrHtml += "<option value='"+nodePosType[i]+"'>"+nodePosType[i]+"</option>"; 
+			    	}
 		            	         
-		            };
-		            attrHtml += "</select>";
-		            attrHtml += "<div class='btn-wrap'>" +
-		            "<i class='icon icon-save'></i>" +
-		            "<i class='icon icon-trash-sm'></i>" +
-		            "<i class='icon-simulate-trashsm'></i>" +
-		            "</div>" +
-		            "</div>" +
-		            "</li>";
-		            var $html = $(attrHtml).prependTo($content);
-		            $html.find("select").css({"width":"15%","marginLeft":"16px"}).select2();		            
-		            addUnfold(el);
-		            $CPF.closeLoading();
-			    })
-			    
+		         };
+		         attrHtml += "</select>";
+		         attrHtml += "<div class='btn-wrap'>" +
+		         "<i class='icon icon-save'></i>" +
+		         "<i class='icon icon-trash-sm'></i>" +
+		         "<i class='icon-simulate-trashsm'></i>" +
+		         "</div>" +
+		         "</div>" +
+		         "</li>";
+		         var $html = $(attrHtml).prependTo($content);
+		         $html.find("select").css({"width":"15%","marginLeft":"16px"}).select2();		            
+		         addUnfold(el);
+		         $CPF.closeLoading();			    			    
 		    })
 	    });		                      
     };
@@ -562,31 +584,28 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 		    		}	            	        
 	            };
 	            attrHtml += "</select>";
-				attrHtml += "<select class='node-ops-type'>";
-				Ajax.ajax('admin/node/basicItemNode/getNodeOpsType', '', function(data){		    	
-			    	var data = data.nodeOpsType;
-			    	for(var i=0; i<data.length; i++) {
-			    		if(data[i] === "写") {
-			    			attrHtml += "<option value='"+data[i]+"' selected>"+data[i]+"</option>";  	
-			    		}else {
-			    			attrHtml += "<option value='"+data[i]+"'>"+data[i]+"</option>"; 
-			    		}
+				attrHtml += "<select class='node-ops-type'>";						    			    	
+			    for(var i=0; i<nodePosType.length; i++) {
+			    	if(nodePosType[i] === "写") {
+			    		attrHtml += "<option value='"+nodePosType[i]+"' selected>"+nodePosType[i]+"</option>";  	
+			    	}else {
+			    		attrHtml += "<option value='"+nodePosType[i]+"'>"+nodePosType[i]+"</option>"; 
+			    	}
 		            	         
-		            };
-		            attrHtml += "</select>";
-		            attrHtml += "<div class='btn-wrap'>" +
-		            "<i class='icon icon-save'></i>" +
-		            "<i class='icon icon-trash-sm'></i>" +
-		            "<i class='icon-simulate-trashsm'></i>" +
-		            "</div>" +
-		            "</div>" +
-		            "</li>";
+		        };
+		        attrHtml += "</select>";
+		        attrHtml += "<div class='btn-wrap'>" +
+		        "<i class='icon icon-save'></i>" +
+		        "<i class='icon icon-trash-sm'></i>" +
+		        "<i class='icon-simulate-trashsm'></i>" +
+		        "</div>" +
+		        "</div>" +
+		        "</li>";
 		            
-		            var $html = $(attrHtml).prependTo($content);
-		            $html.find("select").css({"width":"15%","marginLeft":"16px"}).select2();
-		            addUnfold(el);
-		            $CPF.closeLoading();
-			    })
+		        var $html = $(attrHtml).prependTo($content);
+		        $html.find("select").css({"width":"15%","marginLeft":"16px"}).select2();
+		        addUnfold(el);
+		        $CPF.closeLoading();			    
 			    
 		    })
 	    });		                      
@@ -606,8 +625,18 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
             "<span class='text'>属性组</span>" +
             "</div>" +
             "<div class='label-bar attr-group edit'>" +
-            "<input type='text' class='edit-input text' value='属性组名称'>" +
-            "<div class='btn-wrap'>" +
+            "<input type='text' class='edit-input text' value='属性组名称'>" 
+            attrGroupHtml += "<select class='node-ops-type'>";						    			    	
+		    for(var i=0; i<nodePosType.length; i++) {
+		    	if(nodePosType[i] === "写") {
+		    		attrGroupHtml += "<option value='"+nodePosType[i]+"' selected>"+nodePosType[i]+"</option>";  	
+		    	}else {
+		    		attrGroupHtml += "<option value='"+nodePosType[i]+"'>"+nodePosType[i]+"</option>"; 
+		    	}
+	            	         
+	         };
+	         attrGroupHtml += "</select>";
+	         attrGroupHtml += "<div class='btn-wrap'>" +
             "<i class='icon icon-save'></i>" +
             "<i class='icon icon-add-sm group'></i>" +
             "<i class='icon icon-trash-sm'></i>" +
@@ -617,8 +646,9 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
             "</div>" +
             "<ul class='attr-group-drag-wrap drag-wrap collapse-content collapse-content-active' id='drag-"+dragWrapLen+"'>" +
             "</ul>" +
-            "</li>"
-        $content.prepend(attrGroupHtml);
+            "</li>"        
+	    var $html = $(attrGroupHtml).prependTo($content);
+		$html.find("select").css({"width":"7%","marginLeft":"2"}).select2();
         addUnfold(el)
         drag($(".drag-wrap").length);
     };
@@ -647,49 +677,33 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
             for(var i=0; i<data.length; i++) {            	
             	moreAttrHtml += "<option data-id='"+data[i].code+"' value='"+data[i].cnName+"'>"+data[i].cnName+"</option>";                
             }
-            moreAttrHtml += "</select>";
-            moreAttrHtml += "<select class='data-type'>";            
-		    Ajax.ajax('admin/node/basicItemNode/getDataType', '', function(data){		    	
-		    	var data = data.dataType;
-		    	for(var i=0; i<data.length; i++) {
-		    		if(data[i] === "STRING") {
-		    			moreAttrHtml += "<option value='"+data[i]+"' selected>"+data[i]+"</option>";
-		    		}else {
-		    			moreAttrHtml += "<option value='"+data[i]+"'>"+data[i]+"</option>";
-		    		}		    		         
-	            };
-	            moreAttrHtml += "</select>";
-	            moreAttrHtml += "<select class='node-ops-type'>";
-				Ajax.ajax('admin/node/basicItemNode/getNodeOpsType', '', function(data){		    	
-			    	var data = data.nodeOpsType;
-			    	for(var i=0; i<data.length; i++) {
-			    		if(data[i] === "写"){
-			    			moreAttrHtml += "<option value='"+data[i]+"' selected>"+data[i]+"</option>";
-			    		}else {
-			    			moreAttrHtml += "<option value='"+data[i]+"'>"+data[i]+"</option>";	
-			    		}
+            moreAttrHtml += "</select>";            		    	   
+	        moreAttrHtml += "<select class='node-ops-type'>";					    				    
+			for(var i=0; i<nodePosType.length; i++) {
+			    if(nodePosType[i] === "写"){
+			    	moreAttrHtml += "<option value='"+nodePosType[i]+"' selected>"+nodePosType[i]+"</option>";
+			    }else {
+			    	moreAttrHtml += "<option value='"+nodePosType[i]+"'>"+nodePosType[i]+"</option>";	
+			    }
 			    		          
-		            };
-		            moreAttrHtml += "</select>";
-		            moreAttrHtml += "<div class='btn-wrap'>" +
-		            "<i class='icon icon-save'></i>" +
-		            "<i class='icon icon-add-sm group'></i>" +
-		            "<i class='icon icon-trash-sm'></i>" +
-		            "<i class='icon icon-arrow-sm'></i>" +
-		            "</div>" +
-		            "</div>" +
-		            "</div>" +
-		            "<ul class='more-attr-drag-wrap drag-wrap collapse-content collapse-content-active' id='drag-"+dragWrapLen+"'>" +
-		            "</ul>" +
-		            "</li>"
-		            var $html = $(moreAttrHtml).prependTo($content);
-		            $html.find("select").css({"width":"15%","marginLeft":"16px"}).select2();
-		            drag($(".drag-wrap").length);
-		            addUnfold(el);
-		            $CPF.closeLoading();
-			    })
-			    
-		    })
+		    };
+		    moreAttrHtml += "</select>";
+		    moreAttrHtml += "<div class='btn-wrap'>" +
+		    "<i class='icon icon-save'></i>" +
+		    "<i class='icon icon-add-sm group'></i>" +
+		    "<i class='icon icon-trash-sm'></i>" +
+		    "<i class='icon icon-arrow-sm'></i>" +
+		    "</div>" +
+		    "</div>" +
+		    "</div>" +
+		    "<ul class='more-attr-drag-wrap drag-wrap collapse-content collapse-content-active' id='drag-"+dragWrapLen+"'>" +
+		    "</ul>" +
+		    "</li>"
+		    var $html = $(moreAttrHtml).prependTo($content);
+		    $html.find("select").css({"width":"15%","marginLeft":"16px"}).select2();
+		    drag($(".drag-wrap").length);
+		    addUnfold(el);
+		    $CPF.closeLoading();			    			    
 	    });                                       
     };
 
@@ -714,8 +728,18 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
             for(var i=0; i<data.length; i++) {
             	relativeHtml += "<option data-id='"+data[i].code+"' value='"+data[i].cnName+"'>"+data[i].cnName+"</option>";                
             }
-            relativeHtml += "</select>" +
-            "<div class='btn-wrap'>" +
+            relativeHtml += "</select>";
+            relativeHtml += "<select class='node-ops-type'>";						    			    	
+		    for(var i=0; i<nodePosType.length; i++) {
+		    	if(nodePosType[i] === "写") {
+		    		relativeHtml += "<option value='"+nodePosType[i]+"' selected>"+nodePosType[i]+"</option>";  	
+		    	}else {
+		    		relativeHtml += "<option value='"+nodePosType[i]+"'>"+nodePosType[i]+"</option>"; 
+		    	}
+	            	         
+	         };
+	        relativeHtml += "</select>";
+	        relativeHtml += "<div class='btn-wrap'>" +
             "<i class='icon icon-save'></i>" +   
             "<i class='icon icon-trash-sm'></i>" +
             "<i class='icon icon-arrow-sm'></i>" +
@@ -799,7 +823,26 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
     	}
     	var type = 3;
     	var dataType = "STRING";
-    	var opt = 2;
+    	var opt = $tagBar.children(".node-ops-type").find("option:selected").val();
+    	switch (opt) {
+        	case "读":
+        		opt = 1;
+        		break;
+        	case "写":
+        		opt = 2;
+        		break;
+        	case "补":
+        		opt = 3;
+        		break;
+        	case "增":
+        		opt = 4;
+        		break;
+        	case "并":
+        		opt = 5;
+        		break;
+        	default:
+        		break;
+    	}
     	var name = $tagBar.children(".edit-input").val();    	
     	var order = $tagBar.attr("data-order");
     	var id = $tagBar.attr("data-id");
@@ -905,7 +948,26 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
     	var type = 6;    	
     	var name = $attrGroupBar.children(".edit-input").val();    	
     	var order = $attrGroupBar.closest(".collapse-header").attr("data-order");
-    	var opt = 2;
+    	var opt = $attrGroupBar.children(".node-ops-type").find("option:selected").val();
+    	switch (opt) {
+        	case "读":
+        		opt = 1;
+        		break;
+        	case "写":
+        		opt = 2;
+        		break;
+        	case "补":
+        		opt = 3;
+        		break;
+        	case "增":
+        		opt = 4;
+        		break;
+        	case "并":
+        		opt = 5;
+        		break;
+        	default:
+        		break;
+    	}
     	var id = $attrGroupBar.closest(".collapse-header").attr("data-id");
     	var parentId = $attrGroupBar.closest(".collapse-content").prev(".collapse-header")
     						.attr("data-id"); 
@@ -1004,7 +1066,26 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
     	var $relativeBar = $(el).closest(".label-bar");
     	var type = 5;
     	var dataType = "STRING";
-    	var opt = 2;
+    	var opt = $relativeBar.children(".node-ops-type").find("option:selected").val();
+    	switch (opt) {
+        	case "读":
+        		opt = 1;
+        		break;
+        	case "写":
+        		opt = 2;
+        		break;
+        	case "补":
+        		opt = 3;
+        		break;
+        	case "增":
+        		opt = 4;
+        		break;
+        	case "并":
+        		opt = 5;
+        		break;
+        	default:
+        		break;
+    	}
     	var name = $relativeBar.children(".edit-input").val();  
     	var abcattr = $relativeBar.children(".abc-attr").find("option:selected").val();
     	var abcattrCode = $relativeBar.children(".abc-attr").find("option:selected").attr("data-id");
@@ -1055,8 +1136,18 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 	            "<ul class='clear-fix'>" +
 	            "</ul>" +
 	            "</div>" +
-	            "<span class='icon icon-toright ban'></span>" +
-	            "<div class='btn-wrap'>" +
+	            "<span class='icon icon-toright ban'></span>";
+	            html += "<select class='node-ops-type'>";						    			    	
+			    for(var i=0; i<nodePosType.length; i++) {
+			    	if(nodePosType[i] === "写") {
+			    		html += "<option value='"+nodePosType[i]+"' selected>"+nodePosType[i]+"</option>";  	
+			    	}else {
+			    		html += "<option value='"+nodePosType[i]+"'>"+nodePosType[i]+"</option>"; 
+			    	}
+		            	         
+		         };
+		         html += "</select>";
+		         html += "<div class='btn-wrap'>" +
 	            "<i class='icon tag icon-save'></i>" +
 	            "<i class='icon tag icon-add-tag-relative'></i>" +
 	            "<i class='icon-simulate-trashsm'></i>" +
@@ -1070,8 +1161,18 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 	            "</div>" +
 	            "<div class='label-bar abc edit'>" +
 	            "<input class='edit-input text' value='"+abcattr+"'>"+
-	            "<span class='entity-only-title' data-abcattr-code='"+abcattrCode+"' data-abcattr='"+abcattr+"'>"+abcattr+"</span>"+
-	            "<div class='btn-wrap'>" +
+	            "<span class='entity-only-title' data-abcattr-code='"+abcattrCode+"' data-abcattr='"+abcattr+"'>"+abcattr+"</span>"
+	            html += "<select class='node-ops-type'>";						    			    	
+			    for(var i=0; i<nodePosType.length; i++) {
+			    	if(nodePosType[i] === "写") {
+			    		html += "<option value='"+nodePosType[i]+"' selected>"+nodePosType[i]+"</option>";  	
+			    	}else {
+			    		html += "<option value='"+nodePosType[i]+"'>"+nodePosType[i]+"</option>"; 
+			    	}
+		            	         
+		         };
+		         html += "</select>";
+	             html += "<div class='btn-wrap'>" +
 	            "<i class='icon icon-save'></i>" +
 	            "<i class='icon icon-add-abc group'></i>" +	            
 	            "<i class='icon icon-arrow-sm'></i>" +
@@ -1084,7 +1185,8 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 	          var $content = $relativeBar.parent(".collapse-header").next(".collapse-content");						 
 			  if($content.children().length == 0){
 				  var $html = $(html).appendTo($content);
-		          $html.find("select").css({"width":"15%","marginLeft":"16px"}).select2();
+		          $($html.find("select")[0]).css({"width":"7%","marginLeft":"2px"}).select2();
+		          $($html.find("select")[1]).css({"width":"15%","marginLeft":"60px"}).select2();
 			  }	   
 			  saveSuccess(el);
 			  drag($(".drag-wrap").length);
@@ -1098,7 +1200,26 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
     	var $abcBar = $(el).closest(".label-bar");
     	var type = 1;
     	var dataType = "STRING";
-    	var opt = 2;
+    	var opt = $abcBar.children(".node-ops-type").find("option:selected").val();
+    	switch (opt) {
+        	case "读":
+        		opt = 1;
+        		break;
+        	case "写":
+        		opt = 2;
+        		break;
+        	case "补":
+        		opt = 3;
+        		break;
+        	case "增":
+        		opt = 4;
+        		break;
+        	case "并":
+        		opt = 5;
+        		break;
+        	default:
+        		break;
+    	}
     	var name = $abcBar.children(".edit-input").val();    	
     	var order = $abcBar.closest(".collapse-header").attr("data-order");
     	var id = $abcBar.closest(".collapse-header").attr("data-id");
@@ -1363,12 +1484,12 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
         if ($(this).hasClass("add-tag")) {
             addTag(el);
         } else if ($(this).hasClass("add-attr")) {
-        	if($(el).closest(".label-bar").hasClass("more-attr")){
+        	if($(el).closest(".label-bar").hasClass("more-attr")){        		
         		addAttrM(el);
         	}else {
         		addAttr(el);
         	}    
-        } else if ($(this).hasClass("add-attr-group")) {
+        } else if ($(this).hasClass("add-attr-group")) {        	
             addGroup(el);
         } else if ($(this).hasClass("add-more-attr")) {
             addMoreAttr(el);
@@ -1572,15 +1693,13 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 	        	var currentId = "";
 	        	var beforeId = "";
 	        	var afterId = "";	  	        		        
-	        	if(before.length == 0) {	
-	        		console.log(before)
+	        	if(before.length == 0) {		        		
 	        		beforeId = "";
 	        	}else if(before.hasClass("attr-group") || before.hasClass("more-attr") || before.hasClass("attr-relative") ||  before.hasClass("entity-ch-wrap")){	        			        		
 	        		console.log(before);
 	        		beforeId = before.children(".collapse-header").attr("data-id");
 	        	}else {	        		
-	        		beforeId = before.children(".label-bar").attr("data-id");
-	        		console.log(before);
+	        		beforeId = before.children(".label-bar").attr("data-id");	        		
 	        	}
 	        	
 	        	if(after.length == 0) {	        		
