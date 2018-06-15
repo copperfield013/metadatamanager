@@ -108,11 +108,11 @@ public class BasicItemNodeServiceImpl implements BasicItemNodeService {
 				current.setOrder(100);
 		} else if (beforeId.isEmpty()&& !afterId.isEmpty()) {//没有前驱， 但是有后继
 			BasicItemNode afterNode = basicItemNodeDao.get(BasicItemNode.class, Integer.parseInt(afterId));
-			Integer order = (afterNode.getOrder() + 1) / 2;
+			Integer order = afterNode.getOrder() +100;
 			current.setOrder(order);
 		}else if (!beforeId.isEmpty() && afterId.isEmpty()) {//没有后继，但是有前驱
 			BasicItemNode beforeNode = basicItemNodeDao.get(BasicItemNode.class, Integer.parseInt(beforeId));
-			Integer order = beforeNode.getOrder() + 200;
+			Integer order = beforeNode.getOrder()/2;
 			current.setOrder(order);
 		} else if (!beforeId.isEmpty() && !afterId.isEmpty()) {
 			BasicItemNode beforeNode = basicItemNodeDao.get(BasicItemNode.class, Integer.parseInt(beforeId));
