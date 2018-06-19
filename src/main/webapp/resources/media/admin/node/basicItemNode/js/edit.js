@@ -2323,6 +2323,27 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
     	getEntity(this);
     }) 
     
+    //修改名称
+    $("#operateEdit").on("change", "select.abc-attr", function(){
+    	var _value = $(this).find("option:selected").val()
+    	var $input = $(this).siblings(".edit-input")
+    	var _options = $(this).find("option");
+    	var isOption = false;
+    	var isDefault = false;    	
+    	if($input.val() == "属性名" || $input.val() == "多值属性名称"){
+    		isDefault = true;
+    	}
+    	for(var i=0; i<_options.length; i++) {    		    	    		    
+    		if($(_options[i]).attr("value") == $input.val()){
+    			isOption = true;
+    			break;
+    		}
+    	}
+    	if(isOption || isDefault) {
+    		$input.val(_value);
+    	}    	    	    	
+    })
+    
     
     
 })

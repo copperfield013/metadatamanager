@@ -1702,6 +1702,13 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
     	getEntity(this);
     })
     
+    //修改名称
+    $("#operate").on("change", "select.abc-attr", function(){    	
+    	var _value = $(this).find("option:selected").val()
+    	var $input = $(this).siblings(".edit-input")    	
+    	$input.val(_value);
+    })
+    
     
     //拖拽排序方法
     function drag(length) {
