@@ -72,8 +72,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 					 addRelativeChildren(bar);					
 				 }else if(data.length === 1 && isRelative === true) {
 					 addRelativeOneC(bar);					
-				 }
-//				 $("select", $page).css({"width":"15%","marginLeft":"16px"}).select2();
+				 }				 
 			 }				 
 			 $CPF.closeLoading();
 	    }, {async: false});	 
@@ -235,7 +234,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 	};
     
 	function addEntityOPT() {
-		var $select = $("#operateEdit .entity-edit-wrap").find(".node-ops-type");	
+		var $select = $("#operateEdit .entity-title").find(".node-ops-type");	
 		var selectedVal = $select.attr("data-val");
 		var html = "";						    			    	
 	    for(var i=0; i<nodePosType.length; i++) {
@@ -357,6 +356,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 	    var $html = $(abcHtml).appendTo($(parent));	    
 	    $html.find("select").css({"width":"15%","marginLeft":"60px"}).select2();
     }
+    
     //普通属性初始化方法
     function initAttr(abcattr,dataType,id,name,opt,order,parent) {    	
     	var entityId = $(".entity_attr.active", $page).attr("data-code");        
@@ -1064,8 +1064,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
      * 添加标签方法
      * @param {当前点击元素对应的加号} el
       */
-    function addTag(el) {
-    	console.log("t1");
+    function addTag(el) {    	
         var $content = $(el).closest(".collapse-header").siblings(".collapse-content");
         var tagHtml = "<li class='add-tag clear-fix'>" +
             "<div class='icon-label tag'>" +
@@ -1827,15 +1826,13 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 				 if($content.hasClass("collapse-content-inactive")){				  
 					  $relativeBar.find(".icon-arrow-sm").trigger("click");					  
 					  if($content.children().length == 0) {						  
-						  var $html = $(html).appendTo($content);
-						  console.log($($html.find("select")[0]));
+						  var $html = $(html).appendTo($content);						  
 						  $($html.find("select")[0]).css({"width":"7%","marginLeft":"2px"}).select2();
 				          $($html.find("select")[1]).css({"width":"15%","marginLeft":"60px"}).select2();
 					  }
 				  }
 			 }else {				 
-				 var $html = $(html).appendTo($content);
-				 console.log($($html.find("select")[0]));
+				 var $html = $(html).appendTo($content);				 
 				 $($html.find("select")[0]).css({"width":"7%","marginLeft":"2px"}).select2();
 		         $($html.find("select")[1]).css({"width":"15%","marginLeft":"60px"}).select2();
 			 }			 	         
