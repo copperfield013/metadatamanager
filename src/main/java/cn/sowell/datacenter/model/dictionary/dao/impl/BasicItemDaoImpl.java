@@ -1,5 +1,6 @@
 package cn.sowell.datacenter.model.dictionary.dao.impl;
 
+import java.io.Serializable;
 import java.math.BigInteger;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -21,6 +22,7 @@ import cn.sowell.copframe.utils.TextUtils;
 import cn.sowell.datacenter.model.dictionary.criteria.BasicItemCriteria;
 import cn.sowell.datacenter.model.dictionary.dao.BasicItemDao;
 import cn.sowell.datacenter.model.dictionary.pojo.BasicItem;
+import cn.sowell.datacenter.model.node.pojo.BasicItemNodeGenerator;
 
 @Repository
 public class BasicItemDaoImpl implements BasicItemDao {
@@ -114,36 +116,19 @@ public class BasicItemDaoImpl implements BasicItemDao {
 	
 	//实体code  生成规则
 	public String getEntityCode() {
-		String sql = "SELECT SUBSTR(c_code, 5) aa from t_c_basic_item WHERE c_data_type='记录类型' AND c_code like 'IBT%' AND c_code not like '%_ED' AND c_code not like '%_P' ORDER BY  CAST(aa as SIGNED ) DESC";
-		List list = sFactory.getCurrentSession().createSQLQuery(sql).list();
-
-		if (list.isEmpty()) {
-			return "IBTE001";
-		}
+		BasicItemNodeGenerator btNg = new BasicItemNodeGenerator();
+		sFactory.getCurrentSession().save(btNg);
 		
-		String entityCode = (String) list.get(0);
-		int code = Integer.parseInt(entityCode) + 1;
-		String entityHead = "IBTE";
-        String format = String.format("%03d", code);  
-		
-		return entityHead+format;
+		 String format = String.format("%03d", btNg.getId()); 
+		return "IBTE"+format;
 	}
 	
 	//其他code， 生成规则
 	public String getAttrCode() {
-		String sql = "SELECT SUBSTR(c_code, 4) aa from t_c_basic_item WHERE c_data_type!='记录类型' AND c_code like 'IBT%' AND c_code not like '%_ED' AND c_code not like '%_P' ORDER BY  CAST(aa as SIGNED ) DESC";
-		
-		List list = sFactory.getCurrentSession().createSQLQuery(sql).list();
-
-		if (list.isEmpty()) {
-			return "IBT0001";
-		}
-		
-		String entityCode = (String) list.get(0);
-		int code = Integer.parseInt(entityCode) + 1;
-		String entityHead = "IBT";
-        String format = String.format("%04d", code);  
-		return entityHead+format;
+		BasicItemNodeGenerator btNg = new BasicItemNodeGenerator();
+		sFactory.getCurrentSession().save(btNg);
+		String format = String.format("%03d", btNg.getId()); 
+		return "IBT" + format;
 	}
 	
 	@Override
