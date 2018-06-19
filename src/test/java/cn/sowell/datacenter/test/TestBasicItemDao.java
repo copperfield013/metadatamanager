@@ -1,6 +1,5 @@
 package cn.sowell.datacenter.test;
 
-import java.util.List;
 
 import javax.annotation.Resource;
 
@@ -42,8 +41,8 @@ public class TestBasicItemDao {
 	@Resource
 	RecordRelationTypeService recordRelationTypeService;
 	
-	/*@Resource
-	ModuleConfigureMediator dBModuleConfigMediator;*/
+	@Resource
+	ModuleConfigureMediator moduleConfigMediator;
 	@Test
 	public void fun()  {
 			/*String currentId = "1114";
@@ -55,8 +54,10 @@ public class TestBasicItemDao {
 		System.out.println();
 		/*ABCNode abcNode = MappingContainer.getABCNode("人口信息");*/
 		
+		basicItemService.createTabCol();
+		
 		System.out.println();
-		basicItemNodeService.excuExtend("1423");
+		/*basicItemNodeService.excuExtend("1423");*/
 		
 		
 	}

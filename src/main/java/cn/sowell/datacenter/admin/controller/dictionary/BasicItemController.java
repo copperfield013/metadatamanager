@@ -153,6 +153,7 @@ public class BasicItemController {
 					comm = "comm";
 				}
 			}
+			basicItem.setDictParentId(0);
 			basicItem.setUsingState(0);
 			
 			String flag = "";

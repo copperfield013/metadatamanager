@@ -87,4 +87,11 @@ public interface BasicItemNodeService {
 	 * @return
 	 */
 	public String refresh(String name);
+	
+	/**
+	 * 根据abc的名称 获取abc对象
+	 * @param name
+	 * @return
+	 */
+	BasicItemNode getAbc(String name);
 }

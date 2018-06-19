@@ -230,4 +230,9 @@ public class BasicItemNodeServiceImpl implements BasicItemNodeService {
 			return "error";
 		}
 	}
+
+	@Override
+	public BasicItemNode getAbc(String name) {
+		return basicItemNodeDao.getAbc(name);
+	}
 }

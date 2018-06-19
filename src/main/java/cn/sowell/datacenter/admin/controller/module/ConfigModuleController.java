@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.alibaba.fastjson.JSONObject;
 
 import cn.sowell.copframe.dto.ajax.AjaxPageResponse;
+import cn.sowell.copframe.dto.page.PageInfo;
 import cn.sowell.datacenter.admin.controller.AdminConstants;
 import cn.sowell.datacenter.entityResolver.config.ModuleConfigureMediator;
 import cn.sowell.datacenter.entityResolver.config.abst.Module;
@@ -41,11 +42,12 @@ public class ConfigModuleController {
 	SessionFactory sFactory;
 	
 	@RequestMapping("/list")
-	public String list(QueryModuleCriteria criteria, Model model){
+	public String list(QueryModuleCriteria criteria, Model model, PageInfo pageInfo){
 		
 		List<Module> list = dBModuleConfigMediator.queryModules(criteria);
 		model.addAttribute("list", list);
 		model.addAttribute("criteria", criteria);
+		model.addAttribute("pageInfo", pageInfo);
 		return AdminConstants.JSP_MODULE + "/configModule/list.jsp";
 	}
 	
@@ -121,6 +123,28 @@ public class ConfigModuleController {
 			return AjaxPageResponse.REFRESH_LOCAL("刷新成功");
 		} catch (Exception e) {
 			return AjaxPageResponse.FAILD("刷新失败");
+		}
+	}
+	
+	@RequestMapping("/edit")
+	public String edit(String name, Model model){
+		Module module = dBModuleConfigMediator.getModule(name);
+		
+		BasicItemNode abc = basicItemNodeService.getAbc(module.getMappingName());
+		List<BasicItemNode> childNodeList = basicItemNodeService.getAttribute(String.valueOf(abc.getId()));
+		model.addAttribute("module", module);
+		model.addAttribute("childNodeList", childNodeList);
+		return AdminConstants.JSP_MODULE + "/configModule/edit.jsp";
+	}
+	
+	@ResponseBody
+	@RequestMapping("/do_edit")
+	public AjaxPageResponse do_edit(String moduleName, String moduleTitle, String mappingName, String codeName, String titleName){
+		try {
+			dBModuleConfigMediator.updateModulePropertyName(moduleName, codeName, titleName);
+			return AjaxPageResponse.CLOSE_AND_REFRESH_PAGE("修改成功", "configModule_list");
+		} catch (Exception e) {
+			return AjaxPageResponse.FAILD("添加失败");
 		}
 	}
 	

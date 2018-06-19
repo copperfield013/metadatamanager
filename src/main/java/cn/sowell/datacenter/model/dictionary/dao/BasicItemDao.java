@@ -141,4 +141,5 @@ public interface BasicItemDao {
 	 * @return
 	 */
 	public List getComm(String entityId);
+	
 }

@@ -31,6 +31,7 @@
 						<td>${item.mappingName }</td>
 						<td>
 						
+							<a class="tab" href="admin/module/configModule/edit?name=${item.name }" title="编辑" target="configModule_edit" >编辑</a>
 							<c:if test="${item.disabled eq false}">
 							<a href="admin/module/configModule/disabled?name=${item.name }&endisabled=true" confirm="确认禁用？">禁用</a>
 							</c:if>
@@ -44,7 +45,7 @@
 				</c:forEach>
 			</tbody>
 		</table>
-		<%-- <div class="cpf-paginator" pageNo="${pageInfo.pageNo }" pageSize="${pageInfo.pageSize }" count="${pageInfo.count }"></div> --%>
+		 <div class="cpf-paginator" pageNo="${pageInfo.pageNo }" pageSize="${pageInfo.pageSize }" count="${pageInfo.count }"></div>
 	</div>
 </div>
 <script>

@@ -170,7 +170,12 @@ public class BasicItemNodeDaoImpl implements BasicItemNodeDao {
 				+ "     COUNT(*) ct     FROM     t_c_basic_item_node b      WHERE   b.parent_id=:parentId) a)    ) t2   "
 				+ "WHERE     b.parent_id=:parentId   ORDER BY b.c_order DESC";
 	
-		System.out.println();
 		return sFactory.getCurrentSession().createSQLQuery(sql).setParameter("parentId", parentId).list();
+	}
+
+	@Override
+	public BasicItemNode getAbc(String name) {
+		String sql = "SELECT * FROM t_c_basic_item_node WHERE name=:name AND type=1";
+		return (BasicItemNode) sFactory.getCurrentSession().createSQLQuery(sql).addEntity(BasicItemNode.class).setParameter("name", name).uniqueResult();
 	}
 }
