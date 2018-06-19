@@ -70,9 +70,14 @@
 	seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF){
 		var $page = $('#module_add');
 		
-		$(".page-body", $page).on("click", ".ser-list", function (e) {
+	/* 	$(".page-body", $page).on("click", ".ser-list", function (e) {
 			 $(".ser-list", $page).css({"width":"30%"}).select2();
-	    }); 
+	    });  */
+	    
+	    $(function(){
+	    	 $(".ser-list", $page).css({"width":"30%"}).select2();
+	    })
+	    
 	    
 	    $(".page-body", $page).on("change", "#mappingName", function() {
 	    	var $this = $(this);
