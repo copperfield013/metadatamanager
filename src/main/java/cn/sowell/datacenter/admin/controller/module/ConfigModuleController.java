@@ -29,7 +29,7 @@ import cn.sowell.datacenter.model.node.service.BasicItemNodeService;
 
 @Controller
 @RequestMapping(AdminConstants.URI_MODULE + "/configModule")
-public class configModuleController {
+public class ConfigModuleController {
     
 	@Resource
 	ModuleConfigureMediator dBModuleConfigMediator;
