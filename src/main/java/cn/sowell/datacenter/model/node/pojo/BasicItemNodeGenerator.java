@@ -9,9 +9,16 @@ import javax.persistence.Table;
 
 import io.swagger.annotations.ApiModelProperty;
 
+/**
+ * BasicItem 实体和属性规则生成
+ * @author so-well
+ *
+ */
 @Entity
 @Table(name = "t_c_basic_item_code_generator")
 public class BasicItemNodeGenerator {
+	public static final String IBTE = "IBTE";
+	public static final String IBT = "IBT";
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

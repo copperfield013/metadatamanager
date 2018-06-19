@@ -119,8 +119,8 @@ public class BasicItemDaoImpl implements BasicItemDao {
 		BasicItemNodeGenerator btNg = new BasicItemNodeGenerator();
 		sFactory.getCurrentSession().save(btNg);
 		
-		 String format = String.format("%03d", btNg.getId()); 
-		return "IBTE"+format;
+		String format = String.format("%03d", btNg.getId()); 
+		return BasicItemNodeGenerator.IBTE+format;
 	}
 	
 	//其他code， 生成规则
@@ -128,7 +128,7 @@ public class BasicItemDaoImpl implements BasicItemDao {
 		BasicItemNodeGenerator btNg = new BasicItemNodeGenerator();
 		sFactory.getCurrentSession().save(btNg);
 		String format = String.format("%03d", btNg.getId()); 
-		return "IBT" + format;
+		return BasicItemNodeGenerator.IBT + format;
 	}
 	
 	@Override
