@@ -853,7 +853,22 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
         for (var i = 0; i < $tag.length; i++) {
             hasArray.push($($tag[i]).children("span").text());
         };     
-        var leftRecordType = $(".entity_attr.active").attr("data-code");        
+        if($(el).closest(".label-bar.tag")
+				.closest(".collapse-content")
+				.prev(".collapse-header")
+				.closest(".collapse-content")
+				.prev(".collapse-header")
+				.hasClass("entity-title")){
+        	var leftRecordType = $(".entity_attr.active").attr("data-code");
+        }else {
+        	var leftRecordType = $(el).closest(".label-bar.tag")
+									.closest(".collapse-content")
+									.prev(".collapse-header")
+									.closest(".collapse-content")
+									.prev(".collapse-header")
+									.find(".entity-only-title")
+									.attr("data-abcattr-code");
+        }
         var rightRecordType = $(el).closest(".label-bar.tag")
         						.closest(".collapse-content")
         						.prev(".collapse-header")
