@@ -115,7 +115,7 @@ public class BasicItemNodeDaoImpl implements BasicItemNodeDao {
 
 	@Override
 	public List<String> getNameByPid(BasicItemNode basicItemNode) {
-		if (NodeType.ABC.equals(NodeType.getNodeType(basicItemNode.getType()))) {//是一个实体
+		if (NodeType.ABC.equals(NodeType.getNodeType(basicItemNode.getType())) && basicItemNode.getParentId() == null) {//是一个实体
 			String sql = "SELECT name from t_c_basic_item_node	WHERE parent_id is null AND type=1";
 			return sFactory.getCurrentSession().createSQLQuery(sql).list();
 		}else {

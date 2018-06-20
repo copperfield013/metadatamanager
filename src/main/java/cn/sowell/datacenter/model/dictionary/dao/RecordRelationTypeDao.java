@@ -16,7 +16,7 @@ public interface RecordRelationTypeDao {
 	List<RecordRelationType> queryList(RecordRelationTypeCriteria criteria, PageInfo pageInfo);
 
 	/**
-	 * 根据实体id， 求出实体的右关系
+	 * 根据实体id， 求出实体的关系
 	 * @param recordType
 	 * @return
 	 */

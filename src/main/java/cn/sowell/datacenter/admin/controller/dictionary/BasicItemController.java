@@ -272,9 +272,17 @@ public class BasicItemController {
 		public AjaxPageResponse delete(String id){
 			try {
 				AjaxPageResponse response = new AjaxPageResponse();
-				List<BasicItem> btList = basicItemService.getDataByPId(id);
+				BasicItem bt = basicItemService.getBasicItem(id);
+				List<BasicItem> btList = null;
+				if ("分组类型".equals(bt.getDataType())) {
+					btList = basicItemService.getAttrByPidGroupName(bt.getParent(), bt.getCode());
+				} else if ("重复类型".equals(bt.getDataType())) {
+					btList = basicItemService.getDataByPId(bt.getParent() + "_" + bt.getCode());
+				} else {
+					btList = basicItemService.getDataByPId(id);
+				}
+				 
 				if (!btList.isEmpty()) {
-					
 					response.setNotice("请先删除孩子");
 					response.setNoticeType(NoticeType.INFO);
 					return response;

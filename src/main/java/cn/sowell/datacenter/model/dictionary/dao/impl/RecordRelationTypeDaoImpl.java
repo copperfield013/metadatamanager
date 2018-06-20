@@ -19,6 +19,7 @@ import cn.sowell.copframe.utils.TextUtils;
 import cn.sowell.datacenter.model.dictionary.criteria.RecordRelationTypeCriteria;
 import cn.sowell.datacenter.model.dictionary.dao.RecordRelationTypeDao;
 import cn.sowell.datacenter.model.dictionary.pojo.RecordRelationType;
+import cn.sowell.datacenter.model.node.pojo.BasicItemNodeGenerator;
 
 @Repository
 public class RecordRelationTypeDaoImpl implements RecordRelationTypeDao {
@@ -68,31 +69,24 @@ public class RecordRelationTypeDaoImpl implements RecordRelationTypeDao {
 
 	@Override
 	public List<RecordRelationType> getEntityRelaByBitemId(String recordType) {
-		String hql = "FROM RecordRelationType where rightRecordType =:rightRecordType";
-		List list = sFactory.getCurrentSession().createQuery(hql).setParameter("rightRecordType", recordType).list();
+		String hql = "FROM RecordRelationType where leftRecordType =:leftRecordType";
+		List list = sFactory.getCurrentSession().createQuery(hql).setParameter("leftRecordType", recordType).list();
 		return list;
 	}
 	
 	@Override
 	public List<RecordRelationType> getEntityRelaByBitemId(String leftRecordType, String rightRecordType) {
-		String hql = "FROM RecordRelationType where rightRecordType =:leftRecordType AND leftRecordType=:rightRecordType";
+		String hql = "FROM RecordRelationType where rightRecordType =:rightRecordType AND leftRecordType=:leftRecordType";
 		List list = sFactory.getCurrentSession().createQuery(hql).setParameter("leftRecordType", leftRecordType).setParameter("rightRecordType", rightRecordType).list();
 		return list;
 	}
 
 	@Override
 	public String getRecordRelaCode(String entityCode) {
-		String sql = "SELECT SUBSTR(type_code, locate('R',type_code)+1) aa from t_c_record_relation_type WHERE type_code like '%R%' AND left_record_type=? ORDER BY  CAST(aa as SIGNED ) DESC";
-		List list = sFactory.getCurrentSession().createSQLQuery(sql).setParameter(0, entityCode).list();
-		if (list.isEmpty()) {
-			return entityCode+ "R001";
-		}
-		
-		String relaCode = (String) list.get(0);
-		int code = Integer.parseInt(relaCode) + 1;
-        String format = String.format("%03d", code);  
-		
-		return entityCode+"R"+format;
+		BasicItemNodeGenerator btNg = new BasicItemNodeGenerator();
+		sFactory.getCurrentSession().save(btNg);
+		String format = String.format("%03d", btNg.getId()); 
+		return entityCode+ "R"+format;
 	}
 
 }
