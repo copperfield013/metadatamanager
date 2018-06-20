@@ -113,24 +113,31 @@ public class BasicItemController {
 			
 			if ("char".equals(dType)) {
 				dataType = "字符型";
+				basicItem.setDictParentId(0);
 			} else if ("digital".equals(dType)) {
 				dataType = "数字型";
+				basicItem.setDictParentId(0);
 			}else if ("digitalDecimal".equals(dType)) {
 				dataType = "数字型小数";
+				basicItem.setDictParentId(0);
 			}else if ("date".equals(dType)) {
 				dataType = "日期型";
+				basicItem.setDictParentId(0);
 			}else if ("dateTime".equals(dType)) {
 				dataType = "时间型";
+				basicItem.setDictParentId(0);
 			}else if ("record".equals(dType)) {
 				dataType = "记录类型";
 			}else if ("repeat".equals(dType)) {
 				dataType = "重复类型";
+				basicItem.setDictParentId(0);
 			}else if ("group".equals(dType)) {
 				dataType = "分组类型";
 			} else if ("枚举".equals(dType)) {
 				dataType = "字符型";
 			} else if ("文件型".equals(dType)) {
 				dataType = "二进制型";
+				basicItem.setDictParentId(0);
 			}
 			basicItem.setDataType(dataType);
 			//记录类型
@@ -139,7 +146,7 @@ public class BasicItemController {
 			} else if ("分组类型".equals(basicItem.getDataType())) {
 				basicItem.setDictParentId(0);
 			} else if ("重复类型".equals(basicItem.getDataType())) {
-				basicItem.setDictParentId(0);
+				
 			} else {
 				// 到这儿来是普通属性  和多值属性下的普通属性
 				//它们的区别是父亲不同， 所以先求父亲    默认前端传来的都是父亲的code， 
@@ -153,7 +160,6 @@ public class BasicItemController {
 					comm = "comm";
 				}
 			}
-			basicItem.setDictParentId(0);
 			basicItem.setUsingState(0);
 			
 			String flag = "";
@@ -320,7 +326,7 @@ public class BasicItemController {
 	@ResponseBody
 	@RequestMapping("/saveTwoLevelAttr")
 	public void saveTwoLevelAttr(TowlevelattrMultiattrMapping tmm){
-			tmm.setUsingState(0);
+			tmm.setUsingState(1);
 			tmms.saveOrUpdate(tmm);
 	}
 	
@@ -329,7 +335,7 @@ public class BasicItemController {
 	@ResponseBody
 	@RequestMapping("/saveTwoLevelAttrChild")
 	public void saveTwoLevelAttrChild(Towlevelattr criteria){
-		criteria.setUsingState(0);
+		criteria.setUsingState(1);
 		basicItemService.createTowLevel(criteria);
 	}
 	

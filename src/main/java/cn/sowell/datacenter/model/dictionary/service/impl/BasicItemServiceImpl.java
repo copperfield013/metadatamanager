@@ -364,6 +364,7 @@ public class BasicItemServiceImpl implements BasicItemService {
 				childOne.setTableName(obj.getTableName());
 				childOne.setParent(obj.getParent()+ "_" + obj.getCode());
 				childOne.setUsingState(0);
+				childOne.setDictParentId(0);
 				childOne.setGroupName(obj.getCode());
 			BasicItem childTwo = new BasicItem();//多值属性唯一编码
 				childTwo.setCode(obj.getCode() + "_P");
@@ -374,6 +375,7 @@ public class BasicItemServiceImpl implements BasicItemService {
 				childTwo.setParent(obj.getParent()+ "_" + obj.getCode());
 				childTwo.setUsingState(0);
 				childTwo.setGroupName(obj.getCode());
+				childTwo.setDictParentId(0);
 			basicItemDao.insert(childOne);
 			basicItemDao.insert(childTwo);
 		}
