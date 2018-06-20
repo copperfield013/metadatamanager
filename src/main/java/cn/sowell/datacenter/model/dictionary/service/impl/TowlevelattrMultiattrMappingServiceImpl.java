@@ -82,4 +82,10 @@ public class TowlevelattrMultiattrMappingServiceImpl implements TowlevelattrMult
 		}
 	}
 
+	@Override
+	public List<Towlevelattr> getListByMappingId(String id) {
+		List<Towlevelattr> listByMappingId = towlevelattrService.getListByMappingId(id);
+		return listByMappingId;
+	}
+
 }

@@ -4,6 +4,7 @@ import java.util.List;
 
 import cn.sowell.copframe.dto.page.PageInfo;
 import cn.sowell.datacenter.model.dictionary.criteria.TowlevelattrMultiattrMappingCriteria;
+import cn.sowell.datacenter.model.dictionary.pojo.Towlevelattr;
 import cn.sowell.datacenter.model.dictionary.pojo.TowlevelattrMultiattrMapping;
 
 public interface TowlevelattrMultiattrMappingService {
@@ -42,4 +43,11 @@ public interface TowlevelattrMultiattrMappingService {
 	TowlevelattrMultiattrMapping getOneByRelaMulAttr(String relatedMultiattribute);
 
 	void saveOrUpdate(TowlevelattrMultiattrMapping criteria);
+	
+	/**
+	 * 获取二级属性的孩子
+	 * @param id
+	 * @return
+	 */
+	List<Towlevelattr> getListByMappingId(String id);
 }

@@ -426,8 +426,15 @@ public class BasicItemController {
 		@RequestMapping(value="/twoattr_delete")
 		public AjaxPageResponse twoattr_delete(Long id){
 			try {
-				tmms.delete(id);
 				AjaxPageResponse response = new AjaxPageResponse();
+				List<Towlevelattr> listByMappingId = tmms.getListByMappingId(String.valueOf(id));
+				
+				if (!listByMappingId.isEmpty()) {
+					response.setNotice("请先删除孩子");
+					response.setNoticeType(NoticeType.INFO);
+					return response;
+				}
+				tmms.delete(id);
 				response.setNotice("删除成功");
 				response.setNoticeType(NoticeType.SUC);
 				return response;

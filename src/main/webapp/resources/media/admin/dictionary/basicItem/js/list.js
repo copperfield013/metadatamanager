@@ -228,6 +228,41 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
 	   });
    });
    
+   //删除二级属性本身
+   $(".more_proper", $page).on("click", "#twoLevelAttr_but_del", function() {
+	   var $form = $(this).closest('.twoLevelAttr_show').find('form');
+       var twoId = $form.find("#id").val();
+       
+       alert(twoId);
+      var entityId = $(".common_proper").attr("parentid");
+       Dialog.confirm("删除可能会引起数据错误， 是否确认删除", function(isYes) {
+            if (isYes) {
+                Ajax.ajax('admin/dictionary/basicItem/twoattr_delete', {
+                   id:twoId
+               }, function(data) {
+                   $(".new_add").remove();        
+                   enityAttr(entityId);
+               });
+            }
+       });
+   });
+   
+ //删除二级属性的孩子
+   $(".more_proper", $page).on("click", ".delete_twoLevelAttr_chil", function() {
+	   var twoId = $(this).attr("twoId");
+      var entityId = $(".common_proper").attr("parentid");
+       Dialog.confirm("删除可能会引起数据错误， 是否确认删除", function(isYes) {
+            if (isYes) {
+                Ajax.ajax('admin/dictionary/basicItem/twoattr_chil_delete', {
+                   id:twoId
+               }, function(data) {
+                   $(".new_add").remove();        
+                   enityAttr(entityId);
+               });
+            }
+       });
+   });
+   
    //删除关系
    $(".entity-list", $page).on("click", ".delete_rela", function() {
 	   var typeCode = $(this).parent().parent().attr("typeCode");
@@ -596,13 +631,13 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
                 var str = "";
                 for (var key in child) {              	                    
                     if(child[key].usingState == '0'){                    	
-                    	str = str + "<div title=\"id:"+child[key].id+", 名称："+child[key].name+"\" twoLevel_chil_Id=" + child[key].id +" class='entity_attr new_add_twolc newadd'>"+child[key].name+"<i class=\"icon status\"></i></div>"
+                    	str = str + "<div title=\"id:"+child[key].id+", 名称："+child[key].name+"\" twoLevel_chil_Id=" + child[key].id +" class='entity_attr new_add_twolc newadd'>"+child[key].name+"<i class=\"icon status\"></i><ul class='entity_ul' entityId='${item.code}' status='${item.usingState}'><li><a href='javascript:void(0)' twoId="+child[key].id+" class='delete_twoLevelAttr_chil'><i class='icon edit-entity'></i>删除属性</a></li></ul></div>"
                     } else if(child[key].usingState == '2'){                    	
-                    	str = str + "<div title=\"id:"+child[key].id+", 名称："+child[key].name+"\" twoLevel_chil_Id=" + child[key].id +" class='entity_attr new_add_twolc stale'>"+child[key].name+"<i class=\"icon status\"></i></div>"
+                    	str = str + "<div title=\"id:"+child[key].id+", 名称："+child[key].name+"\" twoLevel_chil_Id=" + child[key].id +" class='entity_attr new_add_twolc stale'>"+child[key].name+"<i class=\"icon status\"></i><ul class='entity_ul' entityId='${item.code}' status='${item.usingState}'><li><a href='javascript:void(0)' twoId="+child[key].id+"  class='delete_twoLevelAttr_chil'><i class='icon edit-entity'></i>删除属性</a></li></ul></div>"
                     } else if(child[key].usingState == '-1'){                    	
-                    	str = str + "<div title=\"id:"+child[key].id+", 名称："+child[key].name+"\" twoLevel_chil_Id=" + child[key].id +" class='entity_attr new_add_twolc inerror'>"+child[key].name+"<i class=\"icon status\"></i></div>"
+                    	str = str + "<div title=\"id:"+child[key].id+", 名称："+child[key].name+"\" twoLevel_chil_Id=" + child[key].id +" class='entity_attr new_add_twolc inerror'>"+child[key].name+"<i class=\"icon status\"></i><ul class='entity_ul' entityId='${item.code}' status='${item.usingState}'><li><a href='javascript:void(0)' twoId="+child[key].id+"  class='delete_twoLevelAttr_chil'><i class='icon edit-entity'></i>删除属性</a></li></ul></div>"
                     } else if(child[key].usingState == '1'){                    	
-                    	str = str + "<div title=\"id:"+child[key].id+", 名称："+child[key].name+"\" twoLevel_chil_Id=" + child[key].id +" class='entity_attr new_add_twolc inuse'>"+child[key].name+"<i class=\"icon status\"></i></div>"
+                    	str = str + "<div title=\"id:"+child[key].id+", 名称："+child[key].name+"\" twoLevel_chil_Id=" + child[key].id +" class='entity_attr new_add_twolc inuse'>"+child[key].name+"<i class=\"icon status\"></i><ul class='entity_ul' entityId='${item.code}' status='${item.usingState}'><li><a href='javascript:void(0)' twoId="+child[key].id+"  class='delete_twoLevelAttr_chil'><i class='icon edit-entity'></i>删除属性</a></li></ul></div>"
                     }
                 }
                 
@@ -1484,7 +1519,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
                 str = str +"</div>"
                 //end
                 //添加编辑二级属性 div		
-                str = str + "<div class=\"twoLevelAttr_show\"><img class=\"opera_entity_img\" src=\"media/admin/dictionary/basicItem/opera_entity_icon.png\"><span class=\"opera_entity_img\">二级属性</span><form groupName=\"" + moreArr[i].cnName + "\" groupId=\"" + moreArr[i].code + "\" id=\"twoLevelAttr_form1\" class=\"opera_entity_form\"><input type=\"hidden\" id=\"id\" name=\"id\" value=\"\"><div><span class=\"opera_entity_label\">名称<span style=\"color: red;\">*</span></span><input type=\"text\" readonly=\"readonly\" id=\"name\" name=\"name\" value=\"\"></div><div><span class=\"opera_entity_label\">对应多值id<span style=\"color: red;\">*</span></span><input type=\"text\" readonly=\"readonly\" id=\"relatedMultiattribute\" name=\"relatedMultiattribute\" value=\"\"></div><div class=\"select-wrap\"><span class=\"opera_entity_label\">字典枚举<span style=\"color: red;\">*</span></span><select id=\"dictionaryAttr\" name=\"dictionaryAttr\"></select></div><div class=\"select-wrap\"><span class=\"opera_entity_label\">普通属性值<span style=\"color: red;\">*</span></span><select id=\"valueAttr\" name=\"valueAttr\"></select></div></form><div class=\"opera_entity_btn\"><span class=\"entity-btn-cancel\" id=\"twoLevelAttr_but_cancel\">取消</span><span class=\"entity-btn-confirm\" id=\"twoLevelAttr_but_confirm\">确认</span></div></div>";
+                str = str + "<div class=\"twoLevelAttr_show\"><img class=\"opera_entity_img\" src=\"media/admin/dictionary/basicItem/opera_entity_icon.png\"><span class=\"opera_entity_img\">二级属性</span><form groupName=\"" + moreArr[i].cnName + "\" groupId=\"" + moreArr[i].code + "\" id=\"twoLevelAttr_form1\" class=\"opera_entity_form\"><input type=\"hidden\" id=\"id\" name=\"id\" value=\"\"><div><span class=\"opera_entity_label\">名称<span style=\"color: red;\">*</span></span><input type=\"text\" readonly=\"readonly\" id=\"name\" name=\"name\" value=\"\"></div><div><span class=\"opera_entity_label\">对应多值id<span style=\"color: red;\">*</span></span><input type=\"text\" readonly=\"readonly\" id=\"relatedMultiattribute\" name=\"relatedMultiattribute\" value=\"\"></div><div class=\"select-wrap\"><span class=\"opera_entity_label\">字典枚举<span style=\"color: red;\">*</span></span><select id=\"dictionaryAttr\" name=\"dictionaryAttr\"></select></div><div class=\"select-wrap\"><span class=\"opera_entity_label\">普通属性值<span style=\"color: red;\">*</span></span><select id=\"valueAttr\" name=\"valueAttr\"></select></div></form><div class=\"opera_entity_btn\"><span class=\"entity-btn-cancel\" id=\"twoLevelAttr_but_cancel\">取消</span><span class=\"entity-btn-confirm\" id=\"twoLevelAttr_but_confirm\">确认</span><span class=\"entity-btn-confirm\" id=\"twoLevelAttr_but_del\">删除</span></div></div>";
                 //添加编辑二级属性的孩子 div		
                 str = str + "<div class=\"twoLevelAttr_child_show\"><img class=\"opera_entity_img\" src=\"media/admin/dictionary/basicItem/opera_entity_icon.png\"><span class=\"opera_entity_img\">添加二级属性</span><form groupName=\"" + moreArr[i].cnName + "\" groupId=\"" + moreArr[i].code + "\" id=\"twoLevelAttr_child_form1\" class=\"opera_entity_form\"><div><span class=\"opera_entity_label\">名称<span style=\"color: red;\">*</span></span><input type=\"text\" id=\"name\" name=\"name\" value=\"\"></div><div class=\"select-wrap\"><span class=\"opera_entity_label\">字典名称<span style=\"color: red;\">*</span></span><select id=\"dictionaryCode\" name=\"dictionaryCode\"></select></div><input type=\"hidden\" id=\"mappingId\" name=\"mappingId\" value=\"\"></form><div class=\"opera_entity_btn\"><span class=\"entity-btn-cancel\" id=\"twoLevelAttr_but_cancel\">取消</span><span class=\"entity-btn-confirm\" id=\"twoLevelAttr_child_but_confirm\">确认</span></div></div>";
                 str = str + "<div class=\"opera_more\"><img class=\"opera_entity_img\" src=\"media/admin/dictionary/basicItem/opera_entity_icon.png\"><span class=\"opera_entity_img\" id=\"add_more_mes\"></span><form id=\"more_opera_form1\" class=\"opera_entity_form\"><input type=\"hidden\" name=\"code\" id=\"code\"/><input type=\"hidden\" id=\"more_parent\" name=\"parent\" value=\"\"><input type=\"hidden\" name=\"dataType\" value=\"repeat\"><div><span class=\"opera_entity_label\">中文名称<span style=\"color: red;\">*</span></span><input type=\"text\" name=\"cnName\" id=\"cnName\"/><br></div><div><span class=\"opera_entity_label\">英文名称<span style=\"color: red;\">*</span></span><input type=\"text\" name=\"enName\" id=\"enName\"/></div><div><span class=\"opera_entity_label\">表描述</span><textarea name=\"tableNameDescription\" id=\"tableNameDescription\" rows=\"\" cols=\"\"></textarea><br></div></form><div class=\"opera_entity_btn\"><span class=\"entity-btn-cancel\" id=\"more_but_cancel\">取消</span><span class=\"entity-btn-confirm\" id=\"more_but_confirm\">确认</span><span class=\"entity-btn-confirm\" id=\"more_but_del\">删除</span></div></div>";
