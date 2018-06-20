@@ -405,4 +405,35 @@ public class BasicItemController {
 			}
 		}
 		
+		//删除二级属性的孩子
+		@ResponseBody
+		@RequestMapping(value="/twoattr_chil_delete")
+		public AjaxPageResponse twoattr_chil_delete(Long id){
+			try {
+				towlevelattrService.delete(id);
+				AjaxPageResponse response = new AjaxPageResponse();
+				response.setNotice("删除成功");
+				response.setNoticeType(NoticeType.SUC);
+				return response;
+			} catch (Exception e) {
+				return AjaxPageResponse.FAILD("删除失败");
+			}
+		}
+			
+		
+		//删除二级属性本身
+		@ResponseBody
+		@RequestMapping(value="/twoattr_delete")
+		public AjaxPageResponse twoattr_delete(Long id){
+			try {
+				tmms.delete(id);
+				AjaxPageResponse response = new AjaxPageResponse();
+				response.setNotice("删除成功");
+				response.setNoticeType(NoticeType.SUC);
+				return response;
+			} catch (Exception e) {
+				return AjaxPageResponse.FAILD("删除失败");
+			}
+		}
+			
 }
