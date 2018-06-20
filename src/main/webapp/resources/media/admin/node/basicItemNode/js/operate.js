@@ -1749,9 +1749,8 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 	        		afterId = after.children(".collapse-header").attr("data-id");
 	        	}else {
 	        		afterId = after.children(".label-bar").attr("data-id");
-	        	}
-	        	
-	        	if(current.hasClass("attr-group") || current.hasClass("more-attr") || current.hasClass("attr-relative") || current.hasClass("attr-abc")){	        			        		
+	        	}	        	
+	        	if(current.hasClass("attr-group") || current.hasClass("more-attr") || current.hasClass("attr-relative") || current.hasClass("entity-ch-wrap")){	        			        		
 	        		currentId = current.children(".collapse-header").attr("data-id");
 	        	}else {	        		
 	        		currentId = current.children(".label-bar").attr("data-id");
