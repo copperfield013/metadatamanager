@@ -635,7 +635,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
             "<div class='icon-label attr-relative'>" +
             "<i class='icon icon-attr-relative'></i><span class='text'>关系</span>" +
             "</div>" +
-            "<div class='label-bar attr-relative'>" +
+            "<div class='label-bar attr-relative al-save'>" +
             "<input type='text' disabled class='edit-input text' value='"+name+"'>" +
             "<select disabled class='abc-attr'>" +         		            		
             "<option data-id='"+abcattr_code+"' value='"+abcattr+"' selected>"+abcattr+"</option>" +
@@ -1821,6 +1821,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 			 if(chLength >= 2) {
 				 nest = "repeat"
 			 }
+			 console.log();
 			 //展现出关系下的标签和abc HTML			 
 			 var html = "<li class='add-tag clear-fix'>" +
 	            "<div class='icon-label tag'>" +
