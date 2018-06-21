@@ -280,7 +280,7 @@ public class BasicItemController {
 				AjaxPageResponse response = new AjaxPageResponse();
 				BasicItem bt = basicItemService.getBasicItem(id);
 				
-				if (bt.getParent().contains("_")) {//包含下划线就说明它父亲是重复类型
+				if (bt!=null && bt.getParent() != null && bt.getParent().contains("_")) {//包含下划线就说明它父亲是重复类型
 					//判断重复类型有没有二级属性
 					TowlevelattrMultiattrMapping oneByRelaMulAttr = tmms.getOneByRelaMulAttr(bt.getGroupName());
 					if (oneByRelaMulAttr != null) {
