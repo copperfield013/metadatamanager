@@ -30,6 +30,8 @@ import cn.sowell.datacenter.admin.controller.node.api.BasicItemNodes;
 import cn.sowell.datacenter.admin.controller.node.api.BasicItems;
 import cn.sowell.datacenter.admin.controller.node.api.DictionaryBasicItems;
 import cn.sowell.datacenter.admin.controller.node.api.InlineResponse200;
+import cn.sowell.datacenter.admin.controller.node.api.InlineResponse2001;
+import cn.sowell.datacenter.admin.controller.node.api.InlineResponse2002;
 import cn.sowell.datacenter.admin.controller.node.api.RecordRelationTypes;
 import cn.sowell.datacenter.model.dictionary.criteria.BasicItemCriteria;
 import cn.sowell.datacenter.model.dictionary.pojo.BasicItem;
@@ -162,10 +164,14 @@ public class BasicItemNodeController {
 	}
 
 	// ajax 获取dataType
-	@ApiIgnore
 	@ResponseBody
-	@RequestMapping("/getDataType")
-	public String getDataType() {
+	@ApiOperation(value = "获取dataType", nickname = "getDataType", notes = "获取dataType", response = Object.class, tags={ "configurationFiles", })
+    @ApiResponses(value = { 
+        @ApiResponse(code = 200, message = "OK", response = Object.class),
+        @ApiResponse(code = 401, message = "操作失败") })
+    @RequestMapping(value = "/getDataType",
+        method = RequestMethod.POST)
+	public ResponseEntity<Object> getDataType() {
 		List<String> list = new ArrayList<String>();
 		list.add(ValueTypeConstant.ABCT_NAME_BYTES);
 		list.add(ValueTypeConstant.ABCT_NAME_DATE);
@@ -175,54 +181,61 @@ public class BasicItemNodeController {
 		list.add(ValueTypeConstant.ABCT_NAME_INT);
 		list.add(ValueTypeConstant.ABCT_NAME_LONG);
 		list.add(ValueTypeConstant.ABCT_NAME_STRING);
-
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("dataType", list);
 		JSONObject jobj = new JSONObject(map);
-		return jobj.toString();
+		
+		return new ResponseEntity<Object>(jobj, HttpStatus.OK);
 	}
 
 	// ajax 根据实体id, 获取本实体下所有的多值属性本身
-	@ApiIgnore
 	@ResponseBody
-	@RequestMapping("/getRepeat")
-	public String getRepeat(String entityId) {
+	@ApiOperation(value = "根据实体id, 获取本实体下所有的多值属性本身", nickname = "getRepeat", notes = "根据实体id, 获取本实体下所有的多值属性本身", response = InlineResponse2002.class, tags={ "configurationFiles", })
+    @ApiResponses(value = { 
+        @ApiResponse(code = 200, message = "OK", response = InlineResponse2002.class),
+        @ApiResponse(code = 401, message = "操作失败")})
+    @RequestMapping(value = "/getRepeat",
+        method = RequestMethod.POST)
+	public ResponseEntity<InlineResponse2002> getRepeat(String entityId) {
 		BasicItemCriteria criteria = new BasicItemCriteria();
 		criteria.setParent(entityId);
 		criteria.setDataType("重复类型");
 		criteria.setUsingState(1);
 
 		List<BasicItem> list = basicItemService.queryList(criteria);
-
-		Map<String, Object> map = new HashMap<String, Object>();
-		map.put("repeat", list);
-		JSONObject jobj = new JSONObject(map);
-		return jobj.toString();
+		InlineResponse2002 inline = new InlineResponse2002();
+		inline.repeat(list);
+		return new ResponseEntity<InlineResponse2002>(inline, HttpStatus.OK);
 	}
 
-	// ajax 根据多值属性本身的id,获取多值属性的孩子
-	@ApiIgnore
 	@ResponseBody
-	@RequestMapping("/getRepeatChild")
-	public String getRepeatChild(String repeatId) {
+	@ApiOperation(value = "根据多值属性本身的id,获取多值属性的孩子", nickname = "getRepeatChild", notes = "多值属性本身的id, 获取多值属性的孩子", response = InlineResponse2001.class, tags={ "configurationFiles", })
+    @ApiResponses(value = { 
+        @ApiResponse(code = 200, message = "OK", response = InlineResponse2001.class),
+        @ApiResponse(code = 401, message = "操作失败") })
+    @RequestMapping(value = "/getRepeatChild",
+        method = RequestMethod.POST)
+	public ResponseEntity<InlineResponse2001> getRepeatChild(String repeatId) {
 		BasicItem repeat = basicItemService.getBasicItem(repeatId);
 		BasicItemCriteria criteria = new BasicItemCriteria();
 		criteria.setParent(repeat.getParent() + "_" + repeatId);
 		criteria.setUsingState(1);
-
 		List<BasicItem> list = basicItemService.queryList(criteria);
-
-		Map<String, Object> map = new HashMap<String, Object>();
-		map.put("repeatChild", list);
-		JSONObject jobj = new JSONObject(map);
-		return jobj.toString();
+		InlineResponse2001 inline = new InlineResponse2001();
+		inline.repeatChild(list);
+        return new ResponseEntity<InlineResponse2001>(inline, HttpStatus.OK);
 	}
 
+	//TODO.....
 	// ajax 根据实体id， 获取当前实体下的所有普通属性，
 	// 还有当前实体下的所有二级属性
 	@ApiIgnore
 	@ResponseBody
-	@RequestMapping("/getComm")
+	/* @ApiOperation(value = "根据实体id， 获取当前实体下的所有普通属性和二级属性", nickname = "getComm", notes = "根据实体id， 获取当前实体下的所有普通属性和二级属性", response = InlineResponse200.class, tags={ "configurationFiles", })
+    @ApiResponses(value = { 
+        @ApiResponse(code = 200, message = "操作成功", response = InlineResponse200.class),
+        @ApiResponse(code = 400, message = "操作失败", response = String.class) })*/
+    @RequestMapping(value = "/getComm")
 	public String getComm(String entityId) {
 		List list = basicItemService.getComm(entityId);
 		Map<String, Object> map = new HashMap<String, Object>();
@@ -231,6 +244,7 @@ public class BasicItemNodeController {
 		return jobj.toString();
 	}
 
+	
 	// 获取lab关系名称, 关系下边的lab
 	@ResponseBody
 	@ApiOperation(value = "获取lab关系名称, 关系下边的lab", nickname = "getLabRela", notes = "关系名称", response = RecordRelationTypes.class, tags={ "configurationFiles", })
