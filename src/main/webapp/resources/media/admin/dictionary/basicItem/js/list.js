@@ -233,7 +233,6 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
 	   var $form = $(this).closest('.twoLevelAttr_show').find('form');
        var twoId = $form.find("#id").val();
        
-       alert(twoId);
       var entityId = $(".common_proper").attr("parentid");
        Dialog.confirm("删除可能会引起数据错误， 是否确认删除", function(isYes) {
             if (isYes) {
