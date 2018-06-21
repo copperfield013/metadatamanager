@@ -610,4 +610,9 @@ public class BasicItemServiceImpl implements BasicItemService {
 		return basicItemDao.getComm(entityId);
 	}
 
+	@Override
+	public List<BasicItem> getEntityList(String leftRecordType) {
+		return basicItemDao.getEntityList(leftRecordType);
+	}
+
 }

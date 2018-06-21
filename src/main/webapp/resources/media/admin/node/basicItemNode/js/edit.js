@@ -84,6 +84,13 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 		 var abcattrCode = $(bar).find("select.abc-attr").children("option:selected").attr("data-id");
 		 var chLength = $(".entity-ch-wrap", $page).length;
 		 var nest = "no-repeat";
+		 var entityId;
+	        if($(el).closest(".collapse-header").hasClass("entity-title")){
+	        	entityId = $(".entity_attr", $page).attr("data-code");
+	        }else {
+	        	entityId = $(el).closest(".collapse-header").find(".label-bar")
+	        					.find(".entity-only-title").attr("data-abcattr-code");
+	        }
 		 if(chLength >= 2) {
 			 nest = "repeat"
 		 }
@@ -859,7 +866,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 				.closest(".collapse-content")
 				.prev(".collapse-header")
 				.hasClass("entity-title")){
-        	var leftRecordType = $(".entity_attr").attr("data-code");
+        	var leftRecordType = $(".entity_attr", $page).attr("data-code");
         }else {
         	var leftRecordType = $(el).closest(".label-bar.tag")
 									.closest(".collapse-content")
@@ -1346,10 +1353,18 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
       */
     function addRelative(el) {
         var $content = $(el).closest(".collapse-header").siblings(".collapse-content");
-        var entityId = $(".entity_attr.active", $page).attr("data-code");
+        var entityId;
+        if($(el).closest(".collapse-header").hasClass("entity-title")){
+        	entityId = $(".entity_attr", $page).attr("data-code");
+        }else {
+        	entityId = $(el).closest(".collapse-header").find(".label-bar")
+        					.find(".entity-only-title").attr("data-abcattr-code");
+        }
         var dragWrapLen = $(".dragEdit-wrap").length + 1 ;
         $CPF.showLoading();
-		Ajax.ajax('admin/node/basicItemNode/entityList'," ", function(data) {			
+		Ajax.ajax('admin/node/basicItemNode/entityList',{
+			leftRecordType:entityId
+		}, function(data) {			
 			var data = data.entity;			            
             var relativeHtml = "<li class='attr-relative'>" +
             "<div class='attr-relative-title collapse-header' data-order='' data-id=''>" +

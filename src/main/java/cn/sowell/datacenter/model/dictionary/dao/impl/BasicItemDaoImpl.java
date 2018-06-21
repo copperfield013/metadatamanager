@@ -1,6 +1,5 @@
 package cn.sowell.datacenter.model.dictionary.dao.impl;
 
-import java.io.Serializable;
 import java.math.BigInteger;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -321,6 +320,13 @@ public class BasicItemDaoImpl implements BasicItemDao {
 		
 		 List list = sFactory.getCurrentSession().createSQLQuery(sql).setParameter("entityId", entityId).list();
 		return list;
+	}
+
+	@Override
+	public List<BasicItem> getEntityList(String leftRecordType) {
+		String sql = "SELECT * FROM t_c_basic_item WHERE  c_using_state='1' AND  c_data_type='记录类型' AND c_code in ("
+				+ "	SELECT right_record_type FROM t_c_record_relation_type WHERE left_record_type=:leftRecordType)";
+		return  sFactory.getCurrentSession().createSQLQuery(sql).addEntity(BasicItem.class).setParameter("leftRecordType", leftRecordType).list();
 	}
 
 }

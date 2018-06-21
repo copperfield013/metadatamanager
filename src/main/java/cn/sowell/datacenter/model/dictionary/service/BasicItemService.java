@@ -105,4 +105,11 @@ public interface BasicItemService {
 	 * @return
 	 */
 	public List getComm(String entityId);
+	
+	/**
+	 * 根据左实体id， 获取与左实体有关系的右实体
+	 * @param leftRecordType 左实体id
+	 * @return
+	 */
+	public List<BasicItem> getEntityList(String leftRecordType);
 }

@@ -254,8 +254,8 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 				.prev(".collapse-header")
 				.closest(".collapse-content")
 				.prev(".collapse-header")
-				.hasClass("entity-title")){
-        	var leftRecordType = $(".entity_attr.active").attr("data-code");
+				.hasClass("entity-title")){        	
+        	var leftRecordType = $(".entity_attr.active", $page).attr("data-code");
         }else {
         	var leftRecordType = $(el).closest(".label-bar.tag")
 									.closest(".collapse-content")
@@ -394,6 +394,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
         $(".delete-list-c").remove();
         $(".icon-add").removeClass("active");
         $(".icon-add-tag").removeClass("active");
+        $(".icon-add-tag-relative").removeClass("active");
         $(".icon-trash").removeClass("active");
         $(".icon-trash-sm").removeClass("active");
 
@@ -742,10 +743,18 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
       */
     function addRelative(el) {
         var $content = $(el).closest(".collapse-header").siblings(".collapse-content");
-        var entityId = $(".entity_attr.active", $page).attr("data-code");
+        var entityId;
+        if($(el).closest(".collapse-header").hasClass("entity-title")){
+        	entityId = $(".entity_attr.active", $page).attr("data-code");
+        }else {
+        	entityId = $(el).closest(".collapse-header").find(".label-bar")
+        					.find(".entity-only-title").attr("data-abcattr-code");
+        }
         var dragWrapLen = $(".drag-wrap").length + 1;
         $CPF.showLoading();
-		Ajax.ajax('admin/node/basicItemNode/entityList', "", function(data) {			
+		Ajax.ajax('admin/node/basicItemNode/entityList', {
+			leftRecordType:entityId
+		}, function(data) {			
 			var data = data.entity;			            
             var relativeHtml = "<li class='attr-relative'>" +
             "<div class='attr-relative-title collapse-header' data-order='' data-id=''>" +
@@ -1557,7 +1566,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
         	el = $("#operate").find(".icon-add-tag-relative.active")[0];
         }else {
         	el = $("#operate").find(".icon-add-tag.active");
-        }        
+        }              
         var text = $(this).val();
         var id = $(this).attr("data-id");
         var ul = $(el).closest(".label-bar.tag").find("ul");

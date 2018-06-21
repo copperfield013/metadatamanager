@@ -305,11 +305,9 @@ public class BasicItemNodeController {
         @ApiResponse(code = 400, message = "操作失败", response = String.class) })
     @RequestMapping(value = "/entityList",
         method = {RequestMethod.POST})
-	public ResponseEntity<BasicItems> entityList() {
+	public ResponseEntity<BasicItems> entityList(String leftRecordType) {
 		BasicItemCriteria criteria = new BasicItemCriteria();
-		criteria.setDataType("记录类型");
-		criteria.setUsingState(1);
-		List<BasicItem> list = basicItemService.queryList(criteria);
+		List<BasicItem> list = basicItemService.getEntityList(leftRecordType);
 		BasicItems btItems = new BasicItems();
 		btItems.entity(list);
 		return new ResponseEntity<BasicItems>(btItems, HttpStatus.OK);
