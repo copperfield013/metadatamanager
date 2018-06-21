@@ -852,6 +852,11 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 				 $CPF.closeLoading();
 				 return;
 			 }
+			 if(data.state == "error") {
+				 alert("关系下只能有一个标签和一个实体");
+				 $CPF.closeLoading();
+				 return;
+			 }
 			 var data = data.node;
 			 //设置跟实体的order和id
 			 var order = data.order;
@@ -929,6 +934,11 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 				 $CPF.closeLoading();
 				 return;
 			 }
+			 if(data.state == "error") {
+				 alert("关系下只能有一个标签和一个实体");
+				 $CPF.closeLoading();
+				 return;
+			 }
 			 var data = data.node;
 			 //设置当前节点order和id
 			 var order = data.order;
@@ -989,6 +999,11 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 				 $CPF.closeLoading();
 				 return;
 			 }
+			 if(data.state == "error") {
+				 alert("关系下只能有一个标签和一个实体");
+				 $CPF.closeLoading();
+				 return;
+			 }
 			 var data = data.node;
 			 //设置当前节点order和id
 			 var order = data.order;
@@ -1043,6 +1058,11 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 		 }, function(data) {
 			 if(data.state == "fail") {
 				 alert("属性名不能相同");
+				 $CPF.closeLoading();
+				 return;
+			 }
+			 if(data.state == "error") {
+				 alert("关系下只能有一个标签和一个实体");
 				 $CPF.closeLoading();
 				 return;
 			 }
@@ -1107,6 +1127,11 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 				 $CPF.closeLoading();
 				 return;
 			 }
+			 if(data.state == "error") {
+				 alert("关系下只能有一个标签和一个实体");
+				 $CPF.closeLoading();
+				 return;
+			 }
 			 var data = data.node;
 			 //设置当前节点order和id
 			 var order = data.order;
@@ -1166,6 +1191,11 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 		 }, function(data) {
 			 if(data.state == "fail") {
 				 alert("属性名不能相同");
+				 $CPF.closeLoading();
+				 return;
+			 }
+			 if(data.state == "error") {
+				 alert("关系下只能有一个标签和一个实体");
 				 $CPF.closeLoading();
 				 return;
 			 }
@@ -1300,6 +1330,11 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 		 }, function(data) {
 			 if(data.state == "fail") {
 				 alert("属性名不能相同");
+				 $CPF.closeLoading();
+				 return;
+			 }
+			 if(data.state == "error") {
+				 alert("关系下只能有一个标签和一个实体");
 				 $CPF.closeLoading();
 				 return;
 			 }

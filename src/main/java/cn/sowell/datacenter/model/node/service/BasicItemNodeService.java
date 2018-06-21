@@ -94,4 +94,13 @@ public interface BasicItemNodeService {
 	 * @return
 	 */
 	BasicItemNode getAbc(String name);
+
+	/**
+	 * 判断关系下只有一个标签和一个实体
+	 * @param parentId
+	 * @param id
+	 * @param type
+	 * @return
+	 */
+	String getRelaNodeChil(String parentId, String id, Integer type);
 }

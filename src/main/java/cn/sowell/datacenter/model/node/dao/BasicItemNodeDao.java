@@ -95,4 +95,6 @@ public interface BasicItemNodeDao {
 	 * @return
 	 */
 	BasicItemNode getAbc(String name);
+
+	BasicItemNode getRelaNodeChil(String parentId, String id, Integer type);
 }

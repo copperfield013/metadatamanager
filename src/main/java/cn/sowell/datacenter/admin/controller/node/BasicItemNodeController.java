@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.abc.mapping.node.NodeOpsType;
+import com.abc.mapping.node.NodeType;
 import com.abc.util.ValueTypeConstant;
 import com.alibaba.fastjson.JSONObject;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -86,15 +87,34 @@ public class BasicItemNodeController {
         method = RequestMethod.POST)
 	public ResponseEntity<InlineResponse200> saveOrUpdate(BasicItemNode basicItemNode) {
 		 try {
-			 boolean check = basicItemNodeService.check(basicItemNode);
+			 
 			 InlineResponse200 inline = new InlineResponse200();
-			if (check) {//重复了
-				inline.setState("fail");
+			 //判断当前关系下只能有一个标签和一个实体
+			 String relaNodeChil = "";
+			 if (basicItemNode.getParentId() != null) {
+				 BasicItemNode one = basicItemNodeService.getOne(Integer.parseInt(basicItemNode.getParentId()));
+				 if (NodeType.RELATION.equals(NodeType.getNodeType(one.getType()))) {//当前实体的父亲是关系节点
+					 if (basicItemNode.getId() == null) {
+						 relaNodeChil = basicItemNodeService.getRelaNodeChil(basicItemNode.getParentId(), "", basicItemNode.getType());
+					 } else {
+						 relaNodeChil = basicItemNodeService.getRelaNodeChil(basicItemNode.getParentId(), String.valueOf(basicItemNode.getId()), basicItemNode.getType());
+					 }
+				 }
+			 } 
+			 
+			//判断当前父节点下有没有重复的名字
+			 boolean check = basicItemNodeService.check(basicItemNode);
+			 
+			 if ("true".equals(relaNodeChil)) {
+				 inline.setState("error");
+			 } else if (check) {//重复了
+					inline.setState("fail");
 			} else {
 				basicItemNodeService.saveOrUpdate(basicItemNode);
 				inline.setNode(basicItemNode);
 				inline.setState("success");
 			}
+			
              return new ResponseEntity<InlineResponse200>(inline, HttpStatus.OK);
          } catch (Exception e) {
              return new ResponseEntity<InlineResponse200>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -306,7 +326,6 @@ public class BasicItemNodeController {
     @RequestMapping(value = "/entityList",
         method = {RequestMethod.POST})
 	public ResponseEntity<BasicItems> entityList(String leftRecordType) {
-		BasicItemCriteria criteria = new BasicItemCriteria();
 		List<BasicItem> list = basicItemService.getEntityList(leftRecordType);
 		BasicItems btItems = new BasicItems();
 		btItems.entity(list);

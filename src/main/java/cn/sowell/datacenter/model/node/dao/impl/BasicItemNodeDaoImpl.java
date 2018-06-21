@@ -178,4 +178,15 @@ public class BasicItemNodeDaoImpl implements BasicItemNodeDao {
 		String sql = "SELECT * FROM t_c_basic_item_node WHERE name=:name AND type=1";
 		return (BasicItemNode) sFactory.getCurrentSession().createSQLQuery(sql).addEntity(BasicItemNode.class).setParameter("name", name).uniqueResult();
 	}
+
+	@Override
+	public BasicItemNode getRelaNodeChil(String parentId, String id, Integer type) {
+	String sql = "SELECT * FROM t_c_basic_item_node WHERE parent_id=:parentId AND type=:type AND id !=:id";
+				
+	return (BasicItemNode) sFactory.getCurrentSession().createSQLQuery(sql)
+			.addEntity(BasicItemNode.class)
+			.setParameter("parentId", parentId)
+			.setParameter("type", type)
+			.setParameter("id", id).uniqueResult();
+	}
 }

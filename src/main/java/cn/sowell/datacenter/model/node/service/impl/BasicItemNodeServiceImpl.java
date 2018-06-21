@@ -235,4 +235,15 @@ public class BasicItemNodeServiceImpl implements BasicItemNodeService {
 	public BasicItemNode getAbc(String name) {
 		return basicItemNodeDao.getAbc(name);
 	}
+
+	
+	@Override
+	public String getRelaNodeChil(String parentId, String id, Integer type) {
+		BasicItemNode relaNodeChil = basicItemNodeDao.getRelaNodeChil(parentId, id, type);
+		if (relaNodeChil != null) {
+			return "true";
+		}
+		
+		return "false";
+	}
 }
