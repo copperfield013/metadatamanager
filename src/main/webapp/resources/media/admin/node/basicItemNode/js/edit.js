@@ -859,7 +859,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 				.closest(".collapse-content")
 				.prev(".collapse-header")
 				.hasClass("entity-title")){
-        	var leftRecordType = $(".entity_attr.active").attr("data-code");
+        	var leftRecordType = $(".entity_attr").attr("data-code");
         }else {
         	var leftRecordType = $(el).closest(".label-bar.tag")
 									.closest(".collapse-content")

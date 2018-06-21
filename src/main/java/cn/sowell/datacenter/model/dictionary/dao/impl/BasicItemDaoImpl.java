@@ -314,7 +314,7 @@ public class BasicItemDaoImpl implements BasicItemDao {
 				+ "		WHERE c_related_multiattribute in ("
 				+ "		SELECT c_code FROM t_c_basic_item"
 				+ "	WHERE c_parent=:entityId AND c_data_type = '重复类型'"
-				+ "		))	AND c_using_state != '-1'"	
+				+ "		))	AND c_using_state = '1'"	
 				+ "	UNION		SELECT c_code code, c_cn_name name FROM t_c_basic_item"
 				+ "		WHERE c_parent=:entityId AND c_data_type != '重复类型' "
 				+ "		AND c_data_type != '分组类型' AND c_using_state = '1' AND c_code not like '%_P'";
