@@ -315,7 +315,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
     });
     
     //选中数据类型为  枚举   触发事件   普通属性
-    $(".common_proper", $page).on("change", ".enum_dataType_one", function() {
+    $(".common_proper", $page).on("change", ".enum_dataType_one", function() {    	
     	var $this = $(this);
     	var options=$(".enum_dataType_one option:selected");  //获取选中的项
     	var $form = $this.closest(".opera_comm").find("#comm_opera_form1");
@@ -351,7 +351,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
                 $form.find("#cn_dataRange").hide();                  
                 $CPF.closeLoading();
             });            
-    	} else {
+    	} else {    		
     		$form.find("#cn_dataRange").show();
     		 $form.find("#dataRange").show();
     		if ("digital" == $this.val()) {//数字型
@@ -380,13 +380,14 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
     $(".more_proper", $page).on("change", ".enum_daType_two", function() {
     	var options=$(this).find("option:selected");    	
     	var $form  = $(this).parent().parent();
+    	var entityId = $form.attr("entityId");
     	if ("枚举" == options.val()) {    		
     		 //如果是枚举， 则显示下拉列表
 	    	$CPF.showLoading();
 	        $form.find("#dictParentId").remove();
 	        $form.find("#s2id_dictParentId").remove();
 	        $form.find("#span_enum").remove();  	        
-            //选中  则显示下拉列表       
+            //选中  则显示下拉列表       	        
             Ajax.ajax('admin/dictionary/dictParentItem/getDictPitem', '', function(data) {
                 var dataArr = data.dictPitem;
                 var dictParentId = $form.find("#edit_dictParentId").val();
@@ -412,10 +413,10 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
                 $form.find("#cn_dataRange").hide();
                 $CPF.closeLoading();
             });           
-    	} else {
+    	} else {    		
+    		var isAddBtn = $form.closest(".opera_more_child").prev("div").find(".pitch").hasClass("add_more_child");    		
     		 $form.find("#dataRange").show();
- 	        $form.find("#cn_dataRange").show();
- 	        
+ 	         $form.find("#cn_dataRange").show();
     		if ("digital" == options.val()) {//数字型
     			$form.find("#dataRange").val('11');
     		} else if ("digitalDecimal" == options.val()) {//数字型小数
@@ -437,7 +438,6 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
         }
     });
     
-    
     //点击 添加普通属性加号 显示div
     $(".common_proper", $page).on("click", ".add_comm", function() {
     	var $this = $(this);
@@ -457,8 +457,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
                 
             }    
             
-            $select.append(str);
-            $select.trigger("change");
+            $select.append(str).select2();
         });
         $form.find("#dictParentId").remove();
         $form.find("#s2id_dictParentId").remove();
@@ -479,6 +478,9 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
     	var $newAdd = $this.closest('.new_add');
     	$this.siblings('.entity_attr').removeClass('pitch');
     	var  $form = $newAdd.find(".opera_more_child").find("#more_child_opera_form1");
+    	
+    	$form.find("#dictParentId").attr("disabled", false);
+    	 $form.find("#dataType").attr("disabled", false);
     	$form.find("#dataType").html("");
         Ajax.ajax('admin/dictionary/basicItem/getDataType', '', function(data) {
             var str = "";
@@ -489,7 +491,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
                 	 str = str + " <option value =\"" + key + "\">" + data[key] + "</option>";
                 }
             }
-            $(".opera_more_child").find("#more_child_opera_form1").find("#dataType").append(str).trigger("change");            
+            $(".opera_more_child").find("#more_child_opera_form1").find("#dataType").append(str).select2();            
         });
         $newAdd.find("#add_more_child_mes").html("");
         $newAdd.find("#add_more_child_mes").html("添加多值属性");
@@ -1101,7 +1103,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
             $form1.find("#edit_dictParentId").val(jsonData.dictParentId);
             $form1.find("#dataType").html("");
             if(ischecked) {
-    			/*Ajax.ajax('admin/dictionary/dictParentItem/getDictPitem', '', function(data) {
+    			Ajax.ajax('admin/dictionary/dictParentItem/getDictPitem', '', function(data) {
     	            var dataArr = data.dictPitem;    	            
     	            var dictParentId = $form1.find("#edit_dictParentId").val();
     	            if (dictParentId != "") {
@@ -1119,13 +1121,17 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
     	                $form1.find("#dataRange").hide();
     	                $form1.find("#cn_dataRange").hide();
     	                $form1.find("#dataType").after(str);
+    	                $form1.find("#s2id_dictParentId").remove(); 
+    	                
+    	                $form1.find("#dictParentId").css("width","30%").select2();	
     	            }
-    	        });   	*/
+    	        });
             }else {
             	$form1.find("#span_enum").remove();
                 $form1.find("#dictParentId").remove();	
                 $form1.find("#dataRange").show();
                 $form1.find("#cn_dataRange").show();
+                $form1.find("#s2id_dictParentId").remove(); 
                 
             	if ("日期型" == jsonData.dataType || "时间型" == jsonData.dataType) {
             		$form1.find("#dataRange").val("").hide();
@@ -1156,7 +1162,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
 	               
 	            }
 	            
-	            $form1.find("#dataType").append(str).trigger("change");
+	            $form1.find("#dataType").append(str).select2();
 	        });
             
             $newAdd.find("#add_comm_mes").html("");
@@ -1171,6 +1177,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
     	$this.closest(".entity_attr").addClass('pitch').siblings(".entity_attr").removeClass('pitch');
     	var $form1 = $newAdd.find('form');
         var entityId = $(this).closest('.entity_ul').attr("entityid");
+        $form1.attr("entityId", entityId);
         var ischecked = false;
         Ajax.ajax('admin/dictionary/basicItem/getOne', {
             id: entityId
@@ -1186,8 +1193,9 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
             $form1.find("#edit_dataType").val(jsonData.dataType);
             $form1.find("#edit_dictParentId").val(jsonData.dictParentId);
             $form1.find("#dataType").html("");  
+            
     		if(ischecked) {
-    			/*Ajax.ajax('admin/dictionary/dictParentItem/getDictPitem', '', function(data) {
+    			Ajax.ajax('admin/dictionary/dictParentItem/getDictPitem', '', function(data) {
     	            var dataArr = data.dictPitem;    	            
     	            var dictParentId = $form1.find("#edit_dictParentId").val();
     	            if (dictParentId != "") {
@@ -1200,18 +1208,23 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
     	                    }
     	                }
     	                str = str + "</select>";
+    	                    	                
+    	    	        $form1.find("#s2id_dictParentId").remove();    	    	            	    	        
     	                $form1.find("#dataRange").hide();
     	                $form1.find("#cn_dataRange").hide();  
     	                $form1.find("#span_enum").remove();
     	                $form1.find("#dictParentId").remove();
     	                $form1.find("#dataType").after(str);
+    	                
+    	                $form1.find("#dictParentId").css("width","30%").select2();	
     	            }
-    	        });   	*/
+    	        });
     		}else {
     			 $form1.find("#span_enum").remove();
                  $form1.find("#dictParentId").remove();
                  $form1.find("#dataRange").show();
  	            $form1.find("#cn_dataRange").show();
+ 	           $form1.find("#s2id_dictParentId").remove(); 	
  	            
  	           if ("日期型" == jsonData.dataType || "时间型" == jsonData.dataType) {
            		$form1.find("#dataRange").val("").hide();
@@ -1239,8 +1252,20 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
 	            	}
 	            }
 	           
-	            $form1.find("#dataType").append(str).trigger("change");
-	        }); 	
+	            $form1.find("#dataType").append(str).select2();	            
+	        }); 
+    		
+    		 Ajax.ajax('admin/dictionary/basicItem/isTwoattr', {
+    	  			id:entityId
+    	  		}, function(data) {    
+    	            if (true == data) {	 
+    	            	$form1.find("#dictParentId").attr("disabled", true);
+    	            	$form1.find("#dataType").attr("disabled", true);
+    	            } else {
+    	            	$form1.find("#dictParentId").attr("disabled", false);
+    	            	$form1.find("#dataType").attr("disabled", false);
+    	            }
+    		     });
     		
             $("#add_more_child_mes").html("");
             $("#add_more_child_mes").html("编辑属性");
@@ -1552,7 +1577,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
             	"margin-right": "0"
             });
             $("select", $page).css("width","30%");                        
-            $("select", $page).select2();
+//            $("select", $page).select2();
         });
     }
     
