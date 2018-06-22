@@ -80,6 +80,8 @@ public interface BasicItemDao {
 	 */
 	List queryEditCol();
 	
+	List queryCreRelaTabFun();
+	
 	/**
 	 *  创建关系表
 	 * @return
