@@ -226,7 +226,7 @@ public class BasicItemDaoImpl implements BasicItemDao {
 		 return list;
 	}
 	 
-	@Override
+	/*@Override
 	public List queryCreRelaTab() {
 		getDataBaseName();
 		StringBuffer sb = new StringBuffer();
@@ -239,6 +239,54 @@ public class BasicItemDaoImpl implements BasicItemDao {
 			.append(" t.table_schema = '"+DataBaseName+"') b ON a.tablename = b.table_name  ")
 			.append("WHERE ")
 			.append("b.table_name IS NULL ");
+		
+		List list = sFactory.getCurrentSession().createSQLQuery(sb.toString()).list();
+		return list;
+	}*/
+	
+	@Override
+	public List queryCreRelaTab() {
+		getDataBaseName();
+		StringBuffer sb = new StringBuffer();
+		sb.append("SELECT ")
+			.append("  concat( ")
+			.append(" 'DELIMITER //")
+			.append(" CREATE FUNCTION GetALLRelated',c_code,'(pCodes VARCHAR(4000),pRelationType  VARCHAR(20))")
+			.append(" RETURNS VARCHAR(4000)")
+			.append(" BEGIN")
+			.append("  -- 预期结果. ")
+			.append("  DECLARE vResult VARCHAR(4000);")
+			.append("  -- 临时结果")
+			.append("  DECLARE vTemp VARCHAR(4000);")
+			.append("  SET vTemp = pCodes;")
+			.append(" SET vResult = \"\";")
+			.append(" -- 循环处理。")
+			.append("  WHILE vTemp is not null  DO")
+			.append("  SELECT GROUP_CONCAT( distinct  ABC0913) INTO vTemp  FROM ', tablename,' WHERE FIND_IN_SET(ABP0001,vTemp) and not FIND_IN_SET(ABC0913,vResult) and ABC0914=pRelationType;")
+			.append("   if vTemp is not null then")
+			.append("   SET vResult = concat(vResult,\",\", vTemp);")
+			.append("   end if;")
+			.append("  END WHILE;")
+			.append("  -- 返回结果.")
+			.append("  RETURN substr(vResult,2);")
+			.append(" END;//', \" create table \", a.tablename,\"( `id`  bigint(20) NOT NULL AUTO_INCREMENT,")
+			.append(" `ABP0001`  varchar(32) Not NULL ,`ABC0913`  varchar(32) DEFAULT NULL ,`ABC0914`  varchar(32) DEFAULT NULL,PRIMARY KEY (`id`));\")")
+			.append(" FROM")
+			.append("     (SELECT ")
+			.append("   concat('t_',c_code,'_r1') tablename,c_code")
+			.append("    FROM")
+			.append("    t_c_basic_item ")
+			.append("    WHERE")
+			.append("   c_data_type='记录类型') a")
+			.append("    LEFT JOIN")
+			.append(" (SELECT ")
+			.append(" table_name")
+			.append(" FROM")
+			.append(" information_schema.tables t")
+			.append(" WHERE")
+			.append("    t.table_schema = '"+DataBaseName+"') b ON a.tablename = b.table_name")
+			.append(" WHERE")
+			.append(" b.table_name IS NULL");
 		
 		List list = sFactory.getCurrentSession().createSQLQuery(sb.toString()).list();
 		return list;
