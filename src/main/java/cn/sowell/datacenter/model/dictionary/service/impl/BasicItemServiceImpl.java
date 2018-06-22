@@ -550,7 +550,7 @@ public class BasicItemServiceImpl implements BasicItemService {
 			}
 		}	
 			
-		//创建关系表
+		//创建关系表函数及关系表
 		List queryCreRelaTab = basicItemDao.queryCreRelaTab();
 		for (Object object : queryCreRelaTab) {
 			basicItemDao.excuteBySql(object.toString());
