@@ -9,6 +9,7 @@ import java.util.List;
 import javax.annotation.Resource;
 
 import org.hibernate.Query;
+import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.jdbc.Work;
@@ -250,17 +251,23 @@ public class BasicItemDaoImpl implements BasicItemDao {
 		StringBuffer sb = new StringBuffer();
 		sb.append("SELECT ")
 			.append("  concat( ")
+			.append("\r\n")
 			.append(" 'DELIMITER //")
+			.append("\r\n")
 			.append(" CREATE FUNCTION GetALLRelated',c_code,'(pCodes VARCHAR(4000),pRelationType  VARCHAR(20))")
 			.append(" RETURNS VARCHAR(4000)")
 			.append(" BEGIN")
+			.append("\r\n")
 			.append("  -- 预期结果. ")
+			.append("\r\n")
 			.append("  DECLARE vResult VARCHAR(4000);")
 			.append("  -- 临时结果")
+			.append("\r\n")
 			.append("  DECLARE vTemp VARCHAR(4000);")
 			.append("  SET vTemp = pCodes;")
 			.append(" SET vResult = \"\";")
 			.append(" -- 循环处理。")
+			.append("\r\n")
 			.append("  WHILE vTemp is not null  DO")
 			.append("  SELECT GROUP_CONCAT( distinct  ABC0913) INTO vTemp  FROM ', tablename,' WHERE FIND_IN_SET(ABP0001,vTemp) and not FIND_IN_SET(ABC0913,vResult) and ABC0914=pRelationType;")
 			.append("   if vTemp is not null then")
@@ -268,8 +275,10 @@ public class BasicItemDaoImpl implements BasicItemDao {
 			.append("   end if;")
 			.append("  END WHILE;")
 			.append("  -- 返回结果.")
+			.append("\r\n")
 			.append("  RETURN substr(vResult,2);")
-			.append(" END;//', \" create table \", a.tablename,\"( `id`  bigint(20) NOT NULL AUTO_INCREMENT,")
+			.append(" END;//")
+			.append(" ', \" create table \", a.tablename,\"( `id`  bigint(20) NOT NULL AUTO_INCREMENT,")
 			.append(" `ABP0001`  varchar(32) Not NULL ,`ABC0913`  varchar(32) DEFAULT NULL ,`ABC0914`  varchar(32) DEFAULT NULL,PRIMARY KEY (`id`));\")")
 			.append(" FROM")
 			.append("     (SELECT ")

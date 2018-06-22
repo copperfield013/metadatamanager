@@ -9,6 +9,7 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import org.drools.compiler.lang.DRL5Expressions.type_return;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
@@ -551,14 +552,21 @@ public class BasicItemServiceImpl implements BasicItemService {
 		}	
 			
 		//创建关系表函数及关系表
-		List queryCreRelaTab = basicItemDao.queryCreRelaTab();
-		for (Object object : queryCreRelaTab) {
-			basicItemDao.excuteBySql(object.toString());
+		try {
+			List queryCreRelaTab = basicItemDao.queryCreRelaTab();
+			for (Object object : queryCreRelaTab) {
+				System.out.println(object);
+				basicItemDao.excuteBySql(object.toString());
+			}
+			
+			//以上程序执行完比， 应确保只有状态为1  和-1， 下面程序把所有状态为0的改为1
+			basicItemDao.excuteBySql("UPDATE t_c_basic_item SET c_using_state=1 WHERE c_using_state=0");
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw e;
 		}
 		
-		//以上程序执行完比， 应确保只有状态为1  和-1， 下面程序把所有状态为0的改为1
-		basicItemDao.excuteBySql("UPDATE t_c_basic_item SET c_using_state=1 WHERE c_using_state=0");
-	}
+		}
 
 	@Override
 	public List<BasicItem> getDataByPId(String parent) {
