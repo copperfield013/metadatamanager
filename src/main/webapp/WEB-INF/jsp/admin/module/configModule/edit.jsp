@@ -40,7 +40,7 @@
 						<div class="col-lg-5">
 							<select style="width: 30%;" id="codeName" class="ser-list" name="codeName">
 								<option selected="selected" value="">(默认)code</option>
-								<c:forEach items="${childNodeList }" var="item">
+								<c:forEach items="${childNode }" var="item">
 									<option value="${item.name }" <c:if test="${item.name eq module.codeName }">selected='selected'</c:if> >${item.name }</option>
 								</c:forEach>
 							</select>
@@ -51,7 +51,7 @@
 						<div class="col-lg-5">
 							<select style="width: 30%;" id="titleName" class="ser-list" name="titleName">
 								<option selected="selected" value="">(默认)姓名</option>
-								<c:forEach items="${childNodeList }" var="item">
+								<c:forEach items="${childNode }" var="item">
 									<option value="${item.name }" <c:if test="${item.name eq module.titleName }">selected='selected'</c:if> >${item.name }</option>
 								</c:forEach>
 							</select>
@@ -87,7 +87,7 @@
 	    	 Ajax.ajax('admin/module/configModule/childNodeList', {
 	    		 parentId:parentId
 	    	 }, function(data) {
-	    		 var child = data.childNodeList;
+	    		 var child = data.childNode;
 	    		 var str = "<option selected=\"selected\" value=\"\">(默认)code</option>";
 	    		 var str1 = "<option selected=\"selected\" value=\"\">(默认)姓名</option>";
 	    		 for (var p in child) { //遍历json数组时，这么写p为索引，0,1
