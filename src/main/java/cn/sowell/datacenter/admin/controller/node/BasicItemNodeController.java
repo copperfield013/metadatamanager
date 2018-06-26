@@ -152,7 +152,7 @@ public class BasicItemNodeController {
         @ApiResponse(code = 200, message = "OK", response = Object.class),
         @ApiResponse(code = 401, message = "操作失败") })
     @RequestMapping(value = "/getNodeOpsType",
-        method = RequestMethod.POST)
+        method = {RequestMethod.POST, RequestMethod.GET})
 	public ResponseEntity<Object> getNodeOpsType() {
 		 try {
 			 	List list = new ArrayList();

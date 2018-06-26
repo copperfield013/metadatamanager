@@ -60,3 +60,17 @@
         </li>
     </ul>
 </li>
+<li>
+    <a href="#" class="menu-dropdown">
+        <i class="menu-icon fa fa-bookmark"></i>
+        <span class="menu-text">数据服务</span>
+        <i></i>
+    </a>
+    <ul class="submenu">
+        <li>
+            <a class="tab" href="admin/dataservice/serviceBizzData/list" target="serviceBizzData_list" title="数据服务">
+                <span class="menu-text">数据服务</span>
+            </a>
+        </li>
+    </ul>
+</li>

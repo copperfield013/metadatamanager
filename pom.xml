@@ -14,7 +14,7 @@
 		<version.abcitem>3.3.34.alphal</version.abcitem>
 		<version.abcbizz>2.0.17</version.abcbizz>
 		 <version.jackson>2.4.4</version.jackson>
-		 
+		 <cxf.version>2.7.12</cxf.version>
 		 <!-- start -->
 		 <java.version>1.8</java.version>
 	    <swagger2markup.version>1.2.0</swagger2markup.version>
@@ -233,6 +233,39 @@
  			</exclusion>
  			</exclusions>
  		</dependency>
+		
+		<!-- CXF start -->
+		<dependency>
+			<groupId>org.apache.cxf</groupId>
+			<artifactId>cxf-rt-frontend-jaxrs</artifactId>
+			<version>${cxf.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.cxf</groupId>
+			<artifactId>cxf-rt-frontend-jaxws</artifactId>
+			<version>${cxf.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.cxf</groupId>
+			<artifactId>cxf-rt-transports-http</artifactId>
+			<version>${cxf.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.cxf</groupId>
+			<artifactId>cxf-rt-ws-security</artifactId>
+			<version>${cxf.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>xerces</groupId>
+			<artifactId>xercesImpl</artifactId>
+			<version>2.11.0</version>
+		</dependency>
+		<dependency>  
+		    <groupId>xml-apis</groupId>  
+		    <artifactId>xml-apis</artifactId>  
+		    <version>1.4.01</version>  
+		</dependency>
+		<!-- CXF end -->
 		
 	</dependencies>
 	
