@@ -13,20 +13,20 @@
 				<form class="bv-form form-horizontal validate-form" action="admin/dataservice/serviceBizzData/do_edit">
 					
 					<div class="form-group">
-						<label class="col-lg-2 control-label" for="ip">ip</label>
+						<label class="col-lg-2 control-label" for="ip">ip<font color="red">*</font></label>
 						<div class="col-lg-5">
 							<input type="text"  data-bv-notempty="true" data-bv-notempty-message="ip必填"  class="form-control" id="ip" name="ip" value="${serviceBizzData.ip }"/>
 						</div>
 					</div>
 					<div class="form-group">
-						<label class="col-lg-2 control-label" for="port">端口</label>
+						<label class="col-lg-2 control-label" for="port">端口<font color="red">*</font></label>
 						<div class="col-lg-5">
 							<input type="text" data-bv-notempty="true" data-bv-notempty-message="端口必填"  class="form-control" id="port" name="port" value="${serviceBizzData.port }"/>
 						</div>
 					</div>
 					<div class="form-group">
 						<input type="hidden" name="id" value="${serviceBizzData.id }">
-						<label class="col-lg-2 control-label" for="name">服务名</label>
+						<label class="col-lg-2 control-label" for="name">服务名<font color="red">*</font></label>
 						<div class="col-lg-5">
 							<input type="text" data-bv-notempty="true" data-bv-notempty-message="服务名必填" class="form-control" name="name" value="${serviceBizzData.name }" />
 						</div>
