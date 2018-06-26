@@ -41,8 +41,8 @@
 							
 							 <a class="tab" href="admin/dataservice/serviceBizzData/edit?id=${item.id }" title="编辑" target="serviceBizzData_edit" >编辑</a>
 							<a href="admin/dataservice/serviceBizzData/do_delete?id=${item.id }" confirm="确认移除？">移除</a>
-							<a href="admin/dataservice/serviceBizzData/refreshERXmlDom?id=${item.id }" confirm="确认刷新？">刷新配置文件</a>
-							<a href="admin/dataservice/serviceBizzData/refreshDictMapper?id=${item.id }" confirm="确认刷新？">刷新枚举值</a>
+							<a href="admin/dataservice/serviceBizzData/refreshERXmlDom?id=${item.id }" confirm="确认刷新？">刷新应用配置</a>
+							<a href="admin/dataservice/serviceBizzData/refreshDictMapper?id=${item.id }" confirm="确认刷新？">刷新字典</a>
 						</td>
 					</tr>
 				</c:forEach>
