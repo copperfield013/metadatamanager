@@ -109,7 +109,7 @@ public class ServiceBizzDataController {
 			ServiceBizzData serviceBizzData = sBizzDataService.getOne(id);
 			String params = null;
 			String method = null;
-			String url = "http://"+serviceBizzData.getIp()+":"+serviceBizzData.getPort()+"/"+serviceBizzData.getName()+"/services/serverService?wsdl";
+			String url = buildWSURL(serviceBizzData);
 			String wsdlResult = WebServiceUtil.getWsdlResult(url);
 			
 			if ("true".equals(wsdlResult)) {
@@ -126,6 +126,10 @@ public class ServiceBizzDataController {
 			return new ResponseEntity<AjaxPageResponse>(AjaxPageResponse.FAILD("操作失败"), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
+
+	protected String buildWSURL(ServiceBizzData serviceBizzData) {
+		return "http://"+serviceBizzData.getIp()+":"+serviceBizzData.getPort()+"/"+serviceBizzData.getName()+"/services/modelReLoadService?wsdl";
+	}
 	
 	@ResponseBody
 	@ApiOperation(value = "刷新配置文件", nickname = "refreshERXmlDom", notes = "刷新配置文件",response = AjaxPageResponse.class, tags={ "serviceBizzData", })
@@ -139,7 +143,7 @@ public class ServiceBizzDataController {
 			ServiceBizzData serviceBizzData = sBizzDataService.getOne(id);
 			String params = null;
 			String method = "loadERXmlDomFromDB";
-			String url = "http://"+serviceBizzData.getIp()+":"+serviceBizzData.getPort()+"/"+serviceBizzData.getName()+"/services/serverService?wsdl";
+			String url = buildWSURL(serviceBizzData);
 			String wsdlResult = WebServiceUtil.getWsdlResult(url, method, params);
 			
 			if ("true".equals(wsdlResult)) {
@@ -164,7 +168,7 @@ public class ServiceBizzDataController {
 			ServiceBizzData serviceBizzData = sBizzDataService.getOne(id);
 			String params = null;
 			String method = "loadDictionaryMapperFromDB";
-			String url = "http://"+serviceBizzData.getIp()+":"+serviceBizzData.getPort()+"/"+serviceBizzData.getName()+"/services/serverService?wsdl";
+			String url = buildWSURL(serviceBizzData);
 			String wsdlResult = WebServiceUtil.getWsdlResult(url, method, params);
 			
 			if ("true".equals(wsdlResult)) {
