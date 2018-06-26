@@ -11,23 +11,31 @@
 		<div class="row">
 			<div class="col-lg-12">
 				<form class="bv-form form-horizontal validate-form" action="admin/dataservice/serviceBizzData/do_add">
-					<div class="form-group">
-						
-						<label class="col-lg-2 control-label" for="name">名称</label>
-						<div class="col-lg-5">
-							<input type="text" class="form-control" name="name" />
-						</div>
-					</div>
+					
 					<div class="form-group">
 						<label class="col-lg-2 control-label" for="ip">ip</label>
 						<div class="col-lg-5">
-							<input type="text" class="form-control" id="ip" name="ip" />
+							<input type="text" data-bv-notempty="true" data-bv-notempty-message="ip必填" class="form-control" id="ip" name="ip" />
 						</div>
 					</div>
 					<div class="form-group">
 						<label class="col-lg-2 control-label" for="port">端口</label>
 						<div class="col-lg-5">
-							<input type="text" class="form-control" id="port" name="port" />
+							<input type="text" data-bv-notempty="true" data-bv-notempty-message="端口必填" class="form-control" id="port" name="port" />
+						</div>
+					</div>
+					
+					<div class="form-group">
+						<label class="col-lg-2 control-label" for="name">服务名</label>
+						<div class="col-lg-5">
+							<input type="text" data-bv-notempty="true" data-bv-notempty-message="服务名必填" class="form-control" name="name" />
+						</div>
+					</div>
+					
+					<div class="form-group">
+						<label class="col-lg-2 control-label" for="describe">描述</label>
+						<div class="col-lg-5">
+							<textarea rows="" cols="62" name="describe"></textarea>
 						</div>
 					</div>
 					

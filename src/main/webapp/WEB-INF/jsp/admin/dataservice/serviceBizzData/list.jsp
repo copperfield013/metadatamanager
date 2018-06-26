@@ -16,9 +16,10 @@
 			<thead>
 				<tr>
 					<th>序号</th>
-					<th>名称</th>
 					<th>IP</th>
 					<th>端口</th>
+					<th>服务名</th>
+					<th>描述</th>
 					<th>操作</th>
 				</tr>
 			</thead>
@@ -26,11 +27,18 @@
 				<c:forEach items="${list }" var="item" varStatus="i">
 					<tr>
 						<td>${i.index + 1 }</td>
-						<td>${item.name }</td>
 						<td>${item.ip }</td>
 						<td>${item.port }</td>
+						<td>${item.name }</td>
+						<td>${item.describe }</td>
 						<td>
-						
+							
+							<a href="admin/dataservice/serviceBizzData/testService?id=${item.id }">
+							<font color="<c:if test="${item.state eq 1 }">green</c:if><c:if test="${item.state eq 2 }">red</c:if>">
+							测试
+							</font>
+							</a>
+							
 							 <a class="tab" href="admin/dataservice/serviceBizzData/edit?id=${item.id }" title="编辑" target="serviceBizzData_edit" >编辑</a>
 							<a href="admin/dataservice/serviceBizzData/do_delete?id=${item.id }" confirm="确认移除？">移除</a>
 							<a href="admin/dataservice/serviceBizzData/refreshERXmlDom?id=${item.id }" confirm="确认刷新？">刷新配置文件</a>

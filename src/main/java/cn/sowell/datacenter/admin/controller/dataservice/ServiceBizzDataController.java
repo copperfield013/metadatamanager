@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import cn.sowell.copframe.dto.ajax.AjaxPageResponse;
+import cn.sowell.copframe.dto.ajax.NoticeType;
 import cn.sowell.copframe.dto.page.PageInfo;
 import cn.sowell.datacenter.admin.controller.AdminConstants;
 import cn.sowell.datacenter.model.dataservice.criteria.ServiceBizzDataCriteria;
@@ -97,20 +98,30 @@ public class ServiceBizzDataController {
 	
 	//禁用启用
 	@ResponseBody
-	@ApiOperation(value = "禁用启用模块", nickname = "disabled", notes = "禁用启用模块",response = AjaxPageResponse.class, tags={ "serviceBizzData", })
+	@ApiOperation(value = "测试数据服务", nickname = "testService", notes = "测试数据服务",response = AjaxPageResponse.class, tags={ "serviceBizzData", })
     @ApiResponses(value = { 
         @ApiResponse(code = 200, message = "操作成功", response = AjaxPageResponse.class),
         @ApiResponse(code = 401, message = "操作失败") })
-    @RequestMapping(value = "/disabled",
+    @RequestMapping(value = "/testService",
         method = RequestMethod.POST)
-	public ResponseEntity<AjaxPageResponse> disabled(String name, String endisabled){
+	public ResponseEntity<AjaxPageResponse> testService(Integer id){
 		try {
-			/*if ("true".equals(endisabled)) {//disabled 为true， 说明为启用状态
-				dBModuleConfigMediator.disableModule(name);
+			ServiceBizzData serviceBizzData = sBizzDataService.getOne(id);
+			String params = null;
+			String method = null;
+			String url = "http://"+serviceBizzData.getIp()+":"+serviceBizzData.getPort()+"/"+serviceBizzData.getName()+"/services/serverService?wsdl";
+			String wsdlResult = WebServiceUtil.getWsdlResult(url);
+			
+			if ("true".equals(wsdlResult)) {
+				serviceBizzData.setState("1");
+				sBizzDataService.update(serviceBizzData);
+				return new ResponseEntity<AjaxPageResponse>(AjaxPageResponse.REFRESH_LOCAL("测试通过"), HttpStatus.OK);
 			} else {
-				dBModuleConfigMediator.enableModule(name);
-			}*/
-			return new ResponseEntity<AjaxPageResponse>(AjaxPageResponse.REFRESH_LOCAL("操作成功"), HttpStatus.OK);
+				serviceBizzData.setState("2");
+				sBizzDataService.update(serviceBizzData);
+				return new ResponseEntity<AjaxPageResponse>(AjaxPageResponse.REFRESH_LOCAL_BY_TYPE("测试不通过", NoticeType.INFO), HttpStatus.OK);
+			}
+		
 		} catch (Exception e) {
 			return new ResponseEntity<AjaxPageResponse>(AjaxPageResponse.FAILD("操作失败"), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
@@ -128,7 +139,7 @@ public class ServiceBizzDataController {
 			ServiceBizzData serviceBizzData = sBizzDataService.getOne(id);
 			String params = null;
 			String method = "loadERXmlDomFromDB";
-			String url = "http://"+serviceBizzData.getIp()+":"+serviceBizzData.getPort()+"/ibserver_new/services/serverService?wsdl";
+			String url = "http://"+serviceBizzData.getIp()+":"+serviceBizzData.getPort()+"/"+serviceBizzData.getName()+"/services/serverService?wsdl";
 			String wsdlResult = WebServiceUtil.getWsdlResult(url, method, params);
 			
 			if ("true".equals(wsdlResult)) {
@@ -153,7 +164,7 @@ public class ServiceBizzDataController {
 			ServiceBizzData serviceBizzData = sBizzDataService.getOne(id);
 			String params = null;
 			String method = "loadDictionaryMapperFromDB";
-			String url = "http://"+serviceBizzData.getIp()+":"+serviceBizzData.getPort()+"/ibserver_new/services/serverService?wsdl";
+			String url = "http://"+serviceBizzData.getIp()+":"+serviceBizzData.getPort()+"/"+serviceBizzData.getName()+"/services/serverService?wsdl";
 			String wsdlResult = WebServiceUtil.getWsdlResult(url, method, params);
 			
 			if ("true".equals(wsdlResult)) {
