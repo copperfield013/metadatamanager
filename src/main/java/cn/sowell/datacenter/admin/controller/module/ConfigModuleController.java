@@ -103,87 +103,113 @@ public class ConfigModuleController {
          }
 	}
 	
-	@ApiIgnore
 	@ResponseBody
-	@RequestMapping("/do_add")
-	public AjaxPageResponse doAdd(String moduleName, String moduleTitle, String mappingName, String codeName, String titleName){
+	@ApiOperation(value = "创建模块", nickname = "doAdd", notes = "创建模块",response = AjaxPageResponse.class, tags={ "configModule", })
+    @ApiResponses(value = { 
+        @ApiResponse(code = 200, message = "添加成功", response = AjaxPageResponse.class),
+        @ApiResponse(code = 401, message = "添加失败") })
+    @RequestMapping(value = "/do_add",
+        method = RequestMethod.POST)
+	public ResponseEntity<AjaxPageResponse> doAdd(String moduleName, String moduleTitle, String mappingName, String codeName, String titleName){
 		try {
 			CreateModuleParam param = new CreateModuleParam(moduleTitle, mappingName);
 			param.setModuleName(moduleName);
 			param.setCodeName(codeName);
 			param.setTitleName(titleName);
 			dBModuleConfigMediator.createModule(param);
-			return AjaxPageResponse.CLOSE_AND_REFRESH_PAGE("添加成功", "configModule_list");
+			return new ResponseEntity<AjaxPageResponse>(AjaxPageResponse.CLOSE_AND_REFRESH_PAGE("添加成功", "configModule_list"), HttpStatus.OK);
 		} catch (Exception e) {
-			return AjaxPageResponse.FAILD("添加失败");
+			return new ResponseEntity<AjaxPageResponse>(AjaxPageResponse.FAILD("添加失败"), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 	
-	@ApiIgnore
 	@ResponseBody
-	@RequestMapping("/do_delete")
-	public AjaxPageResponse doDelte(String name){
+	@ApiOperation(value = "移除模块", nickname = "doDelte", notes = "移除模块",response = AjaxPageResponse.class, tags={ "configModule", })
+    @ApiResponses(value = { 
+        @ApiResponse(code = 200, message = "删除成功", response = AjaxPageResponse.class),
+        @ApiResponse(code = 401, message = "删除失败") })
+    @RequestMapping(value = "/do_delete",
+        method = RequestMethod.POST)
+	public ResponseEntity<AjaxPageResponse> doDelte(String name){
 		try {
 			dBModuleConfigMediator.removeModule(name);
-			return AjaxPageResponse.REFRESH_LOCAL("删除成功");
+			return new ResponseEntity<AjaxPageResponse>(AjaxPageResponse.REFRESH_LOCAL("删除成功"), HttpStatus.OK);
 		} catch (Exception e) {
-			return AjaxPageResponse.FAILD("删除失败");
+			return new ResponseEntity<AjaxPageResponse>(AjaxPageResponse.FAILD("删除失败"), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 	
 	//禁用启用
-	@ApiIgnore
 	@ResponseBody
-	@RequestMapping("/disabled")
-	public AjaxPageResponse disabled(String name, String endisabled){
+	@ApiOperation(value = "禁用启用模块", nickname = "disabled", notes = "禁用启用模块",response = AjaxPageResponse.class, tags={ "configModule", })
+    @ApiResponses(value = { 
+        @ApiResponse(code = 200, message = "操作成功", response = AjaxPageResponse.class),
+        @ApiResponse(code = 401, message = "操作失败") })
+    @RequestMapping(value = "/disabled",
+        method = RequestMethod.POST)
+	public ResponseEntity<AjaxPageResponse> disabled(String name, String endisabled){
 		try {
 			if ("true".equals(endisabled)) {//disabled 为true， 说明为启用状态
 				dBModuleConfigMediator.disableModule(name);
 			} else {
 				dBModuleConfigMediator.enableModule(name);
 			}
-			return AjaxPageResponse.REFRESH_LOCAL("操作成功");
+			return new ResponseEntity<AjaxPageResponse>(AjaxPageResponse.REFRESH_LOCAL("操作成功"), HttpStatus.OK);
 		} catch (Exception e) {
-			return AjaxPageResponse.FAILD("操作失败");
+			return new ResponseEntity<AjaxPageResponse>(AjaxPageResponse.FAILD("操作失败"), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 	
-	@ApiIgnore
 	@ResponseBody
-	@RequestMapping("/refresh")
-	public AjaxPageResponse refresh(String name){
-		
-		
+	@ApiOperation(value = "刷新", nickname = "refresh", notes = "刷新",response = AjaxPageResponse.class, tags={ "configModule", })
+    @ApiResponses(value = { 
+        @ApiResponse(code = 200, message = "操作成功", response = AjaxPageResponse.class),
+        @ApiResponse(code = 401, message = "操作失败") })
+    @RequestMapping(value = "/refresh",
+        method = RequestMethod.POST)
+	public ResponseEntity<AjaxPageResponse> refresh(String name){
 		try {
 			basicItemNodeService.refresh(name);
-			return AjaxPageResponse.REFRESH_LOCAL("刷新成功");
+			return new ResponseEntity<AjaxPageResponse>(AjaxPageResponse.REFRESH_LOCAL("刷新成功"), HttpStatus.OK);
 		} catch (Exception e) {
-			return AjaxPageResponse.FAILD("刷新失败");
+			return new ResponseEntity<AjaxPageResponse>(AjaxPageResponse.FAILD("刷新失败"), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 	
-	@ApiIgnore
-	@RequestMapping("/edit")
-	public String edit(String name, Model model){
+	 @ApiOperation(value = "跳转到编辑页面", nickname = "edit", notes = "跳转到编辑页面", response = ModelAndView.class, tags={ "configModule", })
+    @ApiResponses(value = { 
+        @ApiResponse(code = 200, message = "操作成功", response = ModelAndView.class),
+        @ApiResponse(code = 401, message = "操作失败") })
+    @RequestMapping(value = "/edit",
+        method = RequestMethod.POST)
+	public ModelAndView edit(String name){
 		Module module = dBModuleConfigMediator.getModule(name);
 		
 		BasicItemNode abc = basicItemNodeService.getAbc(module.getMappingName());
 		List<BasicItemNode> childNode = basicItemNodeService.getAttribute(String.valueOf(abc.getId()));
-		model.addAttribute("module", module);
-		model.addAttribute("childNode", childNode);
-		return AdminConstants.JSP_MODULE + "/configModule/edit.jsp";
+		ModelAndView mv = new ModelAndView();
+		
+		mv.addObject("module", module);
+		mv.addObject("childNode", childNode);
+		mv.setViewName(AdminConstants.JSP_MODULE + "/configModule/edit.jsp");
+		return mv;
 	}
 	
-	@ApiIgnore
 	@ResponseBody
-	@RequestMapping("/do_edit")
-	public AjaxPageResponse do_edit(String moduleName, String moduleTitle, String mappingName, String codeName, String titleName){
+	@ApiOperation(value = "编辑模块", nickname = "do_edit", notes = "编辑模块",response = AjaxPageResponse.class, tags={ "configModule", })
+    @ApiResponses(value = { 
+        @ApiResponse(code = 200, message = "编辑成功", response = AjaxPageResponse.class),
+        @ApiResponse(code = 401, message = "编辑失败") })
+    @RequestMapping(value = "/do_edit",
+        method = RequestMethod.POST)
+	public ResponseEntity<AjaxPageResponse> do_edit(String moduleName, String moduleTitle, String mappingName, String codeName, String titleName){
 		try {
 			dBModuleConfigMediator.updateModulePropertyName(moduleName, codeName, titleName);
-			return AjaxPageResponse.CLOSE_AND_REFRESH_PAGE("修改成功", "configModule_list");
-		} catch (Exception e) {
-			return AjaxPageResponse.FAILD("添加失败");
-		}
+		return new ResponseEntity<AjaxPageResponse>(AjaxPageResponse.CLOSE_AND_REFRESH_PAGE("编辑成功", "configModule_list"), HttpStatus.OK);
+	} catch (Exception e) {
+		return new ResponseEntity<AjaxPageResponse>(AjaxPageResponse.FAILD("编辑失败"), HttpStatus.INTERNAL_SERVER_ERROR);
+	}
+		
 	}
 	
 }
