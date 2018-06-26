@@ -1562,7 +1562,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
             var entityRela = jsonData.entityRela;            
             var str = "";
             for (var i = 0; i < entityRela.length; i++) {
-            	str = str + "<div title=\"typeCode:"+entityRela[i].typeCode+", 名称:"+entityRela[i].name+", 左实体:"+entityRela[i].leftRecordType+", 右实体:"+entityRela[i].rightRecordType+" , 逆向code："+entityRela[i].reverseCode+"\" class=\"entity_attr\">" + entityRela[i].name
+            	str = str + "<div title=\"typeCode:"+entityRela[i].typeCode+", 名称:"+entityRela[i].name+", 左实体:"+entityRela[i].leftRecordType+", 右实体:"+entityRela[i].rightRecordType+" , 逆向关系："+entityRela[i].reverseCode+"\" class=\"entity_attr\">" + entityRela[i].name
             	+"<ul class=\"entity_ul\" typeCode=\""+entityRela[i].typeCode+"\">" 
 				+"<li><a href=\"javascript:void(0)\" patentId=\""+entityRela[i].leftRecordType+"\" class=\"delete_rela\"><i class=\"icon edit-entity\"></i>删除关系</a></li>"
 				+"</ul>"
