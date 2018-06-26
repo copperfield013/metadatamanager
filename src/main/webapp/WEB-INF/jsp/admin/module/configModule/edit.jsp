@@ -12,25 +12,26 @@
 			<div class="col-lg-12">
 				<form class="bv-form form-horizontal validate-form" action="admin/module/configModule/do_edit">
 					<div class="form-group">
-						
-						<input type="hidden" name="moduleName" value="${module.name }">
-						<input type="hidden" name="moduleTitle" value="${module.title }">
-						<input type="hidden" name="mappingName" value="${module.mappingName }">
-						
-						<label class="col-lg-2 control-label" for="moduleName">模块名</label>
-						<div class="col-lg-5">
-							${module.name }
-						</div>
-					</div>
-					<div class="form-group">
-						<label class="col-lg-2 control-label" for="moduleTitle">模块标题</label>
+						<label class="col-lg-2 control-label" for="moduleTitle">模块名称<font color="red">*</font></label>
 						
 						<div class="col-lg-7">
 							${module.title }
 						</div>
 					</div>
 					<div class="form-group">
-						<label class="col-lg-2 control-label" for="mappingName">配置名称</label>
+						
+						<input type="hidden" name="moduleName" value="${module.name }">
+						<input type="hidden" name="moduleTitle" value="${module.title }">
+						<input type="hidden" name="mappingName" value="${module.mappingName }">
+						
+						<label class="col-lg-2 control-label" for="moduleName">模块标识</label>
+						<div class="col-lg-5">
+							${module.name }
+						</div>
+					</div>
+					
+					<div class="form-group">
+						<label class="col-lg-2 control-label" for="mappingName">配置名称<font color="red">*</font></label>
 						<div class="col-lg-5">
 							${module.mappingName }
 						</div>
@@ -39,7 +40,7 @@
 						<label class="col-lg-2 control-label" for="codeName">编码字段</label>
 						<div class="col-lg-5">
 							<select style="width: 30%;" id="codeName" class="ser-list" name="codeName">
-								<option selected="selected" value="">(默认)code</option>
+								<option selected="selected" value="">唯一编码</option>
 								<c:forEach items="${childNode }" var="item">
 									<option value="${item.name }" <c:if test="${item.name eq module.codeName }">selected='selected'</c:if> >${item.name }</option>
 								</c:forEach>
@@ -50,7 +51,7 @@
 						<label class="col-lg-2 control-label" for="titleName">名称字段</label>
 						<div class="col-lg-5">
 							<select style="width: 30%;" id="titleName" class="ser-list" name="titleName">
-								<option selected="selected" value="">(默认)姓名</option>
+								<option selected="selected" value=""></option>
 								<c:forEach items="${childNode }" var="item">
 									<option value="${item.name }" <c:if test="${item.name eq module.titleName }">selected='selected'</c:if> >${item.name }</option>
 								</c:forEach>
@@ -88,8 +89,8 @@
 	    		 parentId:parentId
 	    	 }, function(data) {
 	    		 var child = data.childNode;
-	    		 var str = "<option selected=\"selected\" value=\"\">(默认)code</option>";
-	    		 var str1 = "<option selected=\"selected\" value=\"\">(默认)姓名</option>";
+	    		 var str = "<option selected=\"selected\" value=\"\">唯一编码</option>";
+	    		 var str1 = "<option selected=\"selected\" value=\"\"></option>";
 	    		 for (var p in child) { //遍历json数组时，这么写p为索引，0,1
                      str = str + "<option value=\"" + child[p].name + "\">" + child[p].name + "</option>";
                      str1 = str1 + "<option value=\"" + child[p].name + "\">" + child[p].name + "</option>"; 

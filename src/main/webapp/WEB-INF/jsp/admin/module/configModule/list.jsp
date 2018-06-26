@@ -16,8 +16,8 @@
 			<thead>
 				<tr>
 					<th>序号</th>
-					<th>模块</th>
-					<th>标题</th>
+					<th>模块标识</th>
+					<th>模块名称</th>
 					<th>配置名称</th>
 					<th>操作</th>
 				</tr>

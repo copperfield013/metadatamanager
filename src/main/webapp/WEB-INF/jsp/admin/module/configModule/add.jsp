@@ -12,22 +12,22 @@
 			<div class="col-lg-12">
 				<form class="bv-form form-horizontal validate-form" action="admin/module/configModule/do_add">
 					<div class="form-group">
+						<label class="col-lg-2 control-label" for="moduleTitle">模块名称<font color="red">*</font></label>
+						<div class="col-lg-5">
+							<input type="text" data-bv-notempty="true" data-bv-notempty-message="模块名称必填" class="form-control" id="moduleTitle" name="moduleTitle" />
+						</div>
+					</div>
+					<div class="form-group">
 						
-						<label class="col-lg-2 control-label" for="moduleName">模块名</label>
+						<label class="col-lg-2 control-label" for="moduleName">模块标识</label>
 						<div class="col-lg-5">
-							<input type="text" class="form-control" name="moduleName" />
+							<input type="text" class="form-control" placeholder="不填时将由后台生成随机编码"  name="moduleName" />
 						</div>
 					</div>
 					<div class="form-group">
-						<label class="col-lg-2 control-label" for="moduleTitle">模块标题</label>
+						<label class="col-lg-2 control-label" for="mappingName">配置名称<font color="red">*</font></label>
 						<div class="col-lg-5">
-							<input type="text" class="form-control" id="moduleTitle" name="moduleTitle" />
-						</div>
-					</div>
-					<div class="form-group">
-						<label class="col-lg-2 control-label" for="mappingName">配置名称</label>
-						<div class="col-lg-5">
-							<select style="width: 30%;" id="mappingName" class="ser-list" name="mappingName">
+							<select data-bv-notempty="true" data-bv-notempty-message="配置名称必填"  style="width: 30%;" id="mappingName" class="ser-list" name="mappingName">
 								<c:forEach items="${abcList }" var="item">
 									<option value="${item.name }" data-id="${item.id }">${item.name }</option>
 								</c:forEach>
@@ -38,7 +38,7 @@
 						<label class="col-lg-2 control-label" for="codeName">编码字段</label>
 						<div class="col-lg-5">
 							<select style="width: 30%;" id="codeName" class="ser-list" name="codeName">
-								<option selected="selected" value="">(默认)code</option>
+								<option selected="selected" value="">唯一编码</option>
 								<c:forEach items="${childNode }" var="item">
 									<option value="${item.name }">${item.name }</option>
 								</c:forEach>
@@ -49,7 +49,7 @@
 						<label class="col-lg-2 control-label" for="titleName">名称字段</label>
 						<div class="col-lg-5">
 							<select style="width: 30%;" id="titleName" class="ser-list" name="titleName">
-								<option selected="selected" value="">(默认)姓名</option>
+								<option selected="selected" value=""></option>
 								<c:forEach items="${childNode }" var="item">
 									<option value="${item.name }">${item.name }</option>
 								</c:forEach>
@@ -88,8 +88,8 @@
 	    		 parentId:parentId
 	    	 }, function(data) {
 	    		 var child = data.childNode;
-	    		 var str = "<option selected=\"selected\" value=\"\">(默认)code</option>";
-	    		 var str1 = "<option selected=\"selected\" value=\"\">(默认)姓名</option>";
+	    		 var str = "<option selected=\"selected\" value=\"\">唯一编码</option>";
+	    		 var str1 = "<option selected=\"selected\" value=\"\"></option>";
 	    		 for (var p in child) { //遍历json数组时，这么写p为索引，0,1
                      str = str + "<option value=\"" + child[p].name + "\">" + child[p].name + "</option>";
                      str1 = str1 + "<option value=\"" + child[p].name + "\">" + child[p].name + "</option>"; 

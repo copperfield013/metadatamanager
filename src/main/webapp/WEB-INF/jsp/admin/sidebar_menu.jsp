@@ -63,7 +63,7 @@
 <li>
     <a href="#" class="menu-dropdown">
         <i class="menu-icon fa fa-bookmark"></i>
-        <span class="menu-text">数据服务</span>
+        <span class="menu-text">数据服务器</span>
         <i></i>
     </a>
     <ul class="submenu">
