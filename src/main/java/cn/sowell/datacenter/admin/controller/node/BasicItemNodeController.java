@@ -15,10 +15,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -26,10 +24,8 @@ import com.abc.mapping.node.NodeOpsType;
 import com.abc.mapping.node.NodeType;
 import com.abc.util.ValueTypeConstant;
 import com.alibaba.fastjson.JSONObject;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import cn.sowell.copframe.dto.ajax.AjaxPageResponse;
-import cn.sowell.copframe.dto.ajax.NoticeType;
 import cn.sowell.copframe.dto.page.PageInfo;
 import cn.sowell.datacenter.admin.controller.AdminConstants;
 import cn.sowell.datacenter.admin.controller.node.api.BasicItemNodes;
@@ -39,7 +35,6 @@ import cn.sowell.datacenter.admin.controller.node.api.InlineResponse200;
 import cn.sowell.datacenter.admin.controller.node.api.InlineResponse2001;
 import cn.sowell.datacenter.admin.controller.node.api.InlineResponse2002;
 import cn.sowell.datacenter.admin.controller.node.api.RecordRelationTypes;
-import cn.sowell.datacenter.admin.controller.node.util.ConfigFile;
 import cn.sowell.datacenter.model.dictionary.criteria.BasicItemCriteria;
 import cn.sowell.datacenter.model.dictionary.pojo.BasicItem;
 import cn.sowell.datacenter.model.dictionary.pojo.DictionaryBasicItem;
@@ -50,13 +45,10 @@ import cn.sowell.datacenter.model.dictionary.service.RecordRelationTypeService;
 import cn.sowell.datacenter.model.node.criteria.BasicItemNodeCriteria;
 import cn.sowell.datacenter.model.node.pojo.BasicItemNode;
 import cn.sowell.datacenter.model.node.service.BasicItemNodeService;
-import cn.sowell.datacenter.utils.FileManager;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
-import springfox.documentation.annotations.ApiIgnore;
 
 @javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2018-06-11T07:53:08.778Z")
 
@@ -400,19 +392,18 @@ public class BasicItemNodeController {
     	BasicItemNode bn = basicItemNodeService.getOne(nodeId);
     	String fileName = bn.getName()+".xml";
     	File file = File.createTempFile(bn.getName(), ".xml");
-          //在程序退出时删除临时文件
-    	 file.deleteOnExit();
-    	 
 		//创建ABC配置文件
-		String str = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
-		FileManager.writeFileContent(file, str);
-		new ConfigFile(basicItemNodeService).createAbc(file, bn);
-		
+		bn.getConfigFile(file);
        HttpHeaders headers = new HttpHeaders();  
        String downloadFileName = new String(fileName.getBytes("UTF-8"),"iso-8859-1");//设置编码
        headers.setContentDispositionFormData("attachment", downloadFileName);
        headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
        byte[] readFileToByteArray = FileUtils.readFileToByteArray(file);
+      // 如果文件路径所对应的文件存在，并且是一个文件，则直接删除
+      if (file.exists() && file.isFile()) {
+    	//在程序退出时删除临时文件
+    	 	file.delete();
+      } 
        return new ResponseEntity<byte[]>(readFileToByteArray,    
                headers, HttpStatus.OK);  
     }
