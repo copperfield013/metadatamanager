@@ -1,13 +1,18 @@
 package cn.sowell.datacenter.admin.controller.node;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.io.FileUtils;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -34,6 +39,7 @@ import cn.sowell.datacenter.admin.controller.node.api.InlineResponse200;
 import cn.sowell.datacenter.admin.controller.node.api.InlineResponse2001;
 import cn.sowell.datacenter.admin.controller.node.api.InlineResponse2002;
 import cn.sowell.datacenter.admin.controller.node.api.RecordRelationTypes;
+import cn.sowell.datacenter.admin.controller.node.util.ConfigFile;
 import cn.sowell.datacenter.model.dictionary.criteria.BasicItemCriteria;
 import cn.sowell.datacenter.model.dictionary.pojo.BasicItem;
 import cn.sowell.datacenter.model.dictionary.pojo.DictionaryBasicItem;
@@ -44,6 +50,7 @@ import cn.sowell.datacenter.model.dictionary.service.RecordRelationTypeService;
 import cn.sowell.datacenter.model.node.criteria.BasicItemNodeCriteria;
 import cn.sowell.datacenter.model.node.pojo.BasicItemNode;
 import cn.sowell.datacenter.model.node.service.BasicItemNodeService;
+import cn.sowell.datacenter.utils.FileManager;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -387,5 +394,27 @@ public class BasicItemNodeController {
             return new ResponseEntity<BasicItems>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 	}
+	
+	@RequestMapping(value="/download")
+    public ResponseEntity<byte[]> download(HttpServletRequest request, Integer nodeId)throws Exception {
+    	BasicItemNode bn = basicItemNodeService.getOne(nodeId);
+    	String fileName = bn.getName()+".xml";
+    	File file = File.createTempFile(bn.getName(), ".xml");
+          //在程序退出时删除临时文件
+    	 file.deleteOnExit();
+    	 
+		//创建ABC配置文件
+		String str = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
+		FileManager.writeFileContent(file, str);
+		new ConfigFile(basicItemNodeService).createAbc(file, bn);
 		
+       HttpHeaders headers = new HttpHeaders();  
+       String downloadFileName = new String(fileName.getBytes("UTF-8"),"iso-8859-1");//设置编码
+       headers.setContentDispositionFormData("attachment", downloadFileName);
+       headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+       byte[] readFileToByteArray = FileUtils.readFileToByteArray(file);
+       return new ResponseEntity<byte[]>(readFileToByteArray,    
+               headers, HttpStatus.OK);  
+    }
+    
 }

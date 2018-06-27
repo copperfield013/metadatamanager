@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html;charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ include file="/WEB-INF/jsp/common/base_empty.jsp"%>
-<div id="demo-list">
+<div id="basicItemNode-list">
 	<nav>
 		<form class="form-inline" action="admin/node/basicItemNode/list">
 			<div class="form-group">
@@ -30,6 +30,7 @@
 						<td>${item.name }</td>
 						<td>${item.abcattr }</td>
 						<td>
+							<a id="download" nodeId="${item.id }" href="javascript:;" >下载</a>
 							<a class="tab" href="admin/node/basicItemNode/edit?nodeId=${item.id }" title="修改" target="dictMapping_edit" >修改</a>
 							<a href="admin/node/basicItemNode/do_delete?id=${item.id }&isDelChil=false" confirm="确认删除？">删除</a>
 						</td>
@@ -41,8 +42,12 @@
 	</div>
 </div>
 <script>
-	seajs.use(['dialog','utils'], function(Dialog, Utils){
-		var $page = $('#demo-list');
-		Utils.datepicker($('#date', $page));
+	seajs.use(['dialog','utils', 'ajax'], function(Dialog, Utils, Ajax){
+		var $page = $('#basicItemNode-list');
+	$("tbody", $page).on("click", "#download", function (e) {
+		var nodeId = $(this).attr("nodeId");
+		var url="admin/node/basicItemNode/download?nodeId=" + nodeId;
+		Ajax.download(url);
+  	 });  
 	});
 </script>
