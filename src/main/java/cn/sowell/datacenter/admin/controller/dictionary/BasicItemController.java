@@ -15,6 +15,8 @@ import javax.servlet.http.HttpSession;
 import org.apache.log4j.Logger;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.ServletRequestDataBinder;
@@ -24,6 +26,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.alibaba.fastjson.JSONObject;
 
@@ -34,6 +37,8 @@ import cn.sowell.copframe.dto.ajax.ResponseJSON;
 import cn.sowell.copframe.dto.page.PageInfo;
 import cn.sowell.copframe.utils.TextUtils;
 import cn.sowell.datacenter.admin.controller.AdminConstants;
+import cn.sowell.datacenter.admin.controller.node.api.BasicItems;
+import cn.sowell.datacenter.admin.controller.node.api.InlineResponse2003;
 import cn.sowell.datacenter.model.demo.criteria.DemoCriteria;
 import cn.sowell.datacenter.model.demo.pojo.PlainDemo;
 import cn.sowell.datacenter.model.demo.service.DemoService;
@@ -50,9 +55,11 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import springfox.documentation.annotations.ApiIgnore;
 
-/*@Api(tags="entityManager", description="实体管理接口")*/
+@Api(tags="entityManager", description="实体管理接口")
 @Controller
 @RequestMapping(AdminConstants.URI_DICTIONARY + "/basicItem")
 public class BasicItemController {
@@ -66,43 +73,67 @@ public class BasicItemController {
 	@Resource
 	TowlevelattrService towlevelattrService;
 	
-	
-	@RequestMapping("/list")
-	public String list(BasicItemCriteria criteria, Model model){
-		criteria.setDataType("记录类型");
-		List<BasicItem> list = basicItemService.queryList(criteria);
-		model.addAttribute("list", list);
-		model.addAttribute("criteria", criteria);
-		return AdminConstants.JSP_DICTIONARY + "/basicItem/list.jsp";
-	}
-	
-	//ajax 获取实体列表
-	@ApiOperation(value="获取实体列表信息", notes="获取实体列表")
-	@ResponseBody
-	@RequestMapping(value="/entityList", method=RequestMethod.POST)
-	public String entityList(){
+	@ApiOperation(value = "跳转到list页面获取实体信息", nickname = "list", notes = "跳转到list页面获取实体信息", response = ModelAndView.class, tags={ "configModule", })
+    @ApiResponses(value = { 
+        @ApiResponse(code = 200, message = "操作成功", response = ModelAndView.class),
+        @ApiResponse(code = 401, message = "操作失败") })
+    @RequestMapping(value = "/list",
+        method = RequestMethod.POST)
+	public ModelAndView list(){
 		BasicItemCriteria criteria = new BasicItemCriteria();
 		criteria.setDataType("记录类型");
 		List<BasicItem> list = basicItemService.queryList(criteria);
-		Map<String, Object> map = new HashMap<String, Object>();
-		map.put("entity", list);
-		JSONObject jobj = new JSONObject(map);
-		return jobj.toString();
+		ModelAndView mv = new ModelAndView();
+		mv.addObject("list", list);
+		mv.setViewName(AdminConstants.JSP_DICTIONARY + "/basicItem/list.jsp");
+		return mv;
+	}
+	
+	//ajax 获取实体列表
+	@ResponseBody
+	@ApiOperation(value = "获取实体列表信息", nickname = "entityList", notes = "获取实体列表信息", response = BasicItems.class, tags={ "configModule", })
+    @ApiResponses(value = { 
+        @ApiResponse(code = 200, message = "操作成功", response = BasicItems.class),
+        @ApiResponse(code = 401, message = "操作失败") })
+    @RequestMapping(value = "/entityList",
+        method = RequestMethod.POST)
+	public ResponseEntity<BasicItems> entityList(){
+		try {
+			BasicItemCriteria criteria = new BasicItemCriteria();
+			criteria.setDataType("记录类型");
+			List<BasicItem> list = basicItemService.queryList(criteria);
+			BasicItems bts = new BasicItems();
+			bts.entity(list);
+			return new ResponseEntity<BasicItems>(bts, HttpStatus.OK);
+		} catch (Exception e) {
+			return new ResponseEntity<BasicItems>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+	
+	@ResponseBody
+	@ApiOperation(value = "获取数据类型信息", nickname = "getDataType",response = InlineResponse2003.class, notes = "获取数据类型信息", tags={ "configModule", })
+    @ApiResponses(value = { 
+        @ApiResponse(code = 200, message = "操作成功", response = InlineResponse2003.class),
+        @ApiResponse(code = 401, message = "操作失败") })
+    @RequestMapping(value = "/getDataType",
+        method = RequestMethod.POST)
+	public ResponseEntity<InlineResponse2003> getDataType(){
+		try {
+			InlineResponse2003 inline = new InlineResponse2003();
+			inline.set枚举((String)Constants.DATA_TYPE_MAP.get("枚举"));
+			inline.setChar((String)Constants.DATA_TYPE_MAP.get("char"));
+			inline.setDate((String)Constants.DATA_TYPE_MAP.get("date"));
+			inline.setDateTime((String)Constants.DATA_TYPE_MAP.get("dateTime"));
+			inline.setDigital((String)Constants.DATA_TYPE_MAP.get("digital"));
+			inline.setDigitalDecimal((String)Constants.DATA_TYPE_MAP.get("digitalDecimal"));
+			inline.set文件型((String)Constants.DATA_TYPE_MAP.get("文件型"));
+			return new ResponseEntity<InlineResponse2003>(inline, HttpStatus.OK);
+		} catch (Exception e) {
+			return new ResponseEntity<InlineResponse2003>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 	}
 	
 	@ApiIgnore
-	@ResponseBody
-	@RequestMapping("/getDataType")
-	public String getDataType(BasicItem	basicItem){
-		
-		Map<String, Object> map = Constants.DATA_TYPE_MAP;
-		map.remove("record");
-		map.remove("repeat");
-		map.remove("group");
-		JSONObject jobj = new JSONObject(map);
-		return jobj.toString();
-	}
-	
 	@ApiOperation(value="添加", notes="新增实体,新增普通属性， 多值属性， 分组")
 	@ResponseBody
 	@RequestMapping(value="/do_add", method=RequestMethod.POST)
@@ -193,6 +224,7 @@ public class BasicItemController {
 	}
 
 	
+	@ApiIgnore
 	@ApiOperation(value="get节点信息", notes="获取单个节点信息")
 	@ApiImplicitParams({
         @ApiImplicitParam(name="id", value="节点ID", required=true, paramType="query", dataType="String")
@@ -218,6 +250,7 @@ public class BasicItemController {
 	}
 	
 	//根据实体id， 获取实体下面的普通属性， 多值属性 和实体关系
+	@ApiIgnore
 	@ApiOperation(value="属性管理", notes="根据实体id， 获取实体下面的普通属性， 多值属性 和实体关系")
 	@ApiImplicitParams({
 		@ApiImplicitParam(name="parentId", value="实体id", dataType="String", paramType="query", required=true)
@@ -230,6 +263,7 @@ public class BasicItemController {
 	}
 	
 	//过期实体or正常  普通属性和多值属性
+	@ApiIgnore
 	@ApiOperation(value="过期实体", notes="过期实体or正常  普通属性和多值属性")
 	@ApiImplicitParams({
 		@ApiImplicitParam(name="id", value="节点id", required=true, dataType="String", paramType="query"),
@@ -256,6 +290,7 @@ public class BasicItemController {
 	}
 	
 		//创建表
+	@ApiIgnore
 		@ApiOperation(value="创建表", notes="创建实体存储")
 		@ResponseBody
 		@RequestMapping(value="/createTab", method=RequestMethod.POST)
@@ -269,6 +304,7 @@ public class BasicItemController {
 		}
 	
 		//删除实体， 属性
+	@ApiIgnore
 		@ApiOperation(value="删除", notes="删除节点")
 		@ApiImplicitParams({
 			@ApiImplicitParam(name="id", value="节点id", required=true, dataType="String", paramType="query")
@@ -420,6 +456,7 @@ public class BasicItemController {
 		}
 		
 		//删除二级属性的孩子
+		@ApiIgnore
 		@ResponseBody
 		@RequestMapping(value="/twoattr_chil_delete")
 		public AjaxPageResponse twoattr_chil_delete(Long id){
@@ -436,6 +473,7 @@ public class BasicItemController {
 			
 		
 		//删除二级属性本身
+		@ApiIgnore
 		@ResponseBody
 		@RequestMapping(value="/twoattr_delete")
 		public AjaxPageResponse twoattr_delete(Long id){
@@ -458,6 +496,7 @@ public class BasicItemController {
 		}
 		
 		//判断多值属性的孩子是否被二级属性占用， 占用则不可编辑
+		@ApiIgnore
 		@ResponseBody//entityId为二级属性孩子的id
 		@RequestMapping("/isTwoattr")
 		public String isTwoattr(String id){

@@ -172,7 +172,20 @@ public class BasicItemNode {
 	 * @throws IOException
 	 */
 	public void getConfigFile(File file) throws IOException {
-		createAbc(file, this);
+		String prefix = " ";
+		String head = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
+		FileManager.writeFileContent(file, head);
+		head = "<ABC name=\""+this.getName()+"\" abcattr=\""+this.getAbcattr()+"\""+"\r\n"
+				+ "	 class=\"\" xmlns=\"http://www.w3school.com.cn\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">";
+		FileManager.writeFileContent(file, head);
+		
+		List<BasicItemNode> childNode = this.getBtNodeList();
+		for (BasicItemNode basicItemNode : childNode) {
+			createChild(basicItemNode, file, prefix);
+		}
+		
+		String endStr = "</ABC>";
+		FileManager.writeFileContent(file, endStr);
 	}
 
 	/**
@@ -181,25 +194,17 @@ public class BasicItemNode {
 	 * @param bn
 	 * @throws IOException
 	 */
-	private void createAbc(File file, BasicItemNode bn) throws IOException {
+	private void createAbc(File file, BasicItemNode bn, String prefix) throws IOException {
 		String str = "";
-		if (NodeType.ABC.equals(NodeType.getNodeType(bn.getType())) && bn.getParentId() == null) {
-			str = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
-			FileManager.writeFileContent(file, str);
-			str = "<ABC name=\""+bn.getName()+"\" abcattr=\""+bn.getAbcattr()+"\""+"\r\n"
-					+ "	 class=\"\" xmlns=\"http://www.w3school.com.cn\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">";
-		} else {
-			str = "<ABC name=\""+bn.getName()+"\" abcattr=\""+bn.getAbcattr()+"\">"+"\r\n";
-		}
-		
+		str = prefix + "<ABC name=\""+bn.getName()+"\" abcattr=\""+bn.getAbcattr()+"\">"+"\r\n";
 		FileManager.writeFileContent(file, str);
 		
 		//获取ABC的所有直系孩子
 		List<BasicItemNode> childNode = bn.getBtNodeList();
 		for (BasicItemNode basicItemNode : childNode) {
-			createChild(basicItemNode, file);
+			createChild(basicItemNode, file, prefix);
 		}
-		String endStr = "</ABC>";
+		String endStr = prefix + "</ABC>";
 		FileManager.writeFileContent(file, endStr);
 	}
 	
@@ -208,26 +213,27 @@ public class BasicItemNode {
 	 * @param basicItemNode
 	 * @throws IOException 
 	 */
-	private void createChild(BasicItemNode basicItemNode, File file) throws IOException {
+	private void createChild(BasicItemNode basicItemNode, File file, String prefix) throws IOException {
+		prefix += "   ";
 		NodeType nodeType = NodeType.getNodeType(basicItemNode.getType());
 		switch (nodeType) {
 		case ABC://只可能是关系下的ABC了
-			createAbc(file, basicItemNode);
+			createAbc(file, basicItemNode, prefix);
 			break;
 		case ATTRIBUTE:
-			createAttribute(basicItemNode, file);
+			createAttribute(basicItemNode, file, prefix);
 			break;
 		case LABEL:
-			createLabel(basicItemNode, file);
+			createLabel(basicItemNode, file, prefix);
 			break;
 		case MULTIATTRIBUTE:
-			createMultiattribute(basicItemNode, file);
+			createMultiattribute(basicItemNode, file, prefix);
 			break;
 		case RELATION:
-			createRelation(basicItemNode, file);
+			createRelation(basicItemNode, file, prefix);
 			break;
 		case ATTRGROUP:
-			createAttrgroup(basicItemNode, file);
+			createAttrgroup(basicItemNode, file,prefix);
 			break;
 		case NONO:
 			break;
@@ -242,16 +248,16 @@ public class BasicItemNode {
 	 * @param file
 	 * @throws IOException 
 	 */
-	private void createRelation(BasicItemNode basicItemNode, File file) throws IOException {
+	private void createRelation(BasicItemNode basicItemNode, File file, String prefix) throws IOException {
 		
-		String str = "<relation name=\""+basicItemNode.getName()+"\" ops=\""+basicItemNode.getOpt()+"\"> ";
+		String str = prefix + "<relation name=\""+basicItemNode.getName()+"\" ops=\""+basicItemNode.getOpt()+"\"> ";
 		FileManager.writeFileContent(file, str);
 		
 		List<BasicItemNode> childNode = basicItemNode.getBtNodeList();		
 		for (BasicItemNode bn2 : childNode) {
-			createChild(bn2, file);
+			createChild(bn2, file, prefix);
 		}
-		str = "</relation>";
+		str = prefix + "</relation>";
 		FileManager.writeFileContent(file, str);
 	}
 
@@ -261,16 +267,16 @@ public class BasicItemNode {
 	 * @param file
 	 * @throws IOException 
 	 */
-	private void createAttrgroup(BasicItemNode basicItemNode, File file) throws IOException {
-		String str = "<attrgroup name=\""+basicItemNode.getName()+"\" ops=\""+basicItemNode.getOpt()+"\">";
+	private void createAttrgroup(BasicItemNode basicItemNode, File file, String prefix) throws IOException {
+		String str = prefix + "<attrgroup name=\""+basicItemNode.getName()+"\" ops=\""+basicItemNode.getOpt()+"\">";
 		FileManager.writeFileContent(file, str);
 		
 		List<BasicItemNode> childNode = basicItemNode.getBtNodeList();
 		for (BasicItemNode bn2 : childNode) {
-			createChild(bn2, file);
+			createChild(bn2, file, prefix);
 		}
 		
-		str = "</attrgroup>";
+		str = prefix + "</attrgroup>";
 		FileManager.writeFileContent(file, str);
 	}
 
@@ -280,14 +286,14 @@ public class BasicItemNode {
 	 * @param file
 	 * @throws IOException 
 	 */
-	private void createMultiattribute(BasicItemNode basicItemNode, File file) throws IOException {
-		String str = "<multiattribute name=\""+basicItemNode.getName()+"\" abcattr=\""+basicItemNode.getAbcattr()+"\" ops=\""+basicItemNode.getOpt()+"\"> ";
+	private void createMultiattribute(BasicItemNode basicItemNode, File file, String prefix) throws IOException {
+		String str = prefix + "<multiattribute name=\""+basicItemNode.getName()+"\" abcattr=\""+basicItemNode.getAbcattr()+"\" ops=\""+basicItemNode.getOpt()+"\"> ";
 		FileManager.writeFileContent(file, str);
 		List<BasicItemNode> childNode = basicItemNode.getBtNodeList();	
 		for (BasicItemNode bn2 : childNode) {
-			createChild(bn2, file);
+			createChild(bn2, file, prefix);
 		}
-		str = "</multiattribute>";	
+		str = prefix + "</multiattribute>";	
 		FileManager.writeFileContent(file, str);
 	}
 
@@ -297,8 +303,8 @@ public class BasicItemNode {
 	 * @param file
 	 * @throws IOException 
 	 */
-	private void createLabel(BasicItemNode basicItemNode, File file) throws IOException {
-		String str = "<label name=\""+basicItemNode.getName()+"\" subdomain=\""+basicItemNode.getSubdomain()+"\"	ops=\""+basicItemNode.getOpt()+"\" />";
+	private void createLabel(BasicItemNode basicItemNode, File file, String prefix) throws IOException {
+		String str = prefix + "<label name=\""+basicItemNode.getName()+"\" subdomain=\""+basicItemNode.getSubdomain()+"\"	ops=\""+basicItemNode.getOpt()+"\" />";
 		FileManager.writeFileContent(file, str);
 	}
 
@@ -308,8 +314,8 @@ public class BasicItemNode {
 	 * @param file
 	 * @throws IOException 
 	 */
-	private void createAttribute(BasicItemNode basicItemNode, File file) throws IOException {
-		String str = "<attribute name=\""+basicItemNode.getName()+"\" abcattr=\""+basicItemNode.getAbcattr()+"\"  datatype=\""+basicItemNode.getDataType()+"\" ops=\""+basicItemNode.getOpt()+"\" />";
+	private void createAttribute(BasicItemNode basicItemNode, File file, String prefix) throws IOException {
+		String str = prefix + "<attribute name=\""+basicItemNode.getName()+"\" abcattr=\""+basicItemNode.getAbcattr()+"\"  datatype=\""+basicItemNode.getDataType()+"\" ops=\""+basicItemNode.getOpt()+"\" />";
 		FileManager.writeFileContent(file, str);
 	}
 	
