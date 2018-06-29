@@ -160,7 +160,7 @@ public class ConfigModuleController {
 		}
 	}
 	
-	@ResponseBody
+/*	@ResponseBody
 	@ApiOperation(value = "刷新", nickname = "refresh", notes = "刷新",response = AjaxPageResponse.class, tags={ "configModule", })
     @ApiResponses(value = { 
         @ApiResponse(code = 200, message = "操作成功", response = AjaxPageResponse.class),
@@ -174,7 +174,7 @@ public class ConfigModuleController {
 		} catch (Exception e) {
 			return new ResponseEntity<AjaxPageResponse>(AjaxPageResponse.FAILD("刷新失败"), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-	}
+	}*/
 	
 	@ResponseBody
 	 @ApiOperation(value = "跳转到编辑页面", nickname = "edit", notes = "跳转到编辑页面", response = ModelAndView.class, tags={ "configModule", })

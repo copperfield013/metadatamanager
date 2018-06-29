@@ -52,7 +52,6 @@ public class BasicItemNodeServiceImpl implements BasicItemNodeService {
 			basicItemNode.setOrder(btNode.getOrder());
 			sFactory.getCurrentSession().evict(btNode);
 			basicItemNodeDao.update(basicItemNode);
-			
 		}
 	}
 
@@ -165,7 +164,7 @@ public class BasicItemNodeServiceImpl implements BasicItemNodeService {
 		return basicItemNodeDao.getAttribute(abcId);
 	}
 
-	@Override
+	/*@Override
 	public String refresh(String name) {
 		
 		Session currentSession = null;
@@ -229,7 +228,7 @@ public class BasicItemNodeServiceImpl implements BasicItemNodeService {
 			bx.rollback();
 			return "error";
 		}
-	}
+	}*/
 
 	@Override
 	public BasicItemNode getAbc(String name) {

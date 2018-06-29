@@ -82,13 +82,6 @@ public interface BasicItemNodeService {
 	List<BasicItemNode> getAttribute(String abcId);
 	
 	/**
-	 * 模块管理的刷新按钮
-	 * @param name
-	 * @return
-	 */
-	public String refresh(String name);
-	
-	/**
 	 * 根据abc的名称 获取abc对象
 	 * @param name
 	 * @return

@@ -14,6 +14,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
@@ -68,8 +69,7 @@ public class BasicItemNode {
 	@Column(name = "parent_id")
 	private String parentId;
 	
-	@OneToMany(fetch=FetchType.EAGER, cascade=CascadeType.REMOVE)
-	@JoinColumn(name="parent_id")
+	@OneToMany(fetch=FetchType.EAGER, mappedBy="parentId")
 	private List<BasicItemNode> btNodeList;
 	
 	/**
@@ -172,7 +172,7 @@ public class BasicItemNode {
 	 * @throws IOException
 	 */
 	public void getConfigFile(File file) throws IOException {
-		String prefix = " ";
+		String prefix = "    ";
 		String head = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
 		FileManager.writeFileContent(file, head);
 		head = "<ABC name=\""+this.getName()+"\" abcattr=\""+this.getAbcattr()+"\""+"\r\n"
