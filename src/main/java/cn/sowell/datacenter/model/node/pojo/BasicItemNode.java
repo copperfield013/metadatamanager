@@ -172,7 +172,7 @@ public class BasicItemNode {
 	 * @throws IOException
 	 */
 	public void getConfigFile(File file) throws IOException {
-		String prefix = "    ";
+		String prefix = "  ";
 		String head = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
 		FileManager.writeFileContent(file, head);
 		head = "<ABC name=\""+this.getName()+"\" abcattr=\""+this.getAbcattr()+"\""+"\r\n"

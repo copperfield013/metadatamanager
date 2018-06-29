@@ -30,8 +30,9 @@
 						<td>${item.name }</td>
 						<td>${item.abcattr }</td>
 						<td>
+							<a class="dialog" href="admin/node/basicItemNode/preview?nodeId=${item.id }" title="预览" target="basicItemNode_preview" >预览</a>
 							<a id="download" nodeId="${item.id }" href="javascript:;" >下载</a>
-							<a class="tab" href="admin/node/basicItemNode/edit?nodeId=${item.id }" title="修改" target="dictMapping_edit" >修改</a>
+							<a class="tab" href="admin/node/basicItemNode/edit?nodeId=${item.id }" title="修改" target="basicItemNode_edit" >修改</a>
 							<a href="admin/node/basicItemNode/do_delete?id=${item.id }&isDelChil=false" confirm="确认删除？">删除</a>
 						</td>
 					</tr>

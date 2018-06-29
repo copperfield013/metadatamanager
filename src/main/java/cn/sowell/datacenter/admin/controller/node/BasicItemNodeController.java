@@ -1,6 +1,7 @@
 package cn.sowell.datacenter.admin.controller.node;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -388,7 +389,7 @@ public class BasicItemNodeController {
 	}
 	
 	@RequestMapping(value="/download")
-    public ResponseEntity<byte[]> download(HttpServletRequest request, Integer nodeId)throws Exception {
+    public ResponseEntity<byte[]> download(Integer nodeId)throws Exception {
     	BasicItemNode bn = basicItemNodeService.getOne(nodeId);
     	String fileName = bn.getName()+".xml";
     	File file = File.createTempFile(bn.getName(), ".xml");
@@ -407,5 +408,38 @@ public class BasicItemNodeController {
        return new ResponseEntity<byte[]>(readFileToByteArray,    
                headers, HttpStatus.OK);  
     }
+    
+    
+    
+    @ApiOperation(value = "文件预览", nickname = "preview", notes = "文件预览", response = ModelAndView.class, tags={ "configurationFiles", })
+    @ApiResponses(value = { 
+        @ApiResponse(code = 200, message = "OK", response = ModelAndView.class),
+        @ApiResponse(code = 401, message = "操作失败") })
+    @RequestMapping(value = "/preview",
+        method = RequestMethod.POST)
+	public ModelAndView preview(String nodeId) {
+    	
+		try {
+			BasicItemNode bn = basicItemNodeService.getOne(Integer.parseInt(nodeId));
+	    	String fileName = bn.getName()+".xml";
+	    	File file = File.createTempFile(bn.getName(), ".xml");
+	    	
+	    	//创建ABC配置文件
+			bn.getConfigFile(file);
+	    	
+			ModelAndView mv = new ModelAndView();
+			mv.addObject("file", FileUtils.readFileToString(file, "UTF-8"));
+			mv.setViewName(AdminConstants.JSP_NODE + "/basicItemNode/preview.jsp");
+			if (file.exists() && file.isFile()) {
+		    	//在程序退出时删除临时文件
+		    	 	file.delete();
+		      } 
+			return mv;
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		return null;
+	}
     
 }
