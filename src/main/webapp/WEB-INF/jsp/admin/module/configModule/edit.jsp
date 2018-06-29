@@ -42,7 +42,7 @@
 							<select style="width: 30%;" id="codeName" class="ser-list" name="codeName">
 								<option selected="selected" value="">唯一编码</option>
 								<c:forEach items="${childNode }" var="item">
-									<option value="${item.name }" <c:if test="${item.name eq module.codeName }">selected='selected'</c:if> >${item.name }</option>
+									<option value="${item.name }" ${item.name eq module.codeName ? 'selected="selected"' : '' }>${item.name }</option>
 								</c:forEach>
 							</select>
 						</div>
@@ -53,7 +53,7 @@
 							<select style="width: 30%;" id="titleName" class="ser-list" name="titleName">
 								<option selected="selected" value=""></option>
 								<c:forEach items="${childNode }" var="item">
-									<option value="${item.name }" <c:if test="${item.name eq module.titleName }">selected='selected'</c:if> >${item.name }</option>
+									<option value="${item.name }" ${item.name eq module.titleName ? 'selected="selected"' : ''}>${item.name }</option>
 								</c:forEach>
 							</select>
 						</div>

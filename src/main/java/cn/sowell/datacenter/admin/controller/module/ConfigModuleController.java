@@ -176,6 +176,7 @@ public class ConfigModuleController {
 		}
 	}
 	
+	@ResponseBody
 	 @ApiOperation(value = "跳转到编辑页面", nickname = "edit", notes = "跳转到编辑页面", response = ModelAndView.class, tags={ "configModule", })
     @ApiResponses(value = { 
         @ApiResponse(code = 200, message = "操作成功", response = ModelAndView.class),
@@ -188,7 +189,6 @@ public class ConfigModuleController {
 		BasicItemNode abc = basicItemNodeService.getAbc(module.getMappingName());
 		List<BasicItemNode> childNode = basicItemNodeService.getAttribute(String.valueOf(abc.getId()));
 		ModelAndView mv = new ModelAndView();
-		
 		mv.addObject("module", module);
 		mv.addObject("childNode", childNode);
 		mv.setViewName(AdminConstants.JSP_MODULE + "/configModule/edit.jsp");

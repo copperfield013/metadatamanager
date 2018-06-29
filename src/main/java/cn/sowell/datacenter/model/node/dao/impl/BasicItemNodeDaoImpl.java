@@ -175,7 +175,7 @@ public class BasicItemNodeDaoImpl implements BasicItemNodeDao {
 
 	@Override
 	public BasicItemNode getAbc(String name) {
-		String sql = "SELECT * FROM t_c_basic_item_node WHERE name=:name AND type=1";
+		String sql = "SELECT * FROM t_c_basic_item_node WHERE name=:name AND type=1 AND parent_id is null";
 		return (BasicItemNode) sFactory.getCurrentSession().createSQLQuery(sql).addEntity(BasicItemNode.class).setParameter("name", name).uniqueResult();
 	}
 

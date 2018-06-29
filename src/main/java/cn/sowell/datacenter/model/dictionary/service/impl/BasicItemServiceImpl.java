@@ -9,13 +9,10 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
-import org.drools.compiler.lang.DRL5Expressions.type_return;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.springframework.stereotype.Service;
-
-import com.alibaba.fastjson.JSONObject;
 
 import cn.sowell.datacenter.model.dictionary.criteria.BasicItemCriteria;
 import cn.sowell.datacenter.model.dictionary.dao.BasicItemDao;
@@ -65,7 +62,7 @@ public class BasicItemServiceImpl implements BasicItemService {
 		return basicItemDao.get(BasicItem.class, id);
 	}
 	
-	public JSONObject getAttrByPid(String parentId) {
+	public Map<String, List> getAttrByPid(String parentId) {
 		//多值属性存放
 		List moreList = new ArrayList(); 
 		//按分组存放普通属性 
@@ -99,13 +96,11 @@ public class BasicItemServiceImpl implements BasicItemService {
 		//实体关系管理
 		List<RecordRelationType> relationList = recordRelationTypeService.getEntityRelaByBitemId(parentId);
 		
-		Map<String, Object> jsonMap = new HashMap<String, Object>();
+		Map<String, List> jsonMap = new HashMap<String, List>();
 		jsonMap.put("commonProper", attrList);//普通属性
 		jsonMap.put("moreProper", moreList);//多值属性
 		jsonMap.put("entityRela", relationList);//实体关系
-		
-		JSONObject obj = new JSONObject(jsonMap);
-		return obj;
+		return jsonMap;
 	}
 	
 	@Override

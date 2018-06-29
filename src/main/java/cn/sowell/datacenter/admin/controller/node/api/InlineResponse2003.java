@@ -134,7 +134,7 @@ public class InlineResponse2003   {
   }
 
   public InlineResponse2003 枚举(String 枚举) {
-    this. 枚举= 枚举;
+    this.枚举= 枚举;
     return this;
   }
 
@@ -150,11 +150,11 @@ public class InlineResponse2003   {
   }
 
   public void set枚举(String 枚举) {
-    this. 枚举=枚举;
+    this.枚举=枚举;
   }
 
   public InlineResponse2003 文件型(String 文件型) {
-    this. 文件型=文件型;
+    this.文件型= 文件型;
     return this;
   }
 
@@ -165,8 +165,8 @@ public class InlineResponse2003   {
   @ApiModelProperty(example = "文件型", value = "")
 
 
-  public String get() {
-    return 文件型;
+  public String get文件型() {
+    return this.文件型;
   }
 
   public void set文件型(String 文件型) {
@@ -182,14 +182,14 @@ public class InlineResponse2003   {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    InlineResponse2003 inlineResponse200 = (InlineResponse2003) o;
-    return Objects.equals(this.digital, inlineResponse200.digital) &&
-        Objects.equals(this.date, inlineResponse200.date) &&
-        Objects.equals(this.dateTime, inlineResponse200.dateTime) &&
-        Objects.equals(this._char, inlineResponse200._char) &&
-        Objects.equals(this.digitalDecimal, inlineResponse200.digitalDecimal) &&
-        Objects.equals(this.枚举, inlineResponse200.枚举) &&
-        Objects.equals(this.文件型, inlineResponse200.文件型);
+    InlineResponse2003 inlineResponse2003 = (InlineResponse2003) o;
+    return Objects.equals(this.digital, inlineResponse2003.digital) &&
+        Objects.equals(this.date, inlineResponse2003.date) &&
+        Objects.equals(this.dateTime, inlineResponse2003.dateTime) &&
+        Objects.equals(this._char, inlineResponse2003._char) &&
+        Objects.equals(this.digitalDecimal, inlineResponse2003.digitalDecimal) &&
+        Objects.equals(this.枚举, inlineResponse2003.枚举) &&
+        Objects.equals(this.文件型, inlineResponse2003.文件型);
   }
 
   @Override

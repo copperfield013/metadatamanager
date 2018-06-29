@@ -2,12 +2,8 @@ package cn.sowell.datacenter.model.dictionary.service;
 
 import java.math.BigInteger;
 import java.util.List;
+import java.util.Map;
 
-import com.alibaba.fastjson.JSONObject;
-
-import cn.sowell.copframe.dto.page.PageInfo;
-import cn.sowell.datacenter.model.demo.criteria.DemoCriteria;
-import cn.sowell.datacenter.model.demo.pojo.PlainDemo;
 import cn.sowell.datacenter.model.dictionary.criteria.BasicItemCriteria;
 import cn.sowell.datacenter.model.dictionary.pojo.BasicItem;
 import cn.sowell.datacenter.model.dictionary.pojo.DictionaryBasicItem;
@@ -56,7 +52,7 @@ public interface BasicItemService {
 	 * @param parentId
 	 * @return
 	 */
-	public JSONObject getAttrByPid(String parentId);
+	 Map<String, List> getAttrByPid(String parentId);
 	
 	void saveOrUpdate(BasicItem obj, String flag, String comm);
 

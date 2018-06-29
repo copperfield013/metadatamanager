@@ -39,6 +39,8 @@ import cn.sowell.copframe.utils.TextUtils;
 import cn.sowell.datacenter.admin.controller.AdminConstants;
 import cn.sowell.datacenter.admin.controller.node.api.BasicItems;
 import cn.sowell.datacenter.admin.controller.node.api.InlineResponse2003;
+import cn.sowell.datacenter.admin.controller.node.api.InlineResponse2004;
+import cn.sowell.datacenter.admin.controller.node.api.InlineResponse2005;
 import cn.sowell.datacenter.model.demo.criteria.DemoCriteria;
 import cn.sowell.datacenter.model.demo.pojo.PlainDemo;
 import cn.sowell.datacenter.model.demo.service.DemoService;
@@ -73,7 +75,7 @@ public class BasicItemController {
 	@Resource
 	TowlevelattrService towlevelattrService;
 	
-	@ApiOperation(value = "跳转到list页面获取实体信息", nickname = "list", notes = "跳转到list页面获取实体信息", response = ModelAndView.class, tags={ "configModule", })
+	@ApiOperation(value = "跳转到list页面获取实体信息", nickname = "list", notes = "跳转到list页面获取实体信息", response = ModelAndView.class, tags={ "entityManager", })
     @ApiResponses(value = { 
         @ApiResponse(code = 200, message = "操作成功", response = ModelAndView.class),
         @ApiResponse(code = 401, message = "操作失败") })
@@ -91,7 +93,7 @@ public class BasicItemController {
 	
 	//ajax 获取实体列表
 	@ResponseBody
-	@ApiOperation(value = "获取实体列表信息", nickname = "entityList", notes = "获取实体列表信息", response = BasicItems.class, tags={ "configModule", })
+	@ApiOperation(value = "获取实体列表信息", nickname = "entityList", notes = "获取实体列表信息", response = BasicItems.class, tags={ "entityManager", })
     @ApiResponses(value = { 
         @ApiResponse(code = 200, message = "操作成功", response = BasicItems.class),
         @ApiResponse(code = 401, message = "操作失败") })
@@ -111,7 +113,7 @@ public class BasicItemController {
 	}
 	
 	@ResponseBody
-	@ApiOperation(value = "获取数据类型信息", nickname = "getDataType",response = InlineResponse2003.class, notes = "获取数据类型信息", tags={ "configModule", })
+	@ApiOperation(value = "获取数据类型信息", nickname = "getDataType",response = InlineResponse2003.class, notes = "获取数据类型信息", tags={ "entityManager", })
     @ApiResponses(value = { 
         @ApiResponse(code = 200, message = "操作成功", response = InlineResponse2003.class),
         @ApiResponse(code = 401, message = "操作失败") })
@@ -133,11 +135,14 @@ public class BasicItemController {
 		}
 	}
 	
-	@ApiIgnore
-	@ApiOperation(value="添加", notes="新增实体,新增普通属性， 多值属性， 分组")
 	@ResponseBody
-	@RequestMapping(value="/do_add", method=RequestMethod.POST)
-	public AjaxPageResponse doAdd(@ApiParam(name="BasicItem", value="传入json格式", required=true)BasicItem basicItem){
+	@ApiOperation(value = "添加", nickname = "doAdd",response = AjaxPageResponse.class, notes = "新增实体,新增普通属性， 多值属性， 分组", tags={ "entityManager", })
+    @ApiResponses(value = { 
+        @ApiResponse(code = 200, message = "操作成功", response = AjaxPageResponse.class),
+        @ApiResponse(code = 401, message = "操作失败") })
+    @RequestMapping(value = "/do_add",
+        method = RequestMethod.POST)
+	public ResponseEntity<AjaxPageResponse> doAdd(@ApiParam(name="BasicItem", value="传入json格式", required=true)BasicItem basicItem){
 			String dType = basicItem.getDataType();
 			String dataType = "";
 			String comm = null;
@@ -203,115 +208,126 @@ public class BasicItemController {
                 	basicItemService.saveOrUpdate(basicItem, flag, comm);
         			
         			if ("记录类型".equals(basicItem.getDataType())) {
-        				return AjaxPageResponse.CLOSE_AND_REFRESH_PAGE("修改成功", "basicItem_list");
+        				return new ResponseEntity<AjaxPageResponse>(AjaxPageResponse.CLOSE_AND_REFRESH_PAGE("修改成功", "basicItem_list"), HttpStatus.OK);
         			} else {
         				AjaxPageResponse response = new AjaxPageResponse();
         				response.setNotice("操作成功");
         				response.setNoticeType(NoticeType.SUC);
-        				return response;
+        				return new ResponseEntity<AjaxPageResponse>(response, HttpStatus.OK);
         			}
                 } catch (DataIntegrityViolationException e) {
                     if (i <9) {
                         continue;
                     } else {
-                        return AjaxPageResponse.FAILD("主键重复, 请重新添加");
+                         return new ResponseEntity<AjaxPageResponse>(AjaxPageResponse.FAILD("主键重复, 请重新添加"), HttpStatus.INTERNAL_SERVER_ERROR);
                     }
                 } catch (Exception e) {
-                    return AjaxPageResponse.FAILD("操作失败");
+                    return new ResponseEntity<AjaxPageResponse>(AjaxPageResponse.FAILD("操作失败"), HttpStatus.INTERNAL_SERVER_ERROR);
                 }
             }
 			return null;
 	}
 
-	
-	@ApiIgnore
-	@ApiOperation(value="get节点信息", notes="获取单个节点信息")
-	@ApiImplicitParams({
-        @ApiImplicitParam(name="id", value="节点ID", required=true, paramType="query", dataType="String")
-	})
 	@ResponseBody
-	@RequestMapping(value="/getOne", method=RequestMethod.POST)
-	public String getOne(String id){
-		BasicItem basicItem = basicItemService.getBasicItem(id);
-		String jsonString = JSONObject.toJSONString(basicItem);
-		return jsonString;
+	@ApiOperation(value = "get节点信息", nickname = "doAdd",response = BasicItem.class, notes = "获取单个节点信息", tags={ "entityManager", })
+    @ApiResponses(value = { 
+        @ApiResponse(code = 200, message = "操作成功", response = BasicItem.class),
+        @ApiResponse(code = 401, message = "操作失败") })
+    @RequestMapping(value = "/getOne",
+        method = RequestMethod.POST)
+	public ResponseEntity<BasicItem> getOne(String id){
+		try {
+			BasicItem basicItem = basicItemService.getBasicItem(id);
+			return new ResponseEntity<BasicItem>(basicItem, HttpStatus.OK);
+		} catch (Exception e) {
+			return new ResponseEntity<BasicItem>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 	}
 	
-	@ApiIgnore
 	@ResponseBody
-	@RequestMapping("/do_update")
-	public AjaxPageResponse doUpdate(BasicItem basicItem){
+	@ApiOperation(value = "更新信息", nickname = "doUpdate",response = AjaxPageResponse.class, notes = "更新信息", tags={ "entityManager", })
+    @ApiResponses(value = { 
+        @ApiResponse(code = 200, message = "操作成功", response = AjaxPageResponse.class),
+        @ApiResponse(code = 401, message = "操作失败") })
+    @RequestMapping(value = "/do_update",
+        method = RequestMethod.POST)
+	public ResponseEntity<AjaxPageResponse> doUpdate(BasicItem basicItem){
 		try {
 			basicItemService.update(basicItem);
-			return AjaxPageResponse.CLOSE_AND_REFRESH_PAGE("修改成功", "basicItem_list");
+			return new ResponseEntity<AjaxPageResponse>(AjaxPageResponse.CLOSE_AND_REFRESH_PAGE("修改成功", "basicItem_list"), HttpStatus.OK);
 		} catch (Exception e) {
-			return AjaxPageResponse.FAILD("修改失败");
+			return new ResponseEntity<AjaxPageResponse>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 	
 	//根据实体id， 获取实体下面的普通属性， 多值属性 和实体关系
-	@ApiIgnore
-	@ApiOperation(value="属性管理", notes="根据实体id， 获取实体下面的普通属性， 多值属性 和实体关系")
-	@ApiImplicitParams({
-		@ApiImplicitParam(name="parentId", value="实体id", dataType="String", paramType="query", required=true)
-	})
 	@ResponseBody
+	@ApiOperation(value = "属性管理", nickname = "attrByPid", notes = "根据实体id， 获取实体下面的普通属性， 多值属性 和实体关系", response = InlineResponse2004.class, tags={ "entityManager", })
+    @ApiResponses(value = { 
+        @ApiResponse(code = 200, message = "操作成功", response = InlineResponse2004.class),
+        @ApiResponse(code = 404, message = "操作失败") })
 	@RequestMapping(value="/attrByPid", method=RequestMethod.POST)
-	public String attrByPid(String parentId) {
-		JSONObject attr = basicItemService.getAttrByPid(parentId);
-		return attr.toJSONString();
+	public ResponseEntity<InlineResponse2004> attrByPid(String parentId) {
+        try {
+        	Map<String, List> attrByPid = basicItemService.getAttrByPid(parentId);
+        	InlineResponse2004 inline = new InlineResponse2004();
+    		inline.commonProper(attrByPid.get("commonProper"));//普通属性
+    		inline.moreProper(attrByPid.get("moreProper"));//多值属性
+    		inline.entityRela(attrByPid.get("entityRela"));//实体关系
+            return new ResponseEntity<InlineResponse2004>(inline, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<InlineResponse2004>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
 	}
 	
 	//过期实体or正常  普通属性和多值属性
-	@ApiIgnore
-	@ApiOperation(value="过期实体", notes="过期实体or正常  普通属性和多值属性")
-	@ApiImplicitParams({
-		@ApiImplicitParam(name="id", value="节点id", required=true, dataType="String", paramType="query"),
-		@ApiImplicitParam(name="statusStr", value="节点状态值", required=true, dataType="String", paramType="query")
-	})
 	@ResponseBody
+	@ApiOperation(value = "过期实体", nickname = "savePastDue", notes = "过期实体or正常  普通属性和多值属性", response = AjaxPageResponse.class, tags={ "entityManager", })
+    @ApiResponses(value = { 
+        @ApiResponse(code = 200, message = "操作成功", response = AjaxPageResponse.class),
+        @ApiResponse(code = 404, message = "操作失败") })
 	@RequestMapping(value="/saveStatus", method=RequestMethod.POST)
-	public AjaxPageResponse savePastDue(String id, String statusStr){
+	public ResponseEntity<AjaxPageResponse> savePastDue(String id, String statusStr){
 		try {
 			BasicItem basicItem = basicItemService.getBasicItem(id);
 			basicItemService.saveUsingStatus(basicItem, statusStr);
-			
 			if ("记录类型".equals(basicItem.getDataType())) {
-				return AjaxPageResponse.CLOSE_AND_REFRESH_PAGE("修改成功", "basicItem_list");
+				 return new ResponseEntity<AjaxPageResponse>(AjaxPageResponse.CLOSE_AND_REFRESH_PAGE("修改成功", "basicItem_list"), HttpStatus.OK);
 			} else {
 				AjaxPageResponse response = new AjaxPageResponse();
 				response.setNotice("操作成功");
 				response.setNoticeType(NoticeType.SUC);
-				return response;
+				return new ResponseEntity<AjaxPageResponse>(response, HttpStatus.OK);
 			}
 		} catch (Exception e) {
-			return AjaxPageResponse.FAILD("操作失败");
+			return new ResponseEntity<AjaxPageResponse>(AjaxPageResponse.FAILD("操作失败"), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 	
-		//创建表
-	@ApiIgnore
-		@ApiOperation(value="创建表", notes="创建实体存储")
-		@ResponseBody
-		@RequestMapping(value="/createTab", method=RequestMethod.POST)
-		public AjaxPageResponse createTab(){
-			try {
-				basicItemService.createTabCol();
-				return AjaxPageResponse.CLOSE_AND_REFRESH_PAGE("操作成功", "basicItem_list");
-			} catch (Exception e) {
-				return AjaxPageResponse.FAILD("操作失败");
-			}
+	//创建表
+	@ResponseBody
+	@ApiOperation(value = "创建表", nickname = "createTab", notes = "创建实体存储", response = AjaxPageResponse.class, tags={ "entityManager", })
+	@ApiResponses(value = { 
+    @ApiResponse(code = 200, message = "操作成功", response = AjaxPageResponse.class),
+    @ApiResponse(code = 404, message = "操作失败") })
+	@RequestMapping(value="/createTab", method=RequestMethod.POST)
+	public ResponseEntity<AjaxPageResponse> createTab(){
+		try {
+			basicItemService.createTabCol();
+			return new ResponseEntity<AjaxPageResponse>(AjaxPageResponse.CLOSE_AND_REFRESH_PAGE("操作成功", "basicItem_list"), HttpStatus.OK);
+		} catch (Exception e) {
+		 return new ResponseEntity<AjaxPageResponse>(AjaxPageResponse.FAILD("操作失败"), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
+	}
 	
-		//删除实体， 属性
-	@ApiIgnore
-		@ApiOperation(value="删除", notes="删除节点")
-		@ApiImplicitParams({
-			@ApiImplicitParam(name="id", value="节点id", required=true, dataType="String", paramType="query")
-		})
-		@ResponseBody
-		@RequestMapping(value="/delete", method=RequestMethod.POST)
-		public AjaxPageResponse delete(String id){
+	//删除实体， 属性
+	@ResponseBody
+	@ApiOperation(value = "删除", nickname = "delete", notes = "删除节点", response = AjaxPageResponse.class, tags={ "entityManager", })
+	@ApiResponses(value = { 
+    @ApiResponse(code = 200, message = "操作成功", response = AjaxPageResponse.class),
+    @ApiResponse(code = 404, message = "操作失败") })
+	@RequestMapping(value="/delete", method=RequestMethod.POST)
+		public ResponseEntity<AjaxPageResponse> delete(String id){
 			try {
 				AjaxPageResponse response = new AjaxPageResponse();
 				BasicItem bt = basicItemService.getBasicItem(id);
@@ -323,7 +339,7 @@ public class BasicItemController {
 						if (id.equals(oneByRelaMulAttr.getDictionaryAttr()) || id.equals(oneByRelaMulAttr.getValueAttr())) {
 							response.setNotice("二级属性正在使用, 请先删除二级属性");
 							response.setNoticeType(NoticeType.INFO);
-							return response;
+							return new ResponseEntity<AjaxPageResponse>(response, HttpStatus.OK);
 						}
 					}
 					
@@ -341,58 +357,87 @@ public class BasicItemController {
 				if (!btList.isEmpty()) {
 					response.setNotice("请先删除孩子");
 					response.setNoticeType(NoticeType.INFO);
-					return response;
+					return new ResponseEntity<AjaxPageResponse>(response, HttpStatus.OK);
 				} else {
 					BasicItem basicItem = basicItemService.getBasicItem(id);
 					basicItemService.delete(basicItem);
 					
 					if ("记录类型".equals(basicItem.getDataType())) {
-						return AjaxPageResponse.CLOSE_AND_REFRESH_PAGE("删除成功", "basicItem_list");
+						return new ResponseEntity<AjaxPageResponse>(AjaxPageResponse.CLOSE_AND_REFRESH_PAGE("删除成功", "basicItem_list"), HttpStatus.OK);
 					} else {
 						response.setNotice("删除成功");
 						response.setNoticeType(NoticeType.SUC);
-						return response;
+						return new ResponseEntity<AjaxPageResponse>(response, HttpStatus.OK);
 					}
 				}
 			} catch (Exception e) {
-				return AjaxPageResponse.FAILD("删除失败");
+				 return new ResponseEntity<AjaxPageResponse>(AjaxPageResponse.FAILD("删除失败"), HttpStatus.INTERNAL_SERVER_ERROR);
 			}
 		}
 	
-	@ApiIgnore
 	@ResponseBody
-	@RequestMapping("/getDataByPid")
-	public String getDataByPid(String id){
-		BasicItem basicItem = basicItemService.getBasicItem(id);
-		List<BasicItem> btList = basicItemService.getDataByPId(basicItem.getParent()+ "_" + basicItem.getCode());
-		Map<String, Object> map = new HashMap<String, Object>();
-		map.put("child", btList);
-		JSONObject json = new JSONObject(map);
-		return json.toString();
+	@ApiOperation(value = "getDataByPid", nickname = "getDataByPid", notes = "点击添加二级属性的时候， 获取对应的多值属性中的普通属性和枚举属性", response = InlineResponse2005.class, tags={ "entityManager", })
+    @ApiResponses(value = { 
+        @ApiResponse(code = 200, message = "操作成功", response = InlineResponse2005.class),
+        @ApiResponse(code = 404, message = "操作失败") })
+    @RequestMapping(value = "getDataByPid",
+        method = RequestMethod.POST)
+	public ResponseEntity<InlineResponse2005> getDataByPid(String id){
+		try {
+			BasicItem basicItem = basicItemService.getBasicItem(id);
+			List<BasicItem> btList = basicItemService.getDataByPId(basicItem.getParent()+ "_" + basicItem.getCode());
+			Map<String, Object> map = new HashMap<String, Object>();
+			InlineResponse2005 inline = new InlineResponse2005();
+			inline.child(btList);
+			return new ResponseEntity<InlineResponse2005>(inline, HttpStatus.OK);
+		} catch (Exception e) {
+		 return new ResponseEntity<InlineResponse2005>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 	}
 	
 	//添加一个二级属性
-	@ApiIgnore
 	@ResponseBody
-	@RequestMapping("/saveTwoLevelAttr")
-	public void saveTwoLevelAttr(TowlevelattrMultiattrMapping tmm){
+	@ApiOperation(value = "添加二级属性", nickname = "saveTwoLevelAttr", notes = "添加二级属性", response = AjaxPageResponse.class, tags={ "entityManager", })
+	@ApiResponses(value = { 
+    @ApiResponse(code = 200, message = "操作成功", response = AjaxPageResponse.class),
+    @ApiResponse(code = 404, message = "操作失败") })
+	@RequestMapping(value="/saveTwoLevelAttr", method=RequestMethod.POST)
+	public ResponseEntity<AjaxPageResponse> saveTwoLevelAttr(TowlevelattrMultiattrMapping tmm){
+		try {
 			tmm.setUsingState(1);
 			tmms.saveOrUpdate(tmm);
+			AjaxPageResponse response = new AjaxPageResponse();
+			response.setNotice("添加成功");
+			response.setNoticeType(NoticeType.SUC);
+			return new ResponseEntity<AjaxPageResponse>(response, HttpStatus.OK);
+		} catch (Exception e) {
+		 return new ResponseEntity<AjaxPageResponse>(AjaxPageResponse.FAILD("操作失败"), HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 	}
 	
 	//添加一个二级属性的孩子
-	@ApiIgnore
 	@ResponseBody
-	@RequestMapping("/saveTwoLevelAttrChild")
-	public void saveTwoLevelAttrChild(Towlevelattr criteria){
-		criteria.setUsingState(1);
-		basicItemService.createTowLevel(criteria);
+	@ApiOperation(value = "添加二级属性的孩子", nickname = "saveTwoLevelAttrChild", notes = "添加二级属性的孩子", response = AjaxPageResponse.class, tags={ "entityManager", })
+	@ApiResponses(value = { 
+    @ApiResponse(code = 200, message = "操作成功", response = AjaxPageResponse.class),
+    @ApiResponse(code = 404, message = "操作失败") })
+	@RequestMapping(value="/saveTwoLevelAttrChild", method=RequestMethod.POST)
+	public ResponseEntity<AjaxPageResponse> saveTwoLevelAttrChild(Towlevelattr criteria){
+		try {
+			criteria.setUsingState(1);
+			basicItemService.createTowLevel(criteria);
+			AjaxPageResponse response = new AjaxPageResponse();
+			response.setNotice("添加成功");
+			response.setNoticeType(NoticeType.SUC);
+			return new ResponseEntity<AjaxPageResponse>(response, HttpStatus.OK);
+		} catch (Exception e) {
+		 return new ResponseEntity<AjaxPageResponse>(AjaxPageResponse.FAILD("操作失败"), HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 	}
 	
 	//根据id查询一个二级属性
-	@ApiIgnore
 	@ResponseBody
-	@RequestMapping("/getTwoLevelAttr")
+	@RequestMapping(value="/getTwoLevelAttr", method=RequestMethod.POST)
 	public String getTwoLevelAttr(Long id){
 		TowlevelattrMultiattrMapping tmmObj = tmms.getTowlevelattrMultiattrMapping(id);
 		String mappingId = Long.toString(tmmObj.getId());
