@@ -1427,6 +1427,13 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
     	var id = $entityTitle.attr("data-id");
     	var dataType = "STRING";
     	var opt = $entityTitle.children(".node-ops-type").find("option:selected").val();
+    	
+    	var ret = /^.{3,6}$/;
+        if(!ret.test(name)){
+          alert("【"+name + "】 必须三个字符及以上");
+          return;
+        }
+    	
     	switch (opt) {
         	case "读":
         		opt = 1;
