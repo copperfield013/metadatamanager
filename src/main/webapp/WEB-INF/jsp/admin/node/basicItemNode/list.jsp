@@ -30,7 +30,7 @@
 						<td>${item.name }</td>
 						<td>${item.abcattr }</td>
 						<td>
-							<a class="dialog" href="admin/node/basicItemNode/preview?nodeId=${item.id }" title="预览" target="basicItemNode_preview" >预览</a>
+							<a title="预览" nodeId="${item.id }" id="preview" href="javascript:;">预览</a>
 							<a id="download" nodeId="${item.id }" href="javascript:;" >下载</a>
 							<a class="tab" href="admin/node/basicItemNode/edit?nodeId=${item.id }" title="修改" target="basicItemNode_edit" >修改</a>
 							<a href="admin/node/basicItemNode/do_delete?id=${item.id }&isDelChil=false" confirm="确认删除？">删除</a>
@@ -50,5 +50,19 @@
 		var url="admin/node/basicItemNode/download?nodeId=" + nodeId;
 		Ajax.download(url);
   	 });  
+	
+	//预览弹出框
+	$("tbody", $page).on("click", "#preview", function (e) {
+		var h = $(window).height(); 
+		var w = $(window).width();
+		var width = w - 200;
+		var height = h - 100;
+		var nodeId = $(this).attr("nodeId");
+		Dialog.openDialog("admin/node/basicItemNode/preview?nodeId="+nodeId,"预览", "basicItemNode_preview",{
+			width:width,
+			height:height
+		});
+  	 });  
+	
 	});
 </script>

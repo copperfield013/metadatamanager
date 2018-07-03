@@ -31,6 +31,7 @@
                 	<i class="icon icon-save"></i>
                     <i class="icon icon-add"></i>
                     <i class="icon icon-trash"></i>
+                    <a title="预览" style="font-size: 14px;position:absolute;right:98px;" nodeId="${item.id }" id="preview" href="javascript:;">预览</a>
                     <i class="icon icon-arrow"></i>
                 </div>
             </div>

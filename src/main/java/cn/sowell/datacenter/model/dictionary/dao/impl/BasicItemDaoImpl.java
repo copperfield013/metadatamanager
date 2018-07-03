@@ -1,5 +1,6 @@
 package cn.sowell.datacenter.model.dictionary.dao.impl;
 
+import java.io.IOException;
 import java.math.BigInteger;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -8,11 +9,13 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.jdbc.Work;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import cn.sowell.copframe.dao.deferedQuery.DeferedParamQuery;
@@ -30,7 +33,7 @@ public class BasicItemDaoImpl implements BasicItemDao {
 	
 	@Resource
 	SessionFactory sFactory;
-
+	
 	@Override
 	public List<BasicItem> queryList(BasicItemCriteria criteria) {
 		String hql = "from BasicItem b";
@@ -116,19 +119,33 @@ public class BasicItemDaoImpl implements BasicItemDao {
 	
 	//实体code  生成规则
 	public String getEntityCode() {
-		BasicItemNodeGenerator btNg = new BasicItemNodeGenerator();
-		sFactory.getCurrentSession().save(btNg);
-		
-		String format = String.format("%03d", btNg.getId()); 
-		return BasicItemNodeGenerator.IBTE+format;
+		try {
+			BasicItemNodeGenerator btNg = new BasicItemNodeGenerator();
+			sFactory.getCurrentSession().save(btNg);
+			
+			String format = String.format("%03d", btNg.getId()); 
+			return new BasicItemNodeGenerator().getProperty("model.entity.prefix")+format;
+		} catch (HibernateException e) {
+			e.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 	
 	//其他code， 生成规则
 	public String getAttrCode() {
-		BasicItemNodeGenerator btNg = new BasicItemNodeGenerator();
-		sFactory.getCurrentSession().save(btNg);
-		String format = String.format("%03d", btNg.getId()); 
-		return BasicItemNodeGenerator.IBT + format;
+		try {
+			BasicItemNodeGenerator btNg = new BasicItemNodeGenerator();
+			
+			sFactory.getCurrentSession().save(btNg);
+			String format = String.format("%03d", btNg.getId()); 
+			return new BasicItemNodeGenerator().getProperty("model.attr.prefix") + format;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+		
 	}
 	
 	@Override

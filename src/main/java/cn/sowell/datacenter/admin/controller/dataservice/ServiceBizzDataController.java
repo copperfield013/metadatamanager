@@ -132,7 +132,7 @@ public class ServiceBizzDataController {
 	}
 	
 	@ResponseBody
-	@ApiOperation(value = "刷新配置文件", nickname = "refreshERXmlDom", notes = "刷新配置文件",response = AjaxPageResponse.class, tags={ "serviceBizzData", })
+	@ApiOperation(value = "刷新应用配置", nickname = "refreshERXmlDom", notes = "刷新应用配置",response = AjaxPageResponse.class, tags={ "serviceBizzData", })
     @ApiResponses(value = { 
         @ApiResponse(code = 200, message = "操作成功", response = AjaxPageResponse.class),
         @ApiResponse(code = 401, message = "操作失败") })
@@ -145,6 +145,8 @@ public class ServiceBizzDataController {
 			String method = "loadERXmlDomFromDB";
 			String url = buildWSURL(serviceBizzData);
 			String wsdlResult = WebServiceUtil.getWsdlResult(url, method, params);
+			String dataUril = "http://"+serviceBizzData.getIp()+":"+serviceBizzData.getPort()+"/"+serviceBizzData.getName()+"/services/configReloadService?wsdl";
+			String dataResult = WebServiceUtil.getWsdlResult(dataUril, "syncModule", null);
 			
 			if ("true".equals(wsdlResult)) {
 				return new ResponseEntity<AjaxPageResponse>(AjaxPageResponse.REFRESH_LOCAL("刷新成功"), HttpStatus.OK);

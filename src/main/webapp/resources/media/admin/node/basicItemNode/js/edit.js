@@ -9,7 +9,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
         	$(el).siblings(".icon-arrow-sm").trigger("click");
         }else if($(el).hasClass("icon-add-abc") && $(el).siblings(".icon-arrow-sm").hasClass("active")){
         	$(el).siblings(".icon-arrow-sm").trigger("click");
-        }
+        } 
 	} 	
 	function saveSuccess(el) {
 		 $(el).closest(".label-bar").removeClass("edit");
@@ -30,6 +30,18 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 	    	$CPF.closeLoading();
 	    }, {async: false})
 	}	
+	
+	//预览弹出框
+	$(".entity-edit-wrap", $page).on("click", "#preview", function (e) {
+		var h = $(window).height(); 
+		var w = $(window).width();
+		var width = w - 200;
+		var height = h - 100;
+		Dialog.openDialog("admin/node/basicItemNode/preview?nodeId="+nodeId,"预览", "basicItemNode_preview",{
+			width:width,
+			height:height
+		});
+  	 });  
 	
     //获取孩子的方法
 	function getChild(nodeId, isRelative, bar) {

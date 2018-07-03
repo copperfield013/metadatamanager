@@ -95,7 +95,7 @@ public class RecordRelationTypeDaoImpl implements RecordRelationTypeDao {
 		BasicItemNodeGenerator btNg = new BasicItemNodeGenerator();
 		sFactory.getCurrentSession().save(btNg);
 		String format = String.format("%03d", btNg.getId()); 
-		return entityCode+ "R"+format;
+		return entityCode+ new BasicItemNodeGenerator().getProperty("model.rela.center")+format;
 	}
 
 }
