@@ -5,14 +5,13 @@
 <script src="media/admin/plugins/beyond/js/select2/select2.js"></script>
 
 <div id="entity-wrap">
-	<div class="status-legend">
-		
-	</div>
 	<div class="entity-list">
+	 <div class="status-legend">	</div>
 		<div class="entity">
 			 <div class="entity_head">
 				<img class="entity-list-img" src="media/admin/dictionary/basicItem/images/entity_list_icon.png" />
-				<span>实体列表</span>
+				<span>实体列表
+				</span>
 				<div id="createTab">
 					<img alt="更新" src="media/admin/dictionary/basicItem/images/refresh.png">
 					<span>更新实体存储</span>

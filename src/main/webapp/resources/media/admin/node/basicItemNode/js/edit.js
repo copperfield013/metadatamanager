@@ -387,7 +387,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
             "<i class='icon icon-attr'></i>" +
             "<span class='text'>属性</span>" +
             "</div>" +
-            "<div class='label-bar attr' data-order='"+order+"' data-id='"+id+"'>" +
+            "<div class='label-bar attr  al-save' data-order='"+order+"' data-id='"+id+"'>" +
             "<input type='text' disabled class='edit-input text' value='"+name+"'>" +
             "<select disabled class='abc-attr'>"            
             for(var i=0; i<data.length; i++) {            	
@@ -449,7 +449,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
             "<i class='icon icon-attr'></i>" +
             "<span class='text'>属性</span>" +
             "</div>" +
-            "<div class='label-bar attr' data-order='"+order+"' data-id='"+id+"'>" +
+            "<div class='label-bar attr  al-save' data-order='"+order+"' data-id='"+id+"'>" +
             "<input type='text' disabled class='edit-input text' value='"+name+"'>" +
             "<select disabled class='abc-attr'>"            
             for(var i=0; i<data.length; i++) {            	
@@ -2368,7 +2368,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
         	entityDelete(el);
         	return;
         }
-        var el = $(".icon-trash-sm.active")[0];
+        var el = $(".icon-trash-sm.active")[0];        
         if(labelBar.hasClass("attr")) {         	
         	attrDelete(el);        	
         }else if(labelBar.hasClass("more-attr")) {

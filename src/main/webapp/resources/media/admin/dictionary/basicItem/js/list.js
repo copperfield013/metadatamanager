@@ -267,6 +267,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
 	   var typeCode = $(this).parent().parent().attr("typeCode");
 	   
 	   var patentId = $(this).attr("patentId");
+	   
 	   Dialog.confirm("删除可能会引起数据错误， 是否确认删除", function(isYes) {
 	   		if (isYes) {
 	   			Ajax.ajax('admin/dictionary/recordRelationType/delete', {
@@ -725,7 +726,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
                 str = str + "<option value=\"" + entity[p].code + "\">" + entity[p].cnName + "</option>"; 
             }
             $(".opera_relation").find("#entity_relation_opera_form").find("#rightRecordType").html("");
-            $(".opera_relation").find("#entity_relation_opera_form").find("#rightRecordType").append(str).trigger("change");            
+            $(".opera_relation").find("#entity_relation_opera_form").find("#rightRecordType").css("width","30%").select2().append(str).trigger("change");            
             $("#add_relation_mes").html("");
             $("#add_relation_mes").html("添加关系");
             $(".opera_relation").find("form").find("input").val("");
@@ -1559,12 +1560,18 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
                 $(".more_proper").append(str);
             }
             //实体关系
-            var entityRela = jsonData.entityRela;            
+            
+            $(".entity_relation_list").find(".entity_attr").not(".entity_attr_img").remove(); 
+            var entityRela = jsonData.entityRela;       
+            
+            var typeCode = entityRela[i].typeCode;
+            var index =  typeCode.indexOf("R");
+           var parentId = typeCode.substring(0, index);
             var str = "";
             for (var i = 0; i < entityRela.length; i++) {
             	str = str + "<div title=\"typeCode:"+entityRela[i].typeCode+", 名称:"+entityRela[i].name+", 左实体:"+entityRela[i].leftRecordType+", 右实体:"+entityRela[i].rightRecordType+" , 逆向关系："+entityRela[i].reverseCode+"\" class=\"entity_attr\">" + entityRela[i].name
             	+"<ul class=\"entity_ul\" typeCode=\""+entityRela[i].typeCode+"\">" 
-				+"<li><a href=\"javascript:void(0)\" patentId=\""+entityRela[i].leftRecordType+"\" class=\"delete_rela\"><i class=\"icon edit-entity\"></i>删除关系</a></li>"
+				+"<li><a href=\"javascript:void(0)\" patentId=\""+parentId+"\" class=\"delete_rela\"><i class=\"icon edit-entity\"></i>删除关系</a></li>"
 				+"</ul>"
 				+"<i class=\"icon delete\"></i>"
 				+"</div>"  
