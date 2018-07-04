@@ -16,32 +16,6 @@
 	background-repeat: no-repeat;	
 }
 
-#entity-wrap .entity_attr.stale-ce .status-ce {
-    background-image: url(../images/delete-gray.png);
-}
-
-#entity-wrap .entity_ce .status-ce {
-    position: absolute;
-    top: -0.07em;
-    right: -0.05em;
-    width: 1.43em;
-    height: 1.3em;
-}
-#entity-wrap .entity_ce {
-    color: #aaaaaa;
-    border: 1px solid #aaaaaa;
-}
-
-#entity-wrap .entity_ce {
-    position: relative;
-    float: left;
-    height: 2.2em;
-    line-height: 2.2em;
-    padding: 0 1.1em;
-    margin: 0 0 1.8em 1.8em;
-    cursor: pointer;
-}
-
 #entity-wrap ul,
 #entity-wrap p,
 #entity-wrap li {
