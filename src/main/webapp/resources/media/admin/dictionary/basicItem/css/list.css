@@ -5,16 +5,21 @@
 	overflow-y: auto;
 	position: relative;
 }
-#entity-wrap .status-legend {
-	display: inline-block;
+ #entity-wrap .status-legend {
+	/* display: inline-block;
 	position: absolute;
 	top: 5em;
 	left: 13em;	
 	width: 372px;
 	height: 20px;
 	background-image: url('../images/status-legend.png');	
-	background-repeat: no-repeat;	
-}
+	background-repeat: no-repeat; */
+	
+ position: absolute;
+    left: 11em;
+    top: 1.55em;
+    height: 18px;	
+} 
 
 #entity-wrap ul,
 #entity-wrap p,
@@ -27,7 +32,7 @@
 #entity-wrap .entity-list {		
 	padding: 3.6em 0 0 3.6em;	
 	min-width: 72em;	
-	margin-top: 1em;
+	margin-top: -2em;
 }
 #entity-wrap .entity {
     margin-bottom: 3.6em;

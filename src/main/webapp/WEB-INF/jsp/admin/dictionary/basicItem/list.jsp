@@ -6,11 +6,11 @@
 
 <div id="entity-wrap">
 	<div class="entity-list">
-	 <div class="status-legend">	</div>
+	<!--  <div class="status-legend">	</div> -->
 		<div class="entity">
 			 <div class="entity_head">
 				<img class="entity-list-img" src="media/admin/dictionary/basicItem/images/entity_list_icon.png" />
-				<span>实体列表
+				<span>实体列表<img alt="" class="status-legend" src="media/admin/dictionary/basicItem/images/status-legend.png">
 				</span>
 				<div id="createTab">
 					<img alt="更新" src="media/admin/dictionary/basicItem/images/refresh.png">

@@ -457,7 +457,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
                 
             }    
             
-            $select.append(str).select2();
+            $select.append(str).css("width","30%").select2();
         });
         $form.find("#dictParentId").remove();
         $form.find("#s2id_dictParentId").remove();
@@ -1162,7 +1162,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
 	               
 	            }
 	            
-	            $form1.find("#dataType").append(str).select2();
+	            $form1.find("#dataType").append(str).css("width","30%").select2();
 	        });
             
             $newAdd.find("#add_comm_mes").html("");

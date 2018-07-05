@@ -2,6 +2,14 @@
 seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF){
 	var $page = $("#operateEdit");	
 	var nodeId = $(".entity-title", $page).attr("data-id");	
+    $CPF.showLoading();
+    getNodeOpsType();
+    drag($(".dragEdit-wrap", $page).length);       
+    getChild(nodeId, false);  //直接执行
+    $(".label-bar", $page).addClass("al-save");
+    addEntityOPT();
+    $CPF.closeLoading();
+	
 	function addUnfold(el) {		
 		if($(el).hasClass("icon-add") && $(el).siblings(".icon-arrow").hasClass("active")) {
         	$(el).siblings(".icon-arrow").trigger("click");        	
@@ -49,10 +57,10 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 		Ajax.ajax('admin/node/basicItemNode/getChildNode', {
 			nodeId: nodeId
 		 }, function(data) {	
-			 var data = data.childNode;			
+			 var data = data.childNode;	
 			 var parentId = nodeId;
 			 var isAttrM = $(".collapse-header[data-id='"+nodeId+"']", $page).hasClass("more-attr-title");
-			 var parent = $(".collapse-header[data-id='"+nodeId+"']", $page).next(".collapse-content")[0];			 
+			 var parent = $(".collapse-header[data-id='"+nodeId+"']", $page).next(".collapse-content")[0];	
 			 $(parent).removeClass("need-ajax");			 
 			 for(var i=0; i<data.length; i++) {					 
 				 var abcattr = data[i].abcattr;
@@ -327,14 +335,6 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 	    });     
     };
     
-    $CPF.showLoading();
-    getNodeOpsType();
-    drag($(".dragEdit-wrap", $page).length);       
-    getChild(nodeId, false);  //直接执行
-    $(".label-bar", $page).addClass("al-save");
-    addEntityOPT();
-    $CPF.closeLoading();
-    
     //abc初始化方法
     function initAbc(abcattr, abcattr_code, id, name, opt, order, parent) {
     	var dragWrapLen = $(".dragEdit-wrap", $page).length + 1 ;
@@ -377,7 +377,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
     
     //普通属性初始化方法
     function initAttr(abcattr,dataType,id,name,opt,order,parent) {    	
-    	var entityId = $(".entity_attr.active", $page).attr("data-code");        
+    	var entityId = $(".entity_attr.active", $page).attr("data-code");       
     	Ajax.ajax('admin/node/basicItemNode/getComm?entityId', {
 			entityId: entityId
 		}, function(data) {			
@@ -2237,8 +2237,8 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
         $(el).removeClass("active");
     });
 
-    //添加标签弹出页中的事件绑定
-    $("#operateEdit").on("click", ".tag-checkbox-input", function (e) {    	
+    //弹出页中的事件绑定添加标签
+    $("#operateEdit").on("click", ".tag-checkbox-input", function (e) {   
         e.stopPropagation();
         var el = $("#operateEdit").find(".icon-add-tag.active");
         if(el.length == 0) {
@@ -2359,8 +2359,9 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
     });
     
     //删除-全部
-    $("#operateEdit").on("click", ".opera.confirm", function(e) {     	
-    	e.stopPropagation();    	
+    $("#operateEdit").on("click", ".opera.confirm", function(e) {  
+    	e.stopPropagation();    
+    	alert("2343");
         var entityTitle = $(".icon-trash.active").closest(".entity-title");
         var labelBar = $(".icon-trash-sm.active").closest(".label-bar");
         if(entityTitle.length > 0) {
