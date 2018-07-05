@@ -1,34 +1,23 @@
 package cn.sowell.datacenter.admin.controller.dictionary;
 
 import java.math.BigInteger;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpSession;
 
-import org.apache.log4j.Logger;
-import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.ServletRequestDataBinder;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.alibaba.fastjson.JSONObject;
+import com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException;
 
 import cn.sowell.copframe.dto.ajax.AjaxPageResponse;
 import cn.sowell.copframe.dto.ajax.JsonArrayResponse;
@@ -219,11 +208,12 @@ public class BasicItemController {
                     if (i <9) {
                         continue;
                     } else {
-                         return new ResponseEntity<AjaxPageResponse>(AjaxPageResponse.FAILD("主键重复, 请重新添加"), HttpStatus.INTERNAL_SERVER_ERROR);
+                         return new ResponseEntity<AjaxPageResponse>(AjaxPageResponse.FAILD("主键重复或者名称重复, 请重新添加"), HttpStatus.OK);
                     }
                 } catch (Exception e) {
-                    return new ResponseEntity<AjaxPageResponse>(AjaxPageResponse.FAILD("操作失败"), HttpStatus.INTERNAL_SERVER_ERROR);
-                }
+                    return new ResponseEntity<AjaxPageResponse>(AjaxPageResponse.FAILD("操作失败"), HttpStatus.OK);
+                }           
+                
             }
 			return null;
 	}
