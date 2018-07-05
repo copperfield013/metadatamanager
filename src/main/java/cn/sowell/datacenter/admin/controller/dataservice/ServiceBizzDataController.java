@@ -145,8 +145,9 @@ public class ServiceBizzDataController {
 			String method = "loadERXmlDomFromDB";
 			String url = buildWSURL(serviceBizzData);
 			String wsdlResult = WebServiceUtil.getWsdlResult(url, method, params);
-			String dataUril = "http://"+serviceBizzData.getIp()+":"+serviceBizzData.getPort()+"/"+serviceBizzData.getName()+"/services/configReloadService?wsdl";
-			String dataResult = WebServiceUtil.getWsdlResult(dataUril, "syncModule", null);
+			String dataUrl = "http://"+serviceBizzData.getIp()+":"+serviceBizzData.getPort()+"/"+serviceBizzData.getName()+"/services/configReloadService?wsdl";
+			String dataResult = WebServiceUtil.getWsdlResult(dataUrl, "syncModule", null);
+			//String syncFieldResult = WebServiceUtil.getWsdlResult(dataUrl, "syncField", null);
 			
 			if ("true".equals(wsdlResult)) {
 				return new ResponseEntity<AjaxPageResponse>(AjaxPageResponse.REFRESH_LOCAL("刷新成功"), HttpStatus.OK);

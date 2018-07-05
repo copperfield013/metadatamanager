@@ -274,7 +274,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
 	   			   id:typeCode
 	   		   }, function(data) {
 	   			$(".new_add").remove();
-	   	       enityAttr(patentId);
+	   	      enityAttr(patentId);
 	   	       });
 	   		}
 	   });
@@ -491,7 +491,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
                 	 str = str + " <option value =\"" + key + "\">" + data[key] + "</option>";
                 }
             }
-            $(".opera_more_child").find("#more_child_opera_form1").find("#dataType").append(str).select2();            
+            $(".opera_more_child").find("#more_child_opera_form1").find("#dataType").append(str).css("width","30%").select2();            
         });
         $newAdd.find("#add_more_child_mes").html("");
         $newAdd.find("#add_more_child_mes").html("添加多值属性");
@@ -558,8 +558,8 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
                 	 valuestr = valuestr + " <option value =\"" + datachild[key].code + "\">" + datachild[key].cnName + "</option>";
                 }
             }
-            $form.find("#dictionaryAttr").append(dictattr_enum).trigger("change");
-            $form.find("#valueAttr").append(valuestr).trigger("change");
+            $form.find("#dictionaryAttr").append(dictattr_enum).css("width","30%").select2();
+            $form.find("#valueAttr").append(valuestr).css("width","30%").select2();
         });
         $("#twoLevelAttr_mes").html("");
         $("#twoLevelAttr_mes").html("添加二级属性");
@@ -603,8 +603,8 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
                         }
                     }
                 }
-                $form.find("#dictionaryAttr").append(dictattr_enum).trigger("change");
-                $form.find("#valueAttr").append(valuestr).trigger("change");
+                $form.find("#dictionaryAttr").append(dictattr_enum).css("width","30%").select2();
+                $form.find("#valueAttr").append(valuestr).css("width","30%").select2();
             });
         });
         $("#twoLevelAttr_mes").html("");
@@ -705,7 +705,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
             for (var key in dictList) {
                 str = str + " <option value =\"" + dictList[key].code + "\">" + dictList[key].name + "</option>";
             }
-            $form.find("#dictionaryCode").append(str).trigger("change");
+            $form.find("#dictionaryCode").append(str).css("width","30%").select2();
         });
         $(this).closest('.new_add').find(".twoLevelAttr_child_show").show();
     });
@@ -1252,7 +1252,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
 	            	}
 	            }
 	           
-	            $form1.find("#dataType").append(str).select2();	            
+	            $form1.find("#dataType").append(str).css("width","30%").select2();	            
 	        }); 
     		
     		 Ajax.ajax('admin/dictionary/basicItem/isTwoattr', {
@@ -1314,33 +1314,31 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
     $(".change_status", $page).click(function() {
         var entityId = $(this).parent().parent().attr("entityid");
         var status = $(this).parent().parent().attr("status");
-        
-        saveStatus(entityId, status);
+        saveStatus(entityId, status, entityId);
     });
     //过期普通属性
     $(".common_proper", $page).on("click", ".common_change_status", function() {
         var commId = $(this).closest('.entity_ul').attr("entityid");        
         var status = $(this).closest('.entity_ul').attr("status");        
         var entityId = $(".common_proper").attr("parentid");
-        saveStatus(commId, status);
-        $(".new_add").remove();
-        enityAttr(entityId);
+        saveStatus(commId, status, entityId);
     });
     //过期 多值属性 属性
     $(".more_proper", $page).on("click", ".more_child_change_status", function() {
         var commId = $(this).parent().parent().attr("entityid");
         var status = $(this).parent().parent().attr("status");        
         var entityId = $(".common_proper").attr("parentid");
-        saveStatus(commId, status);
-        $(".new_add").remove();
-        enityAttr(entityId);
+        saveStatus(commId, status, entityId);
     });
     //过期函数
-    function saveStatus(entityId, status) {    	
+    function saveStatus(entityId, status, parentId) {    	
         Ajax.ajax('admin/dictionary/basicItem/saveStatus', {
             id: entityId,
             statusStr: status
-        }, function(jsonData) {});
+        }, function(jsonData) {
+        	$(".new_add").remove();
+            enityAttr(parentId);
+        });
     }
     //在实体列表页面右键点击   的时候
     $(".get_entity_attr", $page).click(function() {
@@ -1411,7 +1409,6 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
 
     //获取实体属性的ajax
     function enityAttr(entityId, statusStr) {
-    	
     	var uuid = "dcr" + guid();
         Ajax.ajax('admin/dictionary/basicItem/attrByPid?uuid='+uuid, {
             parentId: entityId
@@ -1560,10 +1557,8 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
                 $(".more_proper").append(str);
             }
             //实体关系
-            
             $(".entity_relation_list").find(".entity_attr").not(".entity_attr_img").remove(); 
             var entityRela = jsonData.entityRela;       
-            
             var typeCode = entityRela[i].typeCode;
             var index =  typeCode.indexOf("R");
            var parentId = typeCode.substring(0, index);
@@ -1576,14 +1571,12 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
 				+"<i class=\"icon delete\"></i>"
 				+"</div>"  
             }
-            $(".entity_relation_list").find(".entity_attr").not(".entity_attr_img").remove();            
             $(".entity_relation_list").prepend(str);
             $(".select-wrap").css({
             	"width": "100%",
             	"margin-right": "0"
             });
-            $("select", $page).css("width","30%");                        
-//            $("select", $page).select2();
+            $("select", $page).css("width","30%");          
         });
     }
     
