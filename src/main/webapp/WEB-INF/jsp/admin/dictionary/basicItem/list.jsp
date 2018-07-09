@@ -49,7 +49,11 @@
 					<div>
 						<span class="opera_entity_label">英文名称<span style="color: red;">*</span></span>
 						<input type="text" name="enName" id="enName"/><br>
-					</div>						
+					</div>	
+					<div>
+						<span class="opera_entity_label">描述</span>
+						<textarea name="description" id="description" rows="" cols=""></textarea>
+					</div>					
 				</form>
 				<div class="opera_entity_btn">
 					<span class="entity-btn-cancel" id="entity_but_cancel">取消</span>
@@ -77,6 +81,10 @@
 					<div>
 						<span class="opera_entity_label">中文名称<span style="color: red;">*</span></span>
 						<input type="text" name="cnName" id="cnName"/>
+					</div>	
+					<div>
+						<span class="opera_entity_label">描述</span>
+						<textarea name="description" id="description" rows="" cols=""></textarea>
 					</div>						
 				</form>
 				<div class="opera_entity_btn">
@@ -113,6 +121,10 @@
 						<span class="opera_entity_label">表描述</span>
 						<textarea name="tableNameDescription" id="tableNameDescription" rows="" cols=""></textarea><br>
 					</div>
+					<div>
+						<span class="opera_entity_label">描述</span>
+						<textarea name="description" id="description" rows="" cols=""></textarea>
+					</div>	
 				</form>
 				<div class="opera_entity_btn">
 					<span class="entity-btn-cancel" id="more_but_cancel">取消</span>

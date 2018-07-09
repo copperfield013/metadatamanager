@@ -90,6 +90,10 @@ public class BasicItem {
 	  @Column(name="c_group_name")
 	  private String groupName;//分组字段
 	  
+	  @ApiModelProperty(value="描述", name="description")
+	  @Column(name="c_description")
+	  private String description;
+	  
 	 @Transient  
 	 List<BasicItem> childList = null;
 	 
@@ -227,5 +231,18 @@ public class BasicItem {
 	public void setTwoLevelAttr(Long twoLevelAttr) {
 		this.twoLevelAttr = twoLevelAttr;
 	}
-	
+
+	/**
+	 * @return the description
+	 */
+	public String getDescription() {
+		return description;
+	}
+
+	/**
+	 * @param description the description to set
+	 */
+	public void setDescription(String description) {
+		this.description = description;
+	}
 }
