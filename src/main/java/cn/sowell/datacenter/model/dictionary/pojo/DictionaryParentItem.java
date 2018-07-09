@@ -28,8 +28,7 @@ public class DictionaryParentItem {
 	@Column(name = "c_name")
 	private String name;
 
-	@OneToMany(fetch=FetchType.EAGER, cascade=CascadeType.REMOVE)
-	@JoinColumn(name="parent_id")
+	@OneToMany(fetch=FetchType.EAGER,cascade=CascadeType.REMOVE, mappedBy="parentId")
 	private List<DictionaryBasicItem> dictBasicItemList;
 
 	public Integer getId() {
