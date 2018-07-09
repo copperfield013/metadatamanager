@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html;charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ include file="/WEB-INF/jsp/common/base_empty.jsp"%>
-<div id="demo-list">
+<div id="dictParentItem-list">
 	<nav>
 		<form class="form-inline" action="admin/dictionary/dictParentItem/list">
 			<div class="form-group">
@@ -40,17 +40,17 @@
 </div>
 <script>
 	seajs.use(['dialog','utils'], function(Dialog, Utils){
-		var $page = $('#demo-list');
+		var $page = $('#dictParentItem-list');
 		Utils.datepicker($('#date', $page));
 		
-		$("form").on("click", "#add", function() {
-            Dialog.openDialog("admin/dictionary/dictParentItem/add", "创建", undefined, {
+		$("form", $page).on("click", "#add", function() {
+            Dialog.openDialog("admin/dictionary/dictParentItem/add", "创建", "", {
                 width :600,
                 height : 300
             });
         });
 		
-		$("tbody").on("click", "#edit", function() {
+		$("tbody", $page).on("click", "#edit", function() {
             var itemId=$(this).attr("itemId");
             Dialog.openDialog("admin/dictionary/dictParentItem/update/"+itemId, "修改", undefined, {
                 width :600,

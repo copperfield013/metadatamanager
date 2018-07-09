@@ -65,7 +65,7 @@ public class DictionaryParentItemController {
 	}
 	
 	@RequestMapping("/add")
-	public String add(PlainDemo demo){
+	public String add(){
 		return AdminConstants.JSP_DICTIONARY + "/dictParentItem/add.jsp";
 	}
 	

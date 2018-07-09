@@ -31,6 +31,20 @@ public class DictionaryParentItem {
 	@OneToMany(fetch=FetchType.EAGER,cascade=CascadeType.REMOVE, mappedBy="parentId")
 	private List<DictionaryBasicItem> dictBasicItemList;
 
+	/**
+	 * @return the dictBasicItemList
+	 */
+	public List<DictionaryBasicItem> getDictBasicItemList() {
+		return dictBasicItemList;
+	}
+
+	/**
+	 * @param dictBasicItemList the dictBasicItemList to set
+	 */
+	public void setDictBasicItemList(List<DictionaryBasicItem> dictBasicItemList) {
+		this.dictBasicItemList = dictBasicItemList;
+	}
+
 	public Integer getId() {
 		return id;
 	}

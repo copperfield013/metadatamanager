@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html;charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ include file="/WEB-INF/jsp/common/base_empty.jsp"%>
-<div id="demo-list">
+<div id="dictBasicItem-list">
 	<nav>
 		<form class="form-inline" action="admin/dictionary/dictBasicItem/list">
 			<div class="form-group">
@@ -40,7 +40,6 @@
 						<td>${item.enName }</td>
 						<td>${item.status }</td>
 						<td>
-							<%-- <a href="admin/dictionary/dictMappingAlias/list?basicItemId=${item.id }" class="tab" target="dictMappingAlias_list" title="管理别名">管理别名</a> --%>
 							<a href="javascript:;" title="修改" itemId="${item.id }" id="edit">修改</a>
 							<a href="admin/dictionary/dictBasicItem/do_delete/${item.id }" confirm="确认删除？">删除</a>
 						</td>
@@ -52,10 +51,10 @@
 	</div>
 <script>
 	seajs.use(['dialog','utils'], function(Dialog, Utils){
-		var $page = $('#demo-list');
+		var $page = $('#dictBasicItem-list');
 		Utils.datepicker($('#date', $page));
 		
-		$("form").on("click", "#add", function() {
+		$("form", $page).on("click", "#add", function() {
             var pId=$(this).attr("pId");
             Dialog.openDialog("admin/dictionary/dictBasicItem/add?parentId="+pId, "创建", undefined, {
                 width :600,
@@ -63,7 +62,7 @@
             });
         });
 		
-		$("tbody").on("click", "#edit", function() {
+		$("tbody", $page).on("click", "#edit", function() {
             var itemId=$(this).attr("itemId");
             Dialog.openDialog("admin/dictionary/dictBasicItem/update/"+itemId, "修改", undefined, {
                 width :600,
