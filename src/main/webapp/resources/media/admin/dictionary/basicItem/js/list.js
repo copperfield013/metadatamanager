@@ -1567,14 +1567,17 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
             }
             //实体关系
             $(".entity_relation_list").find(".entity_attr").not(".entity_attr_img").remove(); 
-            var entityRela = jsonData.entityRela;       
-            var typeCode = entityRela[i].typeCode;
-            var index =  typeCode.indexOf("R");
-           var parentId = typeCode.substring(0, index);
+            var entityRelation = jsonData.entityRela; 
+            
             var str = "";
-            for (var i = 0; i < entityRela.length; i++) {
-            	str = str + "<div title=\"typeCode:"+entityRela[i].typeCode+", 名称:"+entityRela[i].name+", 左实体:"+entityRela[i].leftRecordType+", 右实体:"+entityRela[i].rightRecordType+" , 逆向关系："+entityRela[i].reverseCode+"\" class=\"entity_attr\">" + entityRela[i].name
-            	+"<ul class=\"entity_ul\" typeCode=\""+entityRela[i].typeCode+"\">" 
+            for (var i = 0; i < entityRelation.length; i++) {
+            	
+            	var typeCode = entityRelation[i].typeCode;
+                var index =  typeCode.indexOf("R");
+               var parentId = typeCode.substring(0, index);
+            	
+            	str = str + "<div title=\"typeCode:"+entityRelation[i].typeCode+", 名称:"+entityRelation[i].name+", 左实体:"+entityRelation[i].leftRecordType+", 右实体:"+entityRelation[i].rightRecordType+" , 逆向关系："+entityRelation[i].reverseCode+"\" class=\"entity_attr\">" + entityRelation[i].name
+            	+"<ul class=\"entity_ul\" typeCode=\""+entityRelation[i].typeCode+"\">" 
 				+"<li><a href=\"javascript:void(0)\" patentId=\""+parentId+"\" class=\"delete_rela\"><i class=\"icon edit-entity\"></i>删除关系</a></li>"
 				+"</ul>"
 				+"<i class=\"icon delete\"></i>"
