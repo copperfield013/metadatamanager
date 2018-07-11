@@ -121,11 +121,13 @@ public class BasicItem {
 	}
 
 	public String getDataType() {
-		if ("二进制型".equals(this.dataType)) {
+		/*if ("二进制型".equals(this.dataType)) {
 			return "文件型";
 		} else {
 			return dataType;
-		}
+		}*/
+		
+		return dataType;
 	}
 
 	public String getDataRange() {
