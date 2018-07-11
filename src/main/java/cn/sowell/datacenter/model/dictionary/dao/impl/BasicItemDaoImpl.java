@@ -34,7 +34,7 @@ public class BasicItemDaoImpl implements BasicItemDao {
 	@Resource
 	SessionFactory sFactory;
 	
-	@Override
+	/*@Override
 	public List<BasicItem> queryList(BasicItemCriteria criteria) {
 		String hql = "from BasicItem b";
 		DeferedParamQuery dQuery = new DeferedParamQuery(hql);
@@ -57,7 +57,7 @@ public class BasicItemDaoImpl implements BasicItemDao {
 			dQuery.appendCondition(" and b.dataType = :dataType")
 					.setParam("dataType", criteria.getDataType());
 		}
-		dQuery.appendCondition("ORDER BY c_code ASC");
+		//dQuery.appendCondition("ORDER BY code=reverse(-(-reverse(substring_index(code,'_',1)))) ASC");
 		
 		Query countQuery = dQuery.createQuery(sFactory.getCurrentSession(), true, new WrapForCountFunction());
 		Integer count = FormatUtils.toInteger(countQuery.uniqueResult());
@@ -66,6 +66,45 @@ public class BasicItemDaoImpl implements BasicItemDao {
 			return query.list();
 		}
 		return new ArrayList<BasicItem>();
+	}*/
+	
+	
+	@Override
+	public List<BasicItem> queryList(BasicItemCriteria criteria) {
+		StringBuffer sb = new StringBuffer();
+		sb.append("SELECT * FROM t_c_basic_item b WHERE 1=1 ");
+		
+		if(criteria.getUsingState() != null && criteria.getUsingState().SIZE > 0){
+			sb.append(" AND b.c_using_state=:usingState");
+		}
+		if(TextUtils.hasText(criteria.getParent())){
+			sb.append(" AND b.c_parent=:parent");
+		}
+		if(TextUtils.hasText(criteria.getCnName())){
+			sb.append(" AND b.c_cn_name like :cnName");
+		}
+		if(TextUtils.hasText(criteria.getDataType())){
+			sb.append(" AND b.c_data_type= :dataType");
+		}
+		sb.append(" ORDER BY c_code=reverse(-(-reverse(substring_index(c_code,'_',1)))) ASC");
+		
+		SQLQuery query = sFactory.getCurrentSession().createSQLQuery(sb.toString())
+				.addEntity(BasicItem.class);
+		
+		if(criteria.getUsingState() != null && criteria.getUsingState().SIZE > 0){
+			query.setParameter("usingState", criteria.getUsingState());
+		}
+		if(TextUtils.hasText(criteria.getParent())){
+			query.setParameter("parent", criteria.getParent());
+		}
+		if(TextUtils.hasText(criteria.getCnName())){
+			query.setParameter("cnName", criteria.getCnName());
+		}
+		if(TextUtils.hasText(criteria.getDataType())){
+			query.setParameter("dataType", criteria.getDataType());
+		}
+		
+		return query.list();
 	}
 	
 	@Override
@@ -90,22 +129,22 @@ public class BasicItemDaoImpl implements BasicItemDao {
 
 	@Override
 	public List<BasicItem> getDataByPId(String parent) {
-		String hql = "from BasicItem WHERE parent=:parent AND code not LIKE '%_P' AND code not like '%__ED' ORDER BY code ASC";
-		List<BasicItem> list = sFactory.getCurrentSession().createQuery(hql).setParameter("parent", parent).list();
+		String sql = "SELECT * FROM t_c_basic_item WHERE c_parent=:parent AND c_code not like '%_P' AND c_code not like '%__ED' ORDER BY c_code=reverse(-(-reverse(substring_index(c_code,'_',1)))) ASC";
+		List<BasicItem> list = sFactory.getCurrentSession().createSQLQuery(sql).addEntity(BasicItem.class).setParameter("parent", parent).list();
 		return list;
 	}
 	
 	@Override
 	public List<BasicItem> getChilByPid(String parent) {
-		String hql = "from BasicItem WHERE parent=:parent ORDER BY c_code ASC";
-		List<BasicItem> list = sFactory.getCurrentSession().createQuery(hql).setParameter("parent", parent).list();
+		String sql = "SELECT * FROM t_c_basic_item WHERE c_parent=:parent ORDER BY c_code=reverse(-(-reverse(substring_index(c_code,'_',1)))) ASC";
+		List<BasicItem> list = sFactory.getCurrentSession().createSQLQuery(sql).addEntity(BasicItem.class).setParameter("parent", parent).list();
 		return list;
 	}
 
 	@Override
 	public List getAttrByPidGroupName(String parent, String groupName) {
-		String sql = "from BasicItem WHERE parent=:parent AND groupName=:groupName AND code not LIKE '%_P' ORDER BY code ASC";
-		List<BasicItem> list = sFactory.getCurrentSession().createQuery(sql).setParameter("parent", parent).setParameter("groupName", groupName).list();
+		String sql = "SELECT * FROM t_c_basic_item WHERE c_parent=:parent AND c_group_name=:groupName AND c_code not LIKE '%_P' ORDER BY c_code=reverse(-(-reverse(substring_index(c_code,'_',1)))) ASC";
+		List<BasicItem> list = sFactory.getCurrentSession().createSQLQuery(sql).addEntity(BasicItem.class).setParameter("parent", parent).setParameter("groupName", groupName).list();
 		return list;
 	}
 
