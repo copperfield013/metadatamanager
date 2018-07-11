@@ -1150,7 +1150,6 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
 	            var dataType = $form1.find("#edit_dataType").val();
 	            var str = "";
 	            for (var key in data) {
-	            	
 	            	if (ischecked) {
 	            		 if ("枚举" == data[key]) {
 		 	                    str = str + " <option selected=\"selected\" value =\"" + key + "\">" + data[key] + "</option>";
@@ -1158,11 +1157,17 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
 		 	                    str = str + " <option value =\"" + key + "\">" + data[key] + "</option>";
 		 	                }
 	            	} else {
-	            		 if (dataType == data[key]) {
+	            		if (dataType == "二进制型" && "文件型" == data[key]) {
 	 	                    str = str + " <option selected=\"selected\" value =\"" + key + "\">" + data[key] + "</option>";
 	 	                } else {
-	 	                    str = str + " <option value =\"" + key + "\">" + data[key] + "</option>";
+	 	                	 if (dataType == data[key]) {
+	 	 	                    str = str + " <option selected=\"selected\" value =\"" + key + "\">" + data[key] + "</option>";
+	 	 	                } else {
+	 	 	                    str = str + " <option value =\"" + key + "\">" + data[key] + "</option>";
+	 	 	                }
 	 	                }
+	            		
+	            		
 	            	}
 	            	
 	               
@@ -1251,11 +1256,17 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
 	 	                    str = str + " <option value =\"" + key + "\">" + data[key] + "</option>";
 	 	                }
 	            	} else {
-	            		 if (dataType == data[key]) {
-	 	                    str = str + " <option selected=\"selected\" value =\"" + key + "\">" + data[key] + "</option>";
-	 	                } else {
-	 	                    str = str + " <option value =\"" + key + "\">" + data[key] + "</option>";
-	 	                }
+	            			if (dataType == "二进制型" && "文件型" == data[key]) {
+		 	                    str = str + " <option selected=\"selected\" value =\"" + key + "\">" + data[key] + "</option>";
+		 	                } else {
+		 	                	 if (dataType == data[key]) {
+		 	 	                    str = str + " <option selected=\"selected\" value =\"" + key + "\">" + data[key] + "</option>";
+		 	 	                } else {
+		 	 	                    str = str + " <option value =\"" + key + "\">" + data[key] + "</option>";
+		 	 	                }
+		 	                }
+	            			
+	            		
 	            	}
 	            }
 	           
@@ -1365,7 +1376,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
         $("#group_parent").val(entityId);
         $("#more_parent").val(entityId);
         $(".new_add").remove();
-        enityAttr(entityId, status);
+        enityAttr(entityId, status);//初始化所有数据
         
         if (status == 2) {
         	$("#add_group").hide();
