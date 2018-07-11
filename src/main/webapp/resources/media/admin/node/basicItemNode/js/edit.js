@@ -2361,7 +2361,6 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
     //删除-全部
     $("#operateEdit").on("click", ".opera.confirm", function(e) {  
     	e.stopPropagation();    
-    	alert("2343");
         var entityTitle = $(".icon-trash.active").closest(".entity-title");
         var labelBar = $(".icon-trash-sm.active").closest(".label-bar");
         if(entityTitle.length > 0) {
