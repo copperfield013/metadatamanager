@@ -57,6 +57,8 @@ public class BasicItemDaoImpl implements BasicItemDao {
 			dQuery.appendCondition(" and b.dataType = :dataType")
 					.setParam("dataType", criteria.getDataType());
 		}
+		dQuery.appendCondition("ORDER BY c_code ASC");
+		
 		Query countQuery = dQuery.createQuery(sFactory.getCurrentSession(), true, new WrapForCountFunction());
 		Integer count = FormatUtils.toInteger(countQuery.uniqueResult());
 		if(count > 0){
@@ -88,21 +90,21 @@ public class BasicItemDaoImpl implements BasicItemDao {
 
 	@Override
 	public List<BasicItem> getDataByPId(String parent) {
-		String sql = "from BasicItem WHERE parent=:parent AND code not LIKE '%_P' AND code not like '%__ED'";
-		List<BasicItem> list = sFactory.getCurrentSession().createQuery(sql).setParameter("parent", parent).list();
+		String hql = "from BasicItem WHERE parent=:parent AND code not LIKE '%_P' AND code not like '%__ED' ORDER BY code ASC";
+		List<BasicItem> list = sFactory.getCurrentSession().createQuery(hql).setParameter("parent", parent).list();
 		return list;
 	}
 	
 	@Override
 	public List<BasicItem> getChilByPid(String parent) {
-		String sql = "from BasicItem WHERE parent=:parent";
-		List<BasicItem> list = sFactory.getCurrentSession().createQuery(sql).setParameter("parent", parent).list();
+		String hql = "from BasicItem WHERE parent=:parent ORDER BY c_code ASC";
+		List<BasicItem> list = sFactory.getCurrentSession().createQuery(hql).setParameter("parent", parent).list();
 		return list;
 	}
 
 	@Override
 	public List getAttrByPidGroupName(String parent, String groupName) {
-		String sql = "from BasicItem WHERE parent=:parent AND groupName=:groupName AND code not LIKE '%_P'";
+		String sql = "from BasicItem WHERE parent=:parent AND groupName=:groupName AND code not LIKE '%_P' ORDER BY code ASC";
 		List<BasicItem> list = sFactory.getCurrentSession().createQuery(sql).setParameter("parent", parent).setParameter("groupName", groupName).list();
 		return list;
 	}
