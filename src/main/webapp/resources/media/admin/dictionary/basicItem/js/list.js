@@ -187,8 +187,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
                 Ajax.ajax('admin/dictionary/basicItem/delete', {
                    id:groupId
                }, function(data) {
-            	   $(".new_add").remove();        
-            	   enityAttr(entityId);
+            	   $form.parent().parent().remove();    
                });
             }
        });
@@ -797,9 +796,11 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
         $form1.find("#valueAttr").val("");
         $(this).parent().parent().hide();
     });
-    //点击确认， 进行添加分组
+    //点击确认， 进行添加分组和修改分組
     $(".common_proper", $page).on("click", "#group_but_confirm", function() {
+    	var $form = $(this).closest(".opera_group").find("#group_opera_form1");
     	var formdom = $(this).closest(".opera_group").find("#group_opera_form1")[0];
+    	var code = $form.children("#code").val();
         var fData = new FormData(formdom);
         var entityId = $(".common_proper").attr("parentid");
         var $form = $(this).closest(".opera_group").find("#group_opera_form1");
@@ -808,13 +809,26 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
         	 $CPF.showLoading();
         	 Ajax.ajax('admin/dictionary/basicItem/do_add', fData, function(data) {
              	$(".opera_group").hide();
-                 //重新加载全部
-                 $(".new_add").remove();        
-                 enityAttr(entityId);
+             	//------------------------
+             	if ("" == code) {
+             		 var str = "<div data-code-id=\""+data.code+"\" class=\"new_add clear-fix\">" + 
+         			"<div class=\"new_add_title\">" + "<span title=\"code:"+data.code+",中文名称："+data.cnName+"\">" +data.cnName+ "</span>"
+						str = str + "<img id=\"edit_group\" groupId=\"" + data.code + "\" src=\"media/admin/dictionary/basicItem/images/edit_ch.png\">"
+						str = str + "</div><div class=\"comm_list clear-fix\">";                		    
+			     	str = str + "<div class=\"entity_attr entity_attr_img add_comm\">" +
+							    "<img alt=\"添加普通属性\" src=\"media/admin/dictionary/basicItem/addEntity_icon.png\">" +					"</div>"
+						str = str + "</div>"	
+						str = str + "<div class=\"opera_comm\"><img class=\"opera_entity_img\" src=\"media/admin/dictionary/basicItem/images/info.png\"><span id=\"add_comm_mes\"></span><form groupName="+data.cnName+"  groupId="+data.code+"   id=\"comm_opera_form1\" class=\"opera_entity_form\"><input type=\"hidden\" id=\"groupName\" name=\"groupName\" value=\"\"><input type=\"hidden\" id=\"comm_parent\" name=\"parent\" value=\"\"><input type=\"hidden\" id=\"edit_dataType\" value=\"\"><input type=\"hidden\" id=\"edit_dictParentId\" value=\"\"><input type=\"hidden\" name=\"code\" id=\"code\" /><div><span class=\"opera_entity_label\">中文名称<span style=\"color: red;\">*</span></span><input type=\"text\" name=\"cnName\" id=\"cnName\" /></div><div><span class=\"opera_entity_label\">英文名称</span><input type=\"text\" name=\"enName\" id=\"enName\" /></div><div class=\"select-wrap\"><span class=\"opera_entity_label\" id=\"cn_dataType\">数据类型<span style=\"color: red;\">*</span></span><select id=\"dataType\" class=\"enum_dataType_one\" name=\"dataType\"></select></div><div><span class=\"opera_entity_label\" id=\"cn_dataRange\">数据长度<span style=\"color: red;\">*</span></span><input type=\"text\" name=\"dataRange\" id=\"dataRange\"></div><div><span class=\"opera_entity_label\">描述</span><textarea name=\"description\" id=\"description\"></textarea></div></form><div class=\"opera_entity_btn\"><span class=\"entity-btn-cancel\" id=\"comm_but_cancel\">取消</span><span class=\"entity-btn-confirm\" id=\"comm_but_confirm\">确认</span></div></div>";
+			         str = str + "<div class=\"opera_group\"><img class=\"opera_entity_img\" src=\"media/admin/dictionary/basicItem/images/info.png\"><span class=\"opera_entity_img\" id=\"add_group_mes\"></span><form id=\"group_opera_form1\" class=\"opera_entity_form\"><input type=\"hidden\" name=\"code\" id=\"code\" /><input type=\"hidden\" id=\"group_parent\" name=\"parent\" value=\"\"><input type=\"hidden\" name=\"dataType\" value=\"group\"><div><span class=\"opera_entity_label\">中文名称<span style=\"color: red;\">*</span></span><input type=\"text\" name=\"cnName\" id=\"cnName\" /></div><div><span class=\"opera_entity_label\">描述</span><textarea name=\"description\" id=\"description\"></textarea></div></form><div class=\"opera_entity_btn\"><span class=\"entity-btn-cancel\" id=\"group_but_cancel\">取消</span><span class=\"entity-btn-confirm\" id=\"group_but_confirm\">确认</span><span class=\"entity-btn-confirm\" id=\"group_but_del\">删除</span></div></div>";
+			         str = str + "<i class=\"icon status newadd\"></div>";
+			         $(".common_proper").append(str);
+             	} else {
+             		var $sp = $(".common_proper").children("[data-code-id='"+code+"']").children(".new_add_title").find("span");
+             		var titlestr="code:"+data.code+",中文名称："+data.cnName+"";
+             		$sp.attr("title", titlestr);
+             		$sp.text(data.cnName);
+             	}
                  
-               /*  //重新加载部分
-                 $(".common_proper").find(".new_add").remove();   
-                 commAttr(entityId);*/
                  $CPF.closeLoading();
              });
         }
@@ -1495,7 +1509,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
             var commonArr = jsonData.commonProper; //普通属性
             
             for (var i = 0; i < commonArr.length; i++) {
-                var str = "<div class=\"new_add clear-fix\">" + 
+                var str = "<div data-code-id=\""+commonArr[i].code+"\" class=\"new_add clear-fix\">" + 
                 			"<div class=\"new_add_title\">" + "<span title=\"code:"+commonArr[i].code+",中文名称："+commonArr[i].cnName+"\">" +commonArr[i].cnName+ "</span>"
                 			if (statusStr != 2) {
                 				str = str + "<img id=\"edit_group\" groupId=\"" + commonArr[i].code + "\" src=\"media/admin/dictionary/basicItem/images/edit_ch.png\">"
