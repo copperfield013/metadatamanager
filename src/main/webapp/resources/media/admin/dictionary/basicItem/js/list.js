@@ -214,15 +214,14 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
    //删除属性
    $(".entity-list", $page).on("click", ".delete_attr", function() {
 	   var entityid = $(this).parent().parent().attr("entityId");
-	   
+	   var attrNode =  $(this).parent().parent().parent();
 	   var patentId = $(this).attr("patentId");
 	   Dialog.confirm("删除可能会引起数据错误， 是否确认删除", function(isYes) {
 	   		if (isYes) {
 	   			Ajax.ajax('admin/dictionary/basicItem/delete', {
 	   			   id:entityid
 	   		   }, function(data) {
-	   			$(".new_add").remove();
-	   	       enityAttr(patentId);
+	   			attrNode.remove();
 	   	       });
 	   		}
 	   });
@@ -1356,6 +1355,9 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
             id: entityId,
             statusStr: status
         }, function(jsonData) {
+        	
+        	
+        	
         	$(".new_add").remove();
             enityAttr(parentId);
         });
