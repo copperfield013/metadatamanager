@@ -131,7 +131,7 @@ public class BasicItemController {
         @ApiResponse(code = 401, message = "操作失败") })
     @RequestMapping(value = "/do_add",
         method = RequestMethod.POST)
-	public ResponseEntity<AjaxPageResponse> doAdd(@ApiParam(name="BasicItem", value="传入json格式", required=true)BasicItem basicItem){
+	public ResponseEntity doAdd(@ApiParam(name="BasicItem", value="传入json格式", required=true)BasicItem basicItem){
 			String dType = basicItem.getDataType();
 			String dataType = "";
 			String comm = null;
@@ -199,10 +199,10 @@ public class BasicItemController {
         			if ("记录类型".equals(basicItem.getDataType())) {
         				return new ResponseEntity<AjaxPageResponse>(AjaxPageResponse.CLOSE_AND_REFRESH_PAGE("修改成功", "basicItem_list"), HttpStatus.OK);
         			} else {
-        				AjaxPageResponse response = new AjaxPageResponse();
+        				/*AjaxPageResponse response = new AjaxPageResponse();
         				response.setNotice("操作成功");
-        				response.setNoticeType(NoticeType.SUC);
-        				return new ResponseEntity<AjaxPageResponse>(response, HttpStatus.OK);
+        				response.setNoticeType(NoticeType.SUC);*/
+        				return new ResponseEntity(basicItem, HttpStatus.OK);
         			}
                 } catch (DataIntegrityViolationException e) {
                     if (i <9) {
@@ -277,17 +277,14 @@ public class BasicItemController {
         @ApiResponse(code = 200, message = "操作成功", response = AjaxPageResponse.class),
         @ApiResponse(code = 404, message = "操作失败") })
 	@RequestMapping(value="/saveStatus", method=RequestMethod.POST)
-	public ResponseEntity<AjaxPageResponse> savePastDue(String id, String statusStr){
+	public ResponseEntity savePastDue(String id, String statusStr){
 		try {
 			BasicItem basicItem = basicItemService.getBasicItem(id);
 			basicItemService.saveUsingStatus(basicItem, statusStr);
 			if ("记录类型".equals(basicItem.getDataType())) {
 				 return new ResponseEntity<AjaxPageResponse>(AjaxPageResponse.CLOSE_AND_REFRESH_PAGE("修改成功", "basicItem_list"), HttpStatus.OK);
 			} else {
-				AjaxPageResponse response = new AjaxPageResponse();
-				response.setNotice("操作成功");
-				response.setNoticeType(NoticeType.SUC);
-				return new ResponseEntity<AjaxPageResponse>(response, HttpStatus.OK);
+				return new ResponseEntity<BasicItem>(basicItem, HttpStatus.OK);
 			}
 		} catch (Exception e) {
 			return new ResponseEntity<AjaxPageResponse>(AjaxPageResponse.FAILD("操作失败"), HttpStatus.INTERNAL_SERVER_ERROR);

@@ -26,6 +26,7 @@ import cn.sowell.datacenter.model.dictionary.service.DictionaryBasicItemService;
 import cn.sowell.datacenter.model.dictionary.service.RecordRelationTypeService;
 import cn.sowell.datacenter.model.dictionary.service.TowlevelattrMultiattrMappingService;
 import cn.sowell.datacenter.model.dictionary.service.TowlevelattrService;
+import cn.sowell.datacenter.model.node.pojo.BasicItemNodeGenerator;
 
 @Service
 public class BasicItemServiceImpl implements BasicItemService {
@@ -132,6 +133,8 @@ public class BasicItemServiceImpl implements BasicItemService {
 					status = 0;
 					savePastDue(basicItem, status);//全部标记为新增
 				} else {//如果查到表， 只把当前实体标记为再用并把每个表对应的分组活重复类型标记为再用
+					
+					String ibt = new BasicItemNodeGenerator().getProperty("model.attr.prefix");
 					status = 1;
 					pastDue(basicItem, status);
 					//更改分组或重复类型
@@ -139,7 +142,7 @@ public class BasicItemServiceImpl implements BasicItemService {
 					while (iterator.hasNext()) {
 						String next = (String)iterator.next();
 						String[] str = next.split("_");
-						if (str[2].startsWith("ibt")) {
+						if (str[2].startsWith(ibt.toLowerCase())) {
 							BasicItem item = basicItemDao.get(BasicItem.class, str[2]);
 							status = 1;
 							pastDue(item, status);
@@ -235,8 +238,10 @@ public class BasicItemServiceImpl implements BasicItemService {
 	 * @param basicItem
 	 */
 	private void pastDue(BasicItem basicItem, Integer status) {
-		basicItem.setUsingState(status);
-		basicItemDao.update(basicItem);
+		if (basicItem != null) {
+			basicItem.setUsingState(status);
+			basicItemDao.update(basicItem);
+		}
 	}
 	
 	/**
