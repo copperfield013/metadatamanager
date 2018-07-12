@@ -203,8 +203,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
                 Ajax.ajax('admin/dictionary/basicItem/delete', {
                    id:groupId
                }, function(data) {
-            	   $(".new_add").remove();        
-            	   enityAttr(entityId);
+            	   $form.parent().parent().remove();    
                });
             }
        });
