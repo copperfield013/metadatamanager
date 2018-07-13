@@ -118,6 +118,31 @@ public class BasicItemNodeController {
 			 } else if (check) {//重复了
 					inline.setState("fail");
 			} else {
+				
+				//c_control_type属性的维护
+				BasicItem basicItem = null;
+				if (basicItemNode.getAbcattrCode() != null) {
+					basicItem = basicItemService.getBasicItem(basicItemNode.getAbcattrCode());
+				}
+				
+				if (basicItem != null) {
+					if ("日期型".equals(basicItem.getDataType())) {
+						basicItemNode.setControlType("date");
+					} else if ("字符型".equals(basicItem.getDataType())) {
+						if ("枚举".equals(basicItem.getDataRange())) {
+							basicItemNode.setControlType("select");
+						} else {
+							basicItemNode.setControlType("text");
+						} 
+					} 
+				}else {
+					if (basicItemNode.getType() == 3) {
+						basicItemNode.setControlType("label");
+					} else {
+						basicItemNode.setControlType("text");
+					}
+				}
+				
 				basicItemNodeService.saveOrUpdate(basicItemNode);
 				inline.setNode(basicItemNode);
 				inline.setState("success");

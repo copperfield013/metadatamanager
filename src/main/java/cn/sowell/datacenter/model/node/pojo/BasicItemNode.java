@@ -69,6 +69,10 @@ public class BasicItemNode {
 	@Column(name = "parent_id")
 	private String parentId;
 	
+	@ApiModelProperty(value = "controlType")
+	@Column(name="c_control_type")
+	private String controlType;
+	
 	@OneToMany(fetch=FetchType.EAGER, mappedBy="parentId")
 	private List<BasicItemNode> btNodeList;
 	
@@ -166,6 +170,20 @@ public class BasicItemNode {
 		this.abcattrCode = abcattrCode;
 	}
 	
+	/**
+	 * @return the controlType
+	 */
+	public String getControlType() {
+		return controlType;
+	}
+
+	/**
+	 * @param controlType the controlType to set
+	 */
+	public void setControlType(String controlType) {
+		this.controlType = controlType;
+	}
+
 	/**
 	 * 生成配置文件
 	 * @param file
