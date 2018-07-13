@@ -409,14 +409,14 @@ public class BasicItemController {
     @ApiResponse(code = 200, message = "操作成功", response = AjaxPageResponse.class),
     @ApiResponse(code = 404, message = "操作失败") })
 	@RequestMapping(value="/saveTwoLevelAttrChild", method=RequestMethod.POST)
-	public ResponseEntity<AjaxPageResponse> saveTwoLevelAttrChild(Towlevelattr criteria){
+	public ResponseEntity saveTwoLevelAttrChild(Towlevelattr criteria){
 		try {
 			criteria.setUsingState(1);
 			basicItemService.createTowLevel(criteria);
-			AjaxPageResponse response = new AjaxPageResponse();
+			/*AjaxPageResponse response = new AjaxPageResponse();
 			response.setNotice("添加成功");
-			response.setNoticeType(NoticeType.SUC);
-			return new ResponseEntity<AjaxPageResponse>(response, HttpStatus.OK);
+			response.setNoticeType(NoticeType.SUC);*/
+			return new ResponseEntity(criteria, HttpStatus.OK);
 		} catch (Exception e) {
 		 return new ResponseEntity<AjaxPageResponse>(AjaxPageResponse.FAILD("操作失败"), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
