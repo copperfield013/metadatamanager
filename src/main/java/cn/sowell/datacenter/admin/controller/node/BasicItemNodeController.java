@@ -134,7 +134,13 @@ public class BasicItemNodeController {
 						} else {
 							basicItemNode.setControlType("text");
 						} 
-					} 
+					} else {
+						if (basicItemNode.getType() == 3) {
+							basicItemNode.setControlType("label");
+						} else {
+							basicItemNode.setControlType("text");
+						}
+					}
 				}else {
 					if (basicItemNode.getType() == 3) {
 						basicItemNode.setControlType("label");
