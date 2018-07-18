@@ -983,6 +983,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
                         str = str+"<li><a href=\"javascript:void(0)\" patentId=\""+data.parent+"\" class=\"delete_attr\"><i class=\"icon edit-entity\"></i>删除属性</a></li>"+  "</ul>" 
                       	str = str + "<i class=\"icon status\"></i>";
                 		$commlist.children("[data-code-id='"+code+"']").attr("title", titlestr);
+                		$commlist.children("[data-code-id='"+code+"']").attr("class", "entity_attr newadd");
                 		$commlist.children("[data-code-id='"+code+"']").html(str);
                 	}
                 	
@@ -1098,6 +1099,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
                     str = str + "<li><a href=\"javascript:void(0)\" patentId=\""+data.parent+"\" class=\"delete_attr\"><i class=\"icon edit-entity\"></i>删除属性</a></li>"+ "</ul>" 
                     str = str+ "<i class=\"icon status\"></i>";
             	   $more_list.children("[data-code-id='"+code+"']").attr("title", titlestr);
+            	   $more_list.children("[data-code-id='"+code+"']").attr("class", "entity_attr newadd");
             	   $more_list.children("[data-code-id='"+code+"']").html(str);
             	}
             	 
