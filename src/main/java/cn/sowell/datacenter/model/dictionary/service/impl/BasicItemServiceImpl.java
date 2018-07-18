@@ -162,30 +162,34 @@ public class BasicItemServiceImpl implements BasicItemService {
 					
 					while (iterator2.hasNext()) {
 						BasicItem next = iterator2.next();
-						if ("重复类型".equals(next.getOneLevelItem().getDataType())) {
-							List<BasicItem> moreChilList = basicItemDao.getChilByPid(next.getParent() + "_" + next.getCode());
-							
-							Iterator<BasicItem> iterator3 = moreChilList.iterator();
-							while (iterator3.hasNext()) {
-								BasicItem next2 = iterator3.next();
-								if (colList.contains(next2.getCode())) {
+						OneLevelItem oneLevelItem = next.getOneLevelItem();
+						if (oneLevelItem != null) {
+							if ("重复类型".equals(next.getOneLevelItem().getDataType())) {
+								List<BasicItem> moreChilList = basicItemDao.getChilByPid(next.getParent() + "_" + next.getCode());
+								
+								Iterator<BasicItem> iterator3 = moreChilList.iterator();
+								while (iterator3.hasNext()) {
+									BasicItem next2 = iterator3.next();
+									if (colList.contains(next2.getCode())) {
+										status = 1;
+										pastDue(next2, status);
+									} else {//不包含为新增
+										status = 0;
+										pastDue(next2, status);
+									}
+								}
+								
+							} else if (!"分组类型".equals(next.getOneLevelItem().getDataType())){//不是重复类型也不能是分组类型
+								if (colList.contains(next.getCode())) {
 									status = 1;
-									pastDue(next2, status);
+									pastDue(next, status);
 								} else {//不包含为新增
 									status = 0;
-									pastDue(next2, status);
+									pastDue(next, status);
 								}
 							}
-							
-						} else if (!"分组类型".equals(next.getOneLevelItem().getDataType())){//不是重复类型也不能是分组类型
-							if (colList.contains(next.getCode())) {
-								status = 1;
-								pastDue(next, status);
-							} else {//不包含为新增
-								status = 0;
-								pastDue(next, status);
-							}
 						}
+						
 						
 					}
 				}
@@ -228,10 +232,13 @@ public class BasicItemServiceImpl implements BasicItemService {
 			List<BasicItem> basicItemList = basicItemDao.getDataByPId(basicItem.getCode());
 			for(BasicItem bItem : basicItemList) {
 				pastDue(bItem, status);
+				OneLevelItem oneLevelItem = bItem.getOneLevelItem();
+				if (oneLevelItem != null) {
+					if ("重复类型".equals(oneLevelItem.getDataType())) {//重复类型
+						repeatPastDue(bItem, status);
+					} 
+				}
 				
-				if ("重复类型".equals(bItem.getOneLevelItem().getDataType())) {//重复类型
-					repeatPastDue(bItem, status);
-				} 
 			}
 		} else if ("重复类型".equals(basicItem.getOneLevelItem().getDataType())) {//重复类型
 			repeatPastDue(basicItem, status);
@@ -254,10 +261,13 @@ public class BasicItemServiceImpl implements BasicItemService {
 	 * @param basicItem
 	 */
 	private void repeatPastDue(BasicItem basicItem, Integer status) {
-		List<BasicItem> basicItemList = basicItemDao.getDataByPId(basicItem.getParent() + "_"+ basicItem.getCode());
-		for(BasicItem bItem : basicItemList) {
-			pastDue(bItem, status);
+		if (basicItem != null) {
+			List<BasicItem> basicItemList = basicItemDao.getDataByPId(basicItem.getParent() + "_"+ basicItem.getCode());
+			for(BasicItem bItem : basicItemList) {
+				pastDue(bItem, status);
+			}
 		}
+		
 	}
 
 	@Override

@@ -1153,20 +1153,20 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
         $(".common_proper").hide();
         $(".more_proper").hide();
         $(".entity_relation").hide();
+        
+        //$(".opera_entity").show();
         Ajax.ajax('admin/dictionary/basicItem/getOne', {
             id: entityId
         }, function(jsonData) {
-        	
-            var $form1 = $("#entity_opera_form1");
+            var $form1 = $(".opera_entity").children("form");
             $form1.find("#code").val(jsonData.code);
             $form1.find("#code").attr("readonly", "readonly");
             $form1.find("#cnName").val(jsonData.cnName);
-            $form1.find("#enName").val(jsonData.enName);s
+            $form1.find("#enName").val(jsonData.enName);
             $form1.find("#description").val(jsonData.oneLevelItem.description);
             $("#add_entity_mes").html("");
             $("#add_entity_mes").html("编辑实体信息");
             $(".opera_entity").show();
-           // $form1.parent().show();
         });
     });
     //编辑普通属性获取 id    
