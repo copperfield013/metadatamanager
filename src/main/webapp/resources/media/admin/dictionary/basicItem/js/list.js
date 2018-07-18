@@ -502,6 +502,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
         
         $form.find("#dataRange").show();
         $form.find("#dataRange").val("32");
+        $form.find("#description").val("");
         $form.find("#cn_dataRange").show();
         $form.find("#dictParentId").remove();
         $form.find("#s2id_dictParentId").remove();
@@ -593,7 +594,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
                 var valuestr = "";
                 for (var key in datachild) {
                     
-                    if (datachild[key].dataRange == '枚举') {
+                    if (datachild[key].oneLevelItem.dataRange == '枚举') {
                         if (datachild[key].code == dictionarystr) {
                             dictattr_enum = dictattr_enum + " <option selected=\"selected\" value =\"" + datachild[key].code + "\">" + datachild[key].cnName + "</option>";
                         } else {
@@ -1339,10 +1340,20 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
  	            $form1.find("#cn_dataRange").show();
  	           $form1.find("#s2id_dictParentId").remove(); 	
  	            
- 	           if ("日期型" == jsonData.oneLevelItem.dataType || "时间型" == jsonData.oneLevelItem.dataType) {
-           		$form1.find("#dataRange").val("").hide();
+ 	           if ("日期型" == jsonData.oneLevelItem.dataType) {
+ 	        	   	$form1.find("#dataRange").val("date").hide();
 	                $form1.find("#cn_dataRange").hide();
  	           } 
+ 	           
+ 	          if ("时间型" == jsonData.oneLevelItem.dataType) {
+	        	   	$form1.find("#dataRange").val("datetime").hide();
+	                $form1.find("#cn_dataRange").hide();
+	           } 
+ 	          
+ 	         if ("二进制型" == jsonData.oneLevelItem.dataType) {
+	        	   	$form1.find("#dataRange").hide();
+	                $form1.find("#cn_dataRange").hide();
+	           } 
     		}   
     		
     		Ajax.ajax('admin/dictionary/basicItem/getDataType', '', function(data) {    	           

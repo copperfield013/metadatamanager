@@ -245,4 +245,10 @@ public class BasicItemNodeServiceImpl implements BasicItemNodeService {
 		
 		return "false";
 	}
+
+	@Override
+	public List<BasicItemNode> getAllData() throws Exception {
+		// TODO Auto-generated method stub
+		return basicItemNodeDao.getAllData();
+	}
 }

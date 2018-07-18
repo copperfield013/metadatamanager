@@ -189,4 +189,11 @@ public class BasicItemNodeDaoImpl implements BasicItemNodeDao {
 			.setParameter("type", type)
 			.setParameter("id", id).uniqueResult();
 	}
+
+	@Override
+	public List<BasicItemNode> getAllData()  throws Exception{
+		String hql = "From BasicItemNode";
+		List list = sFactory.getCurrentSession().createQuery(hql).list();
+		return list;
+	}
 }

@@ -97,4 +97,10 @@ public interface BasicItemNodeDao {
 	BasicItemNode getAbc(String name);
 
 	BasicItemNode getRelaNodeChil(String parentId, String id, Integer type);
+	
+	/**
+	 * 获取所有数据
+	 * @return
+	 */
+	List<BasicItemNode> getAllData()  throws Exception;
 }

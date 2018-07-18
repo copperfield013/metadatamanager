@@ -39,6 +39,7 @@ import cn.sowell.datacenter.admin.controller.node.api.RecordRelationTypes;
 import cn.sowell.datacenter.model.dictionary.criteria.BasicItemCriteria;
 import cn.sowell.datacenter.model.dictionary.pojo.BasicItem;
 import cn.sowell.datacenter.model.dictionary.pojo.DictionaryBasicItem;
+import cn.sowell.datacenter.model.dictionary.pojo.OneLevelItem;
 import cn.sowell.datacenter.model.dictionary.pojo.RecordRelationType;
 import cn.sowell.datacenter.model.dictionary.service.BasicItemService;
 import cn.sowell.datacenter.model.dictionary.service.DictionaryBasicItemService;
@@ -125,7 +126,8 @@ public class BasicItemNodeController {
 					basicItem = basicItemService.getBasicItem(basicItemNode.getAbcattrCode());
 				}
 				
-				if (basicItem != null) {
+				if (basicItem != null && basicItem.getOneLevelItem() != null) {
+					
 					if ("日期型".equals(basicItem.getOneLevelItem().getDataType())) {
 						basicItemNode.setControlType("date");
 					} else if ("时间型".equals(basicItem.getOneLevelItem().getDataType())) {
