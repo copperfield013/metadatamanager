@@ -5,6 +5,7 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
@@ -52,7 +53,7 @@ public class BasicItem {
 	  @Column(name="c_using_state")
 	  private Integer usingState;//状态-只增不删
 	 
-	 @OneToOne(cascade = {CascadeType.ALL})
+	 @OneToOne(fetch = FetchType.LAZY,cascade = {CascadeType.ALL})
 	 @JoinColumn(name = "c_code")
 	 protected OneLevelItem oneLevelItem = new OneLevelItem();
 	 

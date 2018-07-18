@@ -226,6 +226,7 @@ public class BasicItemNodeController {
 			list.add(ValueTypeConstant.ABCT_NAME_INT);
 			list.add(ValueTypeConstant.ABCT_NAME_LONG);
 			list.add(ValueTypeConstant.ABCT_NAME_STRING);
+			list.add("LSTRING");
 			Map<String, Object> map = new HashMap<String, Object>();
 			map.put("dataType", list);
 			JSONObject jobj = new JSONObject(map);
@@ -247,7 +248,7 @@ public class BasicItemNodeController {
 		try {
 			BasicItemCriteria criteria = new BasicItemCriteria();
 			criteria.setParent(entityId);
-			/*criteria.setDataType("重复类型");*/
+			criteria.getOneLevelItem().setDataType("重复类型");
 			criteria.setUsingState(1);
 
 			List<BasicItem> list = basicItemService.queryList(criteria);
@@ -348,7 +349,7 @@ public class BasicItemNodeController {
         method = RequestMethod.POST)
 	public ModelAndView operate() {
 		BasicItemCriteria criteria = new BasicItemCriteria();
-		/*criteria.setDataType("记录类型");*/
+		criteria.getOneLevelItem().setDataType("记录类型");
 		criteria.setUsingState(1);
 		List<BasicItem> list = basicItemService.queryList(criteria);
 		ModelAndView mv = new ModelAndView();
