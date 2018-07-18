@@ -321,8 +321,6 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
     	var options=$(".enum_dataType_one option:selected");  //获取选中的项
     	var $form = $this.closest(".opera_comm").find("#comm_opera_form1");
     	
-    	alert($this.val());
-    	
     	if ("枚举" == $this.val()) {    		
     		 //如果是枚举， 则显示下拉列表
 	    	$CPF.showLoading();
@@ -409,7 +407,6 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
     
   //选中数据类型为  枚举   触发事件
     $(".more_proper", $page).on("change", ".enum_daType_two", function() {
-    	alert("1111");
     	var options=$(this).find("option:selected");    	
     	var $form  = $(this).parent().parent();
     	var entityId = $form.attr("entityId");
