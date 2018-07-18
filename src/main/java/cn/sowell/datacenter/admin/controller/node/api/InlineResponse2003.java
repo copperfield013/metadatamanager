@@ -32,8 +32,32 @@ public class InlineResponse2003   {
 
   @JsonProperty("文件型")
   private String  文件型 = null;
+  
+  @JsonProperty("引用类型")
+  private String referenceType = null;
+  
+  public InlineResponse2003 referenceType(String referenceType) {
+	    this.referenceType = referenceType;
+	    return this;
+	  }
+  
+  /**
+ * @return the referenceType
+ */
+public String getReferenceType() {
+	return referenceType;
+}
 
-  public InlineResponse2003 digital(String digital) {
+/**
+ * @param referenceType the referenceType to set
+ */
+public void setReferenceType(String referenceType) {
+	this.referenceType = referenceType;
+}
+
+
+
+public InlineResponse2003 digital(String digital) {
     this.digital = digital;
     return this;
   }
@@ -189,12 +213,13 @@ public class InlineResponse2003   {
         Objects.equals(this._char, inlineResponse2003._char) &&
         Objects.equals(this.digitalDecimal, inlineResponse2003.digitalDecimal) &&
         Objects.equals(this.枚举, inlineResponse2003.枚举) &&
-        Objects.equals(this.文件型, inlineResponse2003.文件型);
+        Objects.equals(this.文件型, inlineResponse2003.文件型) &&
+        Objects.equals(this.referenceType, inlineResponse2003.referenceType);
   }
-
+  
   @Override
   public int hashCode() {
-    return Objects.hash(digital, date, dateTime, _char, digitalDecimal, 枚举, 文件型);
+    return Objects.hash(digital, date, dateTime, _char, digitalDecimal, 枚举, 文件型, referenceType);
   }
 
   @Override
@@ -207,8 +232,9 @@ public class InlineResponse2003   {
     sb.append("    dateTime: ").append(toIndentedString(dateTime)).append("\n");
     sb.append("    _char: ").append(toIndentedString(_char)).append("\n");
     sb.append("    digitalDecimal: ").append(toIndentedString(digitalDecimal)).append("\n");
-    sb.append("    : 枚举").append(toIndentedString(枚举)).append("\n");
-    sb.append("    : 文件型").append(toIndentedString(文件型)).append("\n");
+    sb.append("    枚举:").append(toIndentedString(枚举)).append("\n");
+    sb.append("    文件型:").append(toIndentedString(文件型)).append("\n");
+    sb.append("    referenceType: ").append(toIndentedString(referenceType)).append("\n");
     sb.append("}");
     return sb.toString();
   }

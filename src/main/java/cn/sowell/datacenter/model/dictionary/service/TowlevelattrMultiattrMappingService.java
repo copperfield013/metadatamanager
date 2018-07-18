@@ -23,7 +23,7 @@ public interface TowlevelattrMultiattrMappingService {
 	 */
 	void create(TowlevelattrMultiattrMapping criteria);
 
-	TowlevelattrMultiattrMapping getTowlevelattrMultiattrMapping(Long id);
+	TowlevelattrMultiattrMapping getOne(Long id);
 
 	/**
 	 * 更新一个TowlevelattrMultiattrMapping对象

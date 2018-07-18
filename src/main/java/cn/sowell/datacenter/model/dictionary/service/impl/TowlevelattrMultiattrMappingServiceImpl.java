@@ -37,7 +37,7 @@ public class TowlevelattrMultiattrMappingServiceImpl implements TowlevelattrMult
 	}
 
 	@Override
-	public TowlevelattrMultiattrMapping getTowlevelattrMultiattrMapping(Long id) {
+	public TowlevelattrMultiattrMapping getOne(Long id) {
 		return tmmd.get(TowlevelattrMultiattrMapping.class, id);
 	}
 
@@ -70,7 +70,7 @@ public class TowlevelattrMultiattrMappingServiceImpl implements TowlevelattrMult
 				Iterator<Towlevelattr> iterator = listByMappingId.iterator();
 				while (iterator.hasNext()) {
 					Towlevelattr next = iterator.next();
-					next.setUsingState(-1);
+					/*next.setUsingState(-1);*/
 					towlevelattrService.update(next);
 				}
 			}

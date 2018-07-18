@@ -29,10 +29,10 @@ public class TowlevelattrDaoImpl implements TowlevelattrDao {
 	public List<Towlevelattr> queryList(TowlevelattrCriteria criteria, PageInfo pageInfo) {
 		String hql = "from Towlevelattr b";
 		DeferedParamQuery dQuery = new DeferedParamQuery(hql);
-		if(TextUtils.hasText(criteria.getName())){
+		/*if(TextUtils.hasText(criteria.getName())){
 			dQuery.appendCondition(" and b.aliasName like :aliasName")
 					.setParam("aliasName", "%" + criteria.getName() + "%");
-		}
+		}*/
 		
 		Query countQuery = dQuery.createQuery(sFactory.getCurrentSession(), true, new WrapForCountFunction());
 		Integer count = FormatUtils.toInteger(countQuery.uniqueResult());
@@ -52,8 +52,8 @@ public class TowlevelattrDaoImpl implements TowlevelattrDao {
 	}
 	
 	@Override
-	public <T> T get(Class<T> clazz, Long id) {
-		return sFactory.getCurrentSession().get(clazz, id);
+	public <T> T get(Class<T> clazz, String code) {
+		return sFactory.getCurrentSession().get(clazz, code);
 	}
 	
 	@Override
@@ -67,9 +67,14 @@ public class TowlevelattrDaoImpl implements TowlevelattrDao {
 	}
 
 	@Override
-	public List<Towlevelattr> getListByMappingId(String mappingId) {
-		String hql = "from Towlevelattr where mappingId=:mappingId";
-		List<Towlevelattr> list = sFactory.getCurrentSession().createQuery(hql).setParameter("mappingId", mappingId).list();
+	public List getListByMappingId(String mappingId) {
+		
+		String sql = "SELECT w.c_code, t.c_cn_name, t.c_using_state, w.c_dictionary_code FROM `t_c_towlevelattr` w "
+				+ " inner join t_c_basic_item t "
+				+ " on w.c_code=t.c_code "
+				+ " WHERE w.c_mapping_id=:mappingId";
+		
+		List list = sFactory.getCurrentSession().createSQLQuery(sql).setParameter("mappingId", mappingId).list();
 		return list;
 	}
 

@@ -22,7 +22,7 @@ public interface TowlevelattrService {
 	 */
 	void create(Towlevelattr basicItem);
 
-	Towlevelattr getTowlevelattr(Long id);
+	Towlevelattr getTowlevelattr(String code);
 
 	/**
 	 * 更新一个Towlevelattr对象
@@ -34,7 +34,7 @@ public interface TowlevelattrService {
 	 * 从数据库中删除一个Towlevelattr对象
 	 * @param id
 	 */
-	void delete(Long id);
+	void delete(String code);
 
-	List<Towlevelattr> getListByMappingId(String id);
+	List getListByMappingId(String id);
 }

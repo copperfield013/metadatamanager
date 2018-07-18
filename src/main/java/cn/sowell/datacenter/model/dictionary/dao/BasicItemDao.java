@@ -60,7 +60,7 @@ public interface BasicItemDao {
 	 */
 	List getAttrByPidGroupName(String parent, String groupName);
 	
-	void saveOrUpdate(BasicItem obj, String flag);
+	void saveOrUpdate(Object obj, String flag);
 	
 	/**
 	 * -- 查询需要创建的表
@@ -94,10 +94,16 @@ public interface BasicItemDao {
 	 */
 	void excuteBySql(String sql);
 	
-	//实体code  生成规则
+	/**
+	 * 实体code  生成规则
+	 * @return
+	 */
 	public String getEntityCode();
 	
-	//其他code， 生成规则
+	/**
+	 * 其他code， 生成规则
+	 * @return
+	 */
 	public String getAttrCode();
 	
 	/**
@@ -120,13 +126,6 @@ public interface BasicItemDao {
 	 * @return
 	 */
 	public List<BasicItem> getChilByPid(String parent);
-	/**
-	 * 根据cnName和实体id， 查询二级属性中是否有相同的名字， 有则返回数字大于0无则返回0
-	 * @param cnName
-	 * @param entityId
-	 * @return
-	 */
-	BigInteger geSameCount(String cnName, String entityId);
 
 	/**
 	 * 根据name和实体id， 查询普通属性中是否有相同的名字， 有则返回数字大于0无则返回0

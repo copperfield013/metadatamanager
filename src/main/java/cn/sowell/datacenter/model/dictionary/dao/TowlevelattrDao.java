@@ -27,7 +27,7 @@ public interface TowlevelattrDao {
 	 * @param id
 	 * @return
 	 */
-	<T> T get(Class<T> clazz, Long id);
+	<T> T get(Class<T> clazz, String code);
 
 	/**
 	 * 更新一个pojo对象
@@ -41,5 +41,5 @@ public interface TowlevelattrDao {
 	 */
 	void delete(Object pojo);
 
-	List<Towlevelattr> getListByMappingId(String id);
+	List getListByMappingId(String id);
 }

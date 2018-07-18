@@ -255,7 +255,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
        Dialog.confirm("删除可能会引起数据错误， 是否确认删除", function(isYes) {
             if (isYes) {
                 Ajax.ajax('admin/dictionary/basicItem/twoattr_chil_delete', {
-                   id:twoId
+                   code:twoId
                }, function(data) {
             	   $nodepa.remove();
                });
@@ -554,7 +554,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
             var valuestr = "";
             for (var key in datachild) {
                
-                if (datachild[key].dataRange == '枚举') {
+                if (datachild[key].oneLevelItem.dataRange == '枚举') {
                     dictattr_enum = dictattr_enum + " <option value =\"" + datachild[key].code + "\">" + datachild[key].cnName + "</option>";
                 } else {
                 	 valuestr = valuestr + " <option value =\"" + datachild[key].code + "\">" + datachild[key].cnName + "</option>";
@@ -633,15 +633,15 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
                 $twochile.find("#edit_twoLevelAttr").attr("twoLevelId", datatmm.id);
                 $twochile.find(".new_add_twolc").remove();
                 var str = "";
-                for (var key in child) {              	                    
-                    if(child[key].usingState == '0'){                    	
-                    	str = str + "<div title=\"id:"+child[key].id+", 名称："+child[key].name+"\" twoLevel_chil_Id=" + child[key].id +" class='entity_attr new_add_twolc newadd'>"+child[key].name+"<i class=\"icon status\"></i><ul class='entity_ul' entityId='${item.code}' status='${item.usingState}'><li><a href='javascript:void(0)' twoId="+child[key].id+" class='delete_twoLevelAttr_chil'><i class='icon edit-entity'></i>删除属性</a></li></ul></div>"
-                    } else if(child[key].usingState == '2'){                    	
-                    	str = str + "<div title=\"id:"+child[key].id+", 名称："+child[key].name+"\" twoLevel_chil_Id=" + child[key].id +" class='entity_attr new_add_twolc stale'>"+child[key].name+"<i class=\"icon status\"></i><ul class='entity_ul' entityId='${item.code}' status='${item.usingState}'><li><a href='javascript:void(0)' twoId="+child[key].id+"  class='delete_twoLevelAttr_chil'><i class='icon edit-entity'></i>删除属性</a></li></ul></div>"
-                    } else if(child[key].usingState == '-1'){                    	
-                    	str = str + "<div title=\"id:"+child[key].id+", 名称："+child[key].name+"\" twoLevel_chil_Id=" + child[key].id +" class='entity_attr new_add_twolc inerror'>"+child[key].name+"<i class=\"icon status\"></i><ul class='entity_ul' entityId='${item.code}' status='${item.usingState}'><li><a href='javascript:void(0)' twoId="+child[key].id+"  class='delete_twoLevelAttr_chil'><i class='icon edit-entity'></i>删除属性</a></li></ul></div>"
-                    } else if(child[key].usingState == '1'){                    	
-                    	str = str + "<div title=\"id:"+child[key].id+", 名称："+child[key].name+"\" twoLevel_chil_Id=" + child[key].id +" class='entity_attr new_add_twolc inuse'>"+child[key].name+"<i class=\"icon status\"></i><ul class='entity_ul' entityId='${item.code}' status='${item.usingState}'><li><a href='javascript:void(0)' twoId="+child[key].id+"  class='delete_twoLevelAttr_chil'><i class='icon edit-entity'></i>删除属性</a></li></ul></div>"
+                for (var key in child) {   
+                    if(child[key][2] == '0'){                    	
+                    	str = str + "<div title=\"id:"+child[key][0]+", 名称："+child[key][1]+"\" twoLevel_chil_Id=" + child[key][0] +" class='entity_attr new_add_twolc newadd'>"+child[key][1]+"<i class=\"icon status\"></i><ul class='entity_ul' entityId='${item.code}' status='${item.usingState}'><li><a href='javascript:void(0)' twoId="+child[key][0]+" class='delete_twoLevelAttr_chil'><i class='icon edit-entity'></i>删除属性</a></li></ul></div>"
+                    } else if(child[key][2] == '2'){                    	
+                    	str = str + "<div title=\"id:"+child[key][0]+", 名称："+child[key][1]+"\" twoLevel_chil_Id=" + child[key][0] +" class='entity_attr new_add_twolc stale'>"+child[key][1]+"<i class=\"icon status\"></i><ul class='entity_ul' entityId='${item.code}' status='${item.usingState}'><li><a href='javascript:void(0)' twoId="+child[key][0]+"  class='delete_twoLevelAttr_chil'><i class='icon edit-entity'></i>删除属性</a></li></ul></div>"
+                    } else if(child[key][2] == '-1'){                    	
+                    	str = str + "<div title=\"id:"+child[key][0]+", 名称："+child[key][1]+"\" twoLevel_chil_Id=" + child[key][0] +" class='entity_attr new_add_twolc inerror'>"+child[key][1]+"<i class=\"icon status\"></i><ul class='entity_ul' entityId='${item.code}' status='${item.usingState}'><li><a href='javascript:void(0)' twoId="+child[key][0]+"  class='delete_twoLevelAttr_chil'><i class='icon edit-entity'></i>删除属性</a></li></ul></div>"
+                    } else if(child[key][2] == '1'){                    	
+                    	str = str + "<div title=\"id:"+child[key][0]+", 名称："+child[key][1]+"\" twoLevel_chil_Id=" + child[key][0] +" class='entity_attr new_add_twolc inuse'>"+child[key][1]+"<i class=\"icon status\"></i><ul class='entity_ul' entityId='${item.code}' status='${item.usingState}'><li><a href='javascript:void(0)' twoId="+child[key][0]+"  class='delete_twoLevelAttr_chil'><i class='icon edit-entity'></i>删除属性</a></li></ul></div>"
                     }
                 }
                 
@@ -680,7 +680,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
                          dictionaryCode: dictionaryCode
                      }, function(datajson) {
                     	 $divform.hide();
-                    	 var str = "<div title=\"id:"+datajson.id+", 名称："+datajson.name+"\" twoLevel_chil_Id=" + datajson.id +" class='entity_attr new_add_twolc inuse'>"+datajson.name+"<i class=\"icon status\"></i><ul class='entity_ul' entityId='${item.code}' status='${item.usingState}'><li><a href='javascript:void(0)' twoId="+datajson.id+" class='delete_twoLevelAttr_chil'><i class='icon edit-entity'></i>删除属性</a></li></ul></div>"
+                    	 var str = "<div title=\"id:"+datajson.code+", 名称："+datajson.basicItem.cnName+"\" twoLevel_chil_Id=" + datajson.code +" class='entity_attr new_add_twolc inuse'>"+datajson.basicItem.cnName+"<i class=\"icon status\"></i><ul class='entity_ul' entityId='${item.code}' status='${item.usingState}'><li><a href='javascript:void(0)' twoId="+datajson.code+" class='delete_twoLevelAttr_chil'><i class='icon edit-entity'></i>删除属性</a></li></ul></div>"
                     	 $divform.siblings(".twoLevelAttr_child").children(".add_twoLevelAttr_children ").before(str);
                      	 $CPF.closeLoading();
                      });
@@ -856,7 +856,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
              	 //-----------------------------------
              if ("" == code) {
             	 var str = "<div data-code-id=\""+data.code+"\" class=\"new_add clear-fix\">" + 
-      			"<div  class=\"new_add_title\">" + "<span title=\"code:"+data.code+", 中文名称："+data.cnName+", 英文名称："+data.enName+", 表描述:"+data.tableNameDescription+"\">" + data.cnName+ "</span>"
+      			"<div  class=\"new_add_title\">" + "<span title=\"code:"+data.code+", 中文名称："+data.cnName+", 英文名称："+data.enName+", 表描述:"+data.oneLevelItem.tableNameDescription+"\">" + data.cnName+ "</span>"
 				 str = str + "<img id=\"edit_more\" groupId=\"" + data.code + "\" src=\"media/admin/dictionary/basicItem/images/edit_ch.png\">"                			
 			      str = str + "<div class=\"two-level-attr\" id=\"add_twoLevelAttr\" ><a href=\"javascript:void(0)\"\">添加二级属性</a></div>"
 			      str = str + "</div><div class=\"clear-fix more_list\">";
@@ -879,7 +879,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
 			      str = str + "<i class=\"icon status newadd\"></div>";
 		        $(".more_proper").append(str);
              } else {
-            	var titlestr="code:"+data.code+", 中文名称："+data.cnName+", 英文名称："+data.enName+", 表描述:"+data.tableNameDescription+""
+            	var titlestr="code:"+data.code+", 中文名称："+data.cnName+", 英文名称："+data.enName+", 表描述:"+data.oneLevelItem.tableNameDescription+""
             	 
             	 var $moreva = $(".more_proper").children("[data-code-id='"+code+"']");
             	$moreva.children(".new_add_title").children("span").attr("title", titlestr).text(data.cnName); 
@@ -924,12 +924,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
         //验证表单
         if (checkForm($form)) {
         	$CPF.showLoading();
-        	Ajax.ajax('admin/dictionary/basicItem/getSameCount', {
-        		cnName: cnName,
-                parent: parent
-            }, function(data) {
-            	//添加普通属性的时候验证 和二级属性的孩子不能重复
-            if (data == true) {
+        	
             	Ajax.ajax('admin/dictionary/basicItem/do_add', {
                     code: code,
                     cnName: cnName,
@@ -942,15 +937,14 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
                     description:description
                 }, function(data) {
                 	$(this).closest('.opera_comm').hide();
-                	
                 	if ("" == code) {//新增一个属性
-                		 var str = "<div data-code-id=\""+data.code+"\" title=\"code:"+data.code+", 中文名称:"+data.cnName+",  英文名称:"+data.enName+",数据类型："+data.dataType+", 数据长度："+data.dataRange+", 字典序："+ data.dictParentId  +"  \" class=\"entity_attr newadd\">" + data.cnName 
+                		 var str = "<div data-code-id=\""+data.code+"\" title=\"code:"+data.code+", 中文名称:"+data.cnName+",  英文名称:"+data.enName+",数据类型："+data.oneLevelItem.dataType+", 数据长度："+data.oneLevelItem.dataRange+", 字典序："+ data.oneLevelItem.dictParentId  +"  \" class=\"entity_attr newadd\">" + data.cnName 
      	                str = str +"<ul class=\"entity_ul\" entityId=\"" + data.code + "\" status=\"" +data.usingState + "\">" + "<li><a href=\"javascript:void(0)\" class=\"edit_common\"><i class=\"icon edit-entity\"></i>编辑属性</a></li>" + "<li><a href=\"javascript:void(0)\" class=\"common_change_status\"><i class=\"icon stale-entity\"></i>过期实体</a></li>" 
                          str = str+"<li><a href=\"javascript:void(0)\" patentId=\""+data.parent+"\" class=\"delete_attr\"><i class=\"icon edit-entity\"></i>删除属性</a></li>"+  "</ul>" 
                      	str = str + "<i class=\"icon status\"></i>" +"</div>";
                          $commlist.children(".add_comm").before(str);
                 	} else {
-                		var titlestr = "code:"+data.code+", 中文名称:"+data.cnName+",  英文名称:"+data.enName+",数据类型："+data.dataType+", 数据长度："+data.dataRange+", 字典序："+ data.dictParentId  +""
+                		var titlestr = "code:"+data.code+", 中文名称:"+data.cnName+",  英文名称:"+data.enName+",数据类型："+data.oneLevelItem.dataType+", 数据长度："+data.oneLevelItem.dataRange+", 字典序："+ data.oneLevelItem.dictParentId  +""
                 		 var str =data.cnName 
       	                str = str +"<ul class=\"entity_ul\" entityId=\"" + data.code + "\" status=\"" +data.usingState + "\">" + "<li><a href=\"javascript:void(0)\" class=\"edit_common\"><i class=\"icon edit-entity\"></i>编辑属性</a></li>" + "<li><a href=\"javascript:void(0)\" class=\"common_change_status\"><i class=\"icon stale-entity\"></i>过期实体</a></li>" 
                         str = str+"<li><a href=\"javascript:void(0)\" patentId=\""+data.parent+"\" class=\"delete_attr\"><i class=\"icon edit-entity\"></i>删除属性</a></li>"+  "</ul>" 
@@ -962,14 +956,6 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
                      $form.parent().hide();
                 	 $CPF.closeLoading();
                 });
-            } else {
-            	var $cnName = $form.find("#cnName");
-            	 $cnName.siblings("#req").remove();
-            	 $cnName.after(" <span id=\"req\" style=\"color: red;\">和二级属性孩子名称不能相同</span>");
-            	$CPF.closeLoading();
-            }
-            	
-            });
         }
     });
     
@@ -1067,13 +1053,13 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
             	 $(".opera_more_child").hide();
             	 //---------------------------
                  if ("" == code) {//新增一个属性
-                	 var str = "<div data-code-id=\""+data.code+"\" title=\"code:"+data.code+", 中文名称:"+data.cnName+",  英文名称:"+data.enName+",数据类型："+data.dataType+", 数据长度："+data.dataRange+", 字典序："+ data.dictParentId  +"  \" class=\"entity_attr newadd\">"  + data.cnName 
+                	 var str = "<div data-code-id=\""+data.code+"\" title=\"code:"+data.code+", 中文名称:"+data.cnName+",  英文名称:"+data.enName+",数据类型："+data.oneLevelItem.dataType+", 数据长度："+data.oneLevelItem.dataRange+", 字典序："+ data.oneLevelItem.dictParentId  +"  \" class=\"entity_attr newadd\">"  + data.cnName 
                      str = str+ "<ul class=\"entity_ul\" entityId=\"" + data.code + "\" status=\"" + data.usingState + "\">" + "<li><a href=\"javascript:void(0)\" class=\"edit_more_child\"><i class=\"icon edit-entity\"></i>编辑属性</a></li>" + "<li><a href=\"javascript:void(0)\" class=\"more_child_change_status\"><i class=\"icon stale-entity\"></i>过期实体</a></li>"
                      str = str + "<li><a href=\"javascript:void(0)\" patentId=\""+data.parent+"\" class=\"delete_attr\"><i class=\"icon edit-entity\"></i>删除属性</a></li>"+ "</ul>" 
                      str = str+ "<i class=\"icon status\"></i>"+ "</div>";
                 	 $more_list.children(".add_more_child").before(str);
             	} else {
-            	   var titlestr="code:"+data.code+", 中文名称:"+data.cnName+",  英文名称:"+data.enName+",数据类型："+data.dataType+", 数据长度："+data.dataRange+", 字典序："+ data.dictParentId  +""
+            	   var titlestr="code:"+data.code+", 中文名称:"+data.cnName+",  英文名称:"+data.enName+",数据类型："+data.oneLevelItem.dataType+", 数据长度："+data.oneLevelItem.dataRange+", 字典序："+ data.oneLevelItem.dictParentId  +""
             		var str = data.cnName 
                     str = str+ "<ul class=\"entity_ul\" entityId=\"" + data.code + "\" status=\"" + data.usingState + "\">" + "<li><a href=\"javascript:void(0)\" class=\"edit_more_child\"><i class=\"icon edit-entity\"></i>编辑属性</a></li>" + "<li><a href=\"javascript:void(0)\" class=\"more_child_change_status\"><i class=\"icon stale-entity\"></i>过期实体</a></li>"
                     str = str + "<li><a href=\"javascript:void(0)\" patentId=\""+data.parent+"\" class=\"delete_attr\"><i class=\"icon edit-entity\"></i>删除属性</a></li>"+ "</ul>" 
@@ -1170,15 +1156,17 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
         Ajax.ajax('admin/dictionary/basicItem/getOne', {
             id: entityId
         }, function(jsonData) {
+        	
             var $form1 = $("#entity_opera_form1");
             $form1.find("#code").val(jsonData.code);
             $form1.find("#code").attr("readonly", "readonly");
             $form1.find("#cnName").val(jsonData.cnName);
-            $form1.find("#enName").val(jsonData.enName);
-            $form1.find("#description").val(jsonData.description);
+            $form1.find("#enName").val(jsonData.enName);s
+            $form1.find("#description").val(jsonData.oneLevelItem.description);
             $("#add_entity_mes").html("");
             $("#add_entity_mes").html("编辑实体信息");
             $(".opera_entity").show();
+           // $form1.parent().show();
         });
     });
     //编辑普通属性获取 id    
@@ -1198,11 +1186,11 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
             $form1.find("#code").val(jsonData.code);
             $form1.find("#code").attr("readonly", "readonly");
             $form1.find("#cnName").val(jsonData.cnName);
-            $form1.find("#description").val(jsonData.description);
+            $form1.find("#description").val(jsonData.oneLevelItem.description);
             $form1.find("#enName").val(jsonData.enName);
-            $form1.find("#dataRange").val(jsonData.dataRange);
-            $form1.find("#edit_dataType").val(jsonData.dataType);
-            $form1.find("#edit_dictParentId").val(jsonData.dictParentId);
+            $form1.find("#dataRange").val(jsonData.oneLevelItem.dataRange);
+            $form1.find("#edit_dataType").val(jsonData.oneLevelItem.dataType);
+            $form1.find("#edit_dictParentId").val(jsonData.oneLevelItem.dictParentId);
             $form1.find("#dataType").html("");
             if(ischecked) {
     			Ajax.ajax('admin/dictionary/dictParentItem/getDictPitem', '', function(data) {
@@ -1289,17 +1277,18 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
         Ajax.ajax('admin/dictionary/basicItem/getOne', {
             id: entityId
         }, function(jsonData) {
-        	if(jsonData.dataRange == "枚举") {
+        	alert(jsonData.oneLevelItem.dataRange);
+        	if(jsonData.oneLevelItem.dataRange == "枚举") {
         		ischecked = true;
         	}        	            
             $form1.find("#code").val(jsonData.code);
             $form1.find("#code").attr("readonly", "readonly");
             $form1.find("#cnName").val(jsonData.cnName);
-            $form1.find("#description").val(jsonData.description);
+            $form1.find("#description").val(jsonData.oneLevelItem.description);
             $form1.find("#enName").val(jsonData.enName);
-            $form1.find("#dataRange").val(jsonData.dataRange);
-            $form1.find("#edit_dataType").val(jsonData.dataType);
-            $form1.find("#edit_dictParentId").val(jsonData.dictParentId);
+            $form1.find("#dataRange").val(jsonData.oneLevelItem.dataRange);
+            $form1.find("#edit_dataType").val(jsonData.oneLevelItem.dataType);
+            $form1.find("#edit_dictParentId").val(jsonData.oneLevelItem.dictParentId);
             $form1.find("#dataType").html("");  
             
     		if(ischecked) {
@@ -1334,7 +1323,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
  	            $form1.find("#cn_dataRange").show();
  	           $form1.find("#s2id_dictParentId").remove(); 	
  	            
- 	           if ("日期型" == jsonData.dataType || "时间型" == jsonData.dataType) {
+ 	           if ("日期型" == jsonData.oneLevelItem.dataType || "时间型" == jsonData.oneLevelItem.dataType) {
            		$form1.find("#dataRange").val("").hide();
 	                $form1.find("#cn_dataRange").hide();
  	           } 
@@ -1395,7 +1384,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
         Ajax.ajax('admin/dictionary/basicItem/getOne', {
             id: groupId
         }, function(jsonData) {            
-            $form1.find("#description").val(jsonData.description);
+            $form1.find("#description").val(jsonData.oneLevelItem.description);
              $form1.find("#code").val(jsonData.code);
             $form1.find("#code").attr("readonly", "readonly");
             $form1.find("#cnName").val(jsonData.cnName);
@@ -1416,11 +1405,11 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
         }, function(jsonData) {            
             $form1.find("#code").val(jsonData.code);
             $form1.find("#code").attr("readonly", "readonly");
-            $form1.find("#description").val(jsonData.description);
+            $form1.find("#description").val(jsonData.oneLevelItem.description);
             $form1.find("#cnName").val(jsonData.cnName);
             $form1.find("#enName").val(jsonData.enName);
             $form1.find("#more_parent").val(jsonData.parent);
-            $form1.find("#tableNameDescription").val(jsonData.tableNameDescription);
+            $form1.find("#tableNameDescription").val(jsonData.oneLevelItem.tableNameDescription);
             $newAdd.find("#add_more_mes").html("");
             $newAdd.find("#add_more_mes").html("编辑多值属性信息");
             $newAdd.find(".opera_more").show();
@@ -1561,12 +1550,12 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
                 			str = str + "</div><div class=\"comm_list clear-fix\">";                		    
                 for (var j = 0; j < commonArr[i].childList.length; j++) {                    
                     if (commonArr[i].childList[j].usingState == '0') {
-                        str = str + "<div data-code-id=\""+commonArr[i].childList[j].code+"\" title=\"code:"+commonArr[i].childList[j].code+", 中文名称:"+commonArr[i].childList[j].cnName+",  英文名称:"+commonArr[i].childList[j].enName+",数据类型："+commonArr[i].childList[j].dataType+", 数据长度："+commonArr[i].childList[j].dataRange+", 字典序："+ commonArr[i].childList[j].dictParentId  +"  \" class=\"entity_attr newadd\">" + commonArr[i].childList[j].cnName 
+                        str = str + "<div data-code-id=\""+commonArr[i].childList[j].code+"\" title=\"code:"+commonArr[i].childList[j].code+", 中文名称:"+commonArr[i].childList[j].cnName+",  英文名称:"+commonArr[i].childList[j].enName+",数据类型："+commonArr[i].childList[j].oneLevelItem.dataType+", 数据长度："+commonArr[i].childList[j].oneLevelItem.dataRange+", 字典序："+ commonArr[i].childList[j].oneLevelItem.dictParentId  +"  \" class=\"entity_attr newadd\">" + commonArr[i].childList[j].cnName 
 	                        if (statusStr != 2) {
 	                        	str = str +"<ul class=\"entity_ul\" entityId=\"" + commonArr[i].childList[j].code + "\" status=\"" + commonArr[i].childList[j].usingState + "\">" + "<li><a href=\"javascript:void(0)\" class=\"edit_common\"><i class=\"icon edit-entity\"></i>编辑属性</a></li>" + "<li><a href=\"javascript:void(0)\" class=\"common_change_status\"><i class=\"icon stale-entity\"></i>过期实体</a></li>" 
 	                        }
                         } else if (commonArr[i].childList[j].usingState == '2') {
-                        str = str + "<div data-code-id=\""+commonArr[i].childList[j].code+"\" title=\"code:"+commonArr[i].childList[j].code+", 中文名称:"+commonArr[i].childList[j].cnName+",  英文名称:"+commonArr[i].childList[j].enName+",数据类型："+commonArr[i].childList[j].dataType+", 数据长度："+commonArr[i].childList[j].dataRange+", 字典序："+ commonArr[i].childList[j].dictParentId  +"  \" class=\"entity_attr stale\">" + commonArr[i].childList[j].cnName 
+                        str = str + "<div data-code-id=\""+commonArr[i].childList[j].code+"\" title=\"code:"+commonArr[i].childList[j].code+", 中文名称:"+commonArr[i].childList[j].cnName+",  英文名称:"+commonArr[i].childList[j].enName+",数据类型："+commonArr[i].childList[j].oneLevelItem.dataType+", 数据长度："+commonArr[i].childList[j].oneLevelItem.dataRange+", 字典序："+ commonArr[i].childList[j].oneLevelItem.dictParentId  +"  \" class=\"entity_attr stale\">" + commonArr[i].childList[j].cnName 
 	                        if (statusStr != 2) {
 	                        	str = str +"<ul class=\"entity_ul\" entityId=\"" + commonArr[i].childList[j].code + "\" status=\"" + commonArr[i].childList[j].usingState + "\">" 
 	                        	if (commonArr[i].childList[j].usingState != '2') {
@@ -1575,12 +1564,12 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
 	                        	str = str + "<li><a href=\"javascript:void(0)\" class=\"common_change_status\"><i class=\"icon stale-entity\"></i>解除过期</a></li>" 
 	                        }
                         } else if (commonArr[i].childList[j].usingState == '-1') {
-	                        str = str + "<div data-code-id=\""+commonArr[i].childList[j].code+"\" title=\"code:"+commonArr[i].childList[j].code+", 中文名称:"+commonArr[i].childList[j].cnName+",  英文名称:"+commonArr[i].childList[j].enName+",数据类型："+commonArr[i].childList[j].dataType+", 数据长度："+commonArr[i].childList[j].dataRange+", 字典序："+ commonArr[i].childList[j].dictParentId  +"  \" class=\"entity_attr inerror\">" + commonArr[i].childList[j].cnName 
+	                        str = str + "<div data-code-id=\""+commonArr[i].childList[j].code+"\" title=\"code:"+commonArr[i].childList[j].code+", 中文名称:"+commonArr[i].childList[j].cnName+",  英文名称:"+commonArr[i].childList[j].enName+",数据类型："+commonArr[i].childList[j].oneLevelItem.dataType+", 数据长度："+commonArr[i].childList[j].oneLevelItem.dataRange+", 字典序："+ commonArr[i].childList[j].oneLevelItem.dictParentId  +"  \" class=\"entity_attr inerror\">" + commonArr[i].childList[j].cnName 
 	                        if (statusStr != 2) {
 	                        	str = str +"<ul class=\"entity_ul\" entityId=\"" + commonArr[i].childList[j].code + "\" status=\"" + commonArr[i].childList[j].usingState + "\">" + "<li><a href=\"javascript:void(0)\" class=\"edit_common\"><i class=\"icon edit-entity\"></i>编辑属性</a></li>" + "<li><a href=\"javascript:void(0)\" class=\"common_change_status\"><i class=\"icon stale-entity\"></i>过期实体</a></li>" 
 	                        }
                        } else if (commonArr[i].childList[j].usingState == '1') {
-	                        str = str + "<div data-code-id=\""+commonArr[i].childList[j].code+"\" title=\"code:"+commonArr[i].childList[j].code+", 中文名称:"+commonArr[i].childList[j].cnName+",  英文名称:"+commonArr[i].childList[j].enName+",数据类型："+commonArr[i].childList[j].dataType+", 数据长度："+commonArr[i].childList[j].dataRange+", 字典序："+ commonArr[i].childList[j].dictParentId  +"  \" class=\"entity_attr inuse\">" + commonArr[i].childList[j].cnName 
+	                        str = str + "<div data-code-id=\""+commonArr[i].childList[j].code+"\" title=\"code:"+commonArr[i].childList[j].code+", 中文名称:"+commonArr[i].childList[j].cnName+",  英文名称:"+commonArr[i].childList[j].enName+",数据类型："+commonArr[i].childList[j].oneLevelItem.dataType+", 数据长度："+commonArr[i].childList[j].oneLevelItem.dataRange+", 字典序："+ commonArr[i].childList[j].oneLevelItem.dictParentId  +"  \" class=\"entity_attr inuse\">" + commonArr[i].childList[j].cnName 
 	                        
 	                        if (statusStr != 2) {
 	                        	str = str +"<ul class=\"entity_ul\" entityId=\"" + commonArr[i].childList[j].code + "\" status=\"" + commonArr[i].childList[j].usingState + "\">" + "<li><a href=\"javascript:void(0)\" class=\"edit_common\"><i class=\"icon edit-entity\"></i>编辑属性</a></li>" + "<li><a href=\"javascript:void(0)\" class=\"common_change_status\"><i class=\"icon stale-entity\"></i>过期实体</a></li>" 
@@ -1616,7 +1605,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
             var moreArr = jsonData.moreProper; //多值属性
             for (var i = 0; i < moreArr.length; i++) {
                 var str = "<div data-code-id=\""+moreArr[i].code+"\" class=\"new_add clear-fix\">" + 
-                			"<div  class=\"new_add_title\">" + "<span title=\"code:"+moreArr[i].code+", 中文名称："+moreArr[i].cnName+", 英文名称："+moreArr[i].enName+", 表描述:"+moreArr[i].tableNameDescription+"\">" + moreArr[i].cnName+ "</span>"
+                			"<div  class=\"new_add_title\">" + "<span title=\"code:"+moreArr[i].code+", 中文名称："+moreArr[i].cnName+", 英文名称："+moreArr[i].enName+", 表描述:"+moreArr[i].oneLevelItem.tableNameDescription+"\">" + moreArr[i].cnName+ "</span>"
                 			
     			if (statusStr != 2) {
     				str = str + "<img id=\"edit_more\" groupId=\"" + moreArr[i].code + "\" src=\"media/admin/dictionary/basicItem/images/edit_ch.png\">"                			
@@ -1632,12 +1621,12 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
                 str = str + "</div><div class=\"clear-fix more_list\">";
                 for (var j = 0; j < moreArr[i].childList.length; j++) {                    
                     if (moreArr[i].childList[j].usingState == '0') {
-                        str = str + "<div data-code-id=\""+moreArr[i].childList[j].code+"\" title=\"code:"+moreArr[i].childList[j].code+", 中文名称:"+moreArr[i].childList[j].cnName+",  英文名称:"+moreArr[i].childList[j].enName+",数据类型："+moreArr[i].childList[j].dataType+", 数据长度："+moreArr[i].childList[j].dataRange+", 字典序："+ moreArr[i].childList[j].dictParentId  +"  \" class=\"entity_attr newadd\">"  + moreArr[i].childList[j].cnName 
+                        str = str + "<div data-code-id=\""+moreArr[i].childList[j].code+"\" title=\"code:"+moreArr[i].childList[j].code+", 中文名称:"+moreArr[i].childList[j].cnName+",  英文名称:"+moreArr[i].childList[j].enName+",数据类型："+moreArr[i].childList[j].oneLevelItem.dataType+", 数据长度："+moreArr[i].childList[j].oneLevelItem.dataRange+", 字典序："+ moreArr[i].childList[j].oneLevelItem.dictParentId  +"  \" class=\"entity_attr newadd\">"  + moreArr[i].childList[j].cnName 
                         if (statusStr != 2) {
                         	str = str+ "<ul class=\"entity_ul\" entityId=\"" + moreArr[i].childList[j].code + "\" status=\"" + moreArr[i].childList[j].usingState + "\">" + "<li><a href=\"javascript:void(0)\" class=\"edit_more_child\"><i class=\"icon edit-entity\"></i>编辑属性</a></li>" + "<li><a href=\"javascript:void(0)\" class=\"more_child_change_status\"><i class=\"icon stale-entity\"></i>过期实体</a></li>"
                         }
                     } else if (moreArr[i].childList[j].usingState == '2') {
-                        str = str + "<div data-code-id=\""+moreArr[i].childList[j].code+"\" title=\"code:"+moreArr[i].childList[j].code+", 中文名称:"+moreArr[i].childList[j].cnName+",  英文名称:"+moreArr[i].childList[j].enName+",数据类型："+moreArr[i].childList[j].dataType+", 数据长度："+moreArr[i].childList[j].dataRange+", 字典序："+ moreArr[i].childList[j].dictParentId  +"  \" class=\"entity_attr stale\">" + moreArr[i].childList[j].cnName 
+                        str = str + "<div data-code-id=\""+moreArr[i].childList[j].code+"\" title=\"code:"+moreArr[i].childList[j].code+", 中文名称:"+moreArr[i].childList[j].cnName+",  英文名称:"+moreArr[i].childList[j].enName+",数据类型："+moreArr[i].childList[j].oneLevelItem.dataType+", 数据长度："+moreArr[i].childList[j].oneLevelItem.dataRange+", 字典序："+ moreArr[i].childList[j].oneLevelItem.dictParentId  +"  \" class=\"entity_attr stale\">" + moreArr[i].childList[j].cnName 
                         if (statusStr != 2) {
                         str = str + "<ul class=\"entity_ul\" entityId=\"" + moreArr[i].childList[j].code + "\" status=\"" + moreArr[i].childList[j].usingState + "\">" 
                         if (moreArr[i].childList[j].usingState != '2') {
@@ -1646,12 +1635,12 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
                         str = str + "<li><a href=\"javascript:void(0)\" class=\"more_child_change_status\"><i class=\"icon stale-entity\"></i>解除过期</a></li>"
                         }
                     } else if (moreArr[i].childList[j].usingState == '-1') {
-                        str = str + "<div data-code-id=\""+moreArr[i].childList[j].code+"\" title=\"code:"+moreArr[i].childList[j].code+", 中文名称:"+moreArr[i].childList[j].cnName+",  英文名称:"+moreArr[i].childList[j].enName+",数据类型："+moreArr[i].childList[j].dataType+", 数据长度："+moreArr[i].childList[j].dataRange+", 字典序："+ moreArr[i].childList[j].dictParentId  +"  \" class=\"entity_attr inerror\">" + moreArr[i].childList[j].cnName 
+                        str = str + "<div data-code-id=\""+moreArr[i].childList[j].code+"\" title=\"code:"+moreArr[i].childList[j].code+", 中文名称:"+moreArr[i].childList[j].cnName+",  英文名称:"+moreArr[i].childList[j].enName+",数据类型："+moreArr[i].childList[j].oneLevelItem.dataType+", 数据长度："+moreArr[i].childList[j].oneLevelItem.dataRange+", 字典序："+ moreArr[i].childList[j].oneLevelItem.dictParentId  +"  \" class=\"entity_attr inerror\">" + moreArr[i].childList[j].cnName 
                         if (statusStr != 2) {  
                         str = str + "<ul class=\"entity_ul\" entityId=\"" + moreArr[i].childList[j].code + "\" status=\"" + moreArr[i].childList[j].usingState + "\">" + "<li><a href=\"javascript:void(0)\" class=\"edit_more_child\"><i class=\"icon edit-entity\"></i>编辑属性</a></li>" + "<li><a href=\"javascript:void(0)\" class=\"more_child_change_status\"><i class=\"icon stale-entity\"></i>过期实体</a></li>"
                         }
                     } else if (moreArr[i].childList[j].usingState == '1') {
-                        str = str + "<div data-code-id=\""+moreArr[i].childList[j].code+"\" title=\"code:"+moreArr[i].childList[j].code+", 中文名称:"+moreArr[i].childList[j].cnName+",  英文名称:"+moreArr[i].childList[j].enName+",数据类型："+moreArr[i].childList[j].dataType+", 数据长度："+moreArr[i].childList[j].dataRange+", 字典序："+ moreArr[i].childList[j].dictParentId  +"  \" class=\"entity_attr inuse\">" + moreArr[i].childList[j].cnName 
+                        str = str + "<div data-code-id=\""+moreArr[i].childList[j].code+"\" title=\"code:"+moreArr[i].childList[j].code+", 中文名称:"+moreArr[i].childList[j].cnName+",  英文名称:"+moreArr[i].childList[j].enName+",数据类型："+moreArr[i].childList[j].oneLevelItem.dataType+", 数据长度："+moreArr[i].childList[j].dataRange+", 字典序："+ moreArr[i].childList[j].dictParentId  +"  \" class=\"entity_attr inuse\">" + moreArr[i].childList[j].cnName 
                         if (statusStr != 2) {  
                         str = str + "<ul class=\"entity_ul\" entityId=\"" + moreArr[i].childList[j].code + "\" status=\"" + moreArr[i].childList[j].usingState + "\">" + "<li><a href=\"javascript:void(0)\" class=\"edit_more_child\"><i class=\"icon edit-entity\"></i>编辑属性</a></li>" + "<li><a href=\"javascript:void(0)\" class=\"more_child_change_status\"><i class=\"icon stale-entity\"></i>过期实体</a></li>"
                         }

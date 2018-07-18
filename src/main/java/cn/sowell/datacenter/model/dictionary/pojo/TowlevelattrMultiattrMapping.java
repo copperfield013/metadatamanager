@@ -35,7 +35,7 @@ public class TowlevelattrMultiattrMapping {
 	private Integer usingState;
 	
 	@Transient  
-	 List<Towlevelattr> childList = null;
+	 List childList = null;
 	
 	public Long getId() {
 		return id;
@@ -77,11 +77,11 @@ public class TowlevelattrMultiattrMapping {
 		this.valueAttr = valueAttr;
 	}
 
-	public List<Towlevelattr> getChildList() {
+	public List getChildList() {
 		return childList;
 	}
 
-	public void setChildList(List<Towlevelattr> childList) {
+	public void setChildList(List childList) {
 		this.childList = childList;
 	}
 

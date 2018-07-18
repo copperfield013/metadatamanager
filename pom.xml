@@ -217,11 +217,11 @@
 			<artifactId>jxl</artifactId>
 			<version>2.4.2</version>
 		</dependency>
-		<!-- <dependency>
+		<dependency>
 			<groupId>com.abc</groupId>
 			<artifactId>util</artifactId>
-			<version>0.0.3</version>
-		</dependency> -->
+			<version>0.0.4</version>
+		</dependency>
 		<dependency>
  	     <groupId>cn.sowell.datacenter</groupId>
  	     <artifactId>entityResolver</artifactId>

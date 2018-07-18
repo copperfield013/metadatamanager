@@ -126,14 +126,18 @@ public class BasicItemNodeController {
 				}
 				
 				if (basicItem != null) {
-					if ("日期型".equals(basicItem.getDataType())) {
+					if ("日期型".equals(basicItem.getOneLevelItem().getDataType())) {
 						basicItemNode.setControlType("date");
-					} else if ("字符型".equals(basicItem.getDataType())) {
-						if ("枚举".equals(basicItem.getDataRange())) {
+					} else if ("字符型".equals(basicItem.getOneLevelItem().getDataType())) {
+						if ("枚举".equals(basicItem.getOneLevelItem().getDataRange())) {
 							basicItemNode.setControlType("select");
 						} else {
 							basicItemNode.setControlType("text");
 						} 
+					}else if ("文件型".equals(basicItem.getOneLevelItem().getDataRange())) {
+						basicItemNode.setControlType("file");
+					} else if ("引用类型".equals(basicItem.getOneLevelItem().getDataType())) {
+						basicItemNode.setControlType("select");
 					} else {
 						if (basicItemNode.getType() == 3) {
 							basicItemNode.setControlType("label");
@@ -239,7 +243,7 @@ public class BasicItemNodeController {
 		try {
 			BasicItemCriteria criteria = new BasicItemCriteria();
 			criteria.setParent(entityId);
-			criteria.setDataType("重复类型");
+			/*criteria.setDataType("重复类型");*/
 			criteria.setUsingState(1);
 
 			List<BasicItem> list = basicItemService.queryList(criteria);
@@ -340,7 +344,7 @@ public class BasicItemNodeController {
         method = RequestMethod.POST)
 	public ModelAndView operate() {
 		BasicItemCriteria criteria = new BasicItemCriteria();
-		criteria.setDataType("记录类型");
+		/*criteria.setDataType("记录类型");*/
 		criteria.setUsingState(1);
 		List<BasicItem> list = basicItemService.queryList(criteria);
 		ModelAndView mv = new ModelAndView();

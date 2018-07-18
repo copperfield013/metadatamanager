@@ -39,7 +39,11 @@ public interface BasicItemService {
 	 * @param id
 	 */
 	void delete(BasicItem basicItem);
-	
+	/**
+	 * 从数据库中删除一个BasicItem对象
+	 * @param basicItem
+	 */
+	void twoDeleteItem(BasicItem basicItem);
 	/**
 	 * 判断是过期还是正常
 	 * @param basicItem
@@ -78,14 +82,7 @@ public interface BasicItemService {
 
 	List<DictionaryBasicItem> getDictCode(Long id);
 
-	void createTowLevel(Towlevelattr criteria);
-
-	/**
-	 * 根据cnName和实体id， 查询二级属性中是否有相同的名字， 有则返回数字大于0无则返回0
-	 * @param cnName
-	 * @param entityId
-	 */
-	BigInteger geSameCount(String cnName, String entityId);
+	void createTowLevel(Towlevelattr criteria, String name);
 
 	/**
 	 * 根据name和实体id， 查询普通属性中是否有相同的名字， 有则返回数字大于0无则返回0

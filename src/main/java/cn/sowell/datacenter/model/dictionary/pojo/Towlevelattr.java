@@ -1,39 +1,49 @@
 package cn.sowell.datacenter.model.dictionary.pojo;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
+
+import org.hibernate.annotations.GenericGenerator;
 
 @Entity
 @Table(name = "t_c_towlevelattr")
 public class Towlevelattr {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "id")
-	private Long id;
-
-	@Column(name = "c_name")
-	private String name;
+	@GenericGenerator(name = "system-uuid", strategy = "uuid")
+	@Column(name = "c_code")
+	private String code;
 
 	@Column(name = "c_mapping_id")
 	private String mappingId;
 
 	@Column(name = "c_dictionary_code")
 	private String dictionaryCode;
-
-	@Column(name = "c_using_state")
-	private Integer usingState;
 	
-	public Long getId() {
-		return id;
+	/* @OneToOne(mappedBy = "towlevelattr")
+	 protected BasicItem basicItem;*/
+	@Transient
+	private BasicItem basicItem;
+	/**
+	 * @return the code
+	 */
+	public String getCode() {
+		return code;
 	}
 
-	public String getName() {
-		return name;
+	/**
+	 * @param code the code to set
+	 */
+	public void setCode(String code) {
+		this.code = code;
 	}
 
 	public String getMappingId() {
@@ -44,14 +54,6 @@ public class Towlevelattr {
 		return dictionaryCode;
 	}
 
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
 	public void setMappingId(String mappingId) {
 		this.mappingId = mappingId;
 	}
@@ -60,12 +62,18 @@ public class Towlevelattr {
 		this.dictionaryCode = dictionaryCode;
 	}
 
-	public Integer getUsingState() {
-		return usingState;
+	/**
+	 * @return the basicItem
+	 */
+	public BasicItem getBasicItem() {
+		return basicItem;
 	}
 
-	public void setUsingState(Integer usingState) {
-		this.usingState = usingState;
+	/**
+	 * @param basicItem the basicItem to set
+	 */
+	public void setBasicItem(BasicItem basicItem) {
+		this.basicItem = basicItem;
 	}
-	
+
 }

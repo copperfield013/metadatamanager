@@ -36,6 +36,7 @@ import cn.sowell.datacenter.model.demo.service.DemoService;
 import cn.sowell.datacenter.model.dictionary.criteria.BasicItemCriteria;
 import cn.sowell.datacenter.model.dictionary.pojo.BasicItem;
 import cn.sowell.datacenter.model.dictionary.pojo.DictionaryBasicItem;
+import cn.sowell.datacenter.model.dictionary.pojo.OneLevelItem;
 import cn.sowell.datacenter.model.dictionary.pojo.Towlevelattr;
 import cn.sowell.datacenter.model.dictionary.pojo.TowlevelattrMultiattrMapping;
 import cn.sowell.datacenter.model.dictionary.service.BasicItemService;
@@ -72,7 +73,7 @@ public class BasicItemController {
         method = RequestMethod.POST)
 	public ModelAndView list(){
 		BasicItemCriteria criteria = new BasicItemCriteria();
-		criteria.setDataType("记录类型");
+		criteria.getOneLevelItem().setDataType("记录类型");
 		List<BasicItem> list = basicItemService.queryList(criteria);
 		ModelAndView mv = new ModelAndView();
 		mv.addObject("list", list);
@@ -91,7 +92,7 @@ public class BasicItemController {
 	public ResponseEntity<BasicItems> entityList(){
 		try {
 			BasicItemCriteria criteria = new BasicItemCriteria();
-			criteria.setDataType("记录类型");
+			criteria.getOneLevelItem().setDataType("记录类型");
 			List<BasicItem> list = basicItemService.queryList(criteria);
 			BasicItems bts = new BasicItems();
 			bts.entity(list);
@@ -118,6 +119,7 @@ public class BasicItemController {
 			inline.setDigital((String)Constants.DATA_TYPE_MAP.get("digital"));
 			inline.setDigitalDecimal((String)Constants.DATA_TYPE_MAP.get("digitalDecimal"));
 			inline.set文件型((String)Constants.DATA_TYPE_MAP.get("文件型"));
+			inline.setReferenceType((String)Constants.DATA_TYPE_MAP.get("referenceType"));
 			return new ResponseEntity<InlineResponse2003>(inline, HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<InlineResponse2003>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -131,57 +133,57 @@ public class BasicItemController {
         @ApiResponse(code = 401, message = "操作失败") })
     @RequestMapping(value = "/do_add",
         method = RequestMethod.POST)
-	public ResponseEntity doAdd(@ApiParam(name="BasicItem", value="传入json格式", required=true)BasicItem basicItem){
-			String dType = basicItem.getDataType();
+	public ResponseEntity doAdd(@ApiParam(name="BasicItem", value="传入json格式", required=true)BasicItem basicItem, OneLevelItem oneLevelItem){
+			String dType = oneLevelItem.getDataType();
 			String dataType = "";
 			String comm = null;
 			
 			if ("char".equals(dType)) {
 				dataType = "字符型";
-				basicItem.setDictParentId(0);
+				oneLevelItem.setDictParentId(0);
 			} else if ("digital".equals(dType)) {
 				dataType = "数字型";
-				basicItem.setDictParentId(0);
+				oneLevelItem.setDictParentId(0);
 			}else if ("digitalDecimal".equals(dType)) {
 				dataType = "数字型小数";
-				basicItem.setDictParentId(0);
+				oneLevelItem.setDictParentId(0);
 			}else if ("date".equals(dType)) {
 				dataType = "日期型";
-				basicItem.setDictParentId(0);
+				oneLevelItem.setDictParentId(0);
 			}else if ("dateTime".equals(dType)) {
 				dataType = "时间型";
-				basicItem.setDictParentId(0);
+				oneLevelItem.setDictParentId(0);
 			}else if ("record".equals(dType)) {
 				dataType = "记录类型";
 			}else if ("repeat".equals(dType)) {
 				dataType = "重复类型";
-				basicItem.setDictParentId(0);
+				oneLevelItem.setDictParentId(0);
 			}else if ("group".equals(dType)) {
 				dataType = "分组类型";
 			} else if ("枚举".equals(dType)) {
 				dataType = "字符型";
 			} else if ("文件型".equals(dType)) {
 				dataType = "二进制型";
-				basicItem.setDictParentId(0);
+				oneLevelItem.setDictParentId(0);
 			}
-			basicItem.setDataType(dataType);
+			oneLevelItem.setDataType(dataType);
 			//记录类型
-			if ("记录类型".equals(basicItem.getDataType())) {
-				basicItem.setDictParentId(0);
-			} else if ("分组类型".equals(basicItem.getDataType())) {
-				basicItem.setDictParentId(0);
-			} else if ("重复类型".equals(basicItem.getDataType())) {
+			if ("记录类型".equals(oneLevelItem.getDataType())) {
+				oneLevelItem.setDictParentId(0);
+			} else if ("分组类型".equals(oneLevelItem.getDataType())) {
+				oneLevelItem.setDictParentId(0);
+			} else if ("重复类型".equals(oneLevelItem.getDataType())) {
 				
 			} else {
 				// 到这儿来是普通属性  和多值属性下的普通属性
 				//它们的区别是父亲不同， 所以先求父亲    默认前端传来的都是父亲的code， 
 				BasicItem bItemPanrent = basicItemService.getBasicItem(basicItem.getParent());
-				if ("重复类型".equals(bItemPanrent.getDataType())) {//多值属性下的普通属性
+				if ("重复类型".equals(bItemPanrent.getOneLevelItem().getDataType())) {//多值属性下的普通属性
 					basicItem.setParent(bItemPanrent.getParent() + "_" +bItemPanrent.getCode());
-					basicItem.setTableName(bItemPanrent.getTableName());
-					basicItem.setGroupName(bItemPanrent.getCode());
+					oneLevelItem.setTableName(bItemPanrent.getOneLevelItem().getTableName());
+					oneLevelItem.setGroupName(bItemPanrent.getCode());
 				} else {//普通属性
-					basicItem.setTableName("t_" + basicItem.getParent() + "_" + basicItem.getGroupName());
+					oneLevelItem.setTableName("t_" + basicItem.getParent() + "_" + oneLevelItem.getGroupName());
 					comm = "comm";
 				}
 			}
@@ -192,16 +194,18 @@ public class BasicItemController {
 				flag = "add";
 			}
 			
+			basicItem.setOneLevelItem(oneLevelItem);
+			
 			for(int i=0; i<10; i++) {
                 try {
                 	basicItemService.saveOrUpdate(basicItem, flag, comm);
         			
-        			if ("记录类型".equals(basicItem.getDataType())) {
+        			if ("记录类型".equals(basicItem.getOneLevelItem().getDataType())) {
         				return new ResponseEntity<AjaxPageResponse>(AjaxPageResponse.CLOSE_AND_REFRESH_PAGE("修改成功", "basicItem_list"), HttpStatus.OK);
         			} else {
-        				/*AjaxPageResponse response = new AjaxPageResponse();
+        				AjaxPageResponse response = new AjaxPageResponse();
         				response.setNotice("操作成功");
-        				response.setNoticeType(NoticeType.SUC);*/
+        				response.setNoticeType(NoticeType.SUC);
         				return new ResponseEntity(basicItem, HttpStatus.OK);
         			}
                 } catch (DataIntegrityViolationException e) {
@@ -219,7 +223,7 @@ public class BasicItemController {
 	}
 
 	@ResponseBody
-	@ApiOperation(value = "get节点信息", nickname = "doAdd",response = BasicItem.class, notes = "获取单个节点信息", tags={ "entityManager", })
+	@ApiOperation(value = "get节点信息", nickname = "getOne",response = BasicItem.class, notes = "获取单个节点信息", tags={ "entityManager", })
     @ApiResponses(value = { 
         @ApiResponse(code = 200, message = "操作成功", response = BasicItem.class),
         @ApiResponse(code = 401, message = "操作失败") })
@@ -259,6 +263,7 @@ public class BasicItemController {
 	@RequestMapping(value="/attrByPid", method=RequestMethod.POST)
 	public ResponseEntity<InlineResponse2004> attrByPid(String parentId) {
         try {
+        	System.out.println();
         	Map<String, List> attrByPid = basicItemService.getAttrByPid(parentId);
         	InlineResponse2004 inline = new InlineResponse2004();
     		inline.commonProper(attrByPid.get("commonProper"));//普通属性
@@ -281,7 +286,7 @@ public class BasicItemController {
 		try {
 			BasicItem basicItem = basicItemService.getBasicItem(id);
 			basicItemService.saveUsingStatus(basicItem, statusStr);
-			if ("记录类型".equals(basicItem.getDataType())) {
+			if ("记录类型".equals(basicItem.getOneLevelItem().getDataType())) {
 				 return new ResponseEntity<AjaxPageResponse>(AjaxPageResponse.CLOSE_AND_REFRESH_PAGE("修改成功", "basicItem_list"), HttpStatus.OK);
 			} else {
 				return new ResponseEntity<BasicItem>(basicItem, HttpStatus.OK);
@@ -321,7 +326,7 @@ public class BasicItemController {
 				
 				if (bt!=null && bt.getParent() != null && bt.getParent().contains("_")) {//包含下划线就说明它父亲是重复类型
 					//判断重复类型有没有二级属性
-					TowlevelattrMultiattrMapping oneByRelaMulAttr = tmms.getOneByRelaMulAttr(bt.getGroupName());
+					TowlevelattrMultiattrMapping oneByRelaMulAttr = tmms.getOneByRelaMulAttr(bt.getOneLevelItem().getGroupName());
 					if (oneByRelaMulAttr != null) {
 						if (id.equals(oneByRelaMulAttr.getDictionaryAttr()) || id.equals(oneByRelaMulAttr.getValueAttr())) {
 							response.setNotice("二级属性正在使用, 请先删除二级属性");
@@ -333,9 +338,9 @@ public class BasicItemController {
 				}
 				
 				List<BasicItem> btList = null;
-				if ("分组类型".equals(bt.getDataType())) {
+				if ("分组类型".equals(bt.getOneLevelItem().getDataType())) {
 					btList = basicItemService.getAttrByPidGroupName(bt.getParent(), bt.getCode());
-				} else if ("重复类型".equals(bt.getDataType())) {
+				} else if ("重复类型".equals(bt.getOneLevelItem().getDataType())) {
 					btList = basicItemService.getDataByPId(bt.getParent() + "_" + bt.getCode());
 				} else {
 					btList = basicItemService.getDataByPId(id);
@@ -349,7 +354,7 @@ public class BasicItemController {
 					BasicItem basicItem = basicItemService.getBasicItem(id);
 					basicItemService.delete(basicItem);
 					
-					if ("记录类型".equals(basicItem.getDataType())) {
+					if ("记录类型".equals(basicItem.getOneLevelItem().getDataType())) {
 						return new ResponseEntity<AjaxPageResponse>(AjaxPageResponse.CLOSE_AND_REFRESH_PAGE("删除成功", "basicItem_list"), HttpStatus.OK);
 					} else {
 						response.setNotice("删除成功");
@@ -409,13 +414,14 @@ public class BasicItemController {
     @ApiResponse(code = 200, message = "操作成功", response = AjaxPageResponse.class),
     @ApiResponse(code = 404, message = "操作失败") })
 	@RequestMapping(value="/saveTwoLevelAttrChild", method=RequestMethod.POST)
-	public ResponseEntity saveTwoLevelAttrChild(Towlevelattr criteria){
+	public ResponseEntity saveTwoLevelAttrChild(String mappingId, String dictionaryCode, String name){
 		try {
-			criteria.setUsingState(1);
-			basicItemService.createTowLevel(criteria);
-			/*AjaxPageResponse response = new AjaxPageResponse();
-			response.setNotice("添加成功");
-			response.setNoticeType(NoticeType.SUC);*/
+			Towlevelattr criteria = new Towlevelattr();
+			criteria.setMappingId(mappingId);
+			criteria.setDictionaryCode(dictionaryCode);
+			basicItemService.createTowLevel(criteria, name);
+			BasicItem basicItem = basicItemService.getBasicItem(criteria.getCode());
+			criteria.setBasicItem(basicItem);
 			return new ResponseEntity(criteria, HttpStatus.OK);
 		} catch (Exception e) {
 		 return new ResponseEntity<AjaxPageResponse>(AjaxPageResponse.FAILD("操作失败"), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -426,9 +432,9 @@ public class BasicItemController {
 	@ResponseBody
 	@RequestMapping(value="/getTwoLevelAttr", method=RequestMethod.POST)
 	public String getTwoLevelAttr(Long id){
-		TowlevelattrMultiattrMapping tmmObj = tmms.getTowlevelattrMultiattrMapping(id);
+		TowlevelattrMultiattrMapping tmmObj = tmms.getOne(id);
 		String mappingId = Long.toString(tmmObj.getId());
-		List<Towlevelattr> listByMappingId = towlevelattrService.getListByMappingId(mappingId);
+		List listByMappingId = towlevelattrService.getListByMappingId(mappingId);
 		tmmObj.setChildList(listByMappingId);
 		
 		Map<String, Object> map = new HashMap<String, Object>();
@@ -461,19 +467,6 @@ public class BasicItemController {
 			return str;
 		}	
 		
-		//添加普通属性，c_cn_name 和当前实体下的二级属性的孩子的名称不能相同
-		@ApiIgnore
-		@ResponseBody
-		@RequestMapping("/getSameCount")
-		public String getSameCount(String cnName, String parent){
-			BigInteger geSameCount = basicItemService.geSameCount(cnName, parent);
-			if (geSameCount.equals(BigInteger.ZERO)) {
-				return "true";
-			} else {
-				return "false";
-			}
-		}
-		
 		//添加二级属性的孩子， 二级属性孩子的名称和当前实体普通属性的名称不能相同
 		@ApiIgnore
 		@ResponseBody
@@ -491,9 +484,9 @@ public class BasicItemController {
 		@ApiIgnore
 		@ResponseBody
 		@RequestMapping(value="/twoattr_chil_delete")
-		public AjaxPageResponse twoattr_chil_delete(Long id){
+		public AjaxPageResponse twoattr_chil_delete(String code){
 			try {
-				towlevelattrService.delete(id);
+				towlevelattrService.delete(code);
 				AjaxPageResponse response = new AjaxPageResponse();
 				response.setNotice("删除成功");
 				response.setNoticeType(NoticeType.SUC);
@@ -503,7 +496,6 @@ public class BasicItemController {
 			}
 		}
 			
-		
 		//删除二级属性本身
 		@ApiIgnore
 		@ResponseBody
@@ -534,7 +526,7 @@ public class BasicItemController {
 		public String isTwoattr(String id){
 			BasicItem bt = basicItemService.getBasicItem(id);
 			//判断重复类型有没有二级属性
-			TowlevelattrMultiattrMapping oneByRelaMulAttr = tmms.getOneByRelaMulAttr(bt.getGroupName());
+			TowlevelattrMultiattrMapping oneByRelaMulAttr = tmms.getOneByRelaMulAttr(bt.getOneLevelItem().getGroupName());
 			if (oneByRelaMulAttr != null) {
 				if (id.equals(oneByRelaMulAttr.getDictionaryAttr()) || id.equals(oneByRelaMulAttr.getValueAttr())) {
 					return "true";//有二级属性占用

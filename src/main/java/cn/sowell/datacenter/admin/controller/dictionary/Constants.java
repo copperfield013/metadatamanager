@@ -20,6 +20,7 @@ public interface Constants {
 			put("group", "分组类型");
 			put("枚举", "枚举");
 			put("文件型", "文件型");
+			put("referenceType", "引用类型");
 		}
 	};
 	

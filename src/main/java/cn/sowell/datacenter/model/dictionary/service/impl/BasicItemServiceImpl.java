@@ -18,6 +18,7 @@ import cn.sowell.datacenter.model.dictionary.criteria.BasicItemCriteria;
 import cn.sowell.datacenter.model.dictionary.dao.BasicItemDao;
 import cn.sowell.datacenter.model.dictionary.pojo.BasicItem;
 import cn.sowell.datacenter.model.dictionary.pojo.DictionaryBasicItem;
+import cn.sowell.datacenter.model.dictionary.pojo.OneLevelItem;
 import cn.sowell.datacenter.model.dictionary.pojo.RecordRelationType;
 import cn.sowell.datacenter.model.dictionary.pojo.Towlevelattr;
 import cn.sowell.datacenter.model.dictionary.pojo.TowlevelattrMultiattrMapping;
@@ -74,23 +75,27 @@ public class BasicItemServiceImpl implements BasicItemService {
 		Iterator<BasicItem> iterator = chilAll.iterator();
 		while (iterator.hasNext()) {
 			BasicItem bt = iterator.next();
-			if ("重复类型".equals(bt.getDataType())) {
-				//bt 是重复类型， 在这里我要判断有没有二级属性
-				TowlevelattrMultiattrMapping oneByRelaMulAttr = tmms.getOneByRelaMulAttr(bt.getCode());
-				
-				if (oneByRelaMulAttr != null) {
-					bt.setTwoLevelAttr(oneByRelaMulAttr.getId());
-				} else {
-					bt.setTwoLevelAttr(null);
+			
+			OneLevelItem oneLevelItem = bt.getOneLevelItem();
+			if (oneLevelItem != null) {
+				if ("重复类型".equals(bt.getOneLevelItem().getDataType())) {
+					//bt 是重复类型， 在这里我要判断有没有二级属性
+					TowlevelattrMultiattrMapping oneByRelaMulAttr = tmms.getOneByRelaMulAttr(bt.getCode());
+					
+					if (oneByRelaMulAttr != null) {
+						bt.setTwoLevelAttr(oneByRelaMulAttr.getId());
+					} else {
+						bt.setTwoLevelAttr(null);
+					}
+					
+					moreList.add(bt);
+					List<BasicItem> childList = basicItemDao.getDataByPId(bt.getParent() + "_"+ bt.getCode());
+					bt.setChildList(childList);
+				} else if ("分组类型".equals(bt.getOneLevelItem().getDataType())) {//分组数据
+					attrList.add(bt);
+					List childList = basicItemDao.getAttrByPidGroupName(bt.getParent(), bt.getCode());
+					bt.setChildList(childList);
 				}
-				
-				moreList.add(bt);
-				List<BasicItem> childList = basicItemDao.getDataByPId(bt.getParent() + "_"+ bt.getCode());
-				bt.setChildList(childList);
-			} else if ("分组类型".equals(bt.getDataType())) {//分组数据
-				attrList.add(bt);
-				List childList = basicItemDao.getAttrByPidGroupName(bt.getParent(), bt.getCode());
-				bt.setChildList(childList);
 			}
 		}
 		
@@ -112,7 +117,7 @@ public class BasicItemServiceImpl implements BasicItemService {
 
 	@Override
 	public void delete(BasicItem basicItem) {
-		if ("文件型".equals(basicItem.getDataType())) {
+		if ("文件型".equals(basicItem.getOneLevelItem().getDataType())) {
 			BasicItem bt = basicItemDao.get(BasicItem.class, basicItem.getCode()+ "_P");
 			
 			if (bt != null) {
@@ -127,7 +132,7 @@ public class BasicItemServiceImpl implements BasicItemService {
 	public void saveUsingStatus(BasicItem basicItem, String statusStr) {
 		Integer status = 0;
 		if ("2".equals(statusStr)) {//变为新增或回复原来的状态
-			if ("记录类型".equals(basicItem.getDataType())) {
+			if ("记录类型".equals(basicItem.getOneLevelItem().getDataType())) {
 				List tableList = basicItemDao.queryEntityTable(basicItem.getCode());
 				if (tableList.isEmpty()) {
 					status = 0;
@@ -157,7 +162,7 @@ public class BasicItemServiceImpl implements BasicItemService {
 					
 					while (iterator2.hasNext()) {
 						BasicItem next = iterator2.next();
-						if ("重复类型".equals(next.getDataType())) {
+						if ("重复类型".equals(next.getOneLevelItem().getDataType())) {
 							List<BasicItem> moreChilList = basicItemDao.getChilByPid(next.getParent() + "_" + next.getCode());
 							
 							Iterator<BasicItem> iterator3 = moreChilList.iterator();
@@ -172,7 +177,7 @@ public class BasicItemServiceImpl implements BasicItemService {
 								}
 							}
 							
-						} else if (!"分组类型".equals(next.getDataType())){//不是重复类型也不能是分组类型
+						} else if (!"分组类型".equals(next.getOneLevelItem().getDataType())){//不是重复类型也不能是分组类型
 							if (colList.contains(next.getCode())) {
 								status = 1;
 								pastDue(next, status);
@@ -186,7 +191,7 @@ public class BasicItemServiceImpl implements BasicItemService {
 				}
 			} else {//普通属性和多值属性下的属性
 				//分组或者是重复类型
-				BasicItem btGroup = basicItemDao.get(BasicItem.class, basicItem.getGroupName());
+				BasicItem btGroup = basicItemDao.get(BasicItem.class, basicItem.getOneLevelItem().getGroupName());
 				BasicItem entity = basicItemDao.get(BasicItem.class, btGroup.getParent());
 				//查询当前实体对应的所有表中存在的所有字段
 				List colList = basicItemDao.queryEntityCol(entity.getCode());
@@ -209,7 +214,7 @@ public class BasicItemServiceImpl implements BasicItemService {
 			savePastDue(basicItem, status);//全部过期
 		}
 	}
-	
+
 	/**
 	 * 改变状态值为过期or正常， 传过来实体：则实体下面所有的数据项都过期or正常
 	 * 传过来重复类型： 则重复类型下面所有的都过期or正常
@@ -219,16 +224,16 @@ public class BasicItemServiceImpl implements BasicItemService {
 		//不管是什么类型， 自身状态都要改变
 		pastDue(basicItem, status);
 		//记录类型
-		if ("记录类型".equals(basicItem.getDataType())) {
+		if ("记录类型".equals(basicItem.getOneLevelItem().getDataType())) {
 			List<BasicItem> basicItemList = basicItemDao.getDataByPId(basicItem.getCode());
 			for(BasicItem bItem : basicItemList) {
 				pastDue(bItem, status);
 				
-				if ("重复类型".equals(bItem.getDataType())) {//重复类型
+				if ("重复类型".equals(bItem.getOneLevelItem().getDataType())) {//重复类型
 					repeatPastDue(bItem, status);
 				} 
 			}
-		} else if ("重复类型".equals(basicItem.getDataType())) {//重复类型
+		} else if ("重复类型".equals(basicItem.getOneLevelItem().getDataType())) {//重复类型
 			repeatPastDue(basicItem, status);
 		} 
 	}
@@ -259,7 +264,7 @@ public class BasicItemServiceImpl implements BasicItemService {
 	public void saveOrUpdate(BasicItem obj, String flag, String comm) {
 		
 		//更改枚举值， 二级属性和二级属性的孩子需要设置状态为错误
-		if (!"add".equals(flag) ) {//必须是编辑， 并且字典类型不一样， 那么修改他的二级属性状态和孩子的状态
+		/*if (!"add".equals(flag) ) {//必须是编辑， 并且字典类型不一样， 那么修改他的二级属性状态和孩子的状态
 			BasicItem basicItem = basicItemDao.get(BasicItem.class, obj.getCode());
 			//必须有二级属性
 			TowlevelattrMultiattrMapping oneByRelaMulAttr = tmms.getOneByRelaMulAttr(obj.getGroupName());
@@ -283,67 +288,73 @@ public class BasicItemServiceImpl implements BasicItemService {
 			}
 			sFactory.getCurrentSession().evict(basicItem);//session 关联两个相同id的对象， 解除一个
 			
-		}
+		}*/
 		
 		//生成code 规则：实体code TE0001 开始  其他code规则 T00001开始
 		if ("add".equals(flag)) {
 			//生成code 规则：实体code TE0001 开始  其他code规则 T00001开始
-			String dataType = obj.getDataType();
+			String dataType = obj.getOneLevelItem().getDataType();
 			if ("记录类型".equals(dataType)) {
-				obj.setCode(basicItemDao.getEntityCode());
+				String entityCode = basicItemDao.getEntityCode();
+				obj.setCode(entityCode);
+				obj.getOneLevelItem().setCode(entityCode);
 			} else {
-				obj.setCode(basicItemDao.getAttrCode());
+				String attrCode = basicItemDao.getAttrCode();
+				obj.setCode(attrCode);
+				obj.getOneLevelItem().setCode(attrCode);
 			}
 		}
 		
-		if ("重复类型".equals(obj.getDataType())) {
-			obj.setTableName("t_" + obj.getParent() +"_"+ obj.getCode() +"_"+ obj.getCode());
+		if ("重复类型".equals(obj.getOneLevelItem().getDataType())) {
+			obj.getOneLevelItem().setTableName("t_" + obj.getParent() +"_"+ obj.getCode() +"_"+ obj.getCode());
 		}
 		
 		//默认生成一个兄弟
 		if ("comm".equals(comm)) {
 			if ("add".equals(flag)) {
-				if ("文件型".equals(obj.getDataType())) {
+				if ("文件型".equals(obj.getOneLevelItem().getDataType())) {
 					BasicItem bt = new BasicItem();
 					bt.setCode(obj.getCode() + "_P");
+					   bt.getOneLevelItem().setCode(obj.getCode() + "_P");
 					bt.setCnName(obj.getCnName() + "_P");
 					bt.setEnName(obj.getEnName());
-					bt.setDataType("字符型");
-					bt.setDataRange("32");
-					bt.setTableName(obj.getTableName());
+					bt.getOneLevelItem().setDataType("字符型");
+					bt.getOneLevelItem().setDataRange("32");
+					bt.getOneLevelItem().setTableName(obj.getOneLevelItem().getTableName());
 					bt.setParent(obj.getParent());
 					bt.setUsingState(0);
-					bt.setGroupName(obj.getGroupName());
+					bt.getOneLevelItem().setGroupName(obj.getOneLevelItem().getGroupName());
 					basicItemDao.insert(bt);
 				} 
 			} else {//如果是编辑， 
 				BasicItem basicItem = basicItemDao.get(BasicItem.class, obj.getCode());
-				if ("文件型".equals(basicItem.getDataType())) {
+				if ("文件型".equals(basicItem.getOneLevelItem().getDataType())) {
 					BasicItem pojo = basicItemDao.get(BasicItem.class, obj.getCode()+ "_P");
-					if (!"文件型".equals(obj.getDataType())) {
+					if (!"文件型".equals(obj.getOneLevelItem().getDataType())) {
 						basicItemDao.delete(pojo);
 					} else {
 						pojo.setCnName(obj.getCnName() + "_P");
-						pojo.setTableName(obj.getTableName());
+						pojo.getOneLevelItem().setTableName(obj.getOneLevelItem().getTableName());
 						pojo.setEnName(obj.getEnName());
 						pojo.setParent(obj.getParent());
 						pojo.setUsingState(0);
-						pojo.setGroupName(obj.getGroupName());
+						pojo.getOneLevelItem().setGroupName(obj.getOneLevelItem().getGroupName());
 						
 						basicItemDao.update(pojo);
 					}
 				} else {//之前不是文件型
-					if ("文件型".equals(obj.getDataType())) {//现在是文件型
+					if ("文件型".equals(obj.getOneLevelItem().getDataType())) {//现在是文件型
 						BasicItem bt = new BasicItem();
 						bt.setCode(obj.getCode() + "_P");
+						   bt.getOneLevelItem().setCode(obj.getCode() + "_P");
 						bt.setCnName(obj.getCnName() + "_P");
 						bt.setEnName(obj.getEnName());
-						bt.setDataType("字符型");
-						bt.setDataRange("32");
-						bt.setTableName(obj.getTableName());
+						bt.getOneLevelItem().setDataType("字符型");
+						bt.getOneLevelItem().setDataRange("32");
+						bt.getOneLevelItem().setTableName(obj.getOneLevelItem().getTableName());
 						bt.setParent(obj.getParent());
 						bt.setUsingState(0);
-						bt.setGroupName(obj.getGroupName());
+						bt.getOneLevelItem().setGroupName(obj.getOneLevelItem().getGroupName());
 						basicItemDao.insert(bt);
 					}
 				}
@@ -355,28 +366,32 @@ public class BasicItemServiceImpl implements BasicItemService {
 		
 		//保存更改
 		basicItemDao.saveOrUpdate(obj, flag);
+		//basicItemDao.saveOrUpdate(oneLevelItem, flag);
+		
 		//如果是重复类型， 默认生成两个孩子， 
-		if ("重复类型".equals(obj.getDataType()) && "add".equals(flag)) {
+		if ("重复类型".equals(obj.getOneLevelItem().getDataType()) && "add".equals(flag)) {
 			BasicItem childOne = new BasicItem();//多值属性编辑时间
 				childOne.setCode(obj.getCode() + "_ED");
+				   childOne.getOneLevelItem().setCode(obj.getCode() + "_ED");
 				childOne.setCnName("多值属性编辑时间");
-				childOne.setDataType("时间型");
-				childOne.setDataRange("date");
-				childOne.setTableName(obj.getTableName());
+				childOne.getOneLevelItem().setDataType("时间型");
+				childOne.getOneLevelItem().setDataRange("date");
+				childOne.getOneLevelItem().setTableName(obj.getOneLevelItem().getTableName());
 				childOne.setParent(obj.getParent()+ "_" + obj.getCode());
 				childOne.setUsingState(0);
-				childOne.setDictParentId(0);
-				childOne.setGroupName(obj.getCode());
+				childOne.getOneLevelItem().setDictParentId(0);
+				childOne.getOneLevelItem().setGroupName(obj.getCode());
 			BasicItem childTwo = new BasicItem();//多值属性唯一编码
 				childTwo.setCode(obj.getCode() + "_P");
+				     childTwo.getOneLevelItem().setCode(obj.getCode() + "_P");
 				childTwo.setCnName("多值属性唯一编码");
-				childTwo.setDataType("字符型");
-				childTwo.setDataRange("32");
-				childTwo.setTableName(obj.getTableName());
+				childTwo.getOneLevelItem().setDataType("字符型");
+				childTwo.getOneLevelItem().setDataRange("32");
+				childTwo.getOneLevelItem().setTableName(obj.getOneLevelItem().getTableName());
 				childTwo.setParent(obj.getParent()+ "_" + obj.getCode());
 				childTwo.setUsingState(0);
-				childTwo.setGroupName(obj.getCode());
-				childTwo.setDictParentId(0);
+				childTwo.getOneLevelItem().setGroupName(obj.getCode());
+				childTwo.getOneLevelItem().setDictParentId(0);
 			basicItemDao.insert(childOne);
 			basicItemDao.insert(childTwo);
 		}
@@ -408,7 +423,7 @@ public class BasicItemServiceImpl implements BasicItemService {
 					try {
 						 openSession = sFactory.openSession();
 						 tx = openSession.beginTransaction();
-						if ("重复类型".equals(bt.getDataType())) {
+						if ("重复类型".equals(bt.getOneLevelItem().getDataType())) {
 							bt.setUsingState(1);
 							openSession.update(bt);	
 							BasicItem btParent = basicItemDao.get(BasicItem.class, bt.getParent());
@@ -416,7 +431,7 @@ public class BasicItemServiceImpl implements BasicItemService {
 							openSession.update(btParent);	
 						} else {//  重复类型下面的孩子或者是分组类型下边的孩子
 							//找到这个分组或重复类型
-							BasicItem btGroup = basicItemDao.get(BasicItem.class, bt.getGroupName());
+							BasicItem btGroup = basicItemDao.get(BasicItem.class, bt.getOneLevelItem().getGroupName());
 							btGroup.setUsingState(1);
 							openSession.update(btGroup);
 							//分组的父亲， 也就是记录类型
@@ -436,7 +451,7 @@ public class BasicItemServiceImpl implements BasicItemService {
 					try {
 						openSession = sFactory.openSession();
 					 	tx = openSession.beginTransaction();
-						if ("重复类型".equals(bt.getDataType())) {
+						if ("重复类型".equals(bt.getOneLevelItem().getDataType())) {
 							bt.setUsingState(-1);
 							openSession.update(bt);	
 							BasicItem btParent = basicItemDao.get(BasicItem.class, bt.getParent());
@@ -444,7 +459,7 @@ public class BasicItemServiceImpl implements BasicItemService {
 							openSession.update(btParent);	
 						} else {//  重复类型下面的孩子或者是分组类型下边的孩子
 							//找到这个分组或重复类型
-							BasicItem btGroup = basicItemDao.get(BasicItem.class, bt.getGroupName());
+							BasicItem btGroup = basicItemDao.get(BasicItem.class, bt.getOneLevelItem().getGroupName());
 							btGroup.setUsingState(-1);
 							openSession.update(btGroup);
 							//分组的父亲， 也就是记录类型
@@ -581,19 +596,19 @@ public class BasicItemServiceImpl implements BasicItemService {
 	@Override
 	public List<DictionaryBasicItem> getDictCode(Long id) {
 		
-		TowlevelattrMultiattrMapping mapping = tmms.getTowlevelattrMultiattrMapping(id);
+		TowlevelattrMultiattrMapping mapping = tmms.getOne(id);
 		BasicItem basicItem = basicItemDao.get(BasicItem.class, mapping.getDictionaryAttr());
-		Integer dictParentId = basicItem.getDictParentId();
+		Integer dictParentId = basicItem.getOneLevelItem().getDictParentId();
 		
 		List<DictionaryBasicItem> dictBItemList = dictionaryBasicItemService.getDictBasicItemByParent(dictParentId);
 		
-		List<Towlevelattr> twoLevelList = towlevelattrService.getListByMappingId(Long.toString(id));
+		List<Object[]> twoLevelList = towlevelattrService.getListByMappingId(Long.toString(id));
 		
-		for (Towlevelattr two : twoLevelList) {
+		for (Object[] two : twoLevelList) {
 			Iterator<DictionaryBasicItem> iterator = dictBItemList.iterator();
 	        while (iterator.hasNext()) {
 	        	DictionaryBasicItem dBitem = iterator.next();
-	             if (Integer.parseInt(two.getDictionaryCode()) == dBitem.getCode()) {
+	             if (Integer.parseInt((String) two[3]) == dBitem.getCode()) {
 	            	 dictBItemList.remove(dBitem);
 	            	 break;
 	             }
@@ -604,13 +619,24 @@ public class BasicItemServiceImpl implements BasicItemService {
 	}
 
 	@Override
-	public void createTowLevel(Towlevelattr criteria) {
+	public void createTowLevel(Towlevelattr criteria, String name) {
+		
+		BasicItem bt = new BasicItem();
+		
+		bt.setUsingState(1);
+		bt.setCnName(name);
+		
+		String attrCode = basicItemDao.getAttrCode();
+		criteria.setCode(attrCode);
+		bt.setCode(attrCode);
+		
+		TowlevelattrMultiattrMapping towlevle = tmms.getOne(Long.parseLong(criteria.getMappingId()));
+		String related= towlevle.getRelatedMultiattribute();
+		BasicItem basicItem = basicItemDao.get(BasicItem.class, related);
+		bt.setParent(basicItem.getParent());
+		bt.setOneLevelItem(null);
+		basicItemDao.insert(bt);
 		towlevelattrService.create(criteria);
-	}
-
-	@Override
-	public BigInteger geSameCount(String cnName, String entityId) {
-		return basicItemDao.geSameCount(cnName, entityId);
 	}
 
 	@Override
@@ -626,6 +652,11 @@ public class BasicItemServiceImpl implements BasicItemService {
 	@Override
 	public List<BasicItem> getEntityList(String leftRecordType) {
 		return basicItemDao.getEntityList(leftRecordType);
+	}
+
+	@Override
+	public void twoDeleteItem(BasicItem basicItem) {
+		basicItemDao.delete(basicItem);
 	}
 
 }
