@@ -128,13 +128,15 @@ public class BasicItemNodeController {
 				if (basicItem != null) {
 					if ("日期型".equals(basicItem.getOneLevelItem().getDataType())) {
 						basicItemNode.setControlType("date");
+					} else if ("时间型".equals(basicItem.getOneLevelItem().getDataType())) {
+						basicItemNode.setControlType("datetime");
 					} else if ("字符型".equals(basicItem.getOneLevelItem().getDataType())) {
 						if ("枚举".equals(basicItem.getOneLevelItem().getDataRange())) {
 							basicItemNode.setControlType("select");
 						} else {
 							basicItemNode.setControlType("text");
 						} 
-					}else if ("文件型".equals(basicItem.getOneLevelItem().getDataRange())) {
+					} else if ("二进制型".equals(basicItem.getOneLevelItem().getDataType())) {
 						basicItemNode.setControlType("file");
 					} else if ("引用类型".equals(basicItem.getOneLevelItem().getDataType())) {
 						basicItemNode.setControlType("select");

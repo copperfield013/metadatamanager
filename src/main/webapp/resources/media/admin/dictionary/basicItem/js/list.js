@@ -472,6 +472,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
         $form.find("#dataRange").show();
         $form.find("#cn_dataRange").show();
         $form.find("#dataRange").val("32");
+        $form.find("#description").val("");
     });
     //点击 添加多值属性孩子加号 显示div
     $(".more_proper", $page).on("click", ".add_more_child", function() {
@@ -1224,10 +1225,25 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
                 $form1.find("#cn_dataRange").show();
                 $form1.find("#s2id_dictParentId").remove(); 
                 
-            	if ("日期型" == jsonData.dataType || "时间型" == jsonData.dataType) {
-            		$form1.find("#dataRange").val("").hide();
+            	if ("日期型" == jsonData.oneLevelItem.dataType) {
+            		$form1.find("#dataRange").val("date").hide();
 	                $form1.find("#cn_dataRange").hide();
             	} 
+            	
+            	if ("时间型" == jsonData.oneLevelItem.dataType) {
+            		$form1.find("#dataRange").val("datetime").hide();
+	                $form1.find("#cn_dataRange").hide();
+            	} 
+            	
+            	if ("文件型" == jsonData.oneLevelItem.dataRange) {
+            		$form1.find("#dataRange").hide();
+	                $form1.find("#cn_dataRange").hide();
+            	} 
+            	
+            	if ("枚举" == jsonData.oneLevelItem.dataRange) {
+            		$form1.find("#dataRange").hide();
+	                $form1.find("#cn_dataRange").hide();
+            	}
             	
             }
             
@@ -1278,7 +1294,6 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
         Ajax.ajax('admin/dictionary/basicItem/getOne', {
             id: entityId
         }, function(jsonData) {
-        	alert(jsonData.oneLevelItem.dataRange);
         	if(jsonData.oneLevelItem.dataRange == "枚举") {
         		ischecked = true;
         	}        	            
