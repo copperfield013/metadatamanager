@@ -74,8 +74,8 @@ public class BasicItemNode {
 	@Column(name="c_control_type")
 	private String controlType;
 	
-	@OneToMany(fetch=FetchType.LAZY, mappedBy="parentId")
-	private List<BasicItemNode> btNodeList = new ArrayList<BasicItemNode>();
+	@OneToMany(fetch=FetchType.EAGER, mappedBy="parentId")
+	private List<BasicItemNode> btNodeList;
 	
 	/**
 	 * @return the btNodeList
