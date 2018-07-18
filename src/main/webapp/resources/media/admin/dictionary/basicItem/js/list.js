@@ -285,6 +285,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
     	$("#entity_opera_form1").find("#code").val("");
     	$("#entity_opera_form1").find("#cnName").val("");
     	$("#entity_opera_form1").find("#enName").val("");
+    	$("#entity_opera_form1").find("#description").val("");
     	  $(".common_proper").hide();
           $(".more_proper").hide();
           $(".entity_relation").hide();

@@ -30,7 +30,7 @@ public class BasicItemDaoImpl implements BasicItemDao {
 	@Override
 	public List<BasicItem> queryList(BasicItemCriteria criteria) {
 		StringBuffer sb = new StringBuffer();
-		sb.append("SELECT reverse( - ( - reverse( substring_index( b.c_code, '_', 1 ) ) ) ) as c_order, b.* FROM t_c_basic_item b inner JOIN t_c_onelevel_item o on b.c_code=o.c_code WHERE 1=1 ");
+		sb.append("SELECT CAST((reverse( - ( - reverse( substring_index( b.c_code, '_', 1 ) ) ) ) ) as SIGNED) as c_order, b.* FROM t_c_basic_item b inner JOIN t_c_onelevel_item o on b.c_code=o.c_code WHERE 1=1 ");
 		
 		if(criteria.getUsingState() != null && criteria.getUsingState().SIZE > 0){
 			sb.append(" AND b.c_using_state=:usingState");
@@ -42,7 +42,7 @@ public class BasicItemDaoImpl implements BasicItemDao {
 			sb.append(" AND b.c_cn_name like :cnName");
 		}
 		if(TextUtils.hasText(criteria.getOneLevelItem().getDataType())){
-			sb.append(" AND o.c_data_type= :dataType");
+			sb.append(" AND o.c_data_type=:dataType");
 		}
 		sb.append(" ORDER BY c_order ASC");
 		
@@ -87,21 +87,21 @@ public class BasicItemDaoImpl implements BasicItemDao {
 
 	@Override
 	public List<BasicItem> getDataByPId(String parent) {
-		String sql = "SELECT * FROM t_c_basic_item WHERE c_parent=:parent AND c_code not like '%_P' AND c_code not like '%__ED' ORDER BY c_code=reverse(-(-reverse(substring_index(c_code,'_',1)))) ASC";
+		String sql = "SELECT * FROM t_c_basic_item WHERE c_parent=:parent AND c_code not like '%_P' AND c_code not like '%__ED' ORDER BY  CAST((reverse( - ( - reverse( substring_index( c_code, '_', 1 ) ) ) )) as SIGNED) ASC";
 		List<BasicItem> list = sFactory.getCurrentSession().createSQLQuery(sql).addEntity(BasicItem.class).setParameter("parent", parent).list();
 		return list;
 	}
 	
 	@Override
 	public List<BasicItem> getChilByPid(String parent) {
-		String sql = "SELECT * FROM t_c_basic_item WHERE c_parent=:parent ORDER BY c_code=reverse(-(-reverse(substring_index(c_code,'_',1)))) ASC";
+		String sql = "SELECT * FROM t_c_basic_item WHERE c_parent=:parent ORDER BY  CAST((reverse( - ( - reverse( substring_index( c_code, '_', 1 ) ) ) )) as SIGNED) ASC";
 		List<BasicItem> list = sFactory.getCurrentSession().createSQLQuery(sql).addEntity(BasicItem.class).setParameter("parent", parent).list();
 		return list;
 	}
 
 	@Override
 	public List getAttrByPidGroupName(String parent, String groupName) {
-		String sql = "SELECT * FROM	t_c_basic_item t	INNER JOIN t_c_onelevel_item o	on t.c_code=o.c_code  WHERE	t.c_parent =:parent 	AND o.c_group_name =:groupName 	AND t.c_code NOT LIKE '%_P'  ORDER BY t.c_code=reverse(-(-reverse(substring_index(t.c_code,'_',1)))) ASC";
+		String sql = "SELECT * FROM	t_c_basic_item t	INNER JOIN t_c_onelevel_item o	on t.c_code=o.c_code  WHERE	t.c_parent =:parent 	AND o.c_group_name =:groupName 	AND t.c_code NOT LIKE '%_P'  ORDER BY  CAST((reverse( - ( - reverse( substring_index(t.c_code, '_', 1 ) ) ) )) as SIGNED) ASC";
 		List<BasicItem> list = sFactory.getCurrentSession().createSQLQuery(sql).addEntity(BasicItem.class).setParameter("parent", parent).setParameter("groupName", groupName).list();
 		return list;
 	}
