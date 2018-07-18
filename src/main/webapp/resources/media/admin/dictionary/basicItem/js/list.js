@@ -316,10 +316,13 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
     });
     
     //选中数据类型为  枚举   触发事件   普通属性
-    $(".common_proper", $page).on("change", ".enum_dataType_one", function() {    	
+    $(".common_proper", $page).on("change", ".enum_dataType_one", function() {  
     	var $this = $(this);
     	var options=$(".enum_dataType_one option:selected");  //获取选中的项
     	var $form = $this.closest(".opera_comm").find("#comm_opera_form1");
+    	
+    	alert($this.val());
+    	
     	if ("枚举" == $this.val()) {    		
     		 //如果是枚举， 则显示下拉列表
 	    	$CPF.showLoading();
@@ -352,7 +355,34 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
                 $form.find("#cn_dataRange").hide();                  
                 $CPF.closeLoading();
             });            
-    	} else {    		
+    	} else if("referenceType" == $this.val()) {//如果是引用类型
+    		 //如果是引用类型， 则显示下拉列表
+	    	$CPF.showLoading();
+	        $form.find("#dictParentId").remove();
+	        $form.find("#s2id_dictParentId").remove();
+	        $form.find("#span_enum").remove(); 	
+	        
+	        $form.find("#refType").remove();
+	        $form.find("#refType_enum").remove(); 
+	        $form.find("#s2id_refType").remove();
+            //选中  则显示下拉列表       
+            Ajax.ajax('admin/dictionary/basicItem/referenceTypeEntityList', '', function(data) {
+            	
+                var entityList = data.entity;
+                var str = "<span id=\"refType_enum\">引用实体：</span><select id=\"refType\" name=\"refType\">";
+            	for (var p in entityList) { //遍历json数组时，这么写p为索引，0,1
+                    str = str + "<option value=\"" + entityList[p].code + "\">" + entityList[p].cnName + "</option>"; 
+                }
+                
+                str = str + "</select>";               
+                $form.find("#dataType").after(str);                
+                $form.find("#refType").css("width","30%").select2();
+                $form.find("#dataRange").val("32").hide();
+                $form.find("#cn_dataRange").hide();                 
+                $CPF.closeLoading();
+            });            
+    		 
+    	}else {    		
     		$form.find("#cn_dataRange").show();
     		 $form.find("#dataRange").show();
     		if ("digital" == $this.val()) {//数字型
@@ -379,6 +409,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
     
   //选中数据类型为  枚举   触发事件
     $(".more_proper", $page).on("change", ".enum_daType_two", function() {
+    	alert("1111");
     	var options=$(this).find("option:selected");    	
     	var $form  = $(this).parent().parent();
     	var entityId = $form.attr("entityId");
@@ -916,6 +947,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
         var groupName = $(this).closest('.opera_comm').find("#groupName").val();
         var parent = $(this).closest('.opera_comm').find("#comm_parent").val();
         var description = $(this).closest('.opera_comm').find("#description").val();
+        var refType = $(this).closest('.opera_comm').find("#refType").val();
         if (typeof(dictParentId) == "undefined") {
             dictParentId = "";
         }        
@@ -937,7 +969,8 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
                     dictParentId: dictParentId,
                     groupName: groupName,
                     parent: parent,
-                    description:description
+                    description:description,
+                    refType:refType
                 }, function(data) {
                 	$(this).closest('.opera_comm').hide();
                 	if ("" == code) {//新增一个属性
@@ -1174,7 +1207,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
     });
     //编辑普通属性获取 id    
     $(".common_proper", $page).on("click", ".edit_common", function() {
-    	var $this = $(this);
+    	var $this = $(this); 
     	var $newAdd = $this.closest(".new_add");
     	var $form1 =$newAdd.find("form");
         var entityId = $this.closest('.entity_ul').attr("entityid");
@@ -1183,7 +1216,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
         Ajax.ajax('admin/dictionary/basicItem/getOne', {
             id: entityId
         }, function(jsonData) {  
-        	if(jsonData.dataRange == "枚举") {
+        	if(jsonData.oneLevelItem.dataRange == "枚举") {
         		ischecked = true;
         	};         	
             $form1.find("#code").val(jsonData.code);
@@ -1219,7 +1252,40 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
     	                $form1.find("#dictParentId").css("width","30%").select2();	
     	            }
     	        });
-            }else {
+            } else if ("引用类型" == jsonData.oneLevelItem.dataType) {//如果是引用类型
+       		 //如果是引用类型， 则显示下拉列表
+    	    	$CPF.showLoading();
+    	    	$form1.find("#dictParentId").remove();
+    	    	$form1.find("#s2id_dictParentId").remove();
+    	    	$form1.find("#span_enum").remove(); 	
+    	        
+    	    	$form1.find("#refType").remove();
+    	    	$form1.find("#s2id_refType").remove();
+    	    	$form1.find("#refType_enum").remove(); 
+    	       
+                //选中  则显示下拉列表       
+                Ajax.ajax('admin/dictionary/basicItem/referenceTypeEntityList', '', function(data) {
+                	
+                    var entityList = data.entity;
+                    var str = "<span id=\"refType_enum\">引用实体：</span><select id=\"refType\" name=\"refType\">";
+                	for (var p in entityList) { //遍历json数组时，这么写p为索引，0,1
+                   
+                		if (jsonData.oneLevelItem.refType == entityList[p].code) {
+                			str = str + "<option selected=\"selected\" value=\"" + entityList[p].code + "\">" + entityList[p].cnName + "</option>"; 
+	                    } else {
+	                    	str = str + "<option value=\"" + entityList[p].code + "\">" + entityList[p].cnName + "</option>"; 
+	                    }
+                    }
+                    
+                    str = str + "</select>";               
+                    $form1.find("#dataType").after(str);                
+                    $form1.find("#refType").css("width","30%").select2();
+                    $form1.find("#dataRange").hide();
+                    $form1.find("#cn_dataRange").hide();                 
+                    $CPF.closeLoading();
+                });            
+        		 
+        	} else {
             	$form1.find("#span_enum").remove();
                 $form1.find("#dictParentId").remove();	
                 $form1.find("#dataRange").show();
@@ -1333,7 +1399,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
     	                $form1.find("#dictParentId").css("width","30%").select2();	
     	            }
     	        });
-    		}else {
+    		} else {
     			 $form1.find("#span_enum").remove();
                  $form1.find("#dictParentId").remove();
                  $form1.find("#dataRange").show();

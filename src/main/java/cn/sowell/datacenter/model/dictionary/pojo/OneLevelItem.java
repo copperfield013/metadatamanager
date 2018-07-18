@@ -60,13 +60,13 @@ public class OneLevelItem {
 	  @Column(name="c_description")
 	  private String description;
 	  
-	  @ApiModelProperty(value="应用类型关联实体code", name="refType")
+	  @ApiModelProperty(value="引用类型关联实体code", name="refType")
 	  @Column(name="c_ref_type")
 	  private String refType;
 	  
 	  @OneToOne(mappedBy = "oneLevelItem")
 	  private BasicItem basicItem;
-	 
+	  
 	public String getCode() {
 		return code;
 	}

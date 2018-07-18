@@ -577,25 +577,42 @@ public class BasicItemServiceImpl implements BasicItemService {
 		}	
 			
 		//创建关系表函数及关系表
-		try {
-			List queryCreRelaTabFun = basicItemDao.queryCreRelaTabFun();
-			for (Object object : queryCreRelaTabFun) {
+		List queryCreRelaTabFun = basicItemDao.queryCreRelaTabFun();
+		for (Object object : queryCreRelaTabFun) {
+			try {
 				basicItemDao.excuteBySql(object.toString());
+			} catch (Exception e) {
+				e.printStackTrace();
+				continue;
 			}
-			
-			//创建关系表
-			List queryCreRelaTab = basicItemDao.queryCreRelaTab();
-			for (Object object : queryCreRelaTab) {
-				basicItemDao.excuteBySql(object.toString());
-			}
-			
-			//以上程序执行完比， 应确保只有状态为1  和-1， 下面程序把所有状态为0的改为1
-			basicItemDao.excuteBySql("UPDATE t_c_basic_item SET c_using_state=1 WHERE c_using_state=0");
-		} catch (Exception e) {
-			e.printStackTrace();
-			throw e;
 		}
 		
+		//创建关系表
+		List queryCreRelaTab = basicItemDao.queryCreRelaTab();
+		for (Object object : queryCreRelaTab) {
+			try {
+				basicItemDao.excuteBySql(object.toString());
+			} catch (Exception e) {
+				e.printStackTrace();
+				continue;
+			}
+		}
+		
+		//创建索引表
+		 List queryCreateIndexTbl = basicItemDao.queryCreateIndexTbl();
+		for (Object object : queryCreateIndexTbl) {
+			try {
+				basicItemDao.excuteBySql(object.toString());
+			} catch (Exception e) {
+				e.printStackTrace();
+				continue;
+			}
+		}
+		
+		
+		
+		//以上程序执行完比， 应确保只有状态为1  和-1， 下面程序把所有状态为0的改为1
+		basicItemDao.excuteBySql("UPDATE t_c_basic_item SET c_using_state=1 WHERE c_using_state=0");
 		}
 
 	@Override

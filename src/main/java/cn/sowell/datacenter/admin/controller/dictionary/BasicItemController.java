@@ -102,6 +102,28 @@ public class BasicItemController {
 		}
 	}
 	
+	//ajax 获取实体列表
+		@ResponseBody
+		@ApiOperation(value = "引用类型获取对应实体列表", nickname = "referenceTypeEntityList", notes = "引用类型获取对应实体列表", response = BasicItems.class, tags={ "entityManager", })
+	    @ApiResponses(value = { 
+	        @ApiResponse(code = 200, message = "操作成功", response = BasicItems.class),
+	        @ApiResponse(code = 401, message = "操作失败") })
+	    @RequestMapping(value = "/referenceTypeEntityList",
+	        method = RequestMethod.POST)
+		public ResponseEntity<BasicItems> referenceTypeEntityList(){
+			try {
+				BasicItemCriteria criteria = new BasicItemCriteria();
+				criteria.getOneLevelItem().setDataType("记录类型");
+				criteria.setUsingState(1);
+				List<BasicItem> list = basicItemService.queryList(criteria);
+				BasicItems bts = new BasicItems();
+				bts.entity(list);
+				return new ResponseEntity<BasicItems>(bts, HttpStatus.OK);
+			} catch (Exception e) {
+				return new ResponseEntity<BasicItems>(HttpStatus.INTERNAL_SERVER_ERROR);
+			}
+		}
+	
 	@ResponseBody
 	@ApiOperation(value = "获取数据类型信息", nickname = "getDataType",response = InlineResponse2003.class, notes = "获取数据类型信息", tags={ "entityManager", })
     @ApiResponses(value = { 
@@ -164,6 +186,9 @@ public class BasicItemController {
 				dataType = "字符型";
 			} else if ("文件型".equals(dType)) {
 				dataType = "二进制型";
+				oneLevelItem.setDictParentId(0);
+			} else if ("referenceType".equals(dType)) {
+				dataType = "引用类型";
 				oneLevelItem.setDictParentId(0);
 			}
 			oneLevelItem.setDataType(dataType);

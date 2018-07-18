@@ -208,7 +208,7 @@ public class BasicItemDaoImpl implements BasicItemDao {
 			.append(" LEFT JOIN ")
 			.append(" (SELECT  ")
 			.append(" col.column_name  FROM  information_schema.columns col  WHERE ")
-			.append("  (column_name LIKE 'SW%' or column_name LIKE 'ABC%')  and ")
+			//.append("  (column_name LIKE 'SW%' or column_name LIKE 'ABC%')  and ")
 			.append(" table_schema = '"+DataBaseName+"') b ON a.c_code = b.column_name ")
 			.append("WHERE ")
 			.append(" b.column_name IS NULL and c_table_name is not null and a.c_data_range is not null  order by a.c_code ");
@@ -221,31 +221,36 @@ public class BasicItemDaoImpl implements BasicItemDao {
 	public List queryEditCol() {
 		 getDataBaseName();
 		 StringBuffer sb = new StringBuffer();
-		 sb.append(" SELECT a.c_code,	CONCAT( ")
-		 .append(" 'alter table ',	a.c_table_name,	' CHANGE COLUMN ',	a.c_code,	' ',")
-		 .append(" a.c_code,	' ',	a.col_type,	'  default NULL ;'	)")
-		 .append(" FROM	(		SELECT			aa.c_table_name,	aa.c_code,aa.col_type")
-		 .append(" FROM	(	SELECT	a.c_code,	a.c_table_name,")
-		 .append(" CASE a.c_data_type	")
-		 .append(" WHEN '字符型' THEN		(	'varchar(',	IF (a.c_data_range = '枚举',	'32',	a.c_data_range),	')'	)	")
-		 .append(" WHEN '数字型' THEN	CONCAT(	'int(',	IF (	a.c_data_range IS NULL,		'11',	a.c_data_range),')'	)")
-		 .append(" WHEN '数字型小数' THEN		CONCAT(	'double(',	IF (	a.c_data_range IS NULL,	'10,2',		a.c_data_range),')'	)")
-		 .append(" WHEN '日期型' THEN	'date'")
-		 .append(" WHEN '时间型' THEN	'datetime'")
-		 .append(" WHEN '二进制型' THEN	'MediumBlob'")
-		 .append(" 	WHEN '引用类型' THEN 	'varchar(32)' ")
-		 .append(" END col_type	FROM	t_c_onelevel_item a")
-		 //.append(" WHERE	a.c_code LIKE 'IBT%'")  这个过滤条件先去掉
-		 .append(" WHERE a.c_data_type != '分组类型'")
-		 .append(" AND a.c_data_type != '记录类型'")
-		 .append(" AND a.c_data_type != '重复类型'")
-		 .append(" 	) aa")
-		 .append(" LEFT JOIN (")
-		 .append(" SELECT	col.Column_name,	col.column_type,col.table_name	FROM")
-		 .append(" information_schema. COLUMNS col")
-		 .append(" WHERE	table_schema = '"+DataBaseName+"'	) bb ON aa.c_code = Column_name")
-		 .append(" AND aa.col_type = bb.column_type	AND aa.c_table_name = bb.table_name")
-		 .append(" WHERE	bb.column_type IS NULL	) a");
+		 sb.append(" SELECT  ")
+		 .append("  a.c_code, ")
+		 .append("  CONCAT( 'alter table ', a.c_table_name, ' CHANGE COLUMN ', a.c_code, ' ', a.c_code, ' ', a.col_type, '  default NULL ;' )  ")
+		 .append(" FROM     (  SELECT ")
+		 .append("     aa.c_table_name,     aa.c_code,     aa.col_type  ")
+		 .append(" FROM     (  SELECT ")
+		 .append("    a.c_code,     a.c_table_name, ")
+		 .append(" CASE   a.c_data_type  ")
+		 .append("  WHEN '字符型' THEN    CONCAT( 'varchar(', IF ( a.c_data_range = '枚举', '32', a.c_data_range ), ')' )  ")
+		 .append("  WHEN '数字型' THEN    CONCAT( 'int(', IF ( a.c_data_range IS NULL, '11', a.c_data_range ), ')' )  ")
+		 .append(" WHEN '数字型小数' THEN    CONCAT( 'double(', IF ( a.c_data_range IS NULL, '10,2', a.c_data_range ), ')' )  ")
+		 .append("  WHEN '日期型' THEN     'date'  ")
+		 .append("  WHEN '时间型' THEN     'datetime'  ")
+		 .append(" WHEN '二进制型' THEN    'mediumblob'  ")
+		 .append("  WHEN '引用类型' THEN    'varchar(32)'  ")
+		 .append(" END col_type  ")
+		 .append(" FROM ")
+		 .append("     t_c_onelevel_item a  ")
+		 .append(" WHERE  ")
+		 .append("  a.c_data_type != '分组类型' ")
+		 .append(" AND a.c_data_type != '记录类型' ")
+		 .append(" AND a.c_data_type != '重复类型' ")
+		 .append("     ) aa ")
+		 .append("    LEFT JOIN ( SELECT col.Column_name, col.column_type, col.table_name FROM information_schema.COLUMNS col WHERE table_schema = '"+DataBaseName+"' ) bb  ")
+		 .append(" 		ON aa.c_code = Column_name  ")
+		 .append("  AND aa.col_type = bb.column_type ")
+		 .append("   AND aa.c_table_name = bb.table_name ")
+		 .append(" WHERE ")
+		 .append("   bb.column_type IS NULL  ")
+		 .append("     ) a ");
 		 List list = sFactory.getCurrentSession().createSQLQuery(sb.toString()).list();
 		 return list;
 	}
@@ -317,6 +322,35 @@ public class BasicItemDaoImpl implements BasicItemDao {
 		return list;
 	}
 
+	@Override
+	public List queryCreateIndexTbl() {
+		getDataBaseName();
+		StringBuffer sb = new StringBuffer();
+		sb.append(" SELECT  ")
+		.append("    concat(\"create table \", a.tablename,\"( `id`  bigint(20) NOT NULL AUTO_INCREMENT, ")
+		.append("  `ABP0001`  varchar(32) Not NULL ,`ABC0916`  varchar(512) DEFAULT NULL ,`ABC0917`  int(11) DEFAULT NULL,`ABC0918`  bigint(20) DEFAULT  ")
+		.append(" NULL,PRIMARY KEY (`id`));\") ")
+		.append(" FROM ")
+		.append("     (SELECT  ")
+		.append("   concat('t_',c_code,'_idx1') tablename ")
+		.append("     FROM ")
+		.append("       t_c_onelevel_item  ")
+		.append("     WHERE ")
+		.append("     c_data_type='记录类型') a ")
+		.append("       LEFT JOIN  ")
+		.append("     (SELECT  ")
+		.append("      table_name ")
+		.append("     FROM ")
+		.append("      information_schema.tables t ")
+		.append("   WHERE ")
+		.append("   t.table_schema = 'abctest') b ON a.tablename = b.table_name ")
+		.append(" WHERE ")
+		.append("   b.table_name IS NULL  ");
+		
+		List list = sFactory.getCurrentSession().createSQLQuery(sb.toString()).list();
+		return list;
+	}
+	
 	@Override
 	public void excuteBySql(String sql) {
 		sFactory.getCurrentSession().createSQLQuery(sql).executeUpdate();
@@ -396,5 +430,6 @@ public class BasicItemDaoImpl implements BasicItemDao {
 				+ "	AND t.c_code IN ( SELECT right_record_type FROM t_c_record_relation_type WHERE left_record_type =: leftRecordType )";
 		return  sFactory.getCurrentSession().createSQLQuery(sql).addEntity(BasicItem.class).setParameter("leftRecordType", leftRecordType).list();
 	}
+
 
 }
