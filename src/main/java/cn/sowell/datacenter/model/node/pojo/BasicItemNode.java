@@ -2,6 +2,7 @@ package cn.sowell.datacenter.model.node.pojo;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -73,8 +74,8 @@ public class BasicItemNode {
 	@Column(name="c_control_type")
 	private String controlType;
 	
-	@OneToMany(fetch=FetchType.EAGER, mappedBy="parentId")
-	private List<BasicItemNode> btNodeList;
+	@OneToMany(fetch=FetchType.LAZY, mappedBy="parentId")
+	private List<BasicItemNode> btNodeList = new ArrayList<BasicItemNode>();
 	
 	/**
 	 * @return the btNodeList
