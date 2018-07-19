@@ -70,7 +70,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
     //获取孩子的方法
 	function getChild(nodeId, isRelative, bar) {
 		$CPF.showLoading();
-		alert(nodeId + "-" + isRelative + "-" + bar);
+		//alert(nodeId + "-" + isRelative + "-" + bar);
 		Ajax.ajax('admin/node/basicItemNode/getChildNode', {
 			nodeId: nodeId
 		 }, function(data) {	
