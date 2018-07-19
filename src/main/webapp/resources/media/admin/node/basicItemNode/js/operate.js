@@ -825,8 +825,8 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
     	var id = $entityTitle.attr("data-id");
     	var dataType = "STRING";
     	var opt = $entityTitle.children(".node-ops-type").find("option:selected").val();
-      var ret = /^.{3,6}$/;
-      if(!ret.test(name)){
+      var ret = /.{3,}/;
+      if(!ret.test(name.trim())){
         alert("【"+name + "】 必须三个字符及以上");
         return;
       }
