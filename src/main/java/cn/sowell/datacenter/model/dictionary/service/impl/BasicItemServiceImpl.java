@@ -14,6 +14,8 @@ import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.springframework.stereotype.Service;
 
+import com.abc.util.AttributeParter;
+
 import cn.sowell.datacenter.model.dictionary.criteria.BasicItemCriteria;
 import cn.sowell.datacenter.model.dictionary.dao.BasicItemDao;
 import cn.sowell.datacenter.model.dictionary.pojo.BasicItem;
@@ -117,17 +119,39 @@ public class BasicItemServiceImpl implements BasicItemService {
 
 	@Override
 	public void delete(BasicItem basicItem) {
-		if ("文件型".equals(basicItem.getOneLevelItem().getDataType())) {
-			BasicItem bt = basicItemDao.get(BasicItem.class, basicItem.getCode()+ "_P");
+		//这里删除伴生属性
+		if ("重复类型".equals(basicItem.getOneLevelItem().getDataType())) {
+			BasicItem btp = basicItemDao.get(BasicItem.class,  AttributeParter.getRepeatKeyName(basicItem.getCode()));
+			BasicItem btEd = basicItemDao.get(BasicItem.class,  AttributeParter.getRepeatEditTimeName(basicItem.getCode()));
 			
-			if (bt != null) {
-				basicItemDao.delete(bt);
+			if (btp != null) {
+				basicItemDao.delete(btp);
+			} 
+			if (btEd != null) {
+				basicItemDao.delete(btEd);
 			}
-		}
+		} else if ("二进制型".equals(basicItem.getOneLevelItem().getDataType())) {//删除文件型伴生类
+            BasicItem btKey =basicItemDao.get(BasicItem.class, AttributeParter.getBytesKeyName(basicItem.getCode()));
+            BasicItem btSuffix = basicItemDao.get(BasicItem.class, AttributeParter.getBytesSuffixName(basicItem.getCode()));
+            BasicItem btKBSize = basicItemDao.get(BasicItem.class, AttributeParter.getBytesKBSizeName(basicItem.getCode()));
+            BasicItem btName = basicItemDao.get(BasicItem.class, AttributeParter.getBytesNameName(basicItem.getCode()));
+            if (btKey != null) {
+                 basicItemDao.delete(btKey);
+            }
+            if (btSuffix != null) {
+                basicItemDao.delete(btSuffix);                      
+            }
+            if (btKBSize != null) {
+                basicItemDao.delete(btKBSize);
+            }
+            if (btName != null) {
+                basicItemDao.delete(btName);
+            }
+            
+        }
 		
 		basicItemDao.delete(basicItem);
 	}
-	
 	
 	public void saveUsingStatus(BasicItem basicItem, String statusStr) {
 		Integer status = 0;
@@ -272,37 +296,8 @@ public class BasicItemServiceImpl implements BasicItemService {
 
 	@Override
 	public void saveOrUpdate(BasicItem obj, String flag, String comm) {
-		
-		//更改枚举值， 二级属性和二级属性的孩子需要设置状态为错误
-		/*if (!"add".equals(flag) ) {//必须是编辑， 并且字典类型不一样， 那么修改他的二级属性状态和孩子的状态
-			BasicItem basicItem = basicItemDao.get(BasicItem.class, obj.getCode());
-			//必须有二级属性
-			TowlevelattrMultiattrMapping oneByRelaMulAttr = tmms.getOneByRelaMulAttr(obj.getGroupName());
-			if (oneByRelaMulAttr != null && obj.getCode().equals(oneByRelaMulAttr.getDictionaryAttr())) {
-				if ("枚举".equals(basicItem.getDataRange())) {
-					if (!"枚举".equals(obj.getDataRange()) || !basicItem.getDictParentId().equals(obj.getDictParentId()) ) {
-						//这里我就要修改二级属性和二级属性的孩子状态为错误
-						oneByRelaMulAttr.setUsingState(-1);
-						tmms.update(oneByRelaMulAttr);
-						//二级属性的孩子设置为错误
-						List<Towlevelattr> listByMappingId = towlevelattrService.getListByMappingId(String.valueOf(oneByRelaMulAttr.getId()));
-						Iterator<Towlevelattr> iterator = listByMappingId.iterator();
-						while (iterator.hasNext()) {
-							Towlevelattr next = iterator.next();
-							next.setUsingState(-1);
-							towlevelattrService.update(next);
-						}
-						
-					}
-				}
-			}
-			sFactory.getCurrentSession().evict(basicItem);//session 关联两个相同id的对象， 解除一个
-			
-		}*/
-		
-		//生成code 规则：实体code TE0001 开始  其他code规则 T00001开始
+		//生成code 规则：实体code IBTE0001 开始  其他code规则 IBT00001开始
 		if ("add".equals(flag)) {
-			//生成code 规则：实体code TE0001 开始  其他code规则 T00001开始
 			String dataType = obj.getOneLevelItem().getDataType();
 			if ("记录类型".equals(dataType)) {
 				String entityCode = basicItemDao.getEntityCode();
@@ -319,59 +314,78 @@ public class BasicItemServiceImpl implements BasicItemService {
 			obj.getOneLevelItem().setTableName("t_" + obj.getParent() +"_"+ obj.getCode() +"_"+ obj.getCode());
 		}
 		
-		//默认生成一个兄弟
-		if ("comm".equals(comm)) {
+			//如果是文件类型， 默认生成四个半生记录
 			if ("add".equals(flag)) {
-				if ("文件型".equals(obj.getOneLevelItem().getDataType())) {
-					BasicItem bt = new BasicItem();
-					bt.setCode(obj.getCode() + "_P");
-					   bt.getOneLevelItem().setCode(obj.getCode() + "_P");
-					bt.setCnName(obj.getCnName() + "_P");
-					bt.setEnName(obj.getEnName());
-					bt.getOneLevelItem().setDataType("字符型");
-					bt.getOneLevelItem().setDataRange("32");
-					bt.getOneLevelItem().setTableName(obj.getOneLevelItem().getTableName());
-					bt.setParent(obj.getParent());
-					bt.setUsingState(0);
-					bt.getOneLevelItem().setGroupName(obj.getOneLevelItem().getGroupName());
-					basicItemDao.insert(bt);
+				if ("二进制型".equals(obj.getOneLevelItem().getDataType())) {
+					fileAssociatProper(obj);//生成文件伴生属性
 				} 
 			} else {//如果是编辑， 
 				BasicItem basicItem = basicItemDao.get(BasicItem.class, obj.getCode());
-				if ("文件型".equals(basicItem.getOneLevelItem().getDataType())) {
-					BasicItem pojo = basicItemDao.get(BasicItem.class, obj.getCode()+ "_P");
-					if (!"文件型".equals(obj.getOneLevelItem().getDataType())) {
-						basicItemDao.delete(pojo);
+				if ("二进制型".equals(basicItem.getOneLevelItem().getDataType())) {//之前是文件型
+					BasicItem btKey =basicItemDao.get(BasicItem.class, AttributeParter.getBytesKeyName(obj.getCode()));
+					BasicItem btSuffix = basicItemDao.get(BasicItem.class, AttributeParter.getBytesSuffixName(obj.getCode()));
+					BasicItem btKBSize = basicItemDao.get(BasicItem.class, AttributeParter.getBytesKBSizeName(obj.getCode()));
+				    BasicItem btName = basicItemDao.get(BasicItem.class, AttributeParter.getBytesNameName(obj.getCode()));
+					    
+					if (!"二进制型".equals(obj.getOneLevelItem().getDataType())) {
+						if (btKey != null) {
+                            basicItemDao.delete(btKey);
+                       }
+                       if (btSuffix != null) {
+                           basicItemDao.delete(btSuffix);                      
+                       }
+                       if (btKBSize != null) {
+                           basicItemDao.delete(btKBSize);
+                       }
+                       if (btName != null) {
+                           basicItemDao.delete(btName);
+                       }
 					} else {
-						pojo.setCnName(obj.getCnName() + "_P");
-						pojo.getOneLevelItem().setTableName(obj.getOneLevelItem().getTableName());
-						pojo.setEnName(obj.getEnName());
-						pojo.setParent(obj.getParent());
-						pojo.setUsingState(0);
-						pojo.getOneLevelItem().setGroupName(obj.getOneLevelItem().getGroupName());
+						btKey.setCnName(AttributeParter.getBytesKeyCNName(obj.getCnName()));
+						btKey.getOneLevelItem().setTableName(obj.getOneLevelItem().getTableName());
+						btKey.setEnName(obj.getEnName());
+						btKey.setParent(obj.getParent());
+						btKey.setUsingState(0);
+						btKey.getOneLevelItem().setGroupName(obj.getOneLevelItem().getGroupName());
+						btKey.getOneLevelItem().setDictParentId(0);
 						
-						basicItemDao.update(pojo);
+						btSuffix.setCnName(AttributeParter.getBytesSuffixCNName(obj.getCnName()));
+						btSuffix.getOneLevelItem().setTableName(obj.getOneLevelItem().getTableName());
+						btSuffix.setEnName(obj.getEnName());
+						btSuffix.setParent(obj.getParent());
+						btSuffix.setUsingState(0);
+						btSuffix.getOneLevelItem().setGroupName(obj.getOneLevelItem().getGroupName());
+						btSuffix.getOneLevelItem().setDictParentId(0);
+						
+						btKBSize.setCnName(AttributeParter.getBytesKBSizeCNName(obj.getCnName()));
+						btKBSize.getOneLevelItem().setTableName(obj.getOneLevelItem().getTableName());
+						btKBSize.setEnName(obj.getEnName());
+						btKBSize.setParent(obj.getParent());
+						btKBSize.setUsingState(0);
+						btKBSize.getOneLevelItem().setGroupName(obj.getOneLevelItem().getGroupName());
+						btKBSize.getOneLevelItem().setDictParentId(0);
+						
+						btName.setCnName(AttributeParter.getBytesNameCNName(obj.getCnName()));
+						btName.getOneLevelItem().setTableName(obj.getOneLevelItem().getTableName());
+						btName.setEnName(obj.getEnName());
+						btName.setParent(obj.getParent());
+						btName.setUsingState(0);
+						btName.getOneLevelItem().setGroupName(obj.getOneLevelItem().getGroupName());
+						btName.getOneLevelItem().setDictParentId(0);
+						
+						basicItemDao.update(btKey);
+						basicItemDao.update(btSuffix);
+						basicItemDao.update(btKBSize);
+						basicItemDao.update(btName);
 					}
 				} else {//之前不是文件型
-					if ("文件型".equals(obj.getOneLevelItem().getDataType())) {//现在是文件型
-						BasicItem bt = new BasicItem();
-						bt.setCode(obj.getCode() + "_P");
-						   bt.getOneLevelItem().setCode(obj.getCode() + "_P");
-						bt.setCnName(obj.getCnName() + "_P");
-						bt.setEnName(obj.getEnName());
-						bt.getOneLevelItem().setDataType("字符型");
-						bt.getOneLevelItem().setDataRange("32");
-						bt.getOneLevelItem().setTableName(obj.getOneLevelItem().getTableName());
-						bt.setParent(obj.getParent());
-						bt.setUsingState(0);
-						bt.getOneLevelItem().setGroupName(obj.getOneLevelItem().getGroupName());
-						basicItemDao.insert(bt);
+					if ("二进制型".equals(obj.getOneLevelItem().getDataType())) {//现在是文件型
+						fileAssociatProper(obj);//生成文件伴生属性
 					}
 				}
 				
 				sFactory.getCurrentSession().evict(basicItem);//session 关联两个相同id的对象， 解除一个	
 			}
-		}
 		
 		
 		//保存更改
@@ -381,9 +395,9 @@ public class BasicItemServiceImpl implements BasicItemService {
 		//如果是重复类型， 默认生成两个孩子， 
 		if ("重复类型".equals(obj.getOneLevelItem().getDataType()) && "add".equals(flag)) {
 			BasicItem childOne = new BasicItem();//多值属性编辑时间
-				childOne.setCode(obj.getCode() + "_ED");
-				   childOne.getOneLevelItem().setCode(obj.getCode() + "_ED");
-				childOne.setCnName("多值属性编辑时间");
+				childOne.setCode(AttributeParter.getRepeatEditTimeName(obj.getCode()));
+				   childOne.getOneLevelItem().setCode(AttributeParter.getRepeatEditTimeName(obj.getCode()));
+				childOne.setCnName(AttributeParter.getRepeatEditTimeCNName(""));
 				childOne.getOneLevelItem().setDataType("时间型");
 				childOne.getOneLevelItem().setDataRange("date");
 				childOne.getOneLevelItem().setTableName(obj.getOneLevelItem().getTableName());
@@ -392,9 +406,9 @@ public class BasicItemServiceImpl implements BasicItemService {
 				childOne.getOneLevelItem().setDictParentId(0);
 				childOne.getOneLevelItem().setGroupName(obj.getCode());
 			BasicItem childTwo = new BasicItem();//多值属性唯一编码
-				childTwo.setCode(obj.getCode() + "_P");
-				     childTwo.getOneLevelItem().setCode(obj.getCode() + "_P");
-				childTwo.setCnName("多值属性唯一编码");
+				childTwo.setCode(AttributeParter.getRepeatKeyName(obj.getCode()));
+				     childTwo.getOneLevelItem().setCode(AttributeParter.getRepeatKeyName(obj.getCode()));
+				childTwo.setCnName(AttributeParter.getRepeatKeyCNName(""));
 				childTwo.getOneLevelItem().setDataType("字符型");
 				childTwo.getOneLevelItem().setDataRange("32");
 				childTwo.getOneLevelItem().setTableName(obj.getOneLevelItem().getTableName());
@@ -407,6 +421,69 @@ public class BasicItemServiceImpl implements BasicItemService {
 		}
 		
 		
+	}
+
+	/**
+	 * 生成文件的伴生属性
+	 * @param obj
+	 */
+	public void fileAssociatProper(BasicItem obj) {
+		BasicItem btKey = new BasicItem();
+		btKey.setCode(AttributeParter.getBytesKeyName(obj.getCode()));
+		btKey.getOneLevelItem().setCode(AttributeParter.getBytesKeyName(obj.getCode()));
+		btKey.setCnName(AttributeParter.getBytesKeyCNName(obj.getCnName()));
+		btKey.setEnName(obj.getEnName());
+		btKey.getOneLevelItem().setDataType("字符型");
+		btKey.getOneLevelItem().setDataRange("32");
+		btKey.getOneLevelItem().setTableName(obj.getOneLevelItem().getTableName());
+		btKey.setParent(obj.getParent());
+		btKey.setUsingState(0);
+		btKey.getOneLevelItem().setGroupName(obj.getOneLevelItem().getGroupName());
+		btKey.getOneLevelItem().setDictParentId(0);
+   
+		BasicItem btSuffix = new BasicItem();
+		btSuffix.setCode(AttributeParter.getBytesSuffixName(obj.getCode()));
+		btSuffix.getOneLevelItem().setCode(AttributeParter.getBytesSuffixName(obj.getCode()));
+		btSuffix.setCnName(AttributeParter.getBytesSuffixCNName(obj.getCnName()));
+		btSuffix.setEnName(obj.getEnName());
+		btSuffix.getOneLevelItem().setDataType("字符型");
+		btSuffix.getOneLevelItem().setDataRange("32");
+		btSuffix.getOneLevelItem().setTableName(obj.getOneLevelItem().getTableName());
+		btSuffix.setParent(obj.getParent());
+		btSuffix.setUsingState(0);
+		btSuffix.getOneLevelItem().setGroupName(obj.getOneLevelItem().getGroupName());
+		btSuffix.getOneLevelItem().setDictParentId(0);
+   
+		BasicItem btKBSize = new BasicItem();
+		btKBSize.setCode(AttributeParter.getBytesKBSizeName(obj.getCode()));
+		btKBSize.getOneLevelItem().setCode(AttributeParter.getBytesKBSizeName(obj.getCode()));
+		btKBSize.setCnName(AttributeParter.getBytesKBSizeCNName(obj.getCnName()));
+		btKBSize.setEnName(obj.getEnName());
+		btKBSize.getOneLevelItem().setDataType("数字型小数");
+		btKBSize.getOneLevelItem().setDataRange("10,2");
+		btKBSize.getOneLevelItem().setTableName(obj.getOneLevelItem().getTableName());
+		btKBSize.setParent(obj.getParent());
+		btKBSize.setUsingState(0);
+		btKBSize.getOneLevelItem().setGroupName(obj.getOneLevelItem().getGroupName());
+		btKBSize.getOneLevelItem().setDictParentId(0);
+		
+		BasicItem btName = new BasicItem();
+		btName.setCode(AttributeParter.getBytesNameName(obj.getCode()));
+		btName.getOneLevelItem().setCode(AttributeParter.getBytesNameName(obj.getCode()));
+		btName.setCnName(AttributeParter.getBytesNameCNName(obj.getCnName()));
+		btName.setEnName(obj.getEnName());
+		btName.getOneLevelItem().setDataType("字符型");
+		btName.getOneLevelItem().setDataRange("128");
+		btName.getOneLevelItem().setTableName(obj.getOneLevelItem().getTableName());
+		btName.setParent(obj.getParent());
+		btName.setUsingState(0);
+		btName.getOneLevelItem().setGroupName(obj.getOneLevelItem().getGroupName());
+		btName.getOneLevelItem().setDictParentId(0);
+		
+		basicItemDao.insert(btKey);
+		basicItemDao.insert(btSuffix);
+		basicItemDao.insert(btKBSize);
+		basicItemDao.insert(btName);
 	}
 
 	@Override

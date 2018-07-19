@@ -616,7 +616,6 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 		    //Ajax.ajax('admin/node/basicItemNode/getDataType', '', function(data){		    	
 		    	//var data = data.dataType;
 		    	for(var i=0; i<dataTypeList.length; i++) {
-		    		alert(dataTypeList[i][0]);
 		    		if(dataTypeList[i][0] === "STRING") {
 		    			attrHtml += "<option value='"+dataTypeList[i][0]+"' selected>"+dataTypeList[i][1]+"</option>"; 	
 		    		}else {

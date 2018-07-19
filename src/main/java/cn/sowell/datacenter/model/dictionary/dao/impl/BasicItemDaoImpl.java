@@ -87,7 +87,7 @@ public class BasicItemDaoImpl implements BasicItemDao {
 
 	@Override
 	public List<BasicItem> getDataByPId(String parent) {
-		String sql = "SELECT * FROM t_c_basic_item WHERE c_parent=:parent AND c_code not like '%_P' AND c_code not like '%__ED' ORDER BY  CAST((reverse( - ( - reverse( substring_index( c_code, '_', 1 ) ) ) )) as SIGNED) ASC";
+		String sql = "SELECT * FROM t_c_basic_item WHERE c_parent=:parent AND c_code not like '%_P' AND c_code not like '%_ED' AND c_code not like '%_SF' AND c_code not like '%_SK' AND c_code not like '%_N' ORDER BY  CAST((reverse( - ( - reverse( substring_index( c_code, '_', 1 ) ) ) )) as SIGNED) ASC";
 		List<BasicItem> list = sFactory.getCurrentSession().createSQLQuery(sql).addEntity(BasicItem.class).setParameter("parent", parent).list();
 		return list;
 	}
@@ -101,7 +101,7 @@ public class BasicItemDaoImpl implements BasicItemDao {
 
 	@Override
 	public List getAttrByPidGroupName(String parent, String groupName) {
-		String sql = "SELECT * FROM	t_c_basic_item t	INNER JOIN t_c_onelevel_item o	on t.c_code=o.c_code  WHERE	t.c_parent =:parent 	AND o.c_group_name =:groupName 	AND t.c_code NOT LIKE '%_P'  ORDER BY  CAST((reverse( - ( - reverse( substring_index(t.c_code, '_', 1 ) ) ) )) as SIGNED) ASC";
+		String sql = "SELECT * FROM	t_c_basic_item t	INNER JOIN t_c_onelevel_item o	on t.c_code=o.c_code  WHERE	t.c_parent =:parent 	AND o.c_group_name =:groupName 	AND t.c_code NOT LIKE '%_P' AND t.c_code not like '%_ED' AND t.c_code not like '%_SF' AND t.c_code not like '%_SK' AND t.c_code not like '%_N'  ORDER BY  CAST((reverse( - ( - reverse( substring_index(t.c_code, '_', 1 ) ) ) )) as SIGNED) ASC";
 		List<BasicItem> list = sFactory.getCurrentSession().createSQLQuery(sql).addEntity(BasicItem.class).setParameter("parent", parent).setParameter("groupName", groupName).list();
 		return list;
 	}
@@ -411,7 +411,7 @@ public class BasicItemDaoImpl implements BasicItemDao {
 				+ "	AND o.c_data_type != '重复类型' "
 				+ "	AND o.c_data_type != '分组类型' "
 				+ "	AND t.c_using_state = '1' "
-				+ "	AND t.c_code NOT LIKE '%_P'  "
+				/*+ "	AND t.c_code NOT LIKE '%_P'  "*/
 				+ "	UNION "
 				+ "	SELECT 	t.c_code CODE, 	t.c_cn_name NAME "
 				+ " FROM 	t_c_basic_item t "

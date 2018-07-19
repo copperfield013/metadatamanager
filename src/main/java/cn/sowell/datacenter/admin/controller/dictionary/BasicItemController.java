@@ -376,6 +376,7 @@ public class BasicItemController {
 					response.setNoticeType(NoticeType.INFO);
 					return new ResponseEntity<AjaxPageResponse>(response, HttpStatus.OK);
 				} else {
+					
 					BasicItem basicItem = basicItemService.getBasicItem(id);
 					basicItemService.delete(basicItem);
 					
