@@ -33,10 +33,18 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 	    	$CPF.closeLoading();
 	    }, {async: false})
 	}
-		
+	function getDataType() {
+		 $CPF.showLoading();
+		    Ajax.ajax('admin/node/basicItemNode/getDataType', '', function(data){			    	
+		    var data = data.dataType;
+		    dataTypeList = data;
+		    $CPF.closeLoading();
+		  }, {async: false})
+	}
 	
 	$CPF.showLoading();
 	getNodeOpsType();
+	getDataType();
 	$CPF.closeLoading();
 	
 	
@@ -543,13 +551,13 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
             }
 			attrHtml += "</select>";
 			attrHtml += "<select class='data-type'>";            
-		    Ajax.ajax('admin/node/basicItemNode/getDataType', '', function(data){		    	
-		    	var data = data.dataType;
-		    	for(var i=0; i<data.length; i++) {
-		    		if(data[i] === "STRING") {
-		    			attrHtml += "<option value='"+data[i]+"' selected>"+data[i]+"</option>"; 	
+		   // Ajax.ajax('admin/node/basicItemNode/getDataType', '', function(data){		    	
+		    	//var data = data.dataType;
+		    	for(var i=0; i<dataTypeList.length; i++) {
+		    		if(dataTypeList[i][0] === "STRING") {
+		    			attrHtml += "<option value='"+dataTypeList[i][0]+"' selected>"+dataTypeList[i][1]+"</option>"; 	
 		    		}else {
-		    			attrHtml += "<option value='"+data[i]+"'>"+data[i]+"</option>"; 
+		    			attrHtml += "<option value='"+dataTypeList[i][0]+"'>"+dataTypeList[i][1]+"</option>"; 
 		    		}	            	        
 	            };
 	            attrHtml += "</select>";
@@ -574,7 +582,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 		         $html.find("select").css({"width":"15%","marginLeft":"16px"}).select2();		            
 		         addUnfold(el);
 		         $CPF.closeLoading();			    			    
-		    })
+		   // })
 	    });		                      
     };
     
@@ -605,13 +613,14 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
             }
 			attrHtml += "</select>";
 			attrHtml += "<select class='data-type'>";            
-		    Ajax.ajax('admin/node/basicItemNode/getDataType', '', function(data){		    	
-		    	var data = data.dataType;
+		    //Ajax.ajax('admin/node/basicItemNode/getDataType', '', function(data){		    	
+		    	//var data = data.dataType;
 		    	for(var i=0; i<data.length; i++) {
-		    		if(data[i] === "STRING") {
-		    			attrHtml += "<option value='"+data[i]+"' selected>"+data[i]+"</option>"; 	
+		    		alert(dataTypeList[i][0]);
+		    		if(dataTypeList[i][0] === "STRING") {
+		    			attrHtml += "<option value='"+dataTypeList[i][0]+"' selected>"+dataTypeList[i][1]+"</option>"; 	
 		    		}else {
-		    			attrHtml += "<option value='"+data[i]+"'>"+data[i]+"</option>"; 
+		    			attrHtml += "<option value='"+dataTypeList[i][0]+"'>"+dataTypeList[i][1]+"</option>"; 
 		    		}	            	        
 	            };
 	            attrHtml += "</select>";
@@ -638,7 +647,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 		        addUnfold(el);
 		        $CPF.closeLoading();			    
 			    
-		    })
+		   // })
 	    });		                      
     };
 
