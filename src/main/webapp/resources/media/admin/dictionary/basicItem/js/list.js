@@ -326,7 +326,10 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
 	    	$CPF.showLoading();
 	        $form.find("#dictParentId").remove();
 	        $form.find("#s2id_dictParentId").remove();
-	        $form.find("#span_enum").remove(); 	        
+	        $form.find("#span_enum").remove();
+	        $form.find("#refType").remove();
+	        $form.find("#refType_enum").remove(); 
+	        $form.find("#s2id_refType").remove();
             //选中  则显示下拉列表       
             Ajax.ajax('admin/dictionary/dictParentItem/getDictPitem', '', function(data) {
             	var dictParentId = $form.find("#edit_dictParentId").val();
@@ -397,6 +400,9 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
     			$form.find("#cn_dataRange").hide();
     		}
 	        
+    		 $form.find("#refType").remove();
+ 	        $form.find("#refType_enum").remove(); 
+ 	        $form.find("#s2id_refType").remove();
 	        $form.find("#dictParentId").remove();
 	        $form.find("#s2id_dictParentId").remove();
 	        $form.find("#span_enum").remove(); 	        
@@ -415,7 +421,11 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
 	    	$CPF.showLoading();
 	        $form.find("#dictParentId").remove();
 	        $form.find("#s2id_dictParentId").remove();
-	        $form.find("#span_enum").remove();  	        
+	        $form.find("#span_enum").remove();  
+	        
+	        $form.find("#refType").remove();
+	        $form.find("#refType_enum").remove(); 
+	        $form.find("#s2id_refType").remove();
             //选中  则显示下拉列表       	        
             Ajax.ajax('admin/dictionary/dictParentItem/getDictPitem', '', function(data) {
                 var dataArr = data.dictPitem;
@@ -522,6 +532,10 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
         $form.find("#dictParentId").remove();
         $form.find("#s2id_dictParentId").remove();
         $form.find("#span_enum").remove();
+        
+        $form.find("#refType").remove();
+        $form.find("#s2id_refType").remove();
+        $form.find("#refType_enum").remove();
         
         $newAdd.find("#add_comm_mes").html("");
         $newAdd.find("#add_comm_mes").html("添加属性");
@@ -1289,6 +1303,10 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
     	            }
     	        });
             } else if ("引用类型" == jsonData.oneLevelItem.dataType) {//如果是引用类型
+            	
+            	 $form1.find("#refType_enum").remove();
+	                $form1.find("#refType").remove();
+	                $form1.find("#s2id_refType").remove(); 
        		 //如果是引用类型， 则显示下拉列表
                 Ajax.ajax('admin/dictionary/basicItem/referenceTypeEntityList', '', function(data) {
                 	
@@ -1310,7 +1328,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
  	                $form1.find("#cn_dataRange").hide();
  	                $form1.find("#dataType").after(str);
  	                $form1.find("#s2id_dictParentId").remove(); 
- 	                
+ 	              
  	                $form1.find("#refType").css("width","30%").select2();
                     $CPF.closeLoading();
                 });            
@@ -1429,7 +1447,38 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
     	                $form1.find("#dictParentId").css("width","30%").select2();	
     	            }
     	        });
-    		} else {
+    		}else if ("引用类型" == jsonData.oneLevelItem.dataType) {//如果是引用类型
+            	
+           	 $form1.find("#refType_enum").remove();
+	                $form1.find("#refType").remove();
+	                $form1.find("#s2id_refType").remove(); 
+      		 //如果是引用类型， 则显示下拉列表
+               Ajax.ajax('admin/dictionary/basicItem/referenceTypeEntityList', '', function(data) {
+               	
+                   var entityList = data.entity;
+                   var str = "<span id=\"refType_enum\">引用实体：</span><select id=\"refType\" name=\"refType\">";
+               	for (var p in entityList) { //遍历json数组时，这么写p为索引，0,1
+                  
+               		if (jsonData.oneLevelItem.refType == entityList[p].code) {
+               			str = str + "<option selected=\"selected\" value=\"" + entityList[p].code + "\">" + entityList[p].cnName + "</option>"; 
+	                    } else {
+	                    	str = str + "<option value=\"" + entityList[p].code + "\">" + entityList[p].cnName + "</option>"; 
+	                    }
+                   }
+                   
+               	 str = str + "</select>";
+	                $form1.find("#span_enum").remove();
+	                $form1.find("#dictParentId").remove();
+	                $form1.find("#dataRange").hide();
+	                $form1.find("#cn_dataRange").hide();
+	                $form1.find("#dataType").after(str);
+	                $form1.find("#s2id_dictParentId").remove(); 
+	              
+	                $form1.find("#refType").css("width","30%").select2();
+                   $CPF.closeLoading();
+               });            
+       		 
+       	} else {
     			 $form1.find("#span_enum").remove();
                  $form1.find("#dictParentId").remove();
                  $form1.find("#dataRange").show();
@@ -1450,6 +1499,10 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
 	        	   	$form1.find("#dataRange").hide();
 	                $form1.find("#cn_dataRange").hide();
 	           } 
+ 	        if ("引用类型" == jsonData.oneLevelItem.dataType) {
+        	   	$form1.find("#dataRange").hide();
+                $form1.find("#cn_dataRange").hide();
+           } 
     		}   
     		
     		Ajax.ajax('admin/dictionary/basicItem/getDataType', '', function(data) {    	           
