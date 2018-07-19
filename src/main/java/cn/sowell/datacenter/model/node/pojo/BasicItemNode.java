@@ -108,6 +108,9 @@ public class BasicItemNode {
 	}
 
 	public String getDataType() {
+		if ("STRING".equals(this.dataType) &&"textarea".equals(this.controlType)) {
+			return "LSTRING";
+		}
 		return dataType;
 	}
 

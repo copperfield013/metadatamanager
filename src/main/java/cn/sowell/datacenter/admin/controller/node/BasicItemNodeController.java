@@ -4,8 +4,10 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -98,6 +100,10 @@ public class BasicItemNodeController {
 		 try {
 			 
 			 String dataType = basicItemNode.getDataType();
+			 
+			 if ("LSTRING".equals(dataType)) {
+					basicItemNode.setDataType("STRING");
+				} 
 			 
 			 InlineResponse200 inline = new InlineResponse200();
 			 //判断当前关系下只能有一个标签和一个实体
@@ -225,16 +231,25 @@ public class BasicItemNodeController {
         method = RequestMethod.POST)
 	public ResponseEntity<Object> getDataType() {
 		try {
-			List<String> list = new ArrayList<String>();
-			list.add(ValueTypeConstant.ABCT_NAME_BYTES);
-			list.add(ValueTypeConstant.ABCT_NAME_DATE);
-			list.add(ValueTypeConstant.ABCT_NAME_DATETIME);
-			list.add(ValueTypeConstant.ABCT_NAME_DOUBLE);
-			list.add(ValueTypeConstant.ABCT_NAME_FLOAT);
-			list.add(ValueTypeConstant.ABCT_NAME_INT);
-			list.add(ValueTypeConstant.ABCT_NAME_LONG);
-			list.add(ValueTypeConstant.ABCT_NAME_STRING);
-			list.add("LSTRING");
+			List list = new ArrayList();
+			String str1[] = {ValueTypeConstant.ABCT_NAME_BYTES,"文件型"};
+			String str2[] = {ValueTypeConstant.ABCT_NAME_DATE,"日期型"};
+			String str3[] = {ValueTypeConstant.ABCT_NAME_DATETIME,"时间型"};
+			String str4[] = {ValueTypeConstant.ABCT_NAME_DOUBLE,"数字型双精度"};
+			String str5[] = {ValueTypeConstant.ABCT_NAME_FLOAT,"数字型单精度"};
+			String str6[] = {ValueTypeConstant.ABCT_NAME_INT,"数字型"};
+			String str7[] = {ValueTypeConstant.ABCT_NAME_LONG,"数字型长"};
+			String str8[] = {ValueTypeConstant.ABCT_NAME_STRING,"字符型"};
+			String str9[] = {"LSTRING","字符型长"};
+			list.add(str1);
+			list.add(str2);
+			list.add(str3);
+			list.add(str4);
+			list.add(str5);
+			list.add(str6);
+			list.add(str7);
+			list.add(str8);
+			list.add(str9);
 			Map<String, Object> map = new HashMap<String, Object>();
 			map.put("dataType", list);
 			JSONObject jobj = new JSONObject(map);
