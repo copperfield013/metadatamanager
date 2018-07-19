@@ -57,6 +57,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 		Ajax.ajax('admin/node/basicItemNode/getChildNode', {
 			nodeId: nodeId
 		 }, function(data) {	
+			 //alert("111");
 			 var data = data.childNode;	
 			 var parentId = nodeId;
 			 var isAttrM = $(".collapse-header[data-id='"+nodeId+"']", $page).hasClass("more-attr-title");
@@ -74,7 +75,9 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 				 if(data[i].type == 1) {
 					 initAbc(abcattr, abcattr_code, id, name,opt, order, parent);
 				 }else if(data[i].type == 2) {	
-					 if(isAttrM) {						 
+					 
+					 if(isAttrM) {			
+						// alert("2222");
 						 initAttrM(abcattr,dataType, id, name, opt, order, parent);
 					 }else {
 						 initAttr(abcattr,dataType, id, name, opt, order, parent);
@@ -452,7 +455,8 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
             "<div class='label-bar attr  al-save' data-order='"+order+"' data-id='"+id+"'>" +
             "<input type='text' disabled class='edit-input text' value='"+name+"'>" +
             "<select disabled class='abc-attr'>"            
-            for(var i=0; i<data.length; i++) {            	
+            for(var i=0; i<data.length; i++) {    
+            	//alert(data[i].cnName + ":" + abcattr);
             	if(data[i].cnName == abcattr) {
             		attrHtml += "<option data-id='"+data[i].code+"' value='"+data[i].cnName+"' selected>"+data[i].cnName+"</option>";
             	}else {

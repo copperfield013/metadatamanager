@@ -75,7 +75,7 @@ public class BasicItemNode {
 	private String controlType;
 	
 	@OneToMany(fetch=FetchType.EAGER, mappedBy="parentId")
-	private List<BasicItemNode> btNodeList;
+	private List<BasicItemNode> btNodeList = new ArrayList<BasicItemNode>();
 	
 	/**
 	 * @return the btNodeList

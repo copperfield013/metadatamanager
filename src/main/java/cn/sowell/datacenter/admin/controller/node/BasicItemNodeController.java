@@ -97,6 +97,8 @@ public class BasicItemNodeController {
 	public ResponseEntity<InlineResponse200> saveOrUpdate(BasicItemNode basicItemNode) {
 		 try {
 			 
+			 String dataType = basicItemNode.getDataType();
+			 
 			 InlineResponse200 inline = new InlineResponse200();
 			 //判断当前关系下只能有一个标签和一个实体
 			 String relaNodeChil = "";
@@ -135,6 +137,9 @@ public class BasicItemNodeController {
 					} else if ("字符型".equals(basicItem.getOneLevelItem().getDataType())) {
 						if ("枚举".equals(basicItem.getOneLevelItem().getDataRange())) {
 							basicItemNode.setControlType("select");
+						} else if ("LSTRING".equals(dataType)) {
+							basicItemNode.setControlType("textarea");
+							basicItemNode.setDataType("STRING");
 						} else {
 							basicItemNode.setControlType("text");
 						} 
@@ -152,7 +157,10 @@ public class BasicItemNodeController {
 				}else {
 					if (basicItemNode.getType() == 3) {
 						basicItemNode.setControlType("label");
-					} else {
+					} else if ("LSTRING".equals(dataType)) {
+						basicItemNode.setControlType("textarea");
+						basicItemNode.setDataType("STRING");
+					}else {
 						basicItemNode.setControlType("text");
 					}
 				}
