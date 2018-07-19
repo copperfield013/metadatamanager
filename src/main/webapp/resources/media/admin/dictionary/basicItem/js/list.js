@@ -442,6 +442,33 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
                 $form.find("#cn_dataRange").hide();
                 $CPF.closeLoading();
             });           
+    	} else if("referenceType" == options.val()) {//如果是引用类型
+    		 //如果是引用类型， 则显示下拉列表
+	        $CPF.showLoading();
+	        $form.find("#dictParentId").remove();
+	        $form.find("#s2id_dictParentId").remove();
+	        $form.find("#span_enum").remove(); 
+	        
+	        $form.find("#refType").remove();
+	        $form.find("#refType_enum").remove(); 
+	        $form.find("#s2id_refType").remove();
+            //选中  则显示下拉列表       
+            Ajax.ajax('admin/dictionary/basicItem/referenceTypeEntityList', '', function(data) {
+            	
+                var entityList = data.entity;
+                var str = "<span id=\"refType_enum\">引用实体：</span><select id=\"refType\" name=\"refType\">";
+            	for (var p in entityList) { //遍历json数组时，这么写p为索引，0,1
+                    str = str + "<option value=\"" + entityList[p].code + "\">" + entityList[p].cnName + "</option>"; 
+                }
+                
+                str = str + "</select>";               
+                $form.find("#dataType").after(str);                
+                $form.find("#refType").css("width","30%").select2();
+                $form.find("#dataRange").val("32").hide();
+                $form.find("#cn_dataRange").hide();                 
+                $CPF.closeLoading();
+            });            
+    		 
     	} else {    		
     		var isAddBtn = $form.closest(".opera_more_child").prev("div").find(".pitch").hasClass("add_more_child");    		
     		 $form.find("#dataRange").show();
@@ -462,7 +489,11 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
     		
 	        $form.find("#dictParentId").remove();
 	        $form.find("#s2id_dictParentId").remove();
-	        $form.find("#span_enum").remove();    
+	        $form.find("#span_enum").remove();   
+	        
+	        $form.find("#refType").remove();
+	        $form.find("#refType_enum").remove(); 
+	        $form.find("#s2id_refType").remove();
 	        $CPF.closeLoading();
         }
     });
@@ -535,6 +566,10 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
         $form.find("#dictParentId").remove();
         $form.find("#s2id_dictParentId").remove();
         $form.find("#span_enum").remove(); 
+        
+        $form.find("#refType").remove();
+        $form.find("#refType_enum").remove(); 
+        $form.find("#s2id_refType").remove();
     });
     //点击确认， 添加一条二级属性
     $(".more_proper", $page).on("click", "#twoLevelAttr_but_confirm", function() {
@@ -1065,6 +1100,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
         var groupName = $form.find("#groupName").val();
         var parent = $form.find("#comm_parent").val();
         var description = $form.find("#description").val();
+        var refType = $form.find("#refType").val();
         if (typeof(dictParentId) == "undefined") {
             dictParentId = "";
         }
@@ -1081,7 +1117,8 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
                 dictParentId: dictParentId,
                 groupName: groupName,
                 parent: parent,
-                description:description
+                description:description,
+                refType:refType
             }, function(data) {
             	
             	 $(".opera_more_child").hide();
@@ -1253,16 +1290,6 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
     	        });
             } else if ("引用类型" == jsonData.oneLevelItem.dataType) {//如果是引用类型
        		 //如果是引用类型， 则显示下拉列表
-    	    	$CPF.showLoading();
-    	    	$form1.find("#dictParentId").remove();
-    	    	$form1.find("#s2id_dictParentId").remove();
-    	    	$form1.find("#span_enum").remove(); 	
-    	        
-    	    	$form1.find("#refType").remove();
-    	    	$form1.find("#s2id_refType").remove();
-    	    	$form1.find("#refType_enum").remove(); 
-    	       
-                //选中  则显示下拉列表       
                 Ajax.ajax('admin/dictionary/basicItem/referenceTypeEntityList', '', function(data) {
                 	
                     var entityList = data.entity;
@@ -1276,11 +1303,15 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
 	                    }
                     }
                     
-                    str = str + "</select>";               
-                    $form1.find("#dataType").after(str);                
-                    $form1.find("#refType").css("width","30%").select2();
-                    $form1.find("#dataRange").hide();
-                    $form1.find("#cn_dataRange").hide();                 
+                	 str = str + "</select>";
+ 	                $form1.find("#span_enum").remove();
+ 	                $form1.find("#dictParentId").remove();
+ 	                $form1.find("#dataRange").hide();
+ 	                $form1.find("#cn_dataRange").hide();
+ 	                $form1.find("#dataType").after(str);
+ 	                $form1.find("#s2id_dictParentId").remove(); 
+ 	                
+ 	                $form1.find("#refType").css("width","30%").select2();
                     $CPF.closeLoading();
                 });            
         		 

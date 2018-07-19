@@ -2156,7 +2156,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
         var $content = $(this).closest(".collapse-header")
             .siblings(".collapse-content");
         var isRelative = $(this).closest(".label-bar").hasClass("attr-relative");        
-        var needAjax = $content.hasClass("need-ajax");  //判断是否需要ajax获取数据            
+        var needAjax = $content.hasClass("need-ajax");  //判断是否需要ajax获取数据   
         var nodeId = $(this).closest(".collapse-header").attr("data-id");
         $(this).toggleClass("active");
         if ($content.hasClass("collapse-content-active")) {
