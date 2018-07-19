@@ -2,7 +2,7 @@
 seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF){
 	var $page = $("#operateEdit");	
 	var nodeId = $(".entity-title", $page).attr("data-id");	
-    alert(nodeId);
+    //alert(nodeId);
     
     $(function(){
    	 
@@ -41,7 +41,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 		$CPF.showLoading();
 		Ajax.ajax('admin/node/basicItemNode/getNodeOpsType', '', function(data){		    	
 	    	var data = data.nodeOpsType;
-	    	alert("lalal");
+	    	//alert("lalal");
 	    	nodePosType = data;
 	    	$CPF.closeLoading();
 	    }, {async: false})
@@ -2170,7 +2170,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
                 .addClass("collapse-content-active");
         }        
         if(needAjax) {
-        	alert("101010");
+        	//alert("101010");
         	getChild(nodeId, isRelative, bar);
         }
     })
