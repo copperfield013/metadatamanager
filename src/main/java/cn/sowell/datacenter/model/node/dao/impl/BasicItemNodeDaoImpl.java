@@ -82,7 +82,7 @@ public class BasicItemNodeDaoImpl implements BasicItemNodeDao {
 	}
 
 	@Override
-	public List<BasicItemNode> getChildByPid(String parentId) {
+	public List<BasicItemNode> getChildByPid(Integer parentId) {
 		String hql = " FROM BasicItemNode WHERE parentId=:parentId ORDER BY order ASC";
 		return	sFactory.getCurrentSession().createQuery(hql).setParameter("parentId", parentId).list();
 	}
@@ -119,7 +119,7 @@ public class BasicItemNodeDaoImpl implements BasicItemNodeDao {
 			String sql = "SELECT name from t_c_basic_item_node	WHERE parent_id is null AND type=1";
 			return sFactory.getCurrentSession().createSQLQuery(sql).list();
 		}else {
-			BasicItemNode pNode = get(BasicItemNode.class, Integer.parseInt(basicItemNode.getParentId()));
+			BasicItemNode pNode = get(BasicItemNode.class, basicItemNode.getParentId());
 			if (NodeType.ATTRGROUP.equals(NodeType.getNodeType(pNode.getType()))) {
 				String sql = "SELECT name from t_c_basic_item_node"
 						+ "	WHERE parent_id=:parentId "
@@ -163,7 +163,7 @@ public class BasicItemNodeDaoImpl implements BasicItemNodeDao {
 	}
 
 	@Override
-	public List<String> getNoteSort(String parentId) {
+	public List<String> getNoteSort(Integer parentId) {
 		String sql = "SELECT     CONCAT(\"UPDATE t_c_basic_item_node SET c_order=\",(@i\\:=@i - 1)*100,\" WHERE id=\", b.id)"
 				+ " FROM    t_c_basic_item_node b,    (SELECT   @i\\:=(SELECT  SUM(ct)    FROM   (SELECT "
 				+ "  (MAX(c_order) DIV 100)+1 ct   FROM     t_c_basic_item_node b    WHERE    b.parent_id=:parentId UNION SELECT "
@@ -180,7 +180,7 @@ public class BasicItemNodeDaoImpl implements BasicItemNodeDao {
 	}
 
 	@Override
-	public BasicItemNode getRelaNodeChil(String parentId, String id, Integer type) {
+	public BasicItemNode getRelaNodeChil(Integer parentId, String id, Integer type) {
 	String sql = "SELECT * FROM t_c_basic_item_node WHERE parent_id=:parentId AND type=:type AND id !=:id";
 				
 	return (BasicItemNode) sFactory.getCurrentSession().createSQLQuery(sql)
