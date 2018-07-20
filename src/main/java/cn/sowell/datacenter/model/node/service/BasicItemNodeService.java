@@ -1,5 +1,7 @@
 package cn.sowell.datacenter.model.node.service;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 import cn.sowell.copframe.dto.page.PageInfo;
@@ -29,6 +31,8 @@ public interface BasicItemNodeService {
 	 * @param demo
 	 */
 	void update(BasicItemNode basicItem);
+	
+	void insert(BasicItemNode basicItem);
 
 	/**
 	 * 从数据库中删除一个BasicItemNode对象
@@ -51,14 +55,14 @@ public interface BasicItemNodeService {
 	/**
 	 * 扩展语句
 	 */
-	public void excuExtend(String parentId);
+	public void excuExtend(Integer parentId);
 	
 	/**
 	 * 通过
 	 * @param nodeId
 	 * @return
 	 */
-	List<BasicItemNode> getChildNode(String nodeId);
+	List<BasicItemNode> getChildNode(Integer nodeId);
 	
 	/**
 	 * 判断当前父节点下有没有重复的名字
@@ -95,10 +99,17 @@ public interface BasicItemNodeService {
 	 * @param type
 	 * @return
 	 */
-	String getRelaNodeChil(String parentId, String id, Integer type);
+	String getRelaNodeChil(Integer parentId, String id, Integer type);
 	/**
 	 * 获取所有数据
 	 * @return
 	 */
 	List<BasicItemNode> getAllData() throws Exception;
+	
+	/**
+	 * 生成配置文件入口
+	 * @param file
+	 * @param btn
+	 */
+	void getConfigFile(File file, BasicItemNode btn) throws IOException;
 }
