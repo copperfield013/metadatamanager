@@ -1,29 +1,12 @@
 package cn.sowell.datacenter.model.node.pojo;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.Transient;
-
-import org.hibernate.annotations.NotFound;
-import org.hibernate.annotations.NotFoundAction;
-
-import com.abc.mapping.node.NodeType;
-
-import cn.sowell.datacenter.model.dictionary.pojo.DictionaryBasicItem;
-import cn.sowell.datacenter.utils.FileManager;
 import io.swagger.annotations.ApiModelProperty;
 
 @Entity
@@ -44,14 +27,14 @@ public class BasicItemNode {
 	@Column(name = "name")
 	private String name;
 
-	 @ApiModelProperty(value = "映射名称")
+	@ApiModelProperty(value = "映射名称")
 	@Column(name = "abcattr")
 	private String abcattr;
 	
 	@Column(name="abcattr_code")
 	private String abcattrCode;
 
-	 @ApiModelProperty(value = "数据类型")
+	@ApiModelProperty(value = "数据类型")
 	@Column(name = "data_type")
 	private String dataType;
 
@@ -68,28 +51,19 @@ public class BasicItemNode {
 
 	@ApiModelProperty(value = "父id")
 	@Column(name = "parent_id")
-	private String parentId;
+	private Integer parentId;
 	
 	@ApiModelProperty(value = "controlType")
 	@Column(name="c_control_type")
 	private String controlType;
 	
-	@OneToMany(fetch=FetchType.EAGER, mappedBy="parentId")
-	private List<BasicItemNode> btNodeList = new ArrayList<BasicItemNode>();
+	/* @OneToOne(fetch = FetchType.EAGER,cascade = {CascadeType.REFRESH})
+	 @JoinColumn(name = "abcattr_code")
+	 private BasicItem basicItem;*/
 	
-	/**
-	 * @return the btNodeList
-	 */
-	public List<BasicItemNode> getBtNodeList() {
-		return btNodeList;
-	}
-
-	/**
-	 * @param btNodeList the btNodeList to set
-	 */
-	public void setBtNodeList(List<BasicItemNode> btNodeList) {
-		this.btNodeList = btNodeList;
-	}
+	
+	/*@OneToMany(fetch=FetchType.LAZY, mappedBy="parentId")
+	private List<BasicItemNode> btNodeList = new ArrayList<BasicItemNode>();*/
 
 	public Integer getId() {
 		return id;
@@ -126,7 +100,7 @@ public class BasicItemNode {
 		return order;
 	}
 
-	public String getParentId() {
+	public Integer getParentId() {
 		return parentId;
 	}
 
@@ -162,18 +136,9 @@ public class BasicItemNode {
 		this.order = order;
 	}
 
-	public void setParentId(String parentId) {
+	public void setParentId(Integer parentId) {
 		this.parentId = parentId;
 	}
-
-	public String getAbcattrCode() {
-		return abcattrCode;
-	}
-
-	public void setAbcattrCode(String abcattrCode) {
-		this.abcattrCode = abcattrCode;
-	}
-	
 	/**
 	 * @return the controlType
 	 */
@@ -189,156 +154,17 @@ public class BasicItemNode {
 	}
 
 	/**
-	 * 生成配置文件
-	 * @param file
-	 * @throws IOException
+	 * @return the abcattrCode
 	 */
-	public void getConfigFile(File file) throws IOException {
-		String prefix = "  ";
-		String head = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
-		FileManager.writeFileContent(file, head);
-		head = "<ABC name=\""+this.getName()+"\" abcattr=\""+this.getAbcattr()+"\""+"\r\n"
-				+ "	 class=\"\" xmlns=\"http://www.w3school.com.cn\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">";
-		FileManager.writeFileContent(file, head);
-		
-		List<BasicItemNode> childNode = this.getBtNodeList();
-		for (BasicItemNode basicItemNode : childNode) {
-			createChild(basicItemNode, file, prefix);
-		}
-		
-		String endStr = "</ABC>";
-		FileManager.writeFileContent(file, endStr);
+	public String getAbcattrCode() {
+		return abcattrCode;
 	}
 
 	/**
-	 * 创建ABC
-	 * @param file
-	 * @param bn
-	 * @throws IOException
+	 * @param abcattrCode the abcattrCode to set
 	 */
-	private void createAbc(File file, BasicItemNode bn, String prefix) throws IOException {
-		String str = "";
-		str = prefix + "<ABC name=\""+bn.getName()+"\" abcattr=\""+bn.getAbcattr()+"\">"+"\r\n";
-		FileManager.writeFileContent(file, str);
-		
-		//获取ABC的所有直系孩子
-		List<BasicItemNode> childNode = bn.getBtNodeList();
-		for (BasicItemNode basicItemNode : childNode) {
-			createChild(basicItemNode, file, prefix);
-		}
-		String endStr = prefix + "</ABC>";
-		FileManager.writeFileContent(file, endStr);
-	}
-	
-	/**
-	 * 根据本身type, 进行分流操作
-	 * @param basicItemNode
-	 * @throws IOException 
-	 */
-	private void createChild(BasicItemNode basicItemNode, File file, String prefix) throws IOException {
-		prefix += "   ";
-		NodeType nodeType = NodeType.getNodeType(basicItemNode.getType());
-		switch (nodeType) {
-		case ABC://只可能是关系下的ABC了
-			createAbc(file, basicItemNode, prefix);
-			break;
-		case ATTRIBUTE:
-			createAttribute(basicItemNode, file, prefix);
-			break;
-		case LABEL:
-			createLabel(basicItemNode, file, prefix);
-			break;
-		case MULTIATTRIBUTE:
-			createMultiattribute(basicItemNode, file, prefix);
-			break;
-		case RELATION:
-			createRelation(basicItemNode, file, prefix);
-			break;
-		case ATTRGROUP:
-			createAttrgroup(basicItemNode, file,prefix);
-			break;
-		case NONO:
-			break;
-		default:
-			break;
-		}
+	public void setAbcattrCode(String abcattrCode) {
+		this.abcattrCode = abcattrCode;
 	}
 
-	/**
-	 * 生成关系
-	 * @param basicItemNode
-	 * @param file
-	 * @throws IOException 
-	 */
-	private void createRelation(BasicItemNode basicItemNode, File file, String prefix) throws IOException {
-		
-		String str = prefix + "<relation name=\""+basicItemNode.getName()+"\" ops=\""+basicItemNode.getOpt()+"\"> ";
-		FileManager.writeFileContent(file, str);
-		
-		List<BasicItemNode> childNode = basicItemNode.getBtNodeList();		
-		for (BasicItemNode bn2 : childNode) {
-			createChild(bn2, file, prefix);
-		}
-		str = prefix + "</relation>";
-		FileManager.writeFileContent(file, str);
-	}
-
-	/**
-	 * 创建属性组
-	 * @param basicItemNode
-	 * @param file
-	 * @throws IOException 
-	 */
-	private void createAttrgroup(BasicItemNode basicItemNode, File file, String prefix) throws IOException {
-		String str = prefix + "<attrgroup name=\""+basicItemNode.getName()+"\" ops=\""+basicItemNode.getOpt()+"\">";
-		FileManager.writeFileContent(file, str);
-		
-		List<BasicItemNode> childNode = basicItemNode.getBtNodeList();
-		for (BasicItemNode bn2 : childNode) {
-			createChild(bn2, file, prefix);
-		}
-		
-		str = prefix + "</attrgroup>";
-		FileManager.writeFileContent(file, str);
-	}
-
-	/**
-	 * 生成多值属性
-	 * @param basicItemNode
-	 * @param file
-	 * @throws IOException 
-	 */
-	private void createMultiattribute(BasicItemNode basicItemNode, File file, String prefix) throws IOException {
-		String str = prefix + "<multiattribute name=\""+basicItemNode.getName()+"\" abcattr=\""+basicItemNode.getAbcattr()+"\" ops=\""+basicItemNode.getOpt()+"\"> ";
-		FileManager.writeFileContent(file, str);
-		List<BasicItemNode> childNode = basicItemNode.getBtNodeList();	
-		for (BasicItemNode bn2 : childNode) {
-			createChild(bn2, file, prefix);
-		}
-		str = prefix + "</multiattribute>";	
-		FileManager.writeFileContent(file, str);
-	}
-
-	/**
-	 * 生成LABEL
-	 * @param basicItemNode
-	 * @param file
-	 * @throws IOException 
-	 */
-	private void createLabel(BasicItemNode basicItemNode, File file, String prefix) throws IOException {
-		String str = prefix + "<label name=\""+basicItemNode.getName()+"\" subdomain=\""+basicItemNode.getSubdomain()+"\"	ops=\""+basicItemNode.getOpt()+"\" />";
-		FileManager.writeFileContent(file, str);
-	}
-
-	/**
-	 * 生成普通属性
-	 * @param basicItemNode
-	 * @param file
-	 * @throws IOException 
-	 */
-	private void createAttribute(BasicItemNode basicItemNode, File file, String prefix) throws IOException {
-		String str = prefix + "<attribute name=\""+basicItemNode.getName()+"\" abcattr=\""+basicItemNode.getAbcattr()+"\"  datatype=\""+basicItemNode.getDataType()+"\" ops=\""+basicItemNode.getOpt()+"\" />";
-		FileManager.writeFileContent(file, str);
-	}
-	
 }
