@@ -1,7 +1,10 @@
 package cn.sowell.datacenter.model.node.service.impl;
 
+import java.io.File;
+import java.io.IOException;
 import java.math.BigInteger;
 import java.util.List;
+import java.util.Set;
 
 import javax.annotation.Resource;
 
@@ -15,6 +18,7 @@ import cn.sowell.datacenter.model.node.criteria.BasicItemNodeCriteria;
 import cn.sowell.datacenter.model.node.dao.BasicItemNodeDao;
 import cn.sowell.datacenter.model.node.pojo.BasicItemNode;
 import cn.sowell.datacenter.model.node.service.BasicItemNodeService;
+import cn.sowell.datacenter.utils.FileManager;
 
 import com.abc.mapping.node.NodeOpsType;
 import com.abc.mapping.node.NodeType;
@@ -79,7 +83,7 @@ public class BasicItemNodeServiceImpl implements BasicItemNodeService {
 					BasicItemNode btend = pchil.get(pchil.size()-1);
 					int order = btend.getOrder();
 					
-					List<BasicItemNode> childByPid = basicItemNodeDao.getChildByPid(String.valueOf(btn.getId()));
+					List<BasicItemNode> childByPid = basicItemNodeDao.getChildByPid(btn.getId());
 					for (BasicItemNode basicItemNode : childByPid) {
 						basicItemNode.setParentId(btn.getParentId());
 						//给孩子换父亲， 并把父亲的所有孩子重新排序
@@ -126,7 +130,7 @@ public class BasicItemNodeServiceImpl implements BasicItemNodeService {
 	}
 
 	@Override
-	public void excuExtend(String parentId) {
+	public void excuExtend(Integer parentId) {
 		List<String> noteSort = basicItemNodeDao.getNoteSort(parentId);
 		
 		for (String sql : noteSort) {
@@ -135,7 +139,7 @@ public class BasicItemNodeServiceImpl implements BasicItemNodeService {
 	}
 
 	@Override
-	public List<BasicItemNode> getChildNode(String nodeId) {
+	public List<BasicItemNode> getChildNode(Integer nodeId) {
 		return basicItemNodeDao.getChildByPid(nodeId);
 	}
 
@@ -237,7 +241,7 @@ public class BasicItemNodeServiceImpl implements BasicItemNodeService {
 
 	
 	@Override
-	public String getRelaNodeChil(String parentId, String id, Integer type) {
+	public String getRelaNodeChil(Integer parentId, String id, Integer type) {
 		BasicItemNode relaNodeChil = basicItemNodeDao.getRelaNodeChil(parentId, id, type);
 		if (relaNodeChil != null) {
 			return "true";
@@ -250,5 +254,159 @@ public class BasicItemNodeServiceImpl implements BasicItemNodeService {
 	public List<BasicItemNode> getAllData() throws Exception {
 		// TODO Auto-generated method stub
 		return basicItemNodeDao.getAllData();
+	}
+
+	@Override
+	public void getConfigFile(File file, BasicItemNode btn) throws IOException {
+		String prefix = "  ";
+		String head = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
+		FileManager.writeFileContent(file, head);
+		head = "<ABC name=\""+btn.getName()+"\" abcattr=\""+btn.getAbcattr()+"\""+"\r\n"
+				+ "	 class=\"\" xmlns=\"http://www.w3school.com.cn\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">";
+		FileManager.writeFileContent(file, head);
+		
+		List<BasicItemNode> btNodeList = basicItemNodeDao.getChildByPid(btn.getId());
+		for (BasicItemNode basicItemNode : btNodeList) {
+			createChild(basicItemNode, file, prefix);
+		}
+		
+		String endStr = "</ABC>";
+		FileManager.writeFileContent(file, endStr);
+	}
+	
+	/**
+	 * 创建ABC
+	 * @param file
+	 * @param bn
+	 * @throws IOException
+	 */
+	private void createAbc(File file, BasicItemNode bn, String prefix) throws IOException {
+		String str = "";
+		str = prefix + "<ABC name=\""+bn.getName()+"\" abcattr=\""+bn.getAbcattr()+"\">"+"\r\n";
+		FileManager.writeFileContent(file, str);
+		
+		//获取ABC的所有直系孩子
+		List<BasicItemNode> btNodeList = basicItemNodeDao.getChildByPid(bn.getId());
+		for (BasicItemNode basicItemNode : btNodeList) {
+			createChild(basicItemNode, file, prefix);
+		}
+		String endStr = prefix + "</ABC>";
+		FileManager.writeFileContent(file, endStr);
+	}
+	
+	/**
+	 * 根据本身type, 进行分流操作
+	 * @param basicItemNode
+	 * @throws IOException 
+	 */
+	private void createChild(BasicItemNode basicItemNode, File file, String prefix) throws IOException {
+		prefix += "   ";
+		NodeType nodeType = NodeType.getNodeType(basicItemNode.getType());
+		switch (nodeType) {
+		case ABC://只可能是关系下的ABC了
+			createAbc(file, basicItemNode, prefix);
+			break;
+		case ATTRIBUTE:
+			createAttribute(basicItemNode, file, prefix);
+			break;
+		case LABEL:
+			createLabel(basicItemNode, file, prefix);
+			break;
+		case MULTIATTRIBUTE:
+			createMultiattribute(basicItemNode, file, prefix);
+			break;
+		case RELATION:
+			createRelation(basicItemNode, file, prefix);
+			break;
+		case ATTRGROUP:
+			createAttrgroup(basicItemNode, file,prefix);
+			break;
+		case NONO:
+			break;
+		default:
+			break;
+		}
+	}
+
+	/**
+	 * 生成关系
+	 * @param basicItemNode
+	 * @param file
+	 * @throws IOException 
+	 */
+	private void createRelation(BasicItemNode basicItemNode, File file, String prefix) throws IOException {
+		
+		String str = prefix + "<relation name=\""+basicItemNode.getName()+"\" ops=\""+basicItemNode.getOpt()+"\"> ";
+		FileManager.writeFileContent(file, str);
+		
+		List<BasicItemNode> btNodeList = basicItemNodeDao.getChildByPid(basicItemNode.getId());
+		for (BasicItemNode bn2 : btNodeList) {
+			createChild(bn2, file, prefix);
+		}
+		str = prefix + "</relation>";
+		FileManager.writeFileContent(file, str);
+	}
+
+	/**
+	 * 创建属性组
+	 * @param basicItemNode
+	 * @param file
+	 * @throws IOException 
+	 */
+	private void createAttrgroup(BasicItemNode basicItemNode, File file, String prefix) throws IOException {
+		String str = prefix + "<attrgroup name=\""+basicItemNode.getName()+"\" ops=\""+basicItemNode.getOpt()+"\">";
+		FileManager.writeFileContent(file, str);
+		
+		List<BasicItemNode> btNodeList = basicItemNodeDao.getChildByPid(basicItemNode.getId());
+		for (BasicItemNode bn2 : btNodeList) {
+			createChild(bn2, file, prefix);
+		}
+		
+		str = prefix + "</attrgroup>";
+		FileManager.writeFileContent(file, str);
+	}
+
+	/**
+	 * 生成多值属性
+	 * @param basicItemNode
+	 * @param file
+	 * @throws IOException 
+	 */
+	private void createMultiattribute(BasicItemNode basicItemNode, File file, String prefix) throws IOException {
+		String str = prefix + "<multiattribute name=\""+basicItemNode.getName()+"\" abcattr=\""+basicItemNode.getAbcattr()+"\" ops=\""+basicItemNode.getOpt()+"\"> ";
+		FileManager.writeFileContent(file, str);
+		List<BasicItemNode> btNodeList = basicItemNodeDao.getChildByPid(basicItemNode.getId());
+		for (BasicItemNode bn2 : btNodeList) {
+			createChild(bn2, file, prefix);
+		}
+		str = prefix + "</multiattribute>";	
+		FileManager.writeFileContent(file, str);
+	}
+
+	/**
+	 * 生成LABEL
+	 * @param basicItemNode
+	 * @param file
+	 * @throws IOException 
+	 */
+	private void createLabel(BasicItemNode basicItemNode, File file, String prefix) throws IOException {
+		String str = prefix + "<label name=\""+basicItemNode.getName()+"\" subdomain=\""+basicItemNode.getSubdomain()+"\"	ops=\""+basicItemNode.getOpt()+"\" />";
+		FileManager.writeFileContent(file, str);
+	}
+
+	/**
+	 * 生成普通属性
+	 * @param basicItemNode
+	 * @param file
+	 * @throws IOException 
+	 */
+	private void createAttribute(BasicItemNode basicItemNode, File file, String prefix) throws IOException {
+		String str = prefix + "<attribute name=\""+basicItemNode.getName()+"\" abcattr=\""+basicItemNode.getAbcattr()+"\"  datatype=\""+basicItemNode.getDataType()+"\" ops=\""+basicItemNode.getOpt()+"\" />";
+		FileManager.writeFileContent(file, str);
+	}
+
+	@Override
+	public void insert(BasicItemNode basicItem) {
+		basicItemNodeDao.insert(basicItem);
 	}
 }
