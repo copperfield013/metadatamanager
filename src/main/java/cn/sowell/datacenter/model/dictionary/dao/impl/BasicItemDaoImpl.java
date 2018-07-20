@@ -423,11 +423,11 @@ public class BasicItemDaoImpl implements BasicItemDao {
 
 	@Override
 	public List<BasicItem> getEntityList(String leftRecordType) {
-		String sql = "SELECT 	* FROM 	t_c_basic_item t "
+		String sql = "SELECT 	t.* FROM 	t_c_basic_item t "
 				+ "	inner join t_c_onelevel_item o 	on t.c_code=o.c_code "
 				+ "WHERE 	t.c_using_state = '1' "
 				+ "	AND o.c_data_type = '记录类型' "
-				+ "	AND t.c_code IN ( SELECT right_record_type FROM t_c_record_relation_type WHERE left_record_type =: leftRecordType )";
+				+ "	AND t.c_code IN ( SELECT right_record_type FROM t_c_record_relation_type WHERE left_record_type =:leftRecordType )";
 		return  sFactory.getCurrentSession().createSQLQuery(sql).addEntity(BasicItem.class).setParameter("leftRecordType", leftRecordType).list();
 	}
 
