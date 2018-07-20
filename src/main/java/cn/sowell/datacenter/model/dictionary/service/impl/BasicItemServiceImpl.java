@@ -80,7 +80,7 @@ public class BasicItemServiceImpl implements BasicItemService {
 			
 			OneLevelItem oneLevelItem = bt.getOneLevelItem();
 			if (oneLevelItem != null) {
-				if ("重复类型".equals(bt.getOneLevelItem().getDataType())) {
+				if ("重复类型".equals(oneLevelItem.getDataType())) {
 					//bt 是重复类型， 在这里我要判断有没有二级属性
 					TowlevelattrMultiattrMapping oneByRelaMulAttr = tmms.getOneByRelaMulAttr(bt.getCode());
 					
@@ -93,7 +93,7 @@ public class BasicItemServiceImpl implements BasicItemService {
 					moreList.add(bt);
 					List<BasicItem> childList = basicItemDao.getDataByPId(bt.getParent() + "_"+ bt.getCode());
 					bt.setChildList(childList);
-				} else if ("分组类型".equals(bt.getOneLevelItem().getDataType())) {//分组数据
+				} else if ("分组类型".equals(oneLevelItem.getDataType())) {//分组数据
 					attrList.add(bt);
 					List childList = basicItemDao.getAttrByPidGroupName(bt.getParent(), bt.getCode());
 					bt.setChildList(childList);
