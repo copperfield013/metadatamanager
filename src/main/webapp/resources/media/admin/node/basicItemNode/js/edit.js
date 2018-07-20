@@ -40,7 +40,6 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 		$CPF.showLoading();
 		Ajax.ajax('admin/node/basicItemNode/getNodeOpsType', '', function(data){		    	
 	    	var data = data.nodeOpsType;
-	    	//alert("lalal");
 	    	nodePosType = data;
 	    	$CPF.closeLoading();
 	    }, {async: false})
@@ -70,7 +69,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
     //获取孩子的方法
 	function getChild(nodeId, isRelative, bar) {
 		$CPF.showLoading();
-		//alert(nodeId + "-" + isRelative + "-" + bar);
+		
 		Ajax.ajax('admin/node/basicItemNode/getChildNode', {
 			nodeId: nodeId
 		 }, function(data) {	
@@ -94,7 +93,6 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 				 }else if(data[i].type == 2) {	
 					 
 					 if(isAttrM) {			
-						// alert("2222");
 						 initAttrM(abcattr,dataType, id, name, opt, order, parent);
 					 }else {
 						 initAttr(abcattr,dataType, id, name, opt, order, parent);
