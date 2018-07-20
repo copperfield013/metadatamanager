@@ -51,7 +51,7 @@ public interface BasicItemNodeDao {
 	 * @param integer
 	 * @return
 	 */
-	List<BasicItemNode> getChildByPid(String parentId);
+	List<BasicItemNode> getChildByPid(Integer parentId);
 	
 	public void executeSql(String sql);
 
@@ -87,7 +87,7 @@ public interface BasicItemNodeDao {
 	 * @param parentId
 	 * @return
 	 */
-	List<String> getNoteSort(String parentId);
+	List<String> getNoteSort(Integer parentId);
 	
 	/**
 	 * 根据abc的名称 获取abc对象
@@ -96,7 +96,7 @@ public interface BasicItemNodeDao {
 	 */
 	BasicItemNode getAbc(String name);
 
-	BasicItemNode getRelaNodeChil(String parentId, String id, Integer type);
+	BasicItemNode getRelaNodeChil(Integer parentId, String id, Integer type);
 	
 	/**
 	 * 获取所有数据
