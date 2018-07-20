@@ -41,7 +41,7 @@ public class BasicItemDaoImpl implements BasicItemDao {
 		if(TextUtils.hasText(criteria.getCnName())){
 			sb.append(" AND b.c_cn_name like :cnName");
 		}
-		if(TextUtils.hasText(criteria.getOneLevelItem().getDataType())){
+		if(criteria.getOneLevelItem() !=null && TextUtils.hasText(criteria.getOneLevelItem().getDataType())){
 			sb.append(" AND o.c_data_type=:dataType");
 		}
 		sb.append(" ORDER BY c_order ASC");
@@ -58,7 +58,7 @@ public class BasicItemDaoImpl implements BasicItemDao {
 		if(TextUtils.hasText(criteria.getCnName())){
 			query.setParameter("cnName", criteria.getCnName());
 		}
-		if(TextUtils.hasText(criteria.getOneLevelItem().getDataType())){
+		if(criteria.getOneLevelItem() !=null && TextUtils.hasText(criteria.getOneLevelItem().getDataType())){
 			query.setParameter("dataType", criteria.getOneLevelItem().getDataType());
 		}
 		
