@@ -109,7 +109,7 @@ public class BasicItemNodeController {
 			 //判断当前关系下只能有一个标签和一个实体
 			 String relaNodeChil = "";
 			 if (basicItemNode.getParentId() != null) {
-				 BasicItemNode one = basicItemNodeService.getOne(Integer.parseInt(basicItemNode.getParentId()));
+				 BasicItemNode one = basicItemNodeService.getOne(basicItemNode.getParentId());
 				 if (NodeType.RELATION.equals(NodeType.getNodeType(one.getType()))) {//当前实体的父亲是关系节点
 					 if (basicItemNode.getId() == null) {
 						 relaNodeChil = basicItemNodeService.getRelaNodeChil(basicItemNode.getParentId(), "", basicItemNode.getType());
@@ -404,7 +404,7 @@ public class BasicItemNodeController {
         @ApiResponse(code = 400, message = "操作失败", response = String.class) })
     @RequestMapping(value = "/getChildNode",
         method = RequestMethod.POST)
-	public ResponseEntity<BasicItemNodes> getChildNode(String nodeId) {
+	public ResponseEntity<BasicItemNodes> getChildNode(Integer nodeId) {
 		try {
 			List<BasicItemNode> list = basicItemNodeService.getChildNode(nodeId);
 			BasicItemNodes btItemNodes = new BasicItemNodes();
@@ -422,8 +422,8 @@ public class BasicItemNodeController {
         @ApiResponse(code = 400, message = "操作失败", response = String.class) })
     @RequestMapping(value = "/nodeSort",
         method = RequestMethod.POST)
-   public ResponseEntity<String> nodeSort(String currentId, String beforeId, String afterId){
-		BasicItemNode current = basicItemNodeService.getOne(Integer.parseInt(currentId));
+   public ResponseEntity<String> nodeSort(Integer currentId, String beforeId, String afterId){
+		BasicItemNode current = basicItemNodeService.getOne(currentId);
 		 try {
 			basicItemNodeService.nodeSort(current, beforeId, afterId);
 		} catch (Exception e) {
@@ -457,7 +457,9 @@ public class BasicItemNodeController {
     	String fileName = bn.getName()+".xml";
     	File file = File.createTempFile(bn.getName(), ".xml");
 		//创建ABC配置文件
-		bn.getConfigFile(file);
+	//	bn.getConfigFile(file);
+		
+		basicItemNodeService.getConfigFile(file, bn);
        HttpHeaders headers = new HttpHeaders();  
        String downloadFileName = new String(fileName.getBytes("UTF-8"),"iso-8859-1");//设置编码
        headers.setContentDispositionFormData("attachment", downloadFileName);
@@ -488,8 +490,8 @@ public class BasicItemNodeController {
 	    	File file = File.createTempFile(bn.getName(), ".xml");
 	    	
 	    	//创建ABC配置文件
-			bn.getConfigFile(file);
-	    	
+			//bn.getConfigFile(file);
+			basicItemNodeService.getConfigFile(file, bn);
 			ModelAndView mv = new ModelAndView();
 			mv.addObject("file", FileUtils.readFileToString(file, "UTF-8"));
 			mv.setViewName(AdminConstants.JSP_NODE + "/basicItemNode/preview.jsp");
