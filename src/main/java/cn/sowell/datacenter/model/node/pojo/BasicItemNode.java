@@ -53,10 +53,6 @@ public class BasicItemNode {
 	@Column(name = "parent_id")
 	private Integer parentId;
 	
-	@ApiModelProperty(value = "controlType")
-	@Column(name="c_control_type")
-	private String controlType;
-	
 	/* @OneToOne(fetch = FetchType.EAGER,cascade = {CascadeType.REFRESH})
 	 @JoinColumn(name = "abcattr_code")
 	 private BasicItem basicItem;*/
@@ -82,9 +78,6 @@ public class BasicItemNode {
 	}
 
 	public String getDataType() {
-		if ("STRING".equals(this.dataType) &&"textarea".equals(this.controlType)) {
-			return "LSTRING";
-		}
 		return dataType;
 	}
 
@@ -138,19 +131,6 @@ public class BasicItemNode {
 
 	public void setParentId(Integer parentId) {
 		this.parentId = parentId;
-	}
-	/**
-	 * @return the controlType
-	 */
-	public String getControlType() {
-		return controlType;
-	}
-
-	/**
-	 * @param controlType the controlType to set
-	 */
-	public void setControlType(String controlType) {
-		this.controlType = controlType;
 	}
 
 	/**

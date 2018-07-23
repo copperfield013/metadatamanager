@@ -4,14 +4,11 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-
 import org.apache.commons.io.FileUtils;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -100,11 +97,6 @@ public class BasicItemNodeController {
 		 try {
 			 
 			 String dataType = basicItemNode.getDataType();
-			 
-			 if ("LSTRING".equals(dataType)) {
-					basicItemNode.setDataType("STRING");
-				} 
-			 
 			 InlineResponse200 inline = new InlineResponse200();
 			 //判断当前关系下只能有一个标签和一个实体
 			 String relaNodeChil = "";
@@ -127,48 +119,6 @@ public class BasicItemNodeController {
 			 } else if (check) {//重复了
 					inline.setState("fail");
 			} else {
-				
-				//c_control_type属性的维护
-				BasicItem basicItem = null;
-				if (basicItemNode.getAbcattrCode() != null) {
-					basicItem = basicItemService.getBasicItem(basicItemNode.getAbcattrCode());
-				}
-
-				if (basicItem != null && basicItem.getOneLevelItem() != null) {
-					if ("日期型".equals(basicItem.getOneLevelItem().getDataType())) {
-						basicItemNode.setControlType("date");
-					} else if ("时间型".equals(basicItem.getOneLevelItem().getDataType())) {
-						basicItemNode.setControlType("datetime");
-					} else if ("字符型".equals(basicItem.getOneLevelItem().getDataType())) {
-						if ("枚举".equals(basicItem.getOneLevelItem().getDataRange())) {
-							basicItemNode.setControlType("select");
-						} else if ("LSTRING".equals(dataType)) {
-							basicItemNode.setControlType("textarea");
-						} else {
-							basicItemNode.setControlType("text");
-						} 
-					} else if ("二进制型".equals(basicItem.getOneLevelItem().getDataType())) {
-						basicItemNode.setControlType("file");
-					} else if ("引用类型".equals(basicItem.getOneLevelItem().getDataType())) {
-						basicItemNode.setControlType("select");
-					} else {
-						if (basicItemNode.getType() == 3) {
-							basicItemNode.setControlType("label");
-						} else {
-							basicItemNode.setControlType("text");
-						}
-					}
-				}else {
-					if (basicItemNode.getType() == 3) {
-						basicItemNode.setControlType("label");
-					} else if ("LSTRING".equals(dataType)) {
-						basicItemNode.setControlType("textarea");
-						basicItemNode.setDataType("STRING");
-					}else {
-						basicItemNode.setControlType("text");
-					}
-				}
-				
 				basicItemNodeService.saveOrUpdate(basicItemNode);
 				inline.setNode(basicItemNode);
 				inline.setState("success");
@@ -238,7 +188,7 @@ public class BasicItemNodeController {
 			String str6[] = {ValueTypeConstant.ABCT_NAME_INT,"数字型"};
 			String str7[] = {ValueTypeConstant.ABCT_NAME_LONG,"数字型长"};
 			String str8[] = {ValueTypeConstant.ABCT_NAME_STRING,"字符型"};
-			String str9[] = {"LSTRING","字符型长"};
+			String str9[] = {ValueTypeConstant.ABCT_NAME_STRING_LONG,"字符型长"};
 			list.add(str1);
 			list.add(str2);
 			list.add(str3);
