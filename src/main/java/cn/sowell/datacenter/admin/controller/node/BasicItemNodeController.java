@@ -133,9 +133,8 @@ public class BasicItemNodeController {
 				if (basicItemNode.getAbcattrCode() != null) {
 					basicItem = basicItemService.getBasicItem(basicItemNode.getAbcattrCode());
 				}
-				
+
 				if (basicItem != null && basicItem.getOneLevelItem() != null) {
-					
 					if ("日期型".equals(basicItem.getOneLevelItem().getDataType())) {
 						basicItemNode.setControlType("date");
 					} else if ("时间型".equals(basicItem.getOneLevelItem().getDataType())) {
@@ -145,7 +144,6 @@ public class BasicItemNodeController {
 							basicItemNode.setControlType("select");
 						} else if ("LSTRING".equals(dataType)) {
 							basicItemNode.setControlType("textarea");
-							basicItemNode.setDataType("STRING");
 						} else {
 							basicItemNode.setControlType("text");
 						} 

@@ -66,6 +66,14 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
     //获取孩子的方法   entityId: 此为实体id
 	function getChild(nodeId, isRelative, bar, entityId) {
 		$CPF.showLoading();
+		
+		//获取当前实体下， 所有的多值属性本省
+		var repeatList;
+		Ajax.ajax('admin/node/basicItemNode/getRepeat', {
+			entityId: entityId
+		}, function(data) {			
+			repeatList = data.repeat;	
+		
 		//获取当前实体下，所有的普通属性和二级属性
 		Ajax.ajax('admin/node/basicItemNode/getComm?entityId', {
 			entityId: entityId
@@ -108,7 +116,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 				 }else if(data[i].type == 3) {	
 					 initTag(subdomain,abcattrCode,id,name,opt,order,parent, isRelative);
 				 }else if(data[i].type == 4) {
-					 initMoreAttr(abcattrCode,abcattr, dataType, id, name, opt, order, parent);
+					 initMoreAttr(abcattrCode,abcattr, dataType, id, name, opt, order, parent,repeatList);
 				 }else if(data[i].type == 5) {
 					 initRelative(abcattr, abcattrCode, id, name,opt, order, parent);
 				 }else if(data[i].type == 6) {
@@ -122,6 +130,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 			 }				 
 			 $CPF.closeLoading();
 	    }, {async: false});	 
+		})
 		})
 	})
 }
@@ -616,13 +625,13 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
     }
     
     //多值属性初始化方法
-    function initMoreAttr(abcattrCode,abcattr,dataType,id,name,opt,order,parent) {    
+    function initMoreAttr(abcattrCode,abcattr,dataType,id,name,opt,order,parent,repeatList) {    
     	var entityId = $(".entity_attr.active", $page).attr("data-code");     	
         var dragWrapLen = $(".dragEdit-wrap").length + 1 ;        
-		Ajax.ajax('admin/node/basicItemNode/getRepeat?entityId', {
-			entityId: abcattrCode
-		}, function(data) {			
-			var data = data.repeat;			
+		//Ajax.ajax('admin/node/basicItemNode/getRepeat?entityId', {
+		//	entityId: abcattrCode
+		//}, function(data) {			
+		//	var data = data.repeat;			
             var moreAttrHtml = "<li class='more-attr clear-fix'>" +
             "<div class='more-attr-title more-attr collapse-header' data-abcattrCode='"+abcattrCode+"' data-order='"+order+"' data-id='"+id+"'>" +
             "<div class='icon-label more-attr'>" +
@@ -632,12 +641,12 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
             "<div class='label-bar more-attr'>" +
             "<input type='text' disabled class='edit-input text' value='"+name+"'>" +
             "<select disabled class='abc-attr'>"            
-            for(var i=0; i<data.length; i++) {
+            for(var i=0; i<repeatList.length; i++) {
             	
-            	if(data[i].code == abcattrCode) {            		
-            		moreAttrHtml += "<option data-id='"+data[i].code+"' value='"+data[i].cnName+"' selected>"+data[i].cnName+"</option>"; 
+            	if(repeatList[i].code == abcattrCode) {            		
+            		moreAttrHtml += "<option data-id='"+repeatList[i].code+"' value='"+repeatList[i].cnName+"' selected>"+repeatList[i].cnName+"</option>"; 
             	}else {            		
-            		moreAttrHtml += "<option data-id='"+data[i].code+"' value='"+data[i].cnName+"'>"+data[i].cnName+"</option>"; 
+            		moreAttrHtml += "<option data-id='"+repeatList[i].code+"' value='"+repeatList[i].cnName+"'>"+repeatList[i].cnName+"</option>"; 
             	}            	               
             }           
             moreAttrHtml += "</select>";           
@@ -664,7 +673,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 		   var $html = $(moreAttrHtml).prependTo($(parent));		   
 		   $html.find("select").css({"width":"15%","marginLeft":"16px"}).select2();
 		   drag($(".dragEdit-wrap").length);			    		   
-	    }, {async: false});                                
+	   // }, {async: false});                                
     }
 
     //关系初始化方法
