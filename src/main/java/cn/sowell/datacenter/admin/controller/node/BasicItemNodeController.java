@@ -292,11 +292,16 @@ public class BasicItemNodeController {
         method = RequestMethod.POST)
 	public ResponseEntity<InlineResponse2001> getRepeatChild(String repeatId) {
         try {
+        	
+        	List<BasicItem> list = null;
         	BasicItem repeat = basicItemService.getBasicItem(repeatId);
-    		BasicItemCriteria criteria = new BasicItemCriteria();
-    		criteria.setParent(repeat.getParent() + "_" + repeatId);
-    		criteria.setUsingState(1);
-    		List<BasicItem> list = basicItemService.queryList(criteria);
+        	if (repeat != null) {
+        		BasicItemCriteria criteria = new BasicItemCriteria();
+        		criteria.setParent(repeat.getParent() + "_" + repeatId);
+        		criteria.setUsingState(1);
+        		list = basicItemService.queryList(criteria);
+        	}
+    		
     		InlineResponse2001 inline = new InlineResponse2001();
     		inline.repeatChild(list);
             return new ResponseEntity<InlineResponse2001>(inline, HttpStatus.OK);
