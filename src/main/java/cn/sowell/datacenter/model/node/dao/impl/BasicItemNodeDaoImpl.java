@@ -38,10 +38,10 @@ public class BasicItemNodeDaoImpl implements BasicItemNodeDao {
 					.setParam("name", "%" + criteria.getName() + "%");
 		}
 		
-		if(TextUtils.hasText(criteria.getAbcattr())){
+		/*if(TextUtils.hasText(criteria.getAbcattr())){
 			dQuery.appendCondition(" and b.abcattr like :abcattr")
 					.setParam("abcattr", "%" + criteria.getAbcattr() + "%");
-		}
+		}*/
 		
 		Query countQuery = dQuery.createQuery(sFactory.getCurrentSession(), false, new WrapForCountFunction());
 		Integer count = FormatUtils.toInteger(countQuery.uniqueResult());

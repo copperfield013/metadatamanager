@@ -93,8 +93,13 @@ public class BasicItemNodeController {
         @ApiResponse(code = 401, message = "操作失败", response = String.class) })
     @RequestMapping(value = "/saveOrUpdate",
         method = RequestMethod.POST)
-	public ResponseEntity<InlineResponse200> saveOrUpdate(BasicItemNode basicItemNode) {
-		 try {
+	public ResponseEntity<InlineResponse200> saveOrUpdate(BasicItemNode basicItemNode, String abcattrCode) {
+		 try { 
+			 BasicItem basicItem = new BasicItem();
+			 basicItem.setCode(abcattrCode);
+			 if (abcattrCode != null) {
+				 basicItemNode.setBasicItem(basicItem);
+			 }
 			 
 			 String dataType = basicItemNode.getDataType();
 			 InlineResponse200 inline = new InlineResponse200();
@@ -342,7 +347,7 @@ public class BasicItemNodeController {
         method = RequestMethod.POST)
 	public ModelAndView edit(String nodeId) {
 		BasicItemNode btNode = basicItemNodeService.getOne(Integer.parseInt(nodeId));
-		BasicItem basicItem = basicItemService.getBasicItem(btNode.getAbcattrCode());
+		BasicItem basicItem = btNode.getBasicItem();
 		ModelAndView mv = new ModelAndView();
 		mv.addObject("btNode", btNode);
 		mv.addObject("basicItem", basicItem);
@@ -363,7 +368,8 @@ public class BasicItemNodeController {
 			BasicItemNodes btItemNodes = new BasicItemNodes();
 			btItemNodes.childNode(list);
 			return new ResponseEntity<BasicItemNodes>(btItemNodes, HttpStatus.OK);
-        } catch (Exception e) {                
+        } catch (Exception e) {  
+        	e.printStackTrace();
             return new ResponseEntity<BasicItemNodes>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 	}
@@ -426,8 +432,6 @@ public class BasicItemNodeController {
        return new ResponseEntity<byte[]>(readFileToByteArray,    
                headers, HttpStatus.OK);  
     }
-    
-    
     
     @ApiOperation(value = "文件预览", nickname = "preview", notes = "文件预览", response = ModelAndView.class, tags={ "configurationFiles", })
     @ApiResponses(value = { 

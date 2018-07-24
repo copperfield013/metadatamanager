@@ -17,13 +17,13 @@
 		
         <div class="entity-edit-wrap active">
             <!-- 实体标题:begin -->
-            <div class="entity-title collapse-header al-save need-ajax" data-abcattrCode="${btNode.abcattrCode }" data-order="${btNode.order}" data-id="${btNode.id}">
+            <div class="entity-title collapse-header al-save need-ajax" data-abcattrCode="${btNode.basicItem.code}" data-order="${btNode.order}" data-id="${btNode.id}">
                 <div class="icon-label-master">
                     <i class="icon-root icon"></i>
                     <span class="text">ABC</span>
                 </div>
                 <input name="name" disabled type="text" class="edit-input" value="${btNode.name}">
-                <span class="entity-only-title">${btNode.abcattr}</span>
+                <span class="entity-only-title">${btNode.basicItem.cnName}</span>
                 <select disabled class='node-ops-type' data-val='${btNode.opt}'>
                 	
                 </select>

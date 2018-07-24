@@ -1432,7 +1432,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
         		$attrGroupBar.closest("li.attr-group").remove();
         	};
     	}    
-    	if($attrGroupDelete.hasClass("al-save")) {
+    	if($attrGroupBar.hasClass("al-save")) {
     		deleteAjax(id, isDelChil, callback);	
     	}else {
     		callback();

@@ -261,7 +261,7 @@ public class BasicItemNodeServiceImpl implements BasicItemNodeService {
 		String prefix = "  ";
 		String head = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
 		FileManager.writeFileContent(file, head);
-		head = "<ABC name=\""+btn.getName()+"\" abcattr=\""+btn.getAbcattr()+"\""+"\r\n"
+		head = "<ABC name=\""+btn.getName()+"\" abcattr=\""+btn.getBasicItem().getCnName()+"\""+"\r\n"
 				+ "	 class=\"\" xmlns=\"http://www.w3school.com.cn\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">";
 		FileManager.writeFileContent(file, head);
 		
@@ -282,7 +282,7 @@ public class BasicItemNodeServiceImpl implements BasicItemNodeService {
 	 */
 	private void createAbc(File file, BasicItemNode bn, String prefix) throws IOException {
 		String str = "";
-		str = prefix + "<ABC name=\""+bn.getName()+"\" abcattr=\""+bn.getAbcattr()+"\">"+"\r\n";
+		str = prefix + "<ABC name=\""+bn.getName()+"\" abcattr=\""+bn.getBasicItem().getCnName()+"\">"+"\r\n";
 		FileManager.writeFileContent(file, str);
 		
 		//获取ABC的所有直系孩子
@@ -373,7 +373,7 @@ public class BasicItemNodeServiceImpl implements BasicItemNodeService {
 	 * @throws IOException 
 	 */
 	private void createMultiattribute(BasicItemNode basicItemNode, File file, String prefix) throws IOException {
-		String str = prefix + "<multiattribute name=\""+basicItemNode.getName()+"\" abcattr=\""+basicItemNode.getAbcattr()+"\" ops=\""+basicItemNode.getOpt()+"\"> ";
+		String str = prefix + "<multiattribute name=\""+basicItemNode.getName()+"\" abcattr=\""+basicItemNode.getBasicItem().getCnName()+"\" ops=\""+basicItemNode.getOpt()+"\"> ";
 		FileManager.writeFileContent(file, str);
 		List<BasicItemNode> btNodeList = basicItemNodeDao.getChildByPid(basicItemNode.getId());
 		for (BasicItemNode bn2 : btNodeList) {
@@ -401,7 +401,7 @@ public class BasicItemNodeServiceImpl implements BasicItemNodeService {
 	 * @throws IOException 
 	 */
 	private void createAttribute(BasicItemNode basicItemNode, File file, String prefix) throws IOException {
-		String str = prefix + "<attribute name=\""+basicItemNode.getName()+"\" abcattr=\""+basicItemNode.getAbcattr()+"\"  datatype=\""+basicItemNode.getDataType()+"\" ops=\""+basicItemNode.getOpt()+"\" />";
+		String str = prefix + "<attribute name=\""+basicItemNode.getName()+"\" abcattr=\""+basicItemNode.getBasicItem().getCnName()+"\"  datatype=\""+basicItemNode.getDataType()+"\" ops=\""+basicItemNode.getOpt()+"\" />";
 		FileManager.writeFileContent(file, str);
 	}
 

@@ -1,12 +1,21 @@
 package cn.sowell.datacenter.model.node.pojo;
 
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
+
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
+
+import cn.sowell.datacenter.model.dictionary.pojo.BasicItem;
 import io.swagger.annotations.ApiModelProperty;
 
 @Entity
@@ -27,12 +36,12 @@ public class BasicItemNode {
 	@Column(name = "name")
 	private String name;
 
-	@ApiModelProperty(value = "映射名称")
+	/*@ApiModelProperty(value = "映射名称")
 	@Column(name = "abcattr")
-	private String abcattr;
+	private String abcattr;*/
 	
-	@Column(name="abcattr_code")
-	private String abcattrCode;
+	/*@Column(name="abcattr_code")
+	private String abcattrCode;*/
 
 	@ApiModelProperty(value = "数据类型")
 	@Column(name = "data_type")
@@ -53,10 +62,10 @@ public class BasicItemNode {
 	@Column(name = "parent_id")
 	private Integer parentId;
 	
-	/* @OneToOne(fetch = FetchType.EAGER,cascade = {CascadeType.REFRESH})
+	 @NotFound(action=NotFoundAction.IGNORE)
+	 @OneToOne(fetch = FetchType.EAGER,cascade = {CascadeType.REFRESH})
 	 @JoinColumn(name = "abcattr_code")
-	 private BasicItem basicItem;*/
-	
+	 private BasicItem basicItem;
 	
 	/*@OneToMany(fetch=FetchType.LAZY, mappedBy="parentId")
 	private List<BasicItemNode> btNodeList = new ArrayList<BasicItemNode>();*/
@@ -71,10 +80,6 @@ public class BasicItemNode {
 
 	public String getName() {
 		return name;
-	}
-
-	public String getAbcattr() {
-		return abcattr;
 	}
 
 	public String getDataType() {
@@ -109,10 +114,6 @@ public class BasicItemNode {
 		this.name = name;
 	}
 
-	public void setAbcattr(String abcattr) {
-		this.abcattr = abcattr;
-	}
-
 	public void setDataType(String dataType) {
 		this.dataType = dataType;
 	}
@@ -134,17 +135,16 @@ public class BasicItemNode {
 	}
 
 	/**
-	 * @return the abcattrCode
+	 * @return the basicItem
 	 */
-	public String getAbcattrCode() {
-		return abcattrCode;
+	public BasicItem getBasicItem() {
+		return basicItem;
 	}
 
 	/**
-	 * @param abcattrCode the abcattrCode to set
+	 * @param basicItem the basicItem to set
 	 */
-	public void setAbcattrCode(String abcattrCode) {
-		this.abcattrCode = abcattrCode;
+	public void setBasicItem(BasicItem basicItem) {
+		this.basicItem = basicItem;
 	}
-
 }

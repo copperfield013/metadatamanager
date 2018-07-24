@@ -6,8 +6,8 @@
 			<div class="form-group">
 				<label for="name">name</label>
 				<input type="text" class="form-control" name="name" value="${criteria.name }" />
-				<label for="name">abcattr</label>
-				<input type="text" class="form-control" name="abcattr" value="${criteria.abcattr }" />
+				<%-- <label for="name">abcattr</label>
+				<input type="text" class="form-control" name="abcattr" value="${criteria.abcattr }" /> --%>
 			</div>
 			<button type="submit" class="btn btn-default">查询</button>
 			<a class="btn btn-primary tab" href="admin/node/basicItemNode/operate" title="创建" target="dictMapping_add" >创建</a>
@@ -28,7 +28,7 @@
 					<tr>
 						<td>${i.index + 1 }</td>
 						<td>${item.name }</td>
-						<td>${item.abcattr }</td>
+						<td>${item.basicItem.cnName }</td>
 						<td>
 							<a title="预览" nodeId="${item.id }" id="preview" href="javascript:;">预览</a>
 							<a id="download" nodeId="${item.id }" href="javascript:;" >下载</a>
