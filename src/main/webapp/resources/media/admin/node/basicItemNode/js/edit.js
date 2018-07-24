@@ -418,12 +418,11 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 			 nest = "repeat"
 		 }
     	var abcHtml = "<li class='entity-ch-wrap "+nest+"'>" +
-			        "<div class='attr-abc-title collapse-header'data-abcattrCode='"+abcattrCode+"'  data-order='"+order+"' data-id='"+id+"'>";
-					 if(abcattrCode=="") {
-						 abcHtml=abcHtml+"<div style='background-color: red;' class='icon-label abc'>";
-				    } else {
-				    	abcHtml=abcHtml+"<div class='icon-label abc'>";
-				    }
+			        "<div class='attr-abc-title collapse-header'data-abcattrCode='"+abcattrCode+"'  data-order='"+order+"' data-id='"+id+"'>"
+    				+"<div class='icon-label abc'>";
+					if(abcattrCode=="") {
+						abcHtml = abcHtml +  "<i class='icon icon-error-cross'></i>";
+					} 
     	 			abcHtml = abcHtml +  "<i class='icon icon-abc'></i><span class='text'>ABC</span>" +
 			        "</div>" +
 			        "<div class='label-bar abc'>" +
@@ -455,11 +454,10 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
     
     //普通属性初始化方法
     function initAttr(abcattr,abcattrCode,dataType,id,name,opt,order,parent,commList) {  
-			var attrHtml = "<li class='add-attr clear-fix'>";
+			var attrHtml = "<li class='add-attr clear-fix'>"
+				+"<div class='icon-label attr'>";
             if(abcattrCode=="") {
-            	 attrHtml=attrHtml+"<div style='background-color: red;' class='icon-label attr'>";
-            } else {
-            	 attrHtml=attrHtml+"<div class='icon-label attr'>";
+            	attrHtml=attrHtml+"<i class='icon icon-error-cross'></i>";
             }
             attrHtml=attrHtml+"<i class='icon icon-attr'></i>" +
             "<span class='text'>属性</span>" +
@@ -513,11 +511,10 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 			.find(".abc-attr")
 			.find("option:selected")
 			.attr("data-id");
-			var attrHtml = "<li class='add-attr clear-fix'>";
+			var attrHtml = "<li class='add-attr clear-fix'>"
+				+ "<div class='icon-label attr'>";
 			 if(abcattrCode=="") {
-				 attrHtml=attrHtml+"<div style='background-color: red;' class='icon-label attr'>";
-		    } else {
-		    	 attrHtml=attrHtml+ "<div class='icon-label attr'>";
+				 attrHtml = attrHtml+"<i class='icon icon-error-cross'></i>";
 		    }
 			 attrHtml = attrHtml+"<i class='icon icon-attr'></i>" +
             "<span class='text'>属性</span>" +
@@ -664,13 +661,11 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
     	var entityId = $(".entity_attr.active", $page).attr("data-code");     	
         var dragWrapLen = $(".dragEdit-wrap").length + 1 ;        
             var moreAttrHtml = "<li class='more-attr clear-fix'>" +
-            "<div class='more-attr-title more-attr collapse-header' data-abcattrCode='"+abcattrCode+"' data-order='"+order+"' data-id='"+id+"'>";
+            "<div class='more-attr-title more-attr collapse-header' data-abcattrCode='"+abcattrCode+"' data-order='"+order+"' data-id='"+id+"'>"
+            + "<div class='icon-label more-attr'>";
             if(abcattrCode=="") {
-            	moreAttrHtml=moreAttrHtml+"<div style='background-color: red;' class='icon-label more-attr'>";
-		    } else {
-		    	moreAttrHtml=moreAttrHtml+ "<div class='icon-label more-attr'>";
-		    }
-            
+            	moreAttrHtml=moreAttrHtml+  "<i class='icon icon-error-cross'></i>";
+		    } 
             moreAttrHtml= moreAttrHtml +  "<i class='icon icon-more-attr'></i>" +
             "<span class='text'>多值属性</span>" +
             "</div>" +
@@ -717,12 +712,11 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
     	var entityId = $(".entity_attr.active", $page).attr("data-code");
         var dragWrapLen = $(".dragEdit-wrap").length + 1 ;        				
             var relativeHtml = "<li class='attr-relative'>" +
-            "<div class='attr-relative-title attr-relative collapse-header' data-order='"+order+"' data-id='"+id+"'>";
+            "<div class='attr-relative-title attr-relative collapse-header' data-order='"+order+"' data-id='"+id+"'>"
+           + "<div class='icon-label attr-relative'>";
             if(abcattrCode=="") {
-            	relativeHtml=relativeHtml+"<div style='background-color: red;' class='icon-label attr-relative'>";
-		    } else {
-		    	relativeHtml=relativeHtml+ "<div class='icon-label attr-relative'>";
-		    }
+            	relativeHtml=relativeHtml+ "<i class='icon icon-error-cross'></i>";
+		    } 
             relativeHtml=relativeHtml+ "<i class='icon icon-attr-relative'></i><span class='text'>关系</span>" +
             "</div>" +
             "<div class='label-bar attr-relative al-save'>" +

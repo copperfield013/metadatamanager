@@ -275,6 +275,14 @@ body {
     background-image: url("../images/more-attr.png"); 
     margin-right: 7px;   
 }
+
+#operateEdit .icon-error-cross {
+    width: 15px;
+    height: 15px;
+    background-image: url("../images/error-cross.png");    
+    margin-right: 4px;
+}
+
 #operateEdit .icon-attr-relative {
     width: 16px;
     height: 16px;
