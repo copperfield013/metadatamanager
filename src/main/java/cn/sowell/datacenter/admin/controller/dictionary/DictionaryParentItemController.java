@@ -12,6 +12,7 @@ import javax.annotation.Resource;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.ServletRequestDataBinder;
@@ -25,12 +26,7 @@ import com.alibaba.fastjson.JSONObject;
 import cn.sowell.copframe.dto.ajax.AjaxPageResponse;
 import cn.sowell.copframe.dto.page.PageInfo;
 import cn.sowell.datacenter.admin.controller.AdminConstants;
-import cn.sowell.datacenter.model.demo.criteria.DemoCriteria;
-import cn.sowell.datacenter.model.demo.pojo.PlainDemo;
-import cn.sowell.datacenter.model.demo.service.DemoService;
-import cn.sowell.datacenter.model.dictionary.criteria.DictionaryBasicItemCriteria;
 import cn.sowell.datacenter.model.dictionary.criteria.DictionaryParentItemCriteria;
-import cn.sowell.datacenter.model.dictionary.pojo.DictionaryBasicItem;
 import cn.sowell.datacenter.model.dictionary.pojo.DictionaryParentItem;
 import cn.sowell.datacenter.model.dictionary.service.DictionaryBasicItemService;
 import cn.sowell.datacenter.model.dictionary.service.DictionaryParentItemService;
@@ -109,6 +105,9 @@ public class DictionaryParentItemController {
 			
 			
 			return AjaxPageResponse.REFRESH_LOCAL("删除成功");
+		} catch (DataIntegrityViolationException e) {
+			logger.error("请先删除孩子", e);
+			return AjaxPageResponse.FAILD("请先删除孩子");
 		} catch (Exception e) {
 			logger.error("删除失败", e);
 			return AjaxPageResponse.FAILD("删除失败");
