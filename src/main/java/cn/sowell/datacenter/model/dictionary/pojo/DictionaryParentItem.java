@@ -28,22 +28,9 @@ public class DictionaryParentItem {
 	@Column(name = "c_name")
 	private String name;
 
-	@OneToMany(fetch=FetchType.EAGER,cascade=CascadeType.REMOVE, mappedBy="parentId")
-	private List<DictionaryBasicItem> dictBasicItemList;
+	/*@OneToMany(fetch=FetchType.LAZY,cascade=CascadeType.REMOVE, mappedBy="parentId")
+	private List<DictionaryBasicItem> dictBasicItemList;*/
 
-	/**
-	 * @return the dictBasicItemList
-	 */
-	public List<DictionaryBasicItem> getDictBasicItemList() {
-		return dictBasicItemList;
-	}
-
-	/**
-	 * @param dictBasicItemList the dictBasicItemList to set
-	 */
-	public void setDictBasicItemList(List<DictionaryBasicItem> dictBasicItemList) {
-		this.dictBasicItemList = dictBasicItemList;
-	}
 
 	public Integer getId() {
 		return id;
