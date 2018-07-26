@@ -27,6 +27,9 @@ public class RecordRelationType {
 
 	@Column(name = "reverse_code")
 	private String reverseCode;
+	
+	@Column(name="using_state")
+	private Integer usingState;
 
 	public String getTypeCode() {
 		return typeCode;
@@ -67,4 +70,19 @@ public class RecordRelationType {
 	public void setReverseCode(String reverseCode) {
 		this.reverseCode = reverseCode;
 	}
+
+	/**
+	 * @return the usingState
+	 */
+	public Integer getUsingState() {
+		return usingState;
+	}
+
+	/**
+	 * @param usingState the usingState to set
+	 */
+	public void setUsingState(Integer usingState) {
+		this.usingState = usingState;
+	}
+	
 }

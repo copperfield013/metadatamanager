@@ -1642,6 +1642,22 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
         	
         });
     }
+    
+    //过期关系
+    $(".entity_relation", $page).on("click", ".chang_status_rela", function() {
+        var isPastDue = $(this).hasClass("rela_past");
+        var typeCode = $(this).parent().parent().attr("typeCode")
+        var entityId = $(this).parent().parent().attr("patentId");
+        
+        Ajax.ajax('admin/dictionary/recordRelationType/saveStatus', {
+        	typeCode: typeCode,
+        	isPastDue: isPastDue
+        }, function(jsonData) {
+        	var code = jsonData.code;
+        	relaAttr(entityId);
+        });
+    });
+    
     //在实体列表页面右键点击   的时候
     $(".get_entity_attr", $page).click(function() {
     	$('.entity_attr').removeClass('active').removeClass('pitch');
@@ -1693,11 +1709,29 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
                 var index =  typeCode.indexOf("R");
                var parentId = typeCode.substring(0, index);
             	
-            	str = str + "<div title=\"typeCode:"+entityRelation[i].typeCode+", 名称:"+entityRelation[i].name+", 左实体:"+entityRelation[i].leftRecordType+", 右实体:"+entityRelation[i].rightRecordType+" , 逆向关系："+entityRelation[i].reverseCode+"\" class=\"entity_attr\">" + entityRelation[i].name
-            	+"<ul class=\"entity_ul\" typeCode=\""+entityRelation[i].typeCode+"\">" 
+               str = str + "<div title=\"typeCode:"+entityRelation[i].typeCode+", 名称:"+entityRelation[i].name+", 左实体:"+entityRelation[i].leftRecordType+", 右实体:"+entityRelation[i].rightRecordType+" , 逆向关系："+entityRelation[i].reverseCode+"\" class=\"entity_attr ";
+           	
+           	if (entityRelation[i].usingState == 2) {
+           		str = str + "stale";
+           	}else if (entityRelation[i].usingState ==1) {
+           		str = str + "inuse";
+           	}else if (entityRelation[i].usingState ==0) {
+           		str = str + "newadd";
+           	}else if (entityRelation[i].usingState ==-1) {
+           		str = str + "inerror";
+           	}
+           	
+           	str = str+"\">" + entityRelation[i].name
+           	+"<ul class=\"entity_ul\" patentId=\""+parentId+"\" typeCode=\""+entityRelation[i].typeCode+"\">" 
 				+"<li><a href=\"javascript:void(0)\" patentId=\""+parentId+"\" class=\"delete_rela\"><i class=\"icon edit-entity\"></i>删除关系</a></li>"
-				+"</ul>"
-				+"<i class=\"icon delete\"></i>"
+				if (entityRelation[i].usingState != 2) {
+					str = str+"<li><a href=\"javascript:void(0)\"  class=\"chang_status_rela rela_past\"><i class=\"icon edit-entity\"></i>过期关系</a></li>"
+				}
+           	if (entityRelation[i].usingState == 2) {
+           		str = str+"<li><a href=\"javascript:void(0)\" class=\"chang_status_rela\"><i class=\"icon edit-entity\"></i>解除过期</a></li>"
+           	}
+           	str = str+"</ul>"
+				+"<i class=\"icon delete\"></i> <i class=\"icon status\"></i>"
 				+"</div>"  
             }
             $(".entity_relation_list").prepend(str);
@@ -1869,11 +1903,29 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
                 var index =  typeCode.indexOf("R");
                var parentId = typeCode.substring(0, index);
             	
-            	str = str + "<div title=\"typeCode:"+entityRelation[i].typeCode+", 名称:"+entityRelation[i].name+", 左实体:"+entityRelation[i].leftRecordType+", 右实体:"+entityRelation[i].rightRecordType+" , 逆向关系："+entityRelation[i].reverseCode+"\" class=\"entity_attr\">" + entityRelation[i].name
-            	+"<ul class=\"entity_ul\" typeCode=\""+entityRelation[i].typeCode+"\">" 
+            	str = str + "<div title=\"typeCode:"+entityRelation[i].typeCode+", 名称:"+entityRelation[i].name+", 左实体:"+entityRelation[i].leftRecordType+", 右实体:"+entityRelation[i].rightRecordType+" , 逆向关系："+entityRelation[i].reverseCode+"\" class=\"entity_attr ";
+            	
+            	if (entityRelation[i].usingState == 2) {
+            		str = str + "stale";
+            	}else if (entityRelation[i].usingState ==1) {
+            		str = str + "inuse";
+            	}else if (entityRelation[i].usingState ==0) {
+            		str = str + "newadd";
+            	}else if (entityRelation[i].usingState ==-1) {
+            		str = str + "inerror";
+            	}
+            	
+            	str = str+"\">" + entityRelation[i].name
+            	+"<ul class=\"entity_ul\" patentId=\""+parentId+"\" typeCode=\""+entityRelation[i].typeCode+"\">" 
 				+"<li><a href=\"javascript:void(0)\" patentId=\""+parentId+"\" class=\"delete_rela\"><i class=\"icon edit-entity\"></i>删除关系</a></li>"
-				+"</ul>"
-				+"<i class=\"icon delete\"></i>"
+				if (entityRelation[i].usingState != 2) {
+					str = str+"<li><a href=\"javascript:void(0)\"  class=\"chang_status_rela rela_past\"><i class=\"icon edit-entity\"></i>过期关系</a></li>"
+				}
+            	if (entityRelation[i].usingState == 2) {
+            		str = str+"<li><a href=\"javascript:void(0)\" class=\"chang_status_rela\"><i class=\"icon edit-entity\"></i>解除过期</a></li>"
+            	}
+            	str = str+"</ul>"
+				+"<i class=\"icon delete\"></i> <i class=\"icon status\"></i>"
 				+"</div>"  
             }
             $(".entity_relation_list").prepend(str);

@@ -56,4 +56,6 @@ public interface RecordRelationTypeService {
 	 * @return
 	 */
 	List<RecordRelationType> getEntityRelaByBitemId(String leftRecordType, String rightRecordType);
+
+	void saveStatus(String typeCode, boolean isPastDue) throws Exception;
 }

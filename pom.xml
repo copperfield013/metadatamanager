@@ -11,7 +11,7 @@
 	<properties>
 		<version.kie>6.5.0.Final</version.kie>
 		<version.cpfweb>0.2.7</version.cpfweb>
-		<version.abcitem>3.4.47.alphal0</version.abcitem>
+		<version.abcutil>0.0.9</version.abcutil> 
 		<version.abcbizz>2.0.17</version.abcbizz>
 		 <version.jackson>2.4.4</version.jackson>
 		 <cxf.version>2.7.12</cxf.version>
@@ -39,15 +39,15 @@
 			<artifactId>cpf-excel</artifactId>
 			<version>0.1</version>
 		</dependency>
-		<dependency>
+		<!-- <dependency>
 			<groupId>com.abc</groupId>
 			<artifactId>item</artifactId>
 			<version>${version.abcitem}</version>
-		</dependency>
+		</dependency> -->
 		<dependency>
 			<groupId>com.abc</groupId>
 			<artifactId>util</artifactId>
-			<version>0.0.7</version>
+			<version>${version.abcutil}</version>
 		</dependency>
 		<!-- <dependency>
 			<groupId>com.abc</groupId>

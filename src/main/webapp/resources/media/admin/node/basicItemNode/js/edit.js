@@ -7,7 +7,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
     $(function(){
 	    $CPF.showLoading();
 	    getNodeOpsType();
-	    getDataType();
+	   getDataType();
 	    drag($(".dragEdit-wrap", $page).length);       
 	    getChild(nodeId, false, null, entityId);  //直接执行
 	    $(".label-bar", $page).addClass("al-save");
@@ -45,8 +45,60 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 	
 	function getDataType() {
 		 $CPF.showLoading();
-		    Ajax.ajax('admin/node/basicItemNode/getDataType', '', function(data){			    	
-		    dataTypeList = data.dataType;
+		    Ajax.ajax('admin/node/basicItemNode/getDataType', {
+		    	dataType:'字符型'
+		    }, function(data){			    	
+		    dataTypeSTRINGList = data.dataType;
+		    $CPF.closeLoading();
+		  }, {async: false})
+		  
+		   Ajax.ajax('admin/node/basicItemNode/getDataType', {
+		    	dataType:'日期型'
+		    }, function(data){			    	
+		    dataTypeDATEList = data.dataType;
+		    $CPF.closeLoading();
+		  }, {async: false})
+		  
+		   Ajax.ajax('admin/node/basicItemNode/getDataType', {
+		    	dataType:'时间型'
+		    }, function(data){			    	
+		    dataTypeTIMEList = data.dataType;
+		    $CPF.closeLoading();
+		  }, {async: false})
+		  
+		   Ajax.ajax('admin/node/basicItemNode/getDataType', {
+		    	dataType:'数字型'
+		    }, function(data){			    	
+		    dataTypeINTList = data.dataType;
+		    $CPF.closeLoading();
+		  }, {async: false})
+		  
+		   Ajax.ajax('admin/node/basicItemNode/getDataType', {
+		    	dataType:'数字型小数'
+		    }, function(data){			    	
+		    dataTypeDOUBLEList = data.dataType;
+		    $CPF.closeLoading();
+		  }, {async: false})
+		  
+		  Ajax.ajax('admin/node/basicItemNode/getDataType', {
+		    	dataType:'引用类型'
+		    }, function(data){			    	
+		    dataTypeREFERENCEList = data.dataType;
+		    $CPF.closeLoading();
+		  }, {async: false})
+		  
+		  Ajax.ajax('admin/node/basicItemNode/getDataType', {
+		    	dataType:'文件型'
+		    }, function(data){			    	
+		    dataTypeFILEList = data.dataType;
+		    $CPF.closeLoading();
+		  }, {async: false})
+		  
+		  
+		  Ajax.ajax('admin/node/basicItemNode/getDataType', {
+		    	dataType:'枚举类型'
+		    }, function(data){			    	
+		    dataTypeENUMList = data.dataType;
 		    $CPF.closeLoading();
 		  }, {async: false})
 	}
@@ -141,7 +193,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 							abcattrCode = "";
 						} else {
 							abcattr = data[i].basicItem.cnName;
-							 abcattrCode = data[i].basicItem.code;
+							abcattrCode = data[i].basicItem.code;
 						}
 					 initMoreAttr(abcattrCode,abcattr, dataType, id, name, opt, order, parent,repeatList);
 				 }else if(data[i].type == 5) {
@@ -467,14 +519,38 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
             "<select disabled class='abc-attr'>"            
             for(var i=0; i<commList.length; i++) {  
             	if(commList[i][0] == abcattrCode) {
-            		attrHtml += "<option data-id='"+commList[i][0]+"' value='"+commList[i][1]+"' selected>"+commList[i][1]+"</option>";
+            		attrHtml += "<option item-data-type='"+commList[i][2]+"' data-id='"+commList[i][0]+"' value='"+commList[i][1]+"' selected>"+commList[i][1]+"</option>";
             	}else {
-            		attrHtml += "<option data-id='"+commList[i][0]+"' value='"+commList[i][1]+"'>"+commList[i][1]+"</option>";
+            		attrHtml += "<option item-data-type='"+commList[i][2]+"' data-id='"+commList[i][0]+"' value='"+commList[i][1]+"'>"+commList[i][1]+"</option>";
             	}
             	                
             }
 			attrHtml += "</select>";
-			attrHtml += "<select disabled class='data-type'>";            
+			attrHtml += "<select disabled class='data-type attr-type'>";      
+			//Ajax.ajax('admin/node/basicItemNode/getDataType', {
+			//	dataType:commList[0][2]
+			//}, function(data){		
+			//	var dataTypeList = data.dataType;  
+			
+				var dataTypeList;
+				if ("字符型" == commList[0][2]) {
+					dataTypeList=dataTypeSTRINGList;
+				} else if ("日期型"== commList[0][2]) {
+					dataTypeList=dataTypeDATEList;
+				}else if ("时间型"== commList[0][2]) {
+					dataTypeList=dataTypeTIMEList;
+				}else if ("数字型"== commList[0][2]) {
+					dataTypeList=dataTypeINTList;
+				}else if ("数字型小数"== commList[0][2]) {
+					dataTypeList=dataTypeDOUBLEList;
+				}else if ("引用类型"== commList[0][2]) {
+					dataTypeList=dataTypeREFERENCEList;
+				}else if ("二进制型"== commList[0][2]) {
+					dataTypeList=dataTypeFILEList;
+				}else if ("枚举"== commList[0][2]) {
+					dataTypeList=dataTypeENUMList;
+				}
+				
 		    	for(var i=0; i<dataTypeList.length; i++) {
 		    		if(dataTypeList[i][0] == dataType) {
 		    			attrHtml += "<option value='"+dataTypeList[i][0]+"' selected>"+dataTypeList[i][1]+"</option>";
@@ -503,14 +579,15 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 		        "</li>";		           		        
 		        var $html = $(attrHtml).prependTo($(parent));
 		        $html.find("select").css({"width":"15%","marginLeft":"16px"}).select2();
+		 // }, {async: false})
     }
 	
     //多值属性下的属性初始化方法
     function initAttrM(abcattr,abcattrCode,dataType,id,name,opt,order,parent,repeatChildList) {  
-    	var repeatId = $(parent).prev(".collapse-header")
+    	/*var repeatId = $(parent).prev(".collapse-header")
 			.find(".abc-attr")
 			.find("option:selected")
-			.attr("data-id");
+			.attr("data-id");*/
 			var attrHtml = "<li class='add-attr clear-fix'>"
 				+ "<div class='icon-label attr'>";
 			 if(abcattrCode=="") {
@@ -521,19 +598,40 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
             "</div>" +
             "<div class='label-bar attr  al-save' data-order='"+order+"' data-id='"+id+"'>" +
             "<input type='text' disabled class='edit-input text' value='"+name+"'>" +
-            "<select disabled class='abc-attr'>"            
+            "<select disabled class='abc-attr'>"  
             for(var i=0; i<repeatChildList.length; i++) {    
             	if(repeatChildList[i].cnName == abcattr) {
-            		attrHtml += "<option data-id='"+repeatChildList[i].code+"' value='"+repeatChildList[i].cnName+"' selected>"+repeatChildList[i].cnName+"</option>";
+            		attrHtml += "<option item-data-type='"+repeatChildList[i].oneLevelItem.dataType+"' data-id='"+repeatChildList[i].code+"' value='"+repeatChildList[i].cnName+"' selected>"+repeatChildList[i].cnName+"</option>";
             	}else {
-            		attrHtml += "<option data-id='"+repeatChildList[i].code+"' value='"+repeatChildList[i].cnName+"'>"+repeatChildList[i].cnName+"</option>";
+            		attrHtml += "<option item-data-type='"+repeatChildList[i].oneLevelItem.dataType+"' data-id='"+repeatChildList[i].code+"' value='"+repeatChildList[i].cnName+"'>"+repeatChildList[i].cnName+"</option>";
             	}
             	                
             }
 			attrHtml += "</select>";
-			attrHtml += "<select disabled class='data-type'>";            
-		   // Ajax.ajax('admin/node/basicItemNode/getDataType', '', function(data){		    	
-		    	//var data = data.dataType;  这里还没改
+			attrHtml += "<select disabled class='data-type attr-type'>";  
+		   // Ajax.ajax('admin/node/basicItemNode/getDataType', {
+		    	//dataType:repeatChildList[0].oneLevelItem.dataType
+		   // }, function(data){		    	
+		    //	var dataTypeList = data.dataType; 
+			
+				var dataTypeList = dataTypeSTRINGList;
+				if ("字符型" == repeatChildList[0].oneLevelItem.dataType) {
+					dataTypeList=dataTypeSTRINGList;
+				} else if ("日期型"== repeatChildList[0].oneLevelItem.dataType) {
+					dataTypeList=dataTypeDATEList;
+				}else if ("时间型"== repeatChildList[0].oneLevelItem.dataType) {
+					dataTypeList=dataTypeTIMEList;
+				}else if ("数字型"== repeatChildList[0].oneLevelItem.dataType) {
+					dataTypeList=dataTypeINTList;
+				}else if ("数字型小数"== repeatChildList[0].oneLevelItem.dataType) {
+					dataTypeList=dataTypeDOUBLEList;
+				}else if ("引用类型"== repeatChildList[0].oneLevelItem.dataType) {
+					dataTypeList=dataTypeREFERENCEList;
+				}else if ("二进制型"== repeatChildList[0].oneLevelItem.dataType) {
+					dataTypeList=dataTypeFILEList;
+				}else if ("枚举"== repeatChildList[0].oneLevelItem.dataType) {
+					dataTypeList=dataTypeENUMList;
+				}
 		    	for(var i=0; i<dataTypeList.length; i++) {
 		    		if(dataTypeList[i][0] == dataType) {
 		    			attrHtml += "<option value='"+dataTypeList[i][0]+"' selected>"+dataTypeList[i][1]+"</option>";
@@ -562,7 +660,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 		        "</li>";		           		        
 		        var $html = $(attrHtml).prependTo($(parent));
 		        $html.find("select").css({"width":"15%","marginLeft":"16px"}).select2();
-		   // }, {async: false})
+		  //  }, {async: false})
 	   // }, {async: false});	
     }
     
@@ -1238,8 +1336,10 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
             }
 			attrHtml += "</select>";
 			attrHtml += "<select class='data-type'>";            
-		   // Ajax.ajax('admin/node/basicItemNode/getDataType', '', function(data){		    	
-		    	//var data = data.dataType;
+		   Ajax.ajax('admin/node/basicItemNode/getDataType', {
+			   dataType:data[0][2]
+		   }, function(data){		    	
+		    	var dataTypeList = data.dataType;
 		    	for(var i=0; i<dataTypeList.length; i++) {
 		    		if(dataTypeList[i][0] === "STRING") {
 		    			attrHtml += "<option value='"+dataTypeList[i][0]+"' selected>"+dataTypeList[i][1]+"</option>"; 	
@@ -1270,7 +1370,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 		        $html.find("select").css({"width":"15%","marginLeft":"16px"}).select2();
 		        addUnfold(el);
 		        $CPF.closeLoading();			    		   
-		   // })
+		    })
 	    });		                      
     };
     
@@ -1301,8 +1401,10 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
             }
 			attrHtml += "</select>";
 			attrHtml += "<select class='data-type'>";            
-		   // Ajax.ajax('admin/node/basicItemNode/getDataType', '', function(data){		    	
-		    //	var data = data.dataType;
+		    Ajax.ajax('admin/node/basicItemNode/getDataType', {
+		    	dataType:data[0].oneLevelItem.dataType
+		    }, function(data){		    	
+		    	var dataTypeList = data.dataType;
 		    	for(var i=0; i<dataTypeList.length; i++) {
 		    		if(dataTypeList[i][0] === "STRING") {
 		    			attrHtml += "<option value='"+dataTypeList[i][0]+"' selected>"+dataTypeList[i][1]+"</option>"; 	
@@ -1333,7 +1435,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 		        $html.find("select").css({"width":"15%","marginLeft":"16px"}).select2();
 		        addUnfold(el);
 		        $CPF.closeLoading();			    			    
-		   // })
+		    })
 	    });		                      
     };
 
@@ -2498,10 +2600,34 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
     
     //修改名称
     $("#operateEdit").on("change", "select.abc-attr", function(){
-    	var _value = $(this).find("option:selected").val()
-    	var $input = $(this).siblings(".edit-input")
+    	var _value = $(this).find("option:selected").val();
+    	var $input = $(this).siblings(".edit-input");
     	var _options = $(this).find("option");
-    	var isOption = false;
+    	$input.val(_value);
+    	
+    	//修改dataType的值
+    	var $dataType = $(this).siblings(".data-type.select2-offscreen");
+    	var itemDataType = $(this).find("option:selected").attr("item-data-type");
+    	
+    	if ($dataType.hasClass("attr-type")) {
+    		Ajax.ajax('admin/node/basicItemNode/getDataType', {
+                dataType:itemDataType
+            }, function(data){               
+                 var dataTypeList = data.dataType;
+                 var attrHtml="";
+                 for(var i=0; i<dataTypeList.length; i++) {
+                     if(dataTypeList[i][0] === "STRING") {
+                         attrHtml += "<option value='"+dataTypeList[i][0]+"' selected>"+dataTypeList[i][1]+"</option>";  
+                     }else {
+                         attrHtml += "<option value='"+dataTypeList[i][0]+"'>"+dataTypeList[i][1]+"</option>"; 
+                     }                           
+                 };
+                 $dataType.children().remove();
+                 $dataType.append(attrHtml); 
+            })
+    	}
+    	
+    	/*var isOption = false;
     	var isDefault = false;    	
     	if($input.val() == "属性名" || $input.val() == "多值属性名称"){
     		isDefault = true;
@@ -2514,7 +2640,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
     	}
     	if(isOption || isDefault) {
     		$input.val(_value);
-    	}    	    	    	
+    	}    	    	    	*/
     })
     
 })

@@ -33,18 +33,18 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 	    	$CPF.closeLoading();
 	    }, {async: false})
 	}
-	function getDataType() {
+	/*function getDataType() {
 		 $CPF.showLoading();
 		    Ajax.ajax('admin/node/basicItemNode/getDataType', '', function(data){			    	
 		    var data = data.dataType;
 		    dataTypeList = data;
 		    $CPF.closeLoading();
 		  }, {async: false})
-	}
+	}*/
 	
 	$CPF.showLoading();
 	getNodeOpsType();
-	getDataType();
+	/*getDataType();*/
 	$CPF.closeLoading();
 	
 	
@@ -544,15 +544,18 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
             "<span class='text'>属性</span>" +
             "</div>" +
             "<div class='label-bar attr edit' data-order='' data-id=''>" +
-            "<input type='text' class='edit-input text' value='属性名'>" +
+            "<input type='text' class='edit-input text' value='"+data[0][1]+"'>" +
             "<select class='abc-attr'>"            
             for(var i=0; i<data.length; i++) {            	
-            	attrHtml += "<option data-id='"+data[i][0]+"' value='"+data[i][1]+"'>"+data[i][1]+"</option>";                
+            	attrHtml += "<option data-id='"+data[i][0]+"' value='"+data[i][1]+"' item-data-type='"+data[i][2]+"'>"+data[i][1]+"</option>";                
             }
 			attrHtml += "</select>";
-			attrHtml += "<select class='data-type'>";            
-		   // Ajax.ajax('admin/node/basicItemNode/getDataType', '', function(data){		    	
-		    	//var data = data.dataType;
+			attrHtml += "<select class='data-type attr-type'>";     
+			
+		   Ajax.ajax('admin/node/basicItemNode/getDataType', {
+			   dataType:data[0][2]
+		   }, function(data){		    	
+		    	var dataTypeList = data.dataType;
 		    	for(var i=0; i<dataTypeList.length; i++) {
 		    		if(dataTypeList[i][0] === "STRING") {
 		    			attrHtml += "<option value='"+dataTypeList[i][0]+"' selected>"+dataTypeList[i][1]+"</option>"; 	
@@ -582,7 +585,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 		         $html.find("select").css({"width":"15%","marginLeft":"16px"}).select2();		            
 		         addUnfold(el);
 		         $CPF.closeLoading();			    			    
-		   // })
+		    })
 	    });		                      
     };
     
@@ -606,15 +609,17 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
             "<span class='text'>属性</span>" +
             "</div>" +
             "<div class='label-bar attr edit' data-order='' data-id=''>" +
-            "<input type='text' class='edit-input text' value='属性名'>" +
-            "<select class='abc-attr'>"            
+            "<input type='text' class='edit-input text' value='"+data[0].cnName+"'>" +
+            "<select class='abc-attr' >"            
             for(var i=0; i<data.length; i++) {
-            	attrHtml += "<option data-id='"+data[i].code+"' value='"+data[i].cnName+"'>"+data[i].cnName+"</option>";                
+            	attrHtml += "<option data-id='"+data[i].code+"' value='"+data[i].cnName+"' item-data-type='"+data[i].oneLevelItem.dataType+"'>"+data[i].cnName+"</option>";                
             }
 			attrHtml += "</select>";
-			attrHtml += "<select class='data-type'>";            
-		    //Ajax.ajax('admin/node/basicItemNode/getDataType', '', function(data){		    	
-		    	//var data = data.dataType;
+			attrHtml += "<select class='data-type attr-type'>"; 
+		    Ajax.ajax('admin/node/basicItemNode/getDataType', {
+		    	dataType:data[0].oneLevelItem.dataType
+		    }, function(data){		    	
+		    	var dataTypeList = data.dataType;
 		    	for(var i=0; i<dataTypeList.length; i++) {
 		    		if(dataTypeList[i][0] === "STRING") {
 		    			attrHtml += "<option value='"+dataTypeList[i][0]+"' selected>"+dataTypeList[i][1]+"</option>"; 	
@@ -646,7 +651,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 		        addUnfold(el);
 		        $CPF.closeLoading();			    
 			    
-		   // })
+		    })
 	    });		                      
     };
 
@@ -711,7 +716,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
             "<span class='text'>多值属性</span>" +
             "</div>" +
             "<div class='label-bar more-attr edit'>" +
-            "<input type='text' class='edit-input text' value='多值属性名称'>" +
+            "<input type='text' class='edit-input text' value='"+data[0].cnName+"'>" +
             "<select class='abc-attr'>"
             for(var i=0; i<data.length; i++) {            	
             	moreAttrHtml += "<option data-id='"+data[i].code+"' value='"+data[i].cnName+"'>"+data[i].cnName+"</option>";                
@@ -770,7 +775,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
             "<i class='icon icon-attr-relative'></i><span class='text'>关系</span>" +
             "</div>" +
             "<div class='label-bar attr-relative edit'>" +
-            "<input type='text' class='edit-input text' value='关系名称'>" +
+            "<input type='text' class='edit-input text' value='"+data[0].cnName+"'>" +
             "<select class='abc-attr'>"
             for(var i=0; i<data.length; i++) {
             	relativeHtml += "<option data-id='"+data[i].code+"' value='"+data[i].cnName+"'>"+data[i].cnName+"</option>";                
@@ -1777,10 +1782,33 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
     })
     
     //修改名称
-    $("#operate").on("change", "select.abc-attr", function(){    	
-    	var _value = $(this).find("option:selected").val()
-    	var $input = $(this).siblings(".edit-input")    	
+    $("#operate").on("change", "select.abc-attr", function(){ 
+    	var _value = $(this).find("option:selected").val();
+    	var $input = $(this).siblings(".edit-input");
     	$input.val(_value);
+    	//修改dataType的值
+    	var $dataType = $(this).siblings(".data-type.select2-offscreen");
+    	var itemDataType = $(this).find("option:selected").attr("item-data-type");
+    	
+    	
+    	if ($dataType.hasClass("attr-type")) {
+    		Ajax.ajax('admin/node/basicItemNode/getDataType', {
+                dataType:itemDataType
+            }, function(data){               
+                 var dataTypeList = data.dataType;
+                 var attrHtml="";
+                 for(var i=0; i<dataTypeList.length; i++) {
+                     if(dataTypeList[i][0] === "STRING") {
+                         attrHtml += "<option value='"+dataTypeList[i][0]+"' selected>"+dataTypeList[i][1]+"</option>";  
+                     }else {
+                         attrHtml += "<option value='"+dataTypeList[i][0]+"'>"+dataTypeList[i][1]+"</option>"; 
+                     }                           
+                 };
+                 $dataType.children().remove();
+                 $dataType.append(attrHtml); 
+            })
+    	}
+    	
     })
     
     

@@ -8,6 +8,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import cn.sowell.copframe.dto.page.PageInfo;
+import cn.sowell.datacenter.admin.controller.dictionary.Constants;
 import cn.sowell.datacenter.model.dictionary.criteria.RecordRelationTypeCriteria;
 import cn.sowell.datacenter.model.dictionary.dao.RecordRelationTypeDao;
 import cn.sowell.datacenter.model.dictionary.pojo.RecordRelationType;
@@ -61,6 +62,8 @@ public class RecordRelationTypeServiceImpl implements RecordRelationTypeService 
 				String recordRelaCode = dictionaryParentItemDao.getRecordRelaCode(lefRrecordType.getLeftRecordType());
 				lefRrecordType.setTypeCode(recordRelaCode);
 				lefRrecordType.setReverseCode(recordRelaCode);
+				
+				lefRrecordType.setUsingState(Constants.USING_STATE_MAP.get("using"));
 				dictionaryParentItemDao.insert(lefRrecordType);
 			} else {//添加不对称关系
 				String LeftRecordRelaCode = "";
@@ -83,6 +86,10 @@ public class RecordRelationTypeServiceImpl implements RecordRelationTypeService 
 				lefRrecordType.setReverseCode(rightRecordRelaCode);
 				rightRrecordType.setTypeCode(rightRecordRelaCode);
 				rightRrecordType.setReverseCode(LeftRecordRelaCode);
+				
+				lefRrecordType.setUsingState(Constants.USING_STATE_MAP.get("using"));
+				rightRrecordType.setUsingState(Constants.USING_STATE_MAP.get("using"));
+				
 				dictionaryParentItemDao.insert(lefRrecordType);
 				dictionaryParentItemDao.insert(rightRrecordType);
 			}
@@ -92,6 +99,29 @@ public class RecordRelationTypeServiceImpl implements RecordRelationTypeService 
 	@Override
 	public List<RecordRelationType> getEntityRelaByBitemId(String leftRecordType, String rightRecordType) {
 		return dictionaryParentItemDao.getEntityRelaByBitemId(leftRecordType, rightRecordType);
+	}
+
+	@Override
+	public void saveStatus(String typeCode, boolean isPastDue) throws Exception {
+		
+		RecordRelationType leftRlea = dictionaryParentItemDao.get(RecordRelationType.class, typeCode);
+		RecordRelationType rightRlea = dictionaryParentItemDao.get(RecordRelationType.class, leftRlea.getReverseCode());
+		if (isPastDue) {
+			//过期实体
+			leftRlea.setUsingState(Constants.USING_STATE_MAP.get("pastDue"));
+			rightRlea.setUsingState(Constants.USING_STATE_MAP.get("pastDue"));
+		} else {
+			//解除过期
+			leftRlea.setUsingState(Constants.USING_STATE_MAP.get("using"));
+			rightRlea.setUsingState(Constants.USING_STATE_MAP.get("using"));
+		}
+		
+		if (leftRlea.equals(rightRlea)) {
+			dictionaryParentItemDao.update(leftRlea);
+		} else {
+			dictionaryParentItemDao.update(leftRlea);
+			dictionaryParentItemDao.update(rightRlea);
+		}
 	}
 
 }

@@ -3,6 +3,7 @@ package cn.sowell.datacenter.admin.controller.node;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,9 +21,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.abc.mapping.ValueTypeMapping;
 import com.abc.mapping.node.NodeOpsType;
 import com.abc.mapping.node.NodeType;
-import com.abc.util.ValueTypeConstant;
+import com.abc.util.ValueType;
 import com.alibaba.fastjson.JSONObject;
 
 import cn.sowell.copframe.dto.ajax.AjaxPageResponse;
@@ -182,27 +184,28 @@ public class BasicItemNodeController {
         @ApiResponse(code = 401, message = "操作失败") })
     @RequestMapping(value = "/getDataType",
         method = RequestMethod.POST)
-	public ResponseEntity<Object> getDataType() {
+	public ResponseEntity<Object> getDataType(String dataType) {
 		try {
+			//枚举类型传过来是字符型，等下在改
+			// 根据元数据找那个的dataType, 查找对应的节点中的dataType
+			if ("二进制型".equals(dataType)) {
+				dataType = "文件型";
+			} else if ("数字型小数".equals(dataType)) {
+				dataType = "数字型双精度";
+			}
+			ValueType valueTypeByCName = ValueType.getValueTypeByCName(dataType);
+			
+			if("ERRORTYPE".equals(valueTypeByCName.getName())) {
+				return new ResponseEntity<Object>(HttpStatus.INTERNAL_SERVER_ERROR);
+			}
+			
+			Collection<ValueType> canTransType = ValueTypeMapping.getCanTransType(valueTypeByCName);
 			List list = new ArrayList();
-			String str1[] = {ValueTypeConstant.ABCT_NAME_BYTES,"文件型"};
-			String str2[] = {ValueTypeConstant.ABCT_NAME_DATE,"日期型"};
-			String str3[] = {ValueTypeConstant.ABCT_NAME_DATETIME,"时间型"};
-			String str4[] = {ValueTypeConstant.ABCT_NAME_DOUBLE,"数字型双精度"};
-			String str5[] = {ValueTypeConstant.ABCT_NAME_FLOAT,"数字型单精度"};
-			String str6[] = {ValueTypeConstant.ABCT_NAME_INT,"数字型"};
-			String str7[] = {ValueTypeConstant.ABCT_NAME_LONG,"数字型长"};
-			String str8[] = {ValueTypeConstant.ABCT_NAME_STRING,"字符型"};
-			String str9[] = {ValueTypeConstant.ABCT_NAME_STRING_LONG,"字符型长"};
-			list.add(str1);
-			list.add(str2);
-			list.add(str3);
-			list.add(str4);
-			list.add(str5);
-			list.add(str6);
-			list.add(str7);
-			list.add(str8);
-			list.add(str9);
+			for (ValueType valueType : canTransType) {
+				String str[] = {valueType.getName(),valueType.getCName()};
+				list.add(str);
+			}
+			
 			Map<String, Object> map = new HashMap<String, Object>();
 			map.put("dataType", list);
 			JSONObject jobj = new JSONObject(map);
@@ -258,7 +261,7 @@ public class BasicItemNodeController {
     		InlineResponse2001 inline = new InlineResponse2001();
     		inline.repeatChild(list);
             return new ResponseEntity<InlineResponse2001>(inline, HttpStatus.OK);
-        } catch (Exception e) {                
+        } catch (Exception e) { 
             return new ResponseEntity<InlineResponse2001>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 	}

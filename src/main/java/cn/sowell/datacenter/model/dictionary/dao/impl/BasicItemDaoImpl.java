@@ -404,18 +404,18 @@ public class BasicItemDaoImpl implements BasicItemDao {
 
 	@Override
 	public List getComm(String entityId) {
-		String sql = "SELECT 	t.c_code CODE,	t.c_cn_name NAME FROM 	t_c_basic_item t "
-				+ "	inner join t_c_onelevel_item o "
-				+ "	on t.c_code=o.c_code"
+		String sql = "SELECT 	t.c_code CODE,	t.c_cn_name NAME, o.c_data_type dataType  FROM 	t_c_basic_item t "
+				+ "	inner join t_c_onelevel_item o on t.c_code=o.c_code"
 				+ " WHERE	t.c_parent =:entityId "
-				+ "	AND o.c_data_type != '重复类型' "
-				+ "	AND o.c_data_type != '分组类型' "
-				+ "	AND t.c_using_state = '1' "
-				/*+ "	AND t.c_code NOT LIKE '%_P'  "*/
-				+ "	UNION "
-				+ "	SELECT 	t.c_code CODE, 	t.c_cn_name NAME "
+				+ " AND o.c_data_type != '重复类型' "
+				+ " AND o.c_data_type != '分组类型' "
+				+ " AND t.c_using_state = '1' "
+				+ "UNION "
+				+ " SELECT 	t.c_code CODE, 	t.c_cn_name NAME, c.c_data_type dataType "
 				+ " FROM 	t_c_basic_item t "
-				+ "	INNER JOIN t_c_towlevelattr w on w.c_code=t.c_code "
+				+ " INNER JOIN t_c_towlevelattr w on w.c_code=t.c_code "
+				+ "	left JOIN t_c_towlevelattr_multiattr_mapping m 	on w.c_mapping_id=m.id"
+				+ "	left JOIN t_c_onelevel_item c on m.c_value_attr=c.c_code "
 				+ " WHERE 	t.c_parent =:entityId ";
 		 List list = sFactory.getCurrentSession().createSQLQuery(sql).setParameter("entityId", entityId).list();
 		return list;

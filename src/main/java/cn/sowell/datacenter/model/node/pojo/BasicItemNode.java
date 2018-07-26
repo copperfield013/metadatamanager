@@ -12,6 +12,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 
@@ -62,6 +64,7 @@ public class BasicItemNode {
 	@Column(name = "parent_id")
 	private Integer parentId;
 	
+	 @Fetch(value=FetchMode.SELECT)
 	 @NotFound(action=NotFoundAction.IGNORE)
 	 @OneToOne(fetch = FetchType.EAGER,cascade = {CascadeType.REFRESH})
 	 @JoinColumn(name = "abcattr_code")

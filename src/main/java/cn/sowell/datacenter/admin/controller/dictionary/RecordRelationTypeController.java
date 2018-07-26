@@ -109,4 +109,19 @@ public class RecordRelationTypeController {
 			return AjaxPageResponse.FAILD("删除失败");
 		}
 	}
+	
+	@ResponseBody
+	@RequestMapping("/saveStatus")
+	public String saveStatus(String typeCode, boolean isPastDue){
+		try {
+			recordRelationTypeService.saveStatus(typeCode, isPastDue);
+			System.out.println();
+			return "{\"code\":200, \"msg\":\"操作成功\"}";
+		} catch (Exception e) {
+			logger.error("删除失败", e);
+			return "{\"code\":400, \"msg\":\"操作失败\"}";
+		}
+	}
+	
+	
 }
