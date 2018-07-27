@@ -28,10 +28,10 @@ public class InlineResponse2003   {
   private String digitalDecimal = null;
 
   @JsonProperty("枚举")
-  private String  枚举 = null;
+  private String  enumtype = null;
 
   @JsonProperty("文件型")
-  private String  文件型 = null;
+  private String  bytes = null;
   
   @JsonProperty("引用类型")
   private String referenceType = null;
@@ -157,8 +157,8 @@ public InlineResponse2003 digital(String digital) {
     this.digitalDecimal = digitalDecimal;
   }
 
-  public InlineResponse2003 枚举(String 枚举) {
-    this.枚举= 枚举;
+  public InlineResponse2003 enumtype(String enumtype) {
+    this.enumtype= enumtype;
     return this;
   }
 
@@ -169,16 +169,16 @@ public InlineResponse2003 digital(String digital) {
   @ApiModelProperty(example = "枚举", value = "")
 
 
-  public String get枚举() {
-    return this.枚举;
+  public String getEnumtype() {
+    return this.enumtype;
   }
 
-  public void set枚举(String 枚举) {
-    this.枚举=枚举;
+  public void setEnumtype(String enumtype) {
+    this.enumtype=enumtype;
   }
 
-  public InlineResponse2003 文件型(String 文件型) {
-    this.文件型= 文件型;
+  public InlineResponse2003 bytes(String bytes) {
+    this.bytes= bytes;
     return this;
   }
 
@@ -189,12 +189,12 @@ public InlineResponse2003 digital(String digital) {
   @ApiModelProperty(example = "文件型", value = "")
 
 
-  public String get文件型() {
-    return this.文件型;
+  public String getBytes() {
+    return this.bytes;
   }
 
-  public void set文件型(String 文件型) {
-    this.文件型 = 文件型;
+  public void setBytes(String bytes) {
+    this.bytes = bytes;
   }
 
 
@@ -212,14 +212,14 @@ public InlineResponse2003 digital(String digital) {
         Objects.equals(this.dateTime, inlineResponse2003.dateTime) &&
         Objects.equals(this._char, inlineResponse2003._char) &&
         Objects.equals(this.digitalDecimal, inlineResponse2003.digitalDecimal) &&
-        Objects.equals(this.枚举, inlineResponse2003.枚举) &&
-        Objects.equals(this.文件型, inlineResponse2003.文件型) &&
+        Objects.equals(this.enumtype, inlineResponse2003.enumtype) &&
+        Objects.equals(this.bytes, inlineResponse2003.bytes) &&
         Objects.equals(this.referenceType, inlineResponse2003.referenceType);
   }
   
   @Override
   public int hashCode() {
-    return Objects.hash(digital, date, dateTime, _char, digitalDecimal, 枚举, 文件型, referenceType);
+    return Objects.hash(digital, date, dateTime, _char, digitalDecimal, enumtype, bytes, referenceType);
   }
 
   @Override
@@ -232,8 +232,8 @@ public InlineResponse2003 digital(String digital) {
     sb.append("    dateTime: ").append(toIndentedString(dateTime)).append("\n");
     sb.append("    _char: ").append(toIndentedString(_char)).append("\n");
     sb.append("    digitalDecimal: ").append(toIndentedString(digitalDecimal)).append("\n");
-    sb.append("    枚举:").append(toIndentedString(枚举)).append("\n");
-    sb.append("    文件型:").append(toIndentedString(文件型)).append("\n");
+    sb.append("    enumtype:").append(toIndentedString(enumtype)).append("\n");
+    sb.append("    bytes:").append(toIndentedString(bytes)).append("\n");
     sb.append("    referenceType: ").append(toIndentedString(referenceType)).append("\n");
     sb.append("}");
     return sb.toString();

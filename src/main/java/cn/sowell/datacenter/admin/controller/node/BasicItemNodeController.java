@@ -184,16 +184,16 @@ public class BasicItemNodeController {
         @ApiResponse(code = 401, message = "操作失败") })
     @RequestMapping(value = "/getDataType",
         method = RequestMethod.POST)
-	public ResponseEntity<Object> getDataType(String dataType) {
+	public ResponseEntity<Object> getDataType(Integer dataType) {
 		try {
 			//枚举类型传过来是字符型，等下在改
 			// 根据元数据找那个的dataType, 查找对应的节点中的dataType
-			if ("二进制型".equals(dataType)) {
+			/*if ("二进制型".equals(dataType)) {
 				dataType = "文件型";
 			} else if ("数字型小数".equals(dataType)) {
 				dataType = "数字型双精度";
-			}
-			ValueType valueTypeByCName = ValueType.getValueTypeByCName(dataType);
+			}*/
+			ValueType valueTypeByCName = ValueType.getValueType(dataType);
 			
 			if("ERRORTYPE".equals(valueTypeByCName.getName())) {
 				return new ResponseEntity<Object>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -227,7 +227,7 @@ public class BasicItemNodeController {
 		try {
 			BasicItemCriteria criteria = new BasicItemCriteria();
 			criteria.setParent(entityId);
-			criteria.getOneLevelItem().setDataType("重复类型");
+			criteria.getOneLevelItem().setDataType(String.valueOf(ValueType.REPEAT.getIndex()));
 			criteria.setUsingState(1);
 
 			List<BasicItem> list = basicItemService.queryList(criteria);
@@ -333,7 +333,7 @@ public class BasicItemNodeController {
         method = RequestMethod.POST)
 	public ModelAndView operate() {
 		BasicItemCriteria criteria = new BasicItemCriteria();
-		criteria.getOneLevelItem().setDataType("记录类型");
+		criteria.getOneLevelItem().setDataType(String.valueOf(ValueType.RECORD.getIndex()));
 		criteria.setUsingState(1);
 		List<BasicItem> list = basicItemService.queryList(criteria);
 		ModelAndView mv = new ModelAndView();
