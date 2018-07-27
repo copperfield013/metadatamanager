@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.abc.util.ValueType;
 import com.alibaba.fastjson.JSONObject;
 import com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException;
 
@@ -73,7 +74,7 @@ public class BasicItemController {
         method = RequestMethod.POST)
 	public ModelAndView list(){
 		BasicItemCriteria criteria = new BasicItemCriteria();
-		criteria.getOneLevelItem().setDataType("记录类型");
+		criteria.getOneLevelItem().setDataType(String.valueOf(ValueType.RECORD.getIndex()));
 		List<BasicItem> list = basicItemService.queryList(criteria);
 		ModelAndView mv = new ModelAndView();
 		mv.addObject("list", list);
@@ -92,7 +93,7 @@ public class BasicItemController {
 	public ResponseEntity<BasicItems> entityList(){
 		try {
 			BasicItemCriteria criteria = new BasicItemCriteria();
-			criteria.getOneLevelItem().setDataType("记录类型");
+			criteria.getOneLevelItem().setDataType(String.valueOf(ValueType.RECORD.getIndex()));
 			List<BasicItem> list = basicItemService.queryList(criteria);
 			BasicItems bts = new BasicItems();
 			bts.entity(list);
@@ -113,7 +114,7 @@ public class BasicItemController {
 		public ResponseEntity<BasicItems> referenceTypeEntityList(){
 			try {
 				BasicItemCriteria criteria = new BasicItemCriteria();
-				criteria.getOneLevelItem().setDataType("记录类型");
+				criteria.getOneLevelItem().setDataType(String.valueOf(ValueType.RECORD.getIndex()));
 				criteria.setUsingState(1);
 				List<BasicItem> list = basicItemService.queryList(criteria);
 				BasicItems bts = new BasicItems();
@@ -131,20 +132,16 @@ public class BasicItemController {
         @ApiResponse(code = 401, message = "操作失败") })
     @RequestMapping(value = "/getDataType",
         method = RequestMethod.POST)
-	public ResponseEntity<InlineResponse2003> getDataType(){
+	public ResponseEntity<String> getDataType(){
 		try {
-			InlineResponse2003 inline = new InlineResponse2003();
-			inline.set枚举((String)Constants.DATA_TYPE_MAP.get("枚举"));
-			inline.setChar((String)Constants.DATA_TYPE_MAP.get("char"));
-			inline.setDate((String)Constants.DATA_TYPE_MAP.get("date"));
-			inline.setDateTime((String)Constants.DATA_TYPE_MAP.get("dateTime"));
-			inline.setDigital((String)Constants.DATA_TYPE_MAP.get("digital"));
-			inline.setDigitalDecimal((String)Constants.DATA_TYPE_MAP.get("digitalDecimal"));
-			inline.set文件型((String)Constants.DATA_TYPE_MAP.get("文件型"));
-			inline.setReferenceType((String)Constants.DATA_TYPE_MAP.get("referenceType"));
-			return new ResponseEntity<InlineResponse2003>(inline, HttpStatus.OK);
+			Map<String, Object> dataTypeMap = Constants.DATA_TYPE_MAP;
+			dataTypeMap.remove(String.valueOf(ValueType.GROUP.getIndex()));
+			dataTypeMap.remove(String.valueOf(ValueType.RECORD.getIndex()));
+			dataTypeMap.remove(String.valueOf(ValueType.REPEAT.getIndex()));
+			JSONObject jobj = new JSONObject(dataTypeMap);
+			return new ResponseEntity<String>(jobj.toString(), HttpStatus.OK);
 		} catch (Exception e) {
-			return new ResponseEntity<InlineResponse2003>(HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 	
@@ -157,53 +154,41 @@ public class BasicItemController {
         method = RequestMethod.POST)
 	public ResponseEntity doAdd(@ApiParam(name="BasicItem", value="传入json格式", required=true)BasicItem basicItem, OneLevelItem oneLevelItem){
 			String dType = oneLevelItem.getDataType();
-			String dataType = "";
 			String comm = null;
 			
-			if ("char".equals(dType)) {
-				dataType = "字符型";
+			if ("5".equals(dType)) {
 				oneLevelItem.setDictParentId(0);
-			} else if ("digital".equals(dType)) {
-				dataType = "数字型";
+			} else if ("1".equals(dType)) {
 				oneLevelItem.setDictParentId(0);
-			}else if ("digitalDecimal".equals(dType)) {
-				dataType = "数字型小数";
+			}else if ("15".equals(dType)) {
 				oneLevelItem.setDictParentId(0);
-			}else if ("date".equals(dType)) {
-				dataType = "日期型";
+			}else if ("6".equals(dType)) {
 				oneLevelItem.setDictParentId(0);
-			}else if ("dateTime".equals(dType)) {
-				dataType = "时间型";
+			}else if ("7".equals(dType)) {
 				oneLevelItem.setDictParentId(0);
-			}else if ("record".equals(dType)) {
-				dataType = "记录类型";
-			}else if ("repeat".equals(dType)) {
-				dataType = "重复类型";
+			}else if ("10".equals(dType)) {
+			}else if ("9".equals(dType)) {
 				oneLevelItem.setDictParentId(0);
-			}else if ("group".equals(dType)) {
-				dataType = "分组类型";
-			} else if ("枚举".equals(dType)) {
-				dataType = "字符型";
-			} else if ("文件型".equals(dType)) {
-				dataType = "二进制型";
+			}else if ("16".equals(dType)) {
+			} else if ("14".equals(dType)) {
+			} else if ("8".equals(dType)) {
 				oneLevelItem.setDictParentId(0);
-			} else if ("referenceType".equals(dType)) {
-				dataType = "引用类型";
+			} else if ("11".equals(dType)) {
 				oneLevelItem.setDictParentId(0);
 			}
-			oneLevelItem.setDataType(dataType);
+			oneLevelItem.setDataType(String.valueOf(dType));
 			//记录类型
-			if ("记录类型".equals(oneLevelItem.getDataType())) {
+			if (String.valueOf(ValueType.RECORD.getIndex()).equals(oneLevelItem.getDataType())) {
 				oneLevelItem.setDictParentId(0);
-			} else if ("分组类型".equals(oneLevelItem.getDataType())) {
+			} else if (String.valueOf(ValueType.GROUP.getIndex()).equals(oneLevelItem.getDataType())) {
 				oneLevelItem.setDictParentId(0);
-			} else if ("重复类型".equals(oneLevelItem.getDataType())) {
+			} else if (String.valueOf(ValueType.REPEAT.getIndex()).equals(oneLevelItem.getDataType())) {
 				
 			} else {
 				// 到这儿来是普通属性  和多值属性下的普通属性
 				//它们的区别是父亲不同， 所以先求父亲    默认前端传来的都是父亲的code， 
 				BasicItem bItemPanrent = basicItemService.getBasicItem(basicItem.getParent());
-				if ("重复类型".equals(bItemPanrent.getOneLevelItem().getDataType())) {//多值属性下的普通属性
+				if (String.valueOf(ValueType.REPEAT.getIndex()).equals(bItemPanrent.getOneLevelItem().getDataType())) {//多值属性下的普通属性
 					basicItem.setParent(bItemPanrent.getParent() + "_" +bItemPanrent.getCode());
 					oneLevelItem.setTableName(bItemPanrent.getOneLevelItem().getTableName());
 					oneLevelItem.setGroupName(bItemPanrent.getCode());
@@ -225,7 +210,7 @@ public class BasicItemController {
                 try {
                 	basicItemService.saveOrUpdate(basicItem, flag, comm);
         			
-        			if ("记录类型".equals(basicItem.getOneLevelItem().getDataType())) {
+        			if (String.valueOf(ValueType.RECORD.getIndex()).equals(basicItem.getOneLevelItem().getDataType())) {
         				return new ResponseEntity<AjaxPageResponse>(AjaxPageResponse.CLOSE_AND_REFRESH_PAGE("修改成功", "basicItem_list"), HttpStatus.OK);
         			} else {
         				AjaxPageResponse response = new AjaxPageResponse();
@@ -311,7 +296,7 @@ public class BasicItemController {
 		try {
 			BasicItem basicItem = basicItemService.getBasicItem(id);
 			basicItemService.saveUsingStatus(basicItem, statusStr);
-			if ("记录类型".equals(basicItem.getOneLevelItem().getDataType())) {
+			if (String.valueOf(ValueType.RECORD.getIndex()).equals(basicItem.getOneLevelItem().getDataType())) {
 				 return new ResponseEntity<AjaxPageResponse>(AjaxPageResponse.CLOSE_AND_REFRESH_PAGE("修改成功", "basicItem_list"), HttpStatus.OK);
 			} else {
 				return new ResponseEntity<BasicItem>(basicItem, HttpStatus.OK);
@@ -363,9 +348,9 @@ public class BasicItemController {
 				}
 				
 				List<BasicItem> btList = null;
-				if ("分组类型".equals(bt.getOneLevelItem().getDataType())) {
+				if (String.valueOf(ValueType.GROUP.getIndex()).equals(bt.getOneLevelItem().getDataType())) {
 					btList = basicItemService.getAttrByPidGroupName(bt.getParent(), bt.getCode());
-				} else if ("重复类型".equals(bt.getOneLevelItem().getDataType())) {
+				} else if (String.valueOf(ValueType.REPEAT.getIndex()).equals(bt.getOneLevelItem().getDataType())) {
 					btList = basicItemService.getDataByPId(bt.getParent() + "_" + bt.getCode());
 				} else {
 					btList = basicItemService.getDataByPId(id);
@@ -380,7 +365,7 @@ public class BasicItemController {
 					BasicItem basicItem = basicItemService.getBasicItem(id);
 					basicItemService.delete(basicItem);
 					
-					if ("记录类型".equals(basicItem.getOneLevelItem().getDataType())) {
+					if (String.valueOf(ValueType.RECORD.getIndex()).equals(basicItem.getOneLevelItem().getDataType())) {
 						return new ResponseEntity<AjaxPageResponse>(AjaxPageResponse.CLOSE_AND_REFRESH_PAGE("删除成功", "basicItem_list"), HttpStatus.OK);
 					} else {
 						response.setNotice("删除成功");
