@@ -11,7 +11,7 @@
 	<properties>
 		<version.kie>6.5.0.Final</version.kie>
 		<version.cpfweb>0.2.7</version.cpfweb>
-		<version.abcutil>0.0.10</version.abcutil> 
+		<version.abcutil>0.0.11</version.abcutil> 
 		<version.abcbizz>2.0.17</version.abcbizz>
 		 <version.jackson>2.4.4</version.jackson>
 		 <cxf.version>2.7.12</cxf.version>
