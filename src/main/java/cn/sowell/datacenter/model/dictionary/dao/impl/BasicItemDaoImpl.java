@@ -191,20 +191,21 @@ public class BasicItemDaoImpl implements BasicItemDao {
 			.append("' add ', ")
 			.append("a.c_code,' ', ")
 			.append(" CASE a.c_data_type ")
-			.append(" WHEN '字符型' THEN concat('varchar(',if(a.c_data_range='枚举' ,\"32\",a.c_data_range),')') ")
-			.append(" WHEN '数字型' THEN concat('int(',if(a.c_data_range is null ,\"11\",a.c_data_range),')') ")
-			.append(" WHEN '数字型小数' THEN  concat('double(',if(a.c_data_range is null ,\"10,2\",a.c_data_range),')') ")
-			.append(" WHEN '日期型' THEN 'date' ")
-			.append(" WHEN '时间型' THEN 'datetime' ")
-			.append(" WHEN '二进制型' THEN 'MediumBlob' ")
-			.append(" WHEN '引用类型' THEN 'varchar(32)'")
+			.append(" WHEN '5' THEN concat('varchar(',if(a.c_data_range  is null,\"32\",a.c_data_range),')') ")
+			.append(" WHEN '1' THEN concat('int(',if(a.c_data_range is null ,\"11\",a.c_data_range),')') ")
+			.append(" WHEN '15' THEN  concat('double(',if(a.c_data_range is null ,\"10,2\",a.c_data_range),')') ")
+			.append(" WHEN '6' THEN 'date' ")
+			.append(" WHEN '7' THEN 'datetime' ")
+			.append(" WHEN '8' THEN 'MediumBlob' ")
+			.append(" WHEN '14' THEN 'varchar(32)'")
+			.append(" WHEN '11' THEN 'varchar(32)'")
 			.append(" END, ")
 			.append("'  default NULL ') ")
 			.append("FROM ")
 			.append("(SELECT  *  FROM  t_c_onelevel_item WHERE ")
-			.append(" c_data_type != '记录类型' ")
-			.append("AND c_data_type != '重复类型'")
-			.append(" AND c_data_type != '分组类型') a ")
+			.append(" c_data_type != '10' ")
+			.append("AND c_data_type != '9'")
+			.append(" AND c_data_type != '16') a ")
 			.append(" LEFT JOIN ")
 			.append(" (SELECT  ")
 			.append(" col.column_name  FROM  information_schema.columns col  WHERE ")
@@ -229,20 +230,21 @@ public class BasicItemDaoImpl implements BasicItemDao {
 		 .append(" FROM     (  SELECT ")
 		 .append("    a.c_code,     a.c_table_name, ")
 		 .append(" CASE   a.c_data_type  ")
-		 .append("  WHEN '字符型' THEN    CONCAT( 'varchar(', IF ( a.c_data_range = '枚举', '32', a.c_data_range ), ')' )  ")
-		 .append("  WHEN '数字型' THEN    CONCAT( 'int(', IF ( a.c_data_range IS NULL, '11', a.c_data_range ), ')' )  ")
-		 .append(" WHEN '数字型小数' THEN    CONCAT( 'double(', IF ( a.c_data_range IS NULL, '10,2', a.c_data_range ), ')' )  ")
-		 .append("  WHEN '日期型' THEN     'date'  ")
-		 .append("  WHEN '时间型' THEN     'datetime'  ")
-		 .append(" WHEN '二进制型' THEN    'mediumblob'  ")
-		 .append("  WHEN '引用类型' THEN    'varchar(32)'  ")
+		 .append("  WHEN '5' THEN    CONCAT( 'varchar(', IF ( a.c_data_range IS NULL, '32', a.c_data_range ), ')' )  ")
+		 .append("  WHEN '1' THEN    CONCAT( 'int(', IF ( a.c_data_range IS NULL, '11', a.c_data_range ), ')' )  ")
+		 .append(" WHEN '15' THEN    CONCAT( 'double(', IF ( a.c_data_range IS NULL, '10,2', a.c_data_range ), ')' )  ")
+		 .append("  WHEN '6' THEN     'date'  ")
+		 .append("  WHEN '7' THEN     'datetime'  ")
+		 .append(" WHEN '8' THEN    'mediumblob'  ")
+		 .append("  WHEN '11' THEN    'varchar(32)'  ")
+		 .append("  WHEN '14' THEN    'varchar(32)'  ")
 		 .append(" END col_type  ")
 		 .append(" FROM ")
 		 .append("     t_c_onelevel_item a  ")
 		 .append(" WHERE  ")
-		 .append("  a.c_data_type != '分组类型' ")
-		 .append(" AND a.c_data_type != '记录类型' ")
-		 .append(" AND a.c_data_type != '重复类型' ")
+		 .append("  a.c_data_type != '16' ")
+		 .append(" AND a.c_data_type != '10' ")
+		 .append(" AND a.c_data_type != '9' ")
 		 .append("     ) aa ")
 		 .append("    LEFT JOIN ( SELECT col.Column_name, col.column_type, col.table_name FROM information_schema.COLUMNS col WHERE table_schema = '"+DataBaseName+"' ) bb  ")
 		 .append(" 		ON aa.c_code = Column_name  ")
@@ -263,7 +265,7 @@ public class BasicItemDaoImpl implements BasicItemDao {
 			.append(" concat(\"create table \", a.tablename,\"( `id`  bigint(20) NOT NULL AUTO_INCREMENT, ")
 			.append("`ABP0001`  varchar(32) Not NULL ,`ABC0913`  varchar(32) DEFAULT NULL ,`ABC0914`  varchar(32) DEFAULT NULL,PRIMARY KEY (`id`))\")  ")
 			.append("FROM ")
-			.append("(SELECT concat('t_',c_code,'_r1') tablename  FROM  t_c_onelevel_item    WHERE  c_data_type='记录类型') a  ")
+			.append("(SELECT concat('t_',c_code,'_r1') tablename  FROM  t_c_onelevel_item    WHERE  c_data_type='10') a  ")
 			.append(" LEFT JOIN (SELECT table_name FROM information_schema.tables t  WHERE  ")
 			.append(" t.table_schema = '"+DataBaseName+"') b ON a.tablename = b.table_name  ")
 			.append("WHERE ")
@@ -307,7 +309,7 @@ public class BasicItemDaoImpl implements BasicItemDao {
 			.append("    FROM")
 			.append("    t_c_onelevel_item ")
 			.append("    WHERE")
-			.append("   c_data_type='记录类型') a")
+			.append("   c_data_type='10') a")
 			.append("    LEFT JOIN")
 			.append(" (SELECT ")
 			.append(" table_name")
@@ -336,7 +338,7 @@ public class BasicItemDaoImpl implements BasicItemDao {
 		.append("     FROM ")
 		.append("       t_c_onelevel_item  ")
 		.append("     WHERE ")
-		.append("     c_data_type='记录类型') a ")
+		.append("     c_data_type='10') a ")
 		.append("       LEFT JOIN  ")
 		.append("     (SELECT  ")
 		.append("      table_name ")
@@ -393,8 +395,8 @@ public class BasicItemDaoImpl implements BasicItemDao {
 				+ "	inner join t_c_onelevel_item o"
 				+ "	on a.c_code=o.c_code "
 				+ " WHERE 	a.c_parent = :entityId "
-				+ " 	AND o.c_data_type != '分组类型' "
-				+ "	AND o.c_data_type != '重复类型' 	) b "
+				+ " 	AND o.c_data_type != '16' "
+				+ "	AND o.c_data_type != '9' 	) b "
 				+ "WHERE	b.c_cn_name =:name";
 		
 		
@@ -407,8 +409,8 @@ public class BasicItemDaoImpl implements BasicItemDao {
 		String sql = "SELECT 	t.c_code CODE,	t.c_cn_name NAME, o.c_data_type dataType  FROM 	t_c_basic_item t "
 				+ "	inner join t_c_onelevel_item o on t.c_code=o.c_code"
 				+ " WHERE	t.c_parent =:entityId "
-				+ " AND o.c_data_type != '重复类型' "
-				+ " AND o.c_data_type != '分组类型' "
+				+ " AND o.c_data_type != '9' "
+				+ " AND o.c_data_type != '16' "
 				+ " AND t.c_using_state = '1' "
 				+ "UNION "
 				+ " SELECT 	t.c_code CODE, 	t.c_cn_name NAME, c.c_data_type dataType "
@@ -426,7 +428,7 @@ public class BasicItemDaoImpl implements BasicItemDao {
 		String sql = "SELECT 	t.* FROM 	t_c_basic_item t "
 				+ "	inner join t_c_onelevel_item o 	on t.c_code=o.c_code "
 				+ "WHERE 	t.c_using_state = '1' "
-				+ "	AND o.c_data_type = '记录类型' "
+				+ "	AND o.c_data_type = '10' "
 				+ "	AND t.c_code IN ( SELECT right_record_type FROM t_c_record_relation_type WHERE left_record_type =:leftRecordType )";
 		return  sFactory.getCurrentSession().createSQLQuery(sql).addEntity(BasicItem.class).setParameter("leftRecordType", leftRecordType).list();
 	}

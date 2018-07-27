@@ -46,49 +46,49 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 	function getDataType() {
 		 $CPF.showLoading();
 		    Ajax.ajax('admin/node/basicItemNode/getDataType', {
-		    	dataType:'字符型'
+		    	dataType:'5'
 		    }, function(data){			    	
 		    dataTypeSTRINGList = data.dataType;
 		    $CPF.closeLoading();
 		  }, {async: false})
 		  
 		   Ajax.ajax('admin/node/basicItemNode/getDataType', {
-		    	dataType:'日期型'
+		    	dataType:'6'
 		    }, function(data){			    	
 		    dataTypeDATEList = data.dataType;
 		    $CPF.closeLoading();
 		  }, {async: false})
 		  
 		   Ajax.ajax('admin/node/basicItemNode/getDataType', {
-		    	dataType:'时间型'
+		    	dataType:'7'
 		    }, function(data){			    	
 		    dataTypeTIMEList = data.dataType;
 		    $CPF.closeLoading();
 		  }, {async: false})
 		  
 		   Ajax.ajax('admin/node/basicItemNode/getDataType', {
-		    	dataType:'数字型'
+		    	dataType:'1'
 		    }, function(data){			    	
 		    dataTypeINTList = data.dataType;
 		    $CPF.closeLoading();
 		  }, {async: false})
 		  
 		   Ajax.ajax('admin/node/basicItemNode/getDataType', {
-		    	dataType:'数字型小数'
+		    	dataType:'15'
 		    }, function(data){			    	
 		    dataTypeDOUBLEList = data.dataType;
 		    $CPF.closeLoading();
 		  }, {async: false})
 		  
 		  Ajax.ajax('admin/node/basicItemNode/getDataType', {
-		    	dataType:'引用类型'
+		    	dataType:'11'
 		    }, function(data){			    	
 		    dataTypeREFERENCEList = data.dataType;
 		    $CPF.closeLoading();
 		  }, {async: false})
 		  
 		  Ajax.ajax('admin/node/basicItemNode/getDataType', {
-		    	dataType:'文件型'
+		    	dataType:'8'
 		    }, function(data){			    	
 		    dataTypeFILEList = data.dataType;
 		    $CPF.closeLoading();
@@ -96,7 +96,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 		  
 		  
 		  Ajax.ajax('admin/node/basicItemNode/getDataType', {
-		    	dataType:'枚举类型'
+		    	dataType:'14'
 		    }, function(data){			    	
 		    dataTypeENUMList = data.dataType;
 		    $CPF.closeLoading();
@@ -533,21 +533,21 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 			//	var dataTypeList = data.dataType;  
 			
 				var dataTypeList;
-				if ("字符型" == commList[0][2]) {
+				if ("5" == commList[0][2]) {
 					dataTypeList=dataTypeSTRINGList;
-				} else if ("日期型"== commList[0][2]) {
+				} else if ("6"== commList[0][2]) {
 					dataTypeList=dataTypeDATEList;
-				}else if ("时间型"== commList[0][2]) {
+				}else if ("7"== commList[0][2]) {
 					dataTypeList=dataTypeTIMEList;
-				}else if ("数字型"== commList[0][2]) {
+				}else if ("1"== commList[0][2]) {
 					dataTypeList=dataTypeINTList;
-				}else if ("数字型小数"== commList[0][2]) {
+				}else if ("15"== commList[0][2]) {
 					dataTypeList=dataTypeDOUBLEList;
-				}else if ("引用类型"== commList[0][2]) {
+				}else if ("11"== commList[0][2]) {
 					dataTypeList=dataTypeREFERENCEList;
-				}else if ("二进制型"== commList[0][2]) {
+				}else if ("8"== commList[0][2]) {
 					dataTypeList=dataTypeFILEList;
-				}else if ("枚举"== commList[0][2]) {
+				}else if ("14"== commList[0][2]) {
 					dataTypeList=dataTypeENUMList;
 				}
 				
@@ -615,21 +615,21 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 		    //	var dataTypeList = data.dataType; 
 			
 				var dataTypeList = dataTypeSTRINGList;
-				if ("字符型" == repeatChildList[0].oneLevelItem.dataType) {
+				if ("5" == repeatChildList[0].oneLevelItem.dataType) {
 					dataTypeList=dataTypeSTRINGList;
-				} else if ("日期型"== repeatChildList[0].oneLevelItem.dataType) {
+				} else if ("6"== repeatChildList[0].oneLevelItem.dataType) {
 					dataTypeList=dataTypeDATEList;
-				}else if ("时间型"== repeatChildList[0].oneLevelItem.dataType) {
+				}else if ("7"== repeatChildList[0].oneLevelItem.dataType) {
 					dataTypeList=dataTypeTIMEList;
-				}else if ("数字型"== repeatChildList[0].oneLevelItem.dataType) {
+				}else if ("1"== repeatChildList[0].oneLevelItem.dataType) {
 					dataTypeList=dataTypeINTList;
-				}else if ("数字型小数"== repeatChildList[0].oneLevelItem.dataType) {
+				}else if ("15"== repeatChildList[0].oneLevelItem.dataType) {
 					dataTypeList=dataTypeDOUBLEList;
-				}else if ("引用类型"== repeatChildList[0].oneLevelItem.dataType) {
+				}else if ("11"== repeatChildList[0].oneLevelItem.dataType) {
 					dataTypeList=dataTypeREFERENCEList;
-				}else if ("二进制型"== repeatChildList[0].oneLevelItem.dataType) {
+				}else if ("8"== repeatChildList[0].oneLevelItem.dataType) {
 					dataTypeList=dataTypeFILEList;
-				}else if ("枚举"== repeatChildList[0].oneLevelItem.dataType) {
+				}else if ("14"== repeatChildList[0].oneLevelItem.dataType) {
 					dataTypeList=dataTypeENUMList;
 				}
 		    	for(var i=0; i<dataTypeList.length; i++) {

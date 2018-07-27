@@ -41,7 +41,7 @@
 				<span id="add_entity_mes"></span>
 				<form id="entity_opera_form1" class="opera_entity_form">
 						<input type="hidden" name="code" id="code"/>
-					<input type="hidden" name="dataType" value="record">
+					<input type="hidden" name="dataType" value="10">
 					<div>
 						<span class="opera_entity_label">中文名称<span style="color: red;">*</span></span>
 						<input type="text" name="cnName" id="cnName"/>
@@ -77,7 +77,7 @@
 				<form id="group_opera_form1" class="opera_entity_form">
 						<input type="hidden" name="code" id="code"/>
 					<input type="hidden" id="group_parent" name="parent" value="">
-					<input type="hidden" name="dataType" value="group">
+					<input type="hidden" name="dataType" value="16">
 					<div>
 						<span class="opera_entity_label">中文名称<span style="color: red;">*</span></span>
 						<input type="text" name="cnName" id="cnName"/>
@@ -108,7 +108,7 @@
 				<form id="more_opera_form1" class="opera_entity_form">
 						<input type="hidden" name="code" id="code"/>
 					<input type="hidden" id="more_parent" name="parent" value="">
-					<input type="hidden" name="dataType" value="repeat">
+					<input type="hidden" name="dataType" value="9">
 					<div>
 						<span class="opera_entity_label">中文名称<span style="color: red;">*</span></span>
 						<input type="text" name="cnName" id="cnName"/><br>
