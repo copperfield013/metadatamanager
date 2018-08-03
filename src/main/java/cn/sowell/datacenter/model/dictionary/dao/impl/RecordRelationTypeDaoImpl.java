@@ -98,10 +98,8 @@ public class RecordRelationTypeDaoImpl implements RecordRelationTypeDao {
 	public String getRecordRelaCode(String entityCode) throws Exception {
 		BasicItemNodeGenerator btNg = new BasicItemNodeGenerator();
 		sFactory.getCurrentSession().save(btNg);
-		String format = String.format("%03d", btNg.getId()); 
-		
 		Object[] basicItemFix = basicItemService.getBasicItemFix();
-		return entityCode+ basicItemFix[3]+format;
+		return btNg.getRelaCode(entityCode, (String)basicItemFix[3]);
 	}
 
 }

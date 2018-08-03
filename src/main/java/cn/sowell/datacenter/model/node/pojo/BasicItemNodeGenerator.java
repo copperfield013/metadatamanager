@@ -19,39 +19,7 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "t_sc_basic_item_code_generator")
 public class BasicItemNodeGenerator {
-	private static Properties props;
 	
-	static {
-		loadProps();
-	}
-	
-	
-	 synchronized static private void loadProps(){
-	        props = new Properties();
-	        InputStream in = null;
-	        try {
-	        	in = BasicItemNodeGenerator.class.getClassLoader().getResourceAsStream("model.properties");
-				props.load(in);
-	        } catch (Exception e) {
-	            e.printStackTrace();
-	        }finally {
-	            try {
-	                if(null != in) {
-	                    in.close();
-	                }
-	            } catch (IOException e) {
-	                e.printStackTrace();
-	            }
-	        }
-	    }
-
-	    public static String getProperty(String key){
-	        if(null == props) {
-	            loadProps();
-	        }
-	        return props.getProperty(key);
-	    }
-
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id")
@@ -63,6 +31,38 @@ public class BasicItemNodeGenerator {
 
 	public void setId(Integer id) {
 		this.id = id;
+	}
+	
+	public String getFormat() {
+		return String.format("%03d", this.id); 
+	}
+	
+	/**
+	 * 输入前缀组合实体的code
+	 * @param prefix
+	 * @return
+	 */
+	public String getEntityCode(String prefix){
+		return prefix+getFormat();
+	}
+	
+	/**
+	 * 输入前缀，组合分组属性，多值，普通属性的code
+	 * @param prefix
+	 * @return
+	 */
+	public String getAttrCode(String prefix) {
+		return prefix + getFormat();
+	}
+	
+	/**
+	 * 输入实体code 和 中缀，组合关系code
+	 * @param entityCode
+	 * @param infix
+	 * @return
+	 */
+	public String getRelaCode(String entityCode, String  infix) {
+		return entityCode + infix +getFormat();
 	}
 
 }

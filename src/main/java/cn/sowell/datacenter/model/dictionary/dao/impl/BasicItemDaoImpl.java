@@ -126,12 +126,8 @@ public class BasicItemDaoImpl implements BasicItemDao {
 		try {
 			BasicItemNodeGenerator btNg = new BasicItemNodeGenerator();
 			sFactory.getCurrentSession().save(btNg);
-			String format = String.format("%03d", btNg.getId()); 
-			
-			
 			Object[] basicItemFix = getBasicItemFix();
-			
-			return basicItemFix[1]+format;
+			return btNg.getEntityCode((String)basicItemFix[1]);
 		} catch (HibernateException e) {
 			e.printStackTrace();
 		} catch (Exception e) {
@@ -144,13 +140,9 @@ public class BasicItemDaoImpl implements BasicItemDao {
 	public String getAttrCode() {
 		try {
 			BasicItemNodeGenerator btNg = new BasicItemNodeGenerator();
-			
 			sFactory.getCurrentSession().save(btNg);
-			String format = String.format("%03d", btNg.getId()); 
-			
 			Object[] basicItemFix = getBasicItemFix();
-
-			return basicItemFix[2] + format;
+			return btNg.getAttrCode((String)basicItemFix[2]);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
