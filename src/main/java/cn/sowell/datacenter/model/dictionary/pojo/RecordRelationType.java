@@ -8,7 +8,7 @@ import javax.persistence.Table;
 import org.hibernate.annotations.GenericGenerator;
 
 @Entity
-@Table(name = "t_c_record_relation_type")
+@Table(name = "t_sc_record_relation_type")
 public class RecordRelationType {
 
 	@Id

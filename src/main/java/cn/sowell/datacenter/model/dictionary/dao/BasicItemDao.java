@@ -60,7 +60,7 @@ public interface BasicItemDao {
 	 */
 	List getAttrByPidGroupName(String parent, String groupName);
 	
-	void saveOrUpdate(Object obj, String flag);
+	void saveOrUpdate(Object obj, String flag)  throws Exception ;
 	
 	/**
 	 * -- 查询需要创建的表
@@ -155,4 +155,10 @@ public interface BasicItemDao {
 	 * @return
 	 */
 	public List<BasicItem> getEntityList(String leftRecordType);
+	
+	/**
+	 * 获取实体的前缀，属性的前缀， 关系的前缀
+	 * @return
+	 */
+	public Object[] getBasicItemFix() throws Exception;
 }

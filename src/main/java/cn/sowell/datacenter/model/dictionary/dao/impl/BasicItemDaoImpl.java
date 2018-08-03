@@ -30,7 +30,7 @@ public class BasicItemDaoImpl implements BasicItemDao {
 	@Override
 	public List<BasicItem> queryList(BasicItemCriteria criteria) {
 		StringBuffer sb = new StringBuffer();
-		sb.append("SELECT CAST((reverse( - ( - reverse( substring_index( b.c_code, '_', 1 ) ) ) ) ) as SIGNED) as c_order, b.* FROM t_c_basic_item b inner JOIN t_c_onelevel_item o on b.c_code=o.c_code WHERE 1=1 ");
+		sb.append("SELECT CAST((reverse( - ( - reverse( substring_index( b.c_code, '_', 1 ) ) ) ) ) as SIGNED) as c_order, b.* FROM t_sc_basic_item b inner JOIN t_sc_onelevel_item o on b.c_code=o.c_code WHERE 1=1 ");
 		
 		if(criteria.getUsingState() != null && criteria.getUsingState().SIZE > 0){
 			sb.append(" AND b.c_using_state=:usingState");
@@ -87,27 +87,27 @@ public class BasicItemDaoImpl implements BasicItemDao {
 
 	@Override
 	public List<BasicItem> getDataByPId(String parent) {
-		String sql = "SELECT * FROM t_c_basic_item WHERE c_parent=:parent AND c_code not like '%_P' AND c_code not like '%_ED' AND c_code not like '%_SF' AND c_code not like '%_SK' AND c_code not like '%_N' ORDER BY  CAST((reverse( - ( - reverse( substring_index( c_code, '_', 1 ) ) ) )) as SIGNED) ASC";
+		String sql = "SELECT * FROM t_sc_basic_item WHERE c_parent=:parent AND c_code not like '%_P' AND c_code not like '%_ED' AND c_code not like '%_SF' AND c_code not like '%_SK' AND c_code not like '%_N' ORDER BY  CAST((reverse( - ( - reverse( substring_index( c_code, '_', 1 ) ) ) )) as SIGNED) ASC";
 		List<BasicItem> list = sFactory.getCurrentSession().createSQLQuery(sql).addEntity(BasicItem.class).setParameter("parent", parent).list();
 		return list;
 	}
 	
 	@Override
 	public List<BasicItem> getChilByPid(String parent) {
-		String sql = "SELECT * FROM t_c_basic_item WHERE c_parent=:parent ORDER BY  CAST((reverse( - ( - reverse( substring_index( c_code, '_', 1 ) ) ) )) as SIGNED) ASC";
+		String sql = "SELECT * FROM t_sc_basic_item WHERE c_parent=:parent ORDER BY  CAST((reverse( - ( - reverse( substring_index( c_code, '_', 1 ) ) ) )) as SIGNED) ASC";
 		List<BasicItem> list = sFactory.getCurrentSession().createSQLQuery(sql).addEntity(BasicItem.class).setParameter("parent", parent).list();
 		return list;
 	}
 
 	@Override
 	public List getAttrByPidGroupName(String parent, String groupName) {
-		String sql = "SELECT * FROM	t_c_basic_item t	INNER JOIN t_c_onelevel_item o	on t.c_code=o.c_code  WHERE	t.c_parent =:parent 	AND o.c_group_name =:groupName 	AND t.c_code NOT LIKE '%_P' AND t.c_code not like '%_ED' AND t.c_code not like '%_SF' AND t.c_code not like '%_SK' AND t.c_code not like '%_N'  ORDER BY  CAST((reverse( - ( - reverse( substring_index(t.c_code, '_', 1 ) ) ) )) as SIGNED) ASC";
+		String sql = "SELECT * FROM	t_sc_basic_item t	INNER JOIN t_sc_onelevel_item o	on t.c_code=o.c_code  WHERE	t.c_parent =:parent 	AND o.c_group_name =:groupName 	AND t.c_code NOT LIKE '%_P' AND t.c_code not like '%_ED' AND t.c_code not like '%_SF' AND t.c_code not like '%_SK' AND t.c_code not like '%_N'  ORDER BY  CAST((reverse( - ( - reverse( substring_index(t.c_code, '_', 1 ) ) ) )) as SIGNED) ASC";
 		List<BasicItem> list = sFactory.getCurrentSession().createSQLQuery(sql).addEntity(BasicItem.class).setParameter("parent", parent).setParameter("groupName", groupName).list();
 		return list;
 	}
 
 	@Override
-	public void saveOrUpdate(Object obj, String flag) {
+	public void saveOrUpdate(Object obj, String flag)  throws Exception {
 		if ("add".equals(flag)) {
 			sFactory.getCurrentSession().save(obj);
 		} else {
@@ -126,9 +126,12 @@ public class BasicItemDaoImpl implements BasicItemDao {
 		try {
 			BasicItemNodeGenerator btNg = new BasicItemNodeGenerator();
 			sFactory.getCurrentSession().save(btNg);
-			
 			String format = String.format("%03d", btNg.getId()); 
-			return new BasicItemNodeGenerator().getProperty("model.entity.prefix")+format;
+			
+			
+			Object[] basicItemFix = getBasicItemFix();
+			
+			return basicItemFix[1]+format;
 		} catch (HibernateException e) {
 			e.printStackTrace();
 		} catch (Exception e) {
@@ -144,7 +147,10 @@ public class BasicItemDaoImpl implements BasicItemDao {
 			
 			sFactory.getCurrentSession().save(btNg);
 			String format = String.format("%03d", btNg.getId()); 
-			return new BasicItemNodeGenerator().getProperty("model.attr.prefix") + format;
+			
+			Object[] basicItemFix = getBasicItemFix();
+
+			return basicItemFix[2] + format;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -163,7 +169,7 @@ public class BasicItemDaoImpl implements BasicItemDao {
 			.append("(SELECT ")
 			.append(" c_code,  c_table_name ")
 			.append("FROM ")
-			.append("t_c_onelevel_item ")
+			.append("t_sc_onelevel_item ")
 			.append("WHERE ")
 			.append("c_table_name IS NOT NULL ")
 			.append(" GROUP BY c_table_name) a ")
@@ -202,7 +208,7 @@ public class BasicItemDaoImpl implements BasicItemDao {
 			.append(" END, ")
 			.append("'  default NULL ') ")
 			.append("FROM ")
-			.append("(SELECT  *  FROM  t_c_onelevel_item WHERE ")
+			.append("(SELECT  *  FROM  t_sc_onelevel_item WHERE ")
 			.append(" c_data_type != '10' ")
 			.append("AND c_data_type != '9'")
 			.append(" AND c_data_type != '16') a ")
@@ -240,7 +246,7 @@ public class BasicItemDaoImpl implements BasicItemDao {
 		 .append("  WHEN '14' THEN    'varchar(32)'  ")
 		 .append(" END col_type  ")
 		 .append(" FROM ")
-		 .append("     t_c_onelevel_item a  ")
+		 .append("     t_sc_onelevel_item a  ")
 		 .append(" WHERE  ")
 		 .append("  a.c_data_type != '16' ")
 		 .append(" AND a.c_data_type != '10' ")
@@ -265,7 +271,7 @@ public class BasicItemDaoImpl implements BasicItemDao {
 			.append(" concat(\"create table \", a.tablename,\"( `id`  bigint(20) NOT NULL AUTO_INCREMENT, ")
 			.append("`ABP0001`  varchar(32) Not NULL ,`ABC0913`  varchar(32) DEFAULT NULL ,`ABC0914`  varchar(32) DEFAULT NULL,PRIMARY KEY (`id`))\")  ")
 			.append("FROM ")
-			.append("(SELECT concat('t_',c_code,'_r1') tablename  FROM  t_c_onelevel_item    WHERE  c_data_type='10') a  ")
+			.append("(SELECT concat('t_',c_code,'_r1') tablename  FROM  t_sc_onelevel_item    WHERE  c_data_type='10') a  ")
 			.append(" LEFT JOIN (SELECT table_name FROM information_schema.tables t  WHERE  ")
 			.append(" t.table_schema = '"+DataBaseName+"') b ON a.tablename = b.table_name  ")
 			.append("WHERE ")
@@ -307,7 +313,7 @@ public class BasicItemDaoImpl implements BasicItemDao {
 			.append("     (SELECT ")
 			.append("   concat('t_',c_code,'_r1') tablename,c_code")
 			.append("    FROM")
-			.append("    t_c_onelevel_item ")
+			.append("    t_sc_onelevel_item ")
 			.append("    WHERE")
 			.append("   c_data_type='10') a")
 			.append("    LEFT JOIN")
@@ -336,7 +342,7 @@ public class BasicItemDaoImpl implements BasicItemDao {
 		.append("     (SELECT  ")
 		.append("   concat('t_',c_code,'_idx1') tablename ")
 		.append("     FROM ")
-		.append("       t_c_onelevel_item  ")
+		.append("       t_sc_onelevel_item  ")
 		.append("     WHERE ")
 		.append("     c_data_type='10') a ")
 		.append("       LEFT JOIN  ")
@@ -391,8 +397,8 @@ public class BasicItemDaoImpl implements BasicItemDao {
 	@Override
 	public BigInteger getTwoSameCount(String name, String entityId) {
 		String sql = "SELECT	COUNT( * ) FROM	("
-				+ " SELECT	a.c_cn_name FROM t_c_basic_item a "
-				+ "	inner join t_c_onelevel_item o"
+				+ " SELECT	a.c_cn_name FROM t_sc_basic_item a "
+				+ "	inner join t_sc_onelevel_item o"
 				+ "	on a.c_code=o.c_code "
 				+ " WHERE 	a.c_parent = :entityId "
 				+ " 	AND o.c_data_type != '16' "
@@ -406,18 +412,18 @@ public class BasicItemDaoImpl implements BasicItemDao {
 
 	@Override
 	public List getComm(String entityId) {
-		String sql = "SELECT 	t.c_code CODE,	t.c_cn_name NAME, o.c_data_type dataType  FROM 	t_c_basic_item t "
-				+ "	inner join t_c_onelevel_item o on t.c_code=o.c_code"
+		String sql = "SELECT 	t.c_code CODE,	t.c_cn_name NAME, o.c_data_type dataType  FROM 	t_sc_basic_item t "
+				+ "	inner join t_sc_onelevel_item o on t.c_code=o.c_code"
 				+ " WHERE	t.c_parent =:entityId "
 				+ " AND o.c_data_type != '9' "
 				+ " AND o.c_data_type != '16' "
 				+ " AND t.c_using_state = '1' "
 				+ "UNION "
 				+ " SELECT 	t.c_code CODE, 	t.c_cn_name NAME, c.c_data_type dataType "
-				+ " FROM 	t_c_basic_item t "
-				+ " INNER JOIN t_c_towlevelattr w on w.c_code=t.c_code "
-				+ "	left JOIN t_c_towlevelattr_multiattr_mapping m 	on w.c_mapping_id=m.id"
-				+ "	left JOIN t_c_onelevel_item c on m.c_value_attr=c.c_code "
+				+ " FROM 	t_sc_basic_item t "
+				+ " INNER JOIN t_sc_towlevelattr w on w.c_code=t.c_code "
+				+ "	left JOIN t_sc_towlevelattr_multiattr_mapping m 	on w.c_mapping_id=m.id"
+				+ "	left JOIN t_sc_onelevel_item c on m.c_value_attr=c.c_code "
 				+ " WHERE 	t.c_parent =:entityId ";
 		 List list = sFactory.getCurrentSession().createSQLQuery(sql).setParameter("entityId", entityId).list();
 		return list;
@@ -425,12 +431,24 @@ public class BasicItemDaoImpl implements BasicItemDao {
 
 	@Override
 	public List<BasicItem> getEntityList(String leftRecordType) {
-		String sql = "SELECT 	t.* FROM 	t_c_basic_item t "
-				+ "	inner join t_c_onelevel_item o 	on t.c_code=o.c_code "
+		String sql = "SELECT 	t.* FROM 	t_sc_basic_item t "
+				+ "	inner join t_sc_onelevel_item o 	on t.c_code=o.c_code "
 				+ "WHERE 	t.c_using_state = '1' "
 				+ "	AND o.c_data_type = '10' "
-				+ "	AND t.c_code IN ( SELECT right_record_type FROM t_c_record_relation_type WHERE left_record_type =:leftRecordType )";
+				+ "	AND t.c_code IN ( SELECT right_record_type FROM t_sc_record_relation_type WHERE left_record_type =:leftRecordType )";
 		return  sFactory.getCurrentSession().createSQLQuery(sql).addEntity(BasicItem.class).setParameter("leftRecordType", leftRecordType).list();
+	}
+
+	@Override
+	public Object[] getBasicItemFix() throws Exception {
+		String sql = "SELECT id, recordtype, attribute, relation, using_state FROM `t_sc_basic_item_fix` WHERE using_state='1' ORDER BY id desc";
+		List list = sFactory.getCurrentSession().createSQLQuery(sql).list();
+		
+		if (list.isEmpty()) {
+			throw new Exception("t_sc_basic_item_fix不能没有数据");
+		}
+		
+		return (Object[]) list.get(0);
 	}
 
 

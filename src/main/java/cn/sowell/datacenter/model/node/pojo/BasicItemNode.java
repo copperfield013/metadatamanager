@@ -21,7 +21,7 @@ import cn.sowell.datacenter.model.dictionary.pojo.BasicItem;
 import io.swagger.annotations.ApiModelProperty;
 
 @Entity
-@Table(name = "t_c_basic_item_node")
+@Table(name = "t_sc_basic_item_node")
 public class BasicItemNode {
 	
 	@ApiModelProperty(value="主键")

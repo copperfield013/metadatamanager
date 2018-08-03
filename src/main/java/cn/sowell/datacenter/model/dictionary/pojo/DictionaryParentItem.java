@@ -17,7 +17,7 @@ import org.hibernate.annotations.GenericGenerator;
 
 
 @Entity
-@Table(name = "t_c_dictionary_parent_item")
+@Table(name = "t_sc_dictionary_parent_item")
 public class DictionaryParentItem {
 
 	@Id

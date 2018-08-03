@@ -64,7 +64,7 @@ public class ServiceBizzDataDaoImpl implements ServiceBizzDataDao {
 	
 	@Override
 	public void delete(Integer id) {
-		String sql = "DELETE FROM t_service_bizzdata WHERE id=:id";
+		String sql = "DELETE FROM t_sb_service_bizzdata WHERE id=:id";
 		sFactory.getCurrentSession().createSQLQuery(sql).setParameter("id", id).executeUpdate();
 	}
 

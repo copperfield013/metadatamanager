@@ -12,7 +12,7 @@ import org.hibernate.annotations.GenericGenerator;
 import io.swagger.annotations.ApiModelProperty;
 
 @Entity
-@Table(name = "t_c_onelevel_item")
+@Table(name = "t_sc_onelevel_item")
 public class OneLevelItem {
 	
 	 @ApiModelProperty(value="主键code", name="code")

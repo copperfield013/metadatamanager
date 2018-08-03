@@ -11,7 +11,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "t_c_dictionary_mapping_alias")
+@Table(name = "t_sc_dictionary_mapping_alias")
 public class DictionaryMappingAlias {
 
 	@Id

@@ -13,10 +13,12 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.hibernate.annotations.GenericGenerator;
+import org.junit.Ignore;
+
 import io.swagger.annotations.ApiModelProperty;
 
 @Entity
-@Table(name = "t_c_basic_item")
+@Table(name = "t_sc_basic_item")
 public class BasicItem {
 	
 	public BasicItem() {

@@ -12,6 +12,8 @@ import javax.annotation.Resource;
 import org.apache.log4j.Logger;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.ServletRequestDataBinder;
@@ -84,10 +86,13 @@ public class RecordRelationTypeController {
 					if (i <9) {
 						continue;
 					} else {
-						return AjaxPageResponse.FAILD("主键重复, 请重新添加");
+						return AjaxPageResponse.FAILD("主键重复或者是关系名重复, 请重新添加");
 					}
 				} catch (Exception e) {
 					logger.error("操作失败", e);
+					if (e.getMessage().contains("t_sc_basic_item_fix")) {
+               		 return AjaxPageResponse.FAILD("t_sc_basic_item_fix：没有可用数据");
+					}
 					return AjaxPageResponse.FAILD("操作失败");
 				}
 			}

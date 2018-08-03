@@ -17,7 +17,7 @@ import javax.persistence.Table;
  *
  */
 @Entity
-@Table(name = "t_c_basic_item_code_generator")
+@Table(name = "t_sc_basic_item_code_generator")
 public class BasicItemNodeGenerator {
 	private static Properties props;
 	

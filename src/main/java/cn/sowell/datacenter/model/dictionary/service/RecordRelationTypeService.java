@@ -48,7 +48,7 @@ public interface RecordRelationTypeService {
 	 * @param lefRrecordType
 	 * @param rightRrecordType
 	 */
-	void saveRelation(RecordRelationType lefRrecordType, RecordRelationType rightRrecordType, String symmetry);
+	void saveRelation(RecordRelationType lefRrecordType, RecordRelationType rightRrecordType, String symmetry) throws Exception;
 	
 	/**
 	 * 根据左实体id， 和右实体id， 求出左右实体共同的关系

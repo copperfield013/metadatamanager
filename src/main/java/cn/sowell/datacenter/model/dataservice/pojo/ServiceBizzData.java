@@ -10,7 +10,7 @@ import javax.persistence.Table;
 import io.swagger.annotations.ApiModelProperty;
 
 @Entity
-@Table(name = "t_service_bizzdata")
+@Table(name = "t_sb_service_bizzdata")
 public class ServiceBizzData {
 	
 	@ApiModelProperty(value="主键")

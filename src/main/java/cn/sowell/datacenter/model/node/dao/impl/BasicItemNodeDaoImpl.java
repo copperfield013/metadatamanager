@@ -72,7 +72,7 @@ public class BasicItemNodeDaoImpl implements BasicItemNodeDao {
 	
 	@Override
 	public void delete(Integer id) {
-		String sql = "DELETE FROM t_c_basic_item_node WHERE id=:id";
+		String sql = "DELETE FROM t_sc_basic_item_node WHERE id=:id";
 		sFactory.getCurrentSession().createSQLQuery(sql).setParameter("id", id).executeUpdate();
 	}
 
@@ -116,26 +116,26 @@ public class BasicItemNodeDaoImpl implements BasicItemNodeDao {
 	@Override
 	public List<String> getNameByPid(BasicItemNode basicItemNode) {
 		if (NodeType.ABC.equals(NodeType.getNodeType(basicItemNode.getType())) && basicItemNode.getParentId() == null) {//是一个实体
-			String sql = "SELECT name from t_c_basic_item_node	WHERE parent_id is null AND type=1";
+			String sql = "SELECT name from t_sc_basic_item_node	WHERE parent_id is null AND type=1";
 			return sFactory.getCurrentSession().createSQLQuery(sql).list();
 		}else {
 			BasicItemNode pNode = get(BasicItemNode.class, basicItemNode.getParentId());
 			if (NodeType.ATTRGROUP.equals(NodeType.getNodeType(pNode.getType()))) {
-				String sql = "SELECT name from t_c_basic_item_node"
+				String sql = "SELECT name from t_sc_basic_item_node"
 						+ "	WHERE parent_id=:parentId "
 						+ "	UNION"
-						+ "	SELECT name from t_c_basic_item_node"
+						+ "	SELECT name from t_sc_basic_item_node"
 						+ "	WHERE parent_id in("
-						+ "	SELECT id from t_c_basic_item_node"
+						+ "	SELECT id from t_sc_basic_item_node"
 						+ "	WHERE parent_id=:parentId AND type =6	)";
 				return sFactory.getCurrentSession().createSQLQuery(sql).setParameter("parentId", pNode.getParentId()).list();
 			} else {
-				String sql = "SELECT name from t_c_basic_item_node"
+				String sql = "SELECT name from t_sc_basic_item_node"
 						+ "	WHERE parent_id=:parentId "
 						+ "	UNION"
-						+ "	SELECT name from t_c_basic_item_node"
+						+ "	SELECT name from t_sc_basic_item_node"
 						+ "	WHERE parent_id in("
-						+ "	SELECT id from t_c_basic_item_node"
+						+ "	SELECT id from t_sc_basic_item_node"
 						+ "	WHERE parent_id=:parentId AND type =6	)";
 				
 				return sFactory.getCurrentSession().createSQLQuery(sql).setParameter("parentId", basicItemNode.getParentId()).list();
@@ -154,20 +154,20 @@ public class BasicItemNodeDaoImpl implements BasicItemNodeDao {
 
 	@Override
 	public List<BasicItemNode> getAttribute(String abcId) {
-		String sql = " SELECT * FROM t_c_basic_item_node WHERE parent_id=:abcId AND type=2"
+		String sql = " SELECT * FROM t_sc_basic_item_node WHERE parent_id=:abcId AND type=2"
 				+ " UNION "
-				+ " SELECT * FROM t_c_basic_item_node a WHERE parent_id in ( "
-				+ "	SELECT id FROM t_c_basic_item_node WHERE parent_id=:abcId AND type=6 "
+				+ " SELECT * FROM t_sc_basic_item_node a WHERE parent_id in ( "
+				+ "	SELECT id FROM t_sc_basic_item_node WHERE parent_id=:abcId AND type=6 "
 				+ " ) AND a.type=2";
 		return sFactory.getCurrentSession().createSQLQuery(sql).addEntity(BasicItemNode.class).setParameter("abcId", abcId).list();
 	}
 
 	@Override
 	public List<String> getNoteSort(Integer parentId) {
-		String sql = "SELECT     CONCAT(\"UPDATE t_c_basic_item_node SET c_order=\",(@i\\:=@i - 1)*100,\" WHERE id=\", b.id)"
-				+ " FROM    t_c_basic_item_node b,    (SELECT   @i\\:=(SELECT  SUM(ct)    FROM   (SELECT "
-				+ "  (MAX(c_order) DIV 100)+1 ct   FROM     t_c_basic_item_node b    WHERE    b.parent_id=:parentId UNION SELECT "
-				+ "     COUNT(*) ct     FROM     t_c_basic_item_node b      WHERE   b.parent_id=:parentId) a)    ) t2   "
+		String sql = "SELECT     CONCAT(\"UPDATE t_sc_basic_item_node SET c_order=\",(@i\\:=@i - 1)*100,\" WHERE id=\", b.id)"
+				+ " FROM    t_sc_basic_item_node b,    (SELECT   @i\\:=(SELECT  SUM(ct)    FROM   (SELECT "
+				+ "  (MAX(c_order) DIV 100)+1 ct   FROM     t_sc_basic_item_node b    WHERE    b.parent_id=:parentId UNION SELECT "
+				+ "     COUNT(*) ct     FROM     t_sc_basic_item_node b      WHERE   b.parent_id=:parentId) a)    ) t2   "
 				+ "WHERE     b.parent_id=:parentId   ORDER BY b.c_order DESC";
 	
 		return sFactory.getCurrentSession().createSQLQuery(sql).setParameter("parentId", parentId).list();
@@ -175,13 +175,13 @@ public class BasicItemNodeDaoImpl implements BasicItemNodeDao {
 
 	@Override
 	public BasicItemNode getAbc(String name) {
-		String sql = "SELECT * FROM t_c_basic_item_node WHERE name=:name AND type=1 AND parent_id is null";
+		String sql = "SELECT * FROM t_sc_basic_item_node WHERE name=:name AND type=1 AND parent_id is null";
 		return (BasicItemNode) sFactory.getCurrentSession().createSQLQuery(sql).addEntity(BasicItemNode.class).setParameter("name", name).uniqueResult();
 	}
 
 	@Override
 	public BasicItemNode getRelaNodeChil(Integer parentId, String id, Integer type) {
-	String sql = "SELECT * FROM t_c_basic_item_node WHERE parent_id=:parentId AND type=:type AND id !=:id";
+	String sql = "SELECT * FROM t_sc_basic_item_node WHERE parent_id=:parentId AND type=:type AND id !=:id";
 				
 	return (BasicItemNode) sFactory.getCurrentSession().createSQLQuery(sql)
 			.addEntity(BasicItemNode.class)

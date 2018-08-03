@@ -56,7 +56,7 @@ public class RecordRelationTypeServiceImpl implements RecordRelationTypeService 
 	}
 
 	@Override
-	public void saveRelation(RecordRelationType lefRrecordType, RecordRelationType rightRrecordType, String symmetry) {
+	public void saveRelation(RecordRelationType lefRrecordType, RecordRelationType rightRrecordType, String symmetry) throws Exception {
 		
 			if ("symmetry".equals(symmetry)) {//添加对称关系
 				String recordRelaCode = dictionaryParentItemDao.getRecordRelaCode(lefRrecordType.getLeftRecordType());

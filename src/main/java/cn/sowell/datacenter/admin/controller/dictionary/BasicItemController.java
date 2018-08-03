@@ -211,7 +211,7 @@ public class BasicItemController {
                 	basicItemService.saveOrUpdate(basicItem, flag, comm);
         			
         			if (String.valueOf(ValueType.RECORD.getIndex()).equals(basicItem.getOneLevelItem().getDataType())) {
-        				return new ResponseEntity<AjaxPageResponse>(AjaxPageResponse.CLOSE_AND_REFRESH_PAGE("修改成功", "basicItem_list"), HttpStatus.OK);
+        				return new ResponseEntity<AjaxPageResponse>(AjaxPageResponse.CLOSE_AND_REFRESH_PAGE("操作成功", "basicItem_list"), HttpStatus.OK);
         			} else {
         				AjaxPageResponse response = new AjaxPageResponse();
         				response.setNotice("操作成功");
@@ -225,6 +225,9 @@ public class BasicItemController {
                          return new ResponseEntity<AjaxPageResponse>(AjaxPageResponse.FAILD("主键重复或者名称重复, 请重新添加"), HttpStatus.OK);
                     }
                 } catch (Exception e) {
+                	if (e.getMessage().contains("ids")) {
+                		return new ResponseEntity<AjaxPageResponse>(AjaxPageResponse.FAILD("t_sc_basic_item_fix：没有可用数据"), HttpStatus.OK);
+                   	}
                     return new ResponseEntity<AjaxPageResponse>(AjaxPageResponse.FAILD("操作失败"), HttpStatus.OK);
                 }           
                 

@@ -33,9 +33,9 @@ public class DictionaryMappingAliasDaoImpl implements DictionaryMappingAliasDao 
 		
 		String sql = "SELECT  b.id itemId, b.parent_name, b.parent_id, b.c_code, b.c_name, b.c_en_name, b.c_status, "
 				+ " c.id aliasId, c.mapping_id, c.basic_item_id, c.alias_name, c.priority_level "
-				+ " from t_c_dictionary_basic_item b"
+				+ " from t_sc_dictionary_basic_item b"
 				+ " LEFT OUTER JOIN ( "
-				+ "SELECT * from t_c_dictionary_mapping_alias  a "
+				+ "SELECT * from t_sc_dictionary_mapping_alias  a "
 				+ "WHERE mapping_id ='"+criteria.getMappingId()+"' ) c ON b.id= c.basic_item_id ";
 		DeferedParamQuery dQuery = new DeferedParamQuery(sql);
 		

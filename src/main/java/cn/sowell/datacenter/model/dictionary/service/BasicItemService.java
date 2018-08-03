@@ -49,7 +49,7 @@ public interface BasicItemService {
 	 * @param basicItem
 	 * @param statusStr
 	 */
-	void saveUsingStatus(BasicItem basicItem, String statusStr);
+	void saveUsingStatus(BasicItem basicItem, String statusStr) throws Exception;
 	
 	/**
 	 * 根据实体id， 获取多值属性， 普通属性的json数据和本实体的关系
@@ -58,7 +58,7 @@ public interface BasicItemService {
 	 */
 	 Map<String, List> getAttrByPid(String parentId);
 	
-	void saveOrUpdate(BasicItem obj, String flag, String comm);
+	void saveOrUpdate(BasicItem obj, String flag, String comm)  throws Exception ;
 
 	/**
 	 * 
@@ -105,4 +105,10 @@ public interface BasicItemService {
 	 * @return
 	 */
 	public List<BasicItem> getEntityList(String leftRecordType);
+	
+	/**
+	 * 获取实体的前缀，属性的前缀， 关系的前缀
+	 * @return
+	 */
+	public Object[] getBasicItemFix() throws Exception;
 }

@@ -10,7 +10,7 @@ import javax.persistence.Table;
 import io.swagger.annotations.ApiModelProperty;
 
 @Entity
-@Table(name = "t_c_dictionary_basic_item")
+@Table(name = "t_sc_dictionary_basic_item")
 public class DictionaryBasicItem {
 
 	@ApiModelProperty(value="主键id")

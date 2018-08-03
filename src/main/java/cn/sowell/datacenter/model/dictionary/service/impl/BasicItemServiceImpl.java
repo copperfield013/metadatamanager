@@ -154,7 +154,7 @@ public class BasicItemServiceImpl implements BasicItemService {
 		basicItemDao.delete(basicItem);
 	}
 	
-	public void saveUsingStatus(BasicItem basicItem, String statusStr) {
+	public void saveUsingStatus(BasicItem basicItem, String statusStr) throws Exception {
 		Integer status = 0;
 		if ("2".equals(statusStr)) {//变为新增或回复原来的状态
 			if (String.valueOf(ValueType.RECORD.getIndex()).equals(basicItem.getOneLevelItem().getDataType())) {
@@ -163,8 +163,8 @@ public class BasicItemServiceImpl implements BasicItemService {
 					status = 0;
 					savePastDue(basicItem, status);//全部标记为新增
 				} else {//如果查到表， 只把当前实体标记为再用并把每个表对应的分组活重复类型标记为再用
-					
-					String ibt = new BasicItemNodeGenerator().getProperty("model.attr.prefix");
+					Object[] basicItemFix = basicItemDao.getBasicItemFix();
+					String ibt = (String) basicItemFix[2];
 					status = 1;
 					pastDue(basicItem, status);
 					//更改分组或重复类型
@@ -296,7 +296,7 @@ public class BasicItemServiceImpl implements BasicItemService {
 	}
 
 	@Override
-	public void saveOrUpdate(BasicItem obj, String flag, String comm) {
+	public void saveOrUpdate(BasicItem obj, String flag, String comm) throws Exception {
 		//生成code 规则：实体code IBTE0001 开始  其他code规则 IBT00001开始
 		if ("add".equals(flag)) {
 			String dataType = obj.getOneLevelItem().getDataType();
@@ -690,7 +690,7 @@ public class BasicItemServiceImpl implements BasicItemService {
 		
 		
 		//以上程序执行完比， 应确保只有状态为1  和-1， 下面程序把所有状态为0的改为1
-		basicItemDao.excuteBySql("UPDATE t_c_basic_item SET c_using_state=1 WHERE c_using_state=0");
+		basicItemDao.excuteBySql("UPDATE t_sc_basic_item SET c_using_state=1 WHERE c_using_state=0");
 		}
 
 	@Override
@@ -762,6 +762,11 @@ public class BasicItemServiceImpl implements BasicItemService {
 	@Override
 	public void twoDeleteItem(BasicItem basicItem) {
 		basicItemDao.delete(basicItem);
+	}
+
+	@Override
+	public Object[] getBasicItemFix() throws Exception {
+		return basicItemDao.getBasicItemFix();
 	}
 
 }

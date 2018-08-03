@@ -19,6 +19,7 @@ import cn.sowell.copframe.utils.TextUtils;
 import cn.sowell.datacenter.model.dictionary.criteria.RecordRelationTypeCriteria;
 import cn.sowell.datacenter.model.dictionary.dao.RecordRelationTypeDao;
 import cn.sowell.datacenter.model.dictionary.pojo.RecordRelationType;
+import cn.sowell.datacenter.model.dictionary.service.BasicItemService;
 import cn.sowell.datacenter.model.node.pojo.BasicItemNodeGenerator;
 
 @Repository
@@ -26,6 +27,9 @@ public class RecordRelationTypeDaoImpl implements RecordRelationTypeDao {
 
 	@Resource
 	SessionFactory sFactory;
+	
+	@Resource
+	BasicItemService basicItemService;
 
 	@Override
 	public List<RecordRelationType> queryList(RecordRelationTypeCriteria criteria, PageInfo pageInfo) {
@@ -71,12 +75,12 @@ public class RecordRelationTypeDaoImpl implements RecordRelationTypeDao {
 	public List<RecordRelationType> getEntityRelaByBitemId(String recordType) {
 		String sql = "SELECT t1.type_code, t1.name,t3.c_cn_name as left_record_type,"
 				+ "  t4.c_cn_name as right_record_type, t2.name as reverse_code, t1.using_state "
-				+ " FROM t_c_record_relation_type t1"
-				+ " LEFT JOIN t_c_record_relation_type t2"
+				+ " FROM t_sc_record_relation_type t1"
+				+ " LEFT JOIN t_sc_record_relation_type t2"
 				+ " ON t1.reverse_code=t2.type_code"
-				+ " LEFT JOIN t_c_basic_item t3"
+				+ " LEFT JOIN t_sc_basic_item t3"
 				+ " ON t1.left_record_type=t3.c_code"
-				+ " LEFT JOIN t_c_basic_item t4 "
+				+ " LEFT JOIN t_sc_basic_item t4 "
 				+ " ON t1.right_record_type=t4.c_code"
 				+ "  WHERE t1.left_record_type=:leftRecordType";
 		List list = sFactory.getCurrentSession().createSQLQuery(sql).addEntity(RecordRelationType.class).setParameter("leftRecordType", recordType).list();
@@ -91,11 +95,13 @@ public class RecordRelationTypeDaoImpl implements RecordRelationTypeDao {
 	}
 
 	@Override
-	public String getRecordRelaCode(String entityCode) {
+	public String getRecordRelaCode(String entityCode) throws Exception {
 		BasicItemNodeGenerator btNg = new BasicItemNodeGenerator();
 		sFactory.getCurrentSession().save(btNg);
 		String format = String.format("%03d", btNg.getId()); 
-		return entityCode+ new BasicItemNodeGenerator().getProperty("model.rela.center")+format;
+		
+		Object[] basicItemFix = basicItemService.getBasicItemFix();
+		return entityCode+ basicItemFix[3]+format;
 	}
 
 }

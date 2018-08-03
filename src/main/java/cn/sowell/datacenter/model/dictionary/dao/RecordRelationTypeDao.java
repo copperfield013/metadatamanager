@@ -58,5 +58,5 @@ public interface RecordRelationTypeDao {
 	/**
 	 * 生成关系code的规则
 	 */
-	String getRecordRelaCode(String entityCode);
+	String getRecordRelaCode(String entityCode) throws Exception;
 }
