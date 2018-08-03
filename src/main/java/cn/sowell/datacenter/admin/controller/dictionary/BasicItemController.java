@@ -27,6 +27,7 @@ import cn.sowell.copframe.dto.ajax.ResponseJSON;
 import cn.sowell.copframe.dto.page.PageInfo;
 import cn.sowell.copframe.utils.TextUtils;
 import cn.sowell.datacenter.admin.controller.AdminConstants;
+import cn.sowell.datacenter.admin.controller.CommonResponseEntity;
 import cn.sowell.datacenter.admin.controller.node.api.BasicItems;
 import cn.sowell.datacenter.admin.controller.node.api.InlineResponse2003;
 import cn.sowell.datacenter.admin.controller.node.api.InlineResponse2004;
@@ -180,6 +181,7 @@ public class BasicItemController {
 			//记录类型
 			if (String.valueOf(ValueType.RECORD.getIndex()).equals(oneLevelItem.getDataType())) {
 				oneLevelItem.setDictParentId(0);
+				basicItem.setParent("");
 			} else if (String.valueOf(ValueType.GROUP.getIndex()).equals(oneLevelItem.getDataType())) {
 				oneLevelItem.setDictParentId(0);
 			} else if (String.valueOf(ValueType.REPEAT.getIndex()).equals(oneLevelItem.getDataType())) {
@@ -234,7 +236,103 @@ public class BasicItemController {
             }
 			return null;
 	}
-
+	
+	
+	
+	/*@ResponseBody
+	@ApiOperation(value = "添加", nickname = "doAdd",response = AjaxPageResponse.class, notes = "新增实体,新增普通属性， 多值属性， 分组", tags={ "entityManager", })
+    @ApiResponses(value = { 
+        @ApiResponse(code = 200, message = "操作成功", response = AjaxPageResponse.class),
+        @ApiResponse(code = 401, message = "操作失败") })
+    @RequestMapping(value = "/do_add",
+        method = RequestMethod.POST)
+	public CommonResponseEntity doAdd(@ApiParam(name="BasicItem", value="传入json格式", required=true)BasicItem basicItem, OneLevelItem oneLevelItem){
+			String dType = oneLevelItem.getDataType();
+			String comm = null;
+			
+			if ("5".equals(dType)) {
+				oneLevelItem.setDictParentId(0);
+			} else if ("1".equals(dType)) {
+				oneLevelItem.setDictParentId(0);
+			}else if ("15".equals(dType)) {
+				oneLevelItem.setDictParentId(0);
+			}else if ("6".equals(dType)) {
+				oneLevelItem.setDictParentId(0);
+			}else if ("7".equals(dType)) {
+				oneLevelItem.setDictParentId(0);
+			}else if ("10".equals(dType)) {
+			}else if ("9".equals(dType)) {
+				oneLevelItem.setDictParentId(0);
+			}else if ("16".equals(dType)) {
+			} else if ("14".equals(dType)) {
+			} else if ("8".equals(dType)) {
+				oneLevelItem.setDictParentId(0);
+			} else if ("11".equals(dType)) {
+				oneLevelItem.setDictParentId(0);
+			}
+			oneLevelItem.setDataType(String.valueOf(dType));
+			//记录类型
+			if (String.valueOf(ValueType.RECORD.getIndex()).equals(oneLevelItem.getDataType())) {
+				oneLevelItem.setDictParentId(0);
+				basicItem.setParent("");
+			} else if (String.valueOf(ValueType.GROUP.getIndex()).equals(oneLevelItem.getDataType())) {
+				oneLevelItem.setDictParentId(0);
+			} else if (String.valueOf(ValueType.REPEAT.getIndex()).equals(oneLevelItem.getDataType())) {
+				
+			} else {
+				// 到这儿来是普通属性  和多值属性下的普通属性
+				//它们的区别是父亲不同， 所以先求父亲    默认前端传来的都是父亲的code， 
+				BasicItem bItemPanrent = basicItemService.getBasicItem(basicItem.getParent());
+				if (String.valueOf(ValueType.REPEAT.getIndex()).equals(bItemPanrent.getOneLevelItem().getDataType())) {//多值属性下的普通属性
+					basicItem.setParent(bItemPanrent.getParent() + "_" +bItemPanrent.getCode());
+					oneLevelItem.setTableName(bItemPanrent.getOneLevelItem().getTableName());
+					oneLevelItem.setGroupName(bItemPanrent.getCode());
+				} else {//普通属性
+					oneLevelItem.setTableName("t_" + basicItem.getParent() + "_" + oneLevelItem.getGroupName());
+					comm = "comm";
+				}
+			}
+			basicItem.setUsingState(0);
+			
+			String flag = "";
+			if (basicItem.getCode()== null ||basicItem.getCode() == "" || basicItem.getCode().length()<1) {
+				flag = "add";
+			}
+			
+			basicItem.setOneLevelItem(oneLevelItem);
+			
+			for(int i=0; i<10; i++) {
+                try {
+                	basicItemService.saveOrUpdate(basicItem, flag, comm);
+        			
+        			if (String.valueOf(ValueType.RECORD.getIndex()).equals(basicItem.getOneLevelItem().getDataType())) {
+        				CommonResponseEntity commonResponseEntity = new CommonResponseEntity();
+        				commonResponseEntity.CLOSE_AND_REFRESH_PAGE("操作成功", "basicItem_list");
+        				return commonResponseEntity;
+        			} else {
+        				CommonResponseEntity response = new CommonResponseEntity();
+        				response.setNotice("操作成功");
+        				response.setNoticeType(NoticeType.SUC);
+        				response.setObj(basicItem); 
+        				return response;
+        			}
+                } catch (DataIntegrityViolationException e) {
+                    if (i <9) {
+                        continue;
+                    } else {
+                    	return (CommonResponseEntity) CommonResponseEntity.FAILD("主键重复或者名称重复, 请重新添加");
+                    }
+                } catch (Exception e) {
+                	if (e.getMessage().contains("ids")) {
+                		return (CommonResponseEntity) CommonResponseEntity.FAILD("t_sc_basic_item_fix：没有可用数据");
+                   	}
+                	return (CommonResponseEntity) CommonResponseEntity.FAILD("操作失败");
+                }           
+                
+            }
+			return null;
+	}
+*/
 	@ResponseBody
 	@ApiOperation(value = "get节点信息", nickname = "getOne",response = BasicItem.class, notes = "获取单个节点信息", tags={ "entityManager", })
     @ApiResponses(value = { 
