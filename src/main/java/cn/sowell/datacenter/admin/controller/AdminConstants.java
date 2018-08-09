@@ -40,6 +40,7 @@ public interface AdminConstants {
 	
 	final String URI_DATASERVICE = URI_BASE + "/dataservice"; 
 	
+	final String URI_CASCADEDICT = URI_BASE + "/cascadedict"; 
 	
 	
 	/**
@@ -59,6 +60,9 @@ public interface AdminConstants {
 	final String JSP_MODULE = JSP_BASE + "/module";
 	
 	final String JSP_DATASERVICE = JSP_BASE + "/dataservice";
+	
+	final String JSP_CASCADEDICT = JSP_BASE + "/cascadedict";
+	
 	
 	/**
 	 *  管理端人口资源路径

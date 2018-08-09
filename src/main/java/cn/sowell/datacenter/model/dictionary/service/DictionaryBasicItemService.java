@@ -18,7 +18,7 @@ public interface DictionaryBasicItemService {
 
 	/**
 	 * 创建一个DictionaryBasicItem对象
-	 * @param DictionaryBasicItem
+	 * @param CascadedictBasicItem
 	 */
 	void create(DictionaryBasicItem basicItem);
 
