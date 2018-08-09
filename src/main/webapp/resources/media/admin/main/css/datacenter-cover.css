@@ -49,6 +49,16 @@
 	height: 30px; 
 	line-height: 30px;
 }
+.page-sidebar .sidebar-menu .submenu li {
+    background-color: #f5f5f5;
+    padding-left: 60px;
+    border-right: 2px solid #126def;
+    margin-bottom: 3px;
+}
+.page-sidebar .sidebar-menu .submenu li.active {
+    background-color: #fff;
+    border-right: 2px solid #e46f61;
+}
 .page-sidebar .sidebar-menu>li:last-child>a {
 	border-bottom: 1px solid #25325A;
 }
@@ -78,8 +88,14 @@
 }
 .page-sidebar .sidebar-menu .submenu>li>a {
 	color: #656565;
-	padding-left: 60px;
-	background-color: #f5f5f5;
+    padding: 0;
+    background-color: inherit;
+    display: inline-block;
+    line-height: 2em;
+    width: 100%;
+}
+.page-sidebar .sidebar-menu .submenu li.active>a {
+    background-color: inherit;
 }
 .page-sidebar .sidebar-menu .submenu>li>a:hover {
 	color:#126def;

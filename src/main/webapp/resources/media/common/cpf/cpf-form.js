@@ -17,6 +17,39 @@ define(function(require, exports, module){
 		
 	});
 	
+	function formatFormData($form, formData){
+		+function(){
+			var $select2 = $form.find('select.cpf-select2.format-submit-value');
+			$select2.each(function(){
+				try{
+					var $thisSelect = $(this),
+					name = $thisSelect.attr('name');
+					if(name){
+						var values = formData.getAll(name);
+						if(values && $.isArray(values)){
+							formData['delete'](name);
+							formData.append(name, values.join());
+						}
+					}
+				}catch(e){}
+			});
+		}();
+		+function(){
+			var $daterangepicker = $form.find('.cpf-daterangepicker.format-submit-value').filter('span,div');
+			$daterangepicker.each(function(){
+				var $this = $(this),
+					name = $this.attr('data-name');
+				if(name){
+					var fieldInput = $this.data('field-input');
+					if(fieldInput){
+						formData['delete'](name);
+						formData.append(name, fieldInput.getValue());
+					}
+				}
+			});
+		}();
+	}
+	
 	$CPF.putPageInitSequeue(4, function($page){
 		$('form', $page).not('.nform').submit(function(e){
 			if(typeof CKEDITOR === 'object'){
@@ -45,26 +78,27 @@ define(function(require, exports, module){
 					return false;
 				}
 			}
+			formatFormData($this, formData);
 			var url = $this.attr('action'),
 				confirm = $this.attr('confirm'),
 				Dialog = require('dialog'),
 				_submit = function(){
-				//构造提交事件
-				var submitEvent = $.Event('cpf-submit');
-				var canceled = false;
-				submitEvent.doCancel = function(){canceled = true};
-				var result = $this.trigger(submitEvent, [formData, $this, page]);
-				try{
-					if(!canceled){
-						page.loadContent(url, undefined, formData);
-						$this.trigger('cpf-submitting', [formData, $this, page]);
+					//构造提交事件
+					var submitEvent = $.Event('cpf-submit');
+					var canceled = false;
+					submitEvent.doCancel = function(){canceled = true};
+					var result = $this.trigger(submitEvent, [formData, $this, page]);
+					try{
+						if(!canceled){
+							page.loadContent(url, undefined, formData);
+							$this.trigger('cpf-submitting', [formData, $this, page]);
+						}
+					}catch(e){
+						console.error(e);
+					}finally{
+						return false;
 					}
-				}catch(e){
-					console.error(e);
-				}finally{
-					return false;
-				}
-			};
+				};
 			if(confirm && Dialog){
 				Dialog.confirm(confirm, function(yes){
 					if(yes){
@@ -97,17 +131,50 @@ define(function(require, exports, module){
 				$(this).closest('form').trigger('cpf-submit');
 			}
 		});
+		$('form :text.datepicker', $page).each(function(){
+			require('utils').datepicker(this);
+		});
+		$('form div.cpf-daterangepicker,form span.cpf-daterangepicker', $page).each(function(){
+			var $div = $(this);
+			var name = $div.is('.format-submit-value')? null: $div.attr('data-name'),
+				value = $div.attr('data-value');
+			if($div.children().length === 0){
+				var FieldInput = require('field/js/field-input.js');
+				if(FieldInput){
+					var range = new FieldInput({
+						type	: 'daterange',
+						name	: name,
+						value	: value
+					});
+					$div.append(range.getDom()).data('field-input', range);
+				}
+			}
+		});
+		
+		require('select2');
+		if($.fn.select2){
+			$('form select.cpf-select2', $page).each(function(){
+				$(this).select2({
+					theme			: "bootstrap",
+					width			: null,
+					allowClear		: true,
+					placeholder		: '',
+				});
+			});
+		}
 		/**
 		 * 初始化下拉框的值
 		 */
 		$('form select', $page).each(function(){
-			var val = $(this).attr('data-value');
+			var $select = $(this);
+			var val = $select.attr('data-value');
 			if(val){
+				if($select.is('.cpf-select2[multiple]')){
+					$select.val(val.split(',')).trigger('change');
+					return;
+				}
 				$(this).val(val);
 			}
-		});
-		$('form :text.datepicker', $page).each(function(){
-			$(this).datepicker();
 		});
 		/**
 		 * 初始化页面的所有勾选框
@@ -175,6 +242,7 @@ define(function(require, exports, module){
 			var $this = $(this);
 			$page.trigger('cpf-check-all-checkbox', [$this.attr('cpf-checkbox-group'),  $this.attr('cpf-checked') !== 'false'])
 		});
-		
 	});
+	
+	exports.formatFormData = formatFormData;
 });

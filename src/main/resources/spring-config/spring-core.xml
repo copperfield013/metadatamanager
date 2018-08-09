@@ -13,7 +13,7 @@
 	<bean id="dateFormat" class="cn.sowell.copframe.utils.date.CommonDateFormat" />
 	
 	<!-- 加载jdbc.properties配置文件 -->
-    <bean id="propConfig" class="cn.sowell.copframe.common.property.PropertyPlaceholder">
+    <bean id="propConfig" class="cn.sowell.copframe.spring.properties.PropertyPlaceholder">
 		<property name="order" value="1" />
 		<property name="ignoreUnresolvablePlaceholders" value="true" />
 		<property name="locations">

@@ -4,7 +4,7 @@ define(function(require, exports){
 	var sFocus;
 	var bindOrTriggerMap = {};
 	var eventFieldMap = {};
-
+	var NOOP = function(){};
 	$.extend(exports, {
 		/**
 		 * 判断一个是否是整数，不包含判断类型
@@ -18,6 +18,36 @@ define(function(require, exports){
 		trim		: function(str){
 			if(typeof str === 'string'){
 				return str.trim();
+			}
+			return str;
+		},
+		isPhoto		: function(fileName){
+			if(typeof fileName === 'string'){
+				var reg = /.*\.(gif|jpg|jpeg|png|bmp|ico)$/i;
+				return reg.test(fileName);
+			}
+		},
+		/**
+		 * 将数组内的元素用特定的分隔符连接成字符串
+		 * @param array 数组对象，数组内元素可以是任意类型，不可省略
+		 * @param spliter 字符串，作为数组元素的连接符。可省略，默认为","
+		 * @param itemGetter 函数对象，用于将array的元素对象构造出字符串内每一节的子串，可省略，默认直接获取元素对象
+		 */
+		join		: function(array, spliter, itemGetter){
+			if(typeof spliter === 'function'){
+				itemGetter = spliter;
+				spliter = undefined;
+			}
+			spliter = spliter || ',';
+			itemGetter = itemGetter || function(ele){return ele}
+			var str = '';
+			if($.isArray(array)){
+				for(var i in array){
+					str += itemGetter.apply(array, [array[i]]) + spliter;
+				}
+				if(str.length > 0){
+					str = str.substring(0, str.length - spliter.length);
+				}
 			}
 			return str;
 		},
@@ -329,13 +359,29 @@ define(function(require, exports){
 			return currentSeq;
 		},
 		datepicker		: function($dom,scrollEle){
-			return $($dom).datepicker({
-				format		: 'yyyy-mm-dd',
-				weekStart	: 1,
-				daysOfWeek : [ '日', '一', '二', '三', '四', '五', '六' ],  
-                monthNames : [ '一月', '二月', '三月', '四月', '五月', '六月',  
-                        '七月', '八月', '九月', '十月', '十一月', '十二月' ]
-			},scrollEle);
+			$dom = $($dom);
+			if($dom.is(':text')){
+				/*$dom.keydown(function(e){
+					if(e.keyCode == 8){
+						$dom.val('').trigger('changeDate');
+					}
+				});*/
+				return $dom.datetimepicker({
+					format		: 'yyyy-mm-dd',
+					language	: 'zh-CN',
+					weekStart	: 1,
+					autoclose	: true,
+					minView		: 'month',
+					bootcssVer	: 3
+				});
+				/*return $dom.datepicker({
+					format		: 'yyyy-mm-dd',
+					weekStart	: 1,
+					daysOfWeek : [ '日', '一', '二', '三', '四', '五', '六' ],  
+					monthNames : [ '一月', '二月', '三月', '四月', '五月', '六月',  
+						'七月', '八月', '九月', '十月', '十一月', '十二月' ]
+				},scrollEle);*/
+			}
 		},
 		/**
 		 * 获取焦点
@@ -363,7 +409,7 @@ define(function(require, exports){
 				}
 			};
 			var param = $.extend({}, defaultParam, _param);
-			return $dom.daterangepicker(param);
+			return $($dom).daterangepicker(param);
 		},
 		triggerInField	: function(fieldName, eventName, args, target){
 			if(typeof fieldName === 'string' && typeof eventName === 'string'){
@@ -417,6 +463,39 @@ define(function(require, exports){
 		},
 		bind		: function(eventName, callback){
 			return this.bindInField('defaultField', eventName, callback);
+		},
+		botByDom	: function(dom, eventName, callback){
+			var $dom = $(dom);
+			if($dom.length == 1 && typeof eventName === 'string' && eventName){
+				var fullEventKey = 'cpf-botByDom-' + eventName;
+				if(callback === false){
+					$dom.off(fullEventKey);
+					$dom.removeData(fullEventKey);
+				}else{
+					var isUndefined = callback === undefined,
+						isFunction = typeof callback === 'function';
+					if(isUndefined){
+						//如果已经绑定了事件，那么就直接触发
+						//如果没有绑定事件，那么添加标记，令事件在绑定时直接触发
+						var events = $._data($dom[0], 'events')[fullEventKey];
+						if(events && events.length > 0){
+							$dom.trigger(fullEventKey);
+							$dom.removeData(fullEventKey);
+						}else{
+							$dom.data(fullEventKey, 1);
+						}
+					}else if(isFunction){
+						//如果标记不为空，那么直接触发回调
+						//如果标记为空，那么绑定回调
+						if($dom.data(fullEventKey)){
+							$dom.one(fullEventKey, callback).trigger(fullEventKey);
+							$dom.removeData(fullEventKey);
+						}else{
+							$dom.one(fullEventKey, callback);
+						}
+					}
+				}
+			}
 		},
 		/**
 		 * 绑定和触发
@@ -573,8 +652,58 @@ define(function(require, exports){
 				json = $.parseJSON(_json);
 			}catch(e){}
 			return json;
+		},
+		swap				: function(array, x, y){
+			if(!$.isArray(array)){
+				$.error('第一个参数必须是数组');
+			}
+			if(x < 0 || y < 0 || x >= array.length || y >= array.length){
+				$.error('索引必须小于数组长度' + array.length);
+			}
+			array.splice(x, 1, array.splice(y, 1, array[x])[0]);
+		},
+		merge			: function(){
+			if(arguments.length > 0){
+				var supportSet = typeof Set === 'function';
+				var first = arguments[0];
+				if($.isArray(first) || (supportSet && first instanceof Set)){
+					var second = arguments[1];
+					if($.isArray(second) || (supportSet && first instanceof Set)){
+						addAToB(second, first);
+					}
+					if(arguments.length > 2){
+						return exports.merge.apply(exports, $.merge([], first, arguments.slice(2)));
+					}else{
+						return first;
+					}
+				}
+			}
 		}
 	});
+	
+	function addAToB(a, b){
+		if($.isArray(b)){
+			if($.isArray(a)){
+				for(var i in a){
+					b.push(a[i]);
+				}
+			}else if(a instanceof Set){
+				a.forEach(function(e){
+					b.push(e);
+				});
+			}
+		}else if(b instanceof Set){
+			if($.isArray(a)){
+				for(var i in a){
+					b.add(a[i]);
+				}
+			}else if(a instanceof Set){
+				a.forEach(function(e){
+					b.add(e);
+				});
+			}
+		}
+	}
 	
 	/**
 	 * 封装jquery的回调列表，使其支持多个事件

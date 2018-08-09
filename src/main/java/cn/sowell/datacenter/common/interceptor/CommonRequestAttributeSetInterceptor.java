@@ -8,7 +8,7 @@ import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.context.request.WebRequestInterceptor;
 
-import cn.sowell.copframe.common.property.PropertyPlaceholder;
+import cn.sowell.copframe.spring.properties.PropertyPlaceholder;
 import cn.sowell.copframe.utils.TextUtils;
 
 public class CommonRequestAttributeSetInterceptor implements WebRequestInterceptor{

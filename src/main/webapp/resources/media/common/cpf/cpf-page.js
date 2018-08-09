@@ -25,13 +25,14 @@ define(function(require, exports, module){
 	});
 	
 	$CPF.putPageInitSequeue(5, function($page){
-		$('a.jump[href]', $page).click(function(){
+		$($page).on('click', 'a.jump[href]', function(){
 			location.href = $(this).attr('href');
+			return false;
 		});
 		var page = $($page).getLocatePage();
 		if(page instanceof Page){
 			if(page.getType() === 'dialog'){
-				$('a[href],button[href]', page.getContainer()).click(function(e){
+				$(page.getContainer()).on('click', 'a[href],button[href],i[href]', function(e){
 					var $this = $(this);
 					var href = $this.attr('href');
 					var je = /^javascript:(.*)$/;
@@ -39,7 +40,10 @@ define(function(require, exports, module){
 						try{
 							eval(je.exec(href)[1]);
 						}catch(e){}
-					}else if(href && href !== '#'){
+					}else if(href){
+						if(href.match('^#.*$')){
+							return;
+						}
 						var reg = /^page:(\w+)$/;
 						var regJquery = /^page:#([\w\-_]+)\.([\w_]+)$/;
 						if(reg.test(href)){
@@ -83,9 +87,10 @@ define(function(require, exports, module){
 							goPage(this, page);
 						}
 					}
+					return false;
 				});
 			}else{
-				$('a[href],button[href],i[href]', $page).click(function(){
+				$($page).on('click', 'a[href],button[href],i[href]', function(){
 					var $this = $(this);
 					if(!$this.is('.tab,.dialog')){
 						var href =$this.attr('href');
@@ -94,7 +99,10 @@ define(function(require, exports, module){
 							try{
 								eval(je.exec(href)[1]);
 							}catch(e){}
-						}else if(href && href !== '#'){
+						}else if(href){
+							if(href.match('^#.*$')){
+								return;
+							}
 							var confirmStr = $this.attr('confirm');
 							if(confirmStr){
 								require('dialog').confirm(confirmStr, function(yes){
@@ -145,6 +153,7 @@ define(function(require, exports, module){
 								}
 							}
 						}
+						return false;
 					}
 				});
 			}

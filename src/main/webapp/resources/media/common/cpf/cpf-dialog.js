@@ -203,7 +203,14 @@ define(function(require, exports, module){
 		//显示弹出框
 		this.show = function(){
 			Page.putPage(id, page);
-			this.getDom().modal({backdrop: 'static', keyboard: false});
+			var $m = this.getDom();
+			try{
+				var backdropZIndex = $m.data('backdropZIndex');
+				if(backdropZIndex !== undefined){
+					$m.css('zIndex', Number(backdropZIndex) + 1);
+				}
+			}catch(e){}
+			$m.modal({backdrop: 'static', keyboard: false});
 		};
 		//最小化弹出框
 		this.minimize = function(){
@@ -331,6 +338,7 @@ define(function(require, exports, module){
 				title	: title,
 				id		: id
 			}, param));
+			dialog.getDom().data(param.domData);
 			//直接加载弹出框
 			dialog.loadContent(url, param.title, param.reqParam)
 				.show();
@@ -420,15 +428,17 @@ define(function(require, exports, module){
 							'<button class="confirm-btn-yes btn btn-default"> 是 </button>' +
 							'<button class="confirm-btn-no btn btn-primary"> 否 </button>' +
 						'</div>' + 
-						    
 					'</div>',
-				$confirm = $(confirmModel)
+					$confirm = $(confirmModel)
 					;
 			param.domHandler.apply(this, [$('div.dialog-confirm-msg:first', $confirm), $confirm]);
 			var dialog = Dialog.openDialog($confirm, title, confirmId, {
 				width	: param.width,
 				height	: param.height,
-				top		: param.top
+				top		: param.top,
+				domData	: {
+					backdropZIndex	: 9999
+				}
 			});
 			dialog.getFooter().find('button.confirm-btn-yes,button.confirm-btn-no').click(function(){
 				var isYes = $(this).is('.confirm-btn-yes');

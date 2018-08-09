@@ -9,11 +9,11 @@
         define("bloodhound", [ "jquery" ], function(a0) {
             return root["Bloodhound"] = factory(a0);
         });
-    } else if(typeof define === 'function' && define.cmd){
+    }/* else if(typeof define === 'function' && define.cmd){
     	define(function(require, exports, module){
     		module.exports = factory(jQuery || require('jquery'));
     	});
-    }else if (typeof exports === "object") {
+    }*/else if (typeof exports === "object") {
         module.exports = factory(require("jquery"));
     } else {
         root["Bloodhound"] = factory(jQuery);

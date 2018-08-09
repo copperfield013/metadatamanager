@@ -25,6 +25,7 @@ public class ServiceBizzDataDaoImpl implements ServiceBizzDataDao {
 	@Resource
 	SessionFactory sFactory;
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<ServiceBizzData> queryList(ServiceBizzDataCriteria criteria, PageInfo pageInfo) {
 		String hql = "from ServiceBizzData b";

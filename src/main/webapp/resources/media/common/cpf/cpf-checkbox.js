@@ -84,11 +84,16 @@ define(function(require, exports, module){
 					this.setValue(val[i]);
 				}
 			}else if(typeof val === 'string'){
+				var valSet = new Set();
+				var split = val.split(',');
+				for(var i in split){
+					valSet.add(split[i]);
+				}
 				for(var i in param.checkboxs){
 					var checkbox = param.checkboxs[i];
 					if(checkbox instanceof Ccheckbox){
 						var value = checkbox.getValue();
-						if(value == val){
+						if(valSet.has(value)){
 							checkbox.toggleChecked(true);
 						}
 					}
@@ -102,6 +107,27 @@ define(function(require, exports, module){
 				val.push(checkbox.getValue());
 			}
 			return val;
+		}
+		function swapCheckbox(i, j){
+			require('utils').swap(param.checkboxs, i, j);
+		}
+		function replace(index){
+			if(index < param.checkboxs.length - 1){
+				if(!param.checkboxs[index].isChecked()){
+					for(var i = index + 1; i < param.checkboxs.length; i++){
+						if(param.checkboxs[i].isChecked()){
+							param.checkboxs[index].swapDom(param.checkboxs[i]);
+							swapCheckbox(index, i);
+							return replace(i + 1);
+						}
+					}
+				}else{
+					return replace(index + 1);
+				}
+			}
+		}
+		this.autoSort = function(){
+			replace(0);
 		}
 		this.init();
 		
@@ -200,6 +226,27 @@ define(function(require, exports, module){
 		this.getType = function(){
 			return param.$input.attr('type');
 		}
+		this.swapDom = function(otherCheckbox){
+			if(otherCheckbox instanceof Ccheckbox){
+				var labelFirst = true;
+				var $thisPrev = this.getLabel().prev();
+				if($thisPrev.is(this.getInput())){
+					$thisPrev = this.getInput().prev();
+					labelFirst = false;
+				}
+				
+				this.getLabel().insertAfter(otherCheckbox.getLabel());
+				this.getInput().insertAfter(otherCheckbox.getInput());
+				
+				if(labelFirst){
+					otherCheckbox.getInput().insertAfter($thisPrev);
+					otherCheckbox.getLabel().insertAfter($thisPrev);
+				}else{
+					otherCheckbox.getLabel().insertAfter($thisPrev);
+					otherCheckbox.getInput().insertAfter($thisPrev);
+				}
+			}
+		}
 	}
 	
 	var CCK = {
@@ -218,11 +265,12 @@ define(function(require, exports, module){
 						var $label = null;
 						var thisInputId = $this.attr('id');
 						if(thisInputId){
-							$label = $(this).prev('*[for="' + thisInputId + '"]');
+							$label = $(this).next('*[for="' + thisInputId + '"]');
 						}
+						var ccheckboxClass = $CPF.getParam('ccheckboxClass');
 						if($label == null || ($label instanceof $ && $label.length == 0)){
 							$label = $('<span>')
-								.addClass($CPF.getParam('ccheckboxClass'))
+								.addClass(ccheckboxClass)
 								.text($this.attr('data-text')).insertBefore($this);
 						}
 						var ccheckbox = new Ccheckbox({
@@ -246,6 +294,9 @@ define(function(require, exports, module){
 					value		: defaultValue,
 					whenChanged	: whenChanged
 				});
+				if(checkboxs.length > 20){
+					group.autoSort();
+				}
 				return group;
 			}
 		},

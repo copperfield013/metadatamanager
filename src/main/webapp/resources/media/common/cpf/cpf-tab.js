@@ -437,7 +437,7 @@ define(function(require, exports, module){
 				$('li.active', li.closest('.sidebar-menu')).removeClass('active');
 				li.addClass('active');
 			}
-			if(uri.startsWith('admin/')){
+			if(uri.startsWith($CPF.getParam('tabLinkPrefix'))){
 				try{
 					Tab.openInTab(uri, tabId, title);
 				}catch(e){

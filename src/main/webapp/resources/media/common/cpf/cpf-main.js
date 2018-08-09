@@ -31,6 +31,7 @@ define(function(require){
 	require('innerpage');
 	require('css');
 	require('control');
+	require('checkbox');
 	$CPF.putPageInitSequeue(12, function($page){
 		$(':text.dtrangepicker').each(function(){
 			require('utils').daterangepicker($(this));
@@ -40,7 +41,8 @@ define(function(require){
 		loadingImg			: 'media/admin/cpf/image/loading.gif',
 		innerPageLoadingImg	: 'media/admin/cpf/image/innerpage-loading.gif',
 		maxPageCount		: 8,
-		sessionInvalidURL	: 'admin/login'
+		sessionInvalidURL	: 'admin/login',
+		tabLinkPrefix		: 'admin/'
 	});
 	$CPF.showLoading();
 	//初始化当前页面
