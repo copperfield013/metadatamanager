@@ -9,11 +9,9 @@ import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.abc.mapping.conf.MappingContainer;
-import com.abc.mapping.node.ABCNode;
+
 import com.abc.mapping.node.NodeOpsType;
 import com.abc.mapping.node.NodeType;
-import com.abc.util.ValueTypeConstant;
 import com.alibaba.fastjson.JSONObject;
 
 import cn.sowell.datacenter.entityResolver.config.DBModuleConfigMediator;
@@ -74,14 +72,8 @@ public class TestBasicItemDao {
 		System.out.println(NodeType.ATTRIBUTE);
 		System.out.println(NodeType.getNodeType(1));
 		System.out.println("=============");
-		
-		int abctRecord = ValueTypeConstant.ABCT_RECORD;
-		 int abctDate = ValueTypeConstant.ABCT_DATE;
-		 int abctString = ValueTypeConstant.ABCT_STRING;
-		 String abctNameString = ValueTypeConstant.ABCT_NAME_STRING;
-		 String abctNameRecord = ValueTypeConstant.ABCT_NAME_RECORD;
-		 
-		System.out.println(abctRecord);
+			 
+//		System.out.println(abctRecord);
 		
 		System.out.println("=============");
 	}
