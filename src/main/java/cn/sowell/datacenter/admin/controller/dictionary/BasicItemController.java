@@ -1,5 +1,11 @@
 package cn.sowell.datacenter.admin.controller.dictionary;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+
 import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.List;
@@ -16,25 +22,14 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.abc.util.ValueType;
-import com.alibaba.fastjson.JSONObject;
-import com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException;
-
+import springfox.documentation.annotations.ApiIgnore;
 import cn.sowell.copframe.dto.ajax.AjaxPageResponse;
-import cn.sowell.copframe.dto.ajax.JsonArrayResponse;
 import cn.sowell.copframe.dto.ajax.NoticeType;
-import cn.sowell.copframe.dto.ajax.ResponseJSON;
-import cn.sowell.copframe.dto.page.PageInfo;
-import cn.sowell.copframe.utils.TextUtils;
 import cn.sowell.datacenter.admin.controller.AdminConstants;
-import cn.sowell.datacenter.admin.controller.CommonResponseEntity;
 import cn.sowell.datacenter.admin.controller.node.api.BasicItems;
 import cn.sowell.datacenter.admin.controller.node.api.InlineResponse2003;
 import cn.sowell.datacenter.admin.controller.node.api.InlineResponse2004;
 import cn.sowell.datacenter.admin.controller.node.api.InlineResponse2005;
-import cn.sowell.datacenter.model.demo.criteria.DemoCriteria;
-import cn.sowell.datacenter.model.demo.pojo.PlainDemo;
-import cn.sowell.datacenter.model.demo.service.DemoService;
 import cn.sowell.datacenter.model.dictionary.criteria.BasicItemCriteria;
 import cn.sowell.datacenter.model.dictionary.pojo.BasicItem;
 import cn.sowell.datacenter.model.dictionary.pojo.DictionaryBasicItem;
@@ -44,14 +39,9 @@ import cn.sowell.datacenter.model.dictionary.pojo.TowlevelattrMultiattrMapping;
 import cn.sowell.datacenter.model.dictionary.service.BasicItemService;
 import cn.sowell.datacenter.model.dictionary.service.TowlevelattrMultiattrMappingService;
 import cn.sowell.datacenter.model.dictionary.service.TowlevelattrService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
-import springfox.documentation.annotations.ApiIgnore;
+
+import com.abc.util.ValueType;
+import com.alibaba.fastjson.JSONObject;
 
 @Api(tags="entityManager", description="实体管理接口")
 @Controller
