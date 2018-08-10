@@ -17,7 +17,7 @@
 					 <div class="form-group">
 						<label class="col-lg-2 control-label" for="basicItemId">字典名称</label>
 						<div class="col-lg-5">
-							${dictBasicItem.parentName }-${dictBasicItem.name }
+							${dictBasicItem.name }
 						</div>
 					</div>
 					
@@ -30,7 +30,7 @@
 					<div class="form-group">
 						<label class="col-lg-2 control-label" for="priorityLevel">优先级</label>
 						<div class="col-lg-5">
-							<input type="text" class="form-control" name="priorityLevel" value="${dictMappingAlias.priorityLevel }"/>
+							<input type="number" placeholder="只能是数字" class="form-control" name="priorityLevel" value="${dictMappingAlias.priorityLevel }"/>
 						</div>
 					</div>
 					<div class="form-group">

@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import cn.sowell.copframe.dto.ajax.AjaxPageResponse;
 import cn.sowell.copframe.dto.page.PageInfo;
 import cn.sowell.datacenter.admin.controller.AdminConstants;
+import cn.sowell.datacenter.model.cascadedict.pojo.CascadedictBasicItem;
+import cn.sowell.datacenter.model.cascadedict.service.CascadedictBasicItemService;
 import cn.sowell.datacenter.model.dictionary.criteria.DictionaryMappingAliasCriteria;
 import cn.sowell.datacenter.model.dictionary.pojo.DictionaryBasicItem;
 import cn.sowell.datacenter.model.dictionary.pojo.DictionaryMapping;
@@ -39,7 +41,7 @@ public class DictionaryMappingAliasController {
 	DictionaryMappingService dictionaryMappingService;
 	
 	@Resource
-	DictionaryBasicItemService DictBItemService;
+	CascadedictBasicItemService cascadedictBasicItemService;
 	
 	@Resource
 	DictionaryParentItemService dictParentItemService;
@@ -62,37 +64,23 @@ public class DictionaryMappingAliasController {
 		return AdminConstants.JSP_DICTIONARY + "/dictMappingAlias/list.jsp";
 	}
 	
-	@RequestMapping("/add")
-	public String add(String mappingId, Model model){
-		List<DictionaryBasicItem> dictBItemList = DictBItemService.queryAllList();
-		model.addAttribute("mappingId", mappingId);
-		model.addAttribute("dictBItemList", dictBItemList);
-		return AdminConstants.JSP_DICTIONARY + "/dictMappingAlias/add.jsp";
-	}
-	
-	@ResponseBody
-	@RequestMapping("/do_add")
-	public AjaxPageResponse doAdd(DictionaryMappingAlias criteria){
-		try {
-			dictMappingAliasService.create(criteria);
-			return AjaxPageResponse.CLOSE_AND_REFRESH_PAGE("添加成功", "dictMappingAlias_list");
-		} catch (Exception e) {
-			logger.error("添加失败", e);
-			return AjaxPageResponse.FAILD("添加失败");
-		}
-	}
-
 	@RequestMapping("/update")
 	public String update(DictionaryMappingAlias criteria, Model model){
-		DictionaryBasicItem dictBasicItem = DictBItemService.getDictionaryBasicItem(criteria.getBasicItemId());
-		DictionaryMappingAlias dictMappingAlias = null;
-		if (criteria.getId() != null) {
-			dictMappingAlias = dictMappingAliasService.getOne(criteria.getId());
+		try {
+			CascadedictBasicItem one = cascadedictBasicItemService.getOne(criteria.getBasicItemId());
+			DictionaryMappingAlias dictMappingAlias = null;
+			if (criteria.getId() != null) {
+				dictMappingAlias = dictMappingAliasService.getOne(criteria.getId());
+			}
+			model.addAttribute("criteria", criteria);
+			model.addAttribute("dictMappingAlias", dictMappingAlias);
+			model.addAttribute("dictBasicItem", one);
+			return AdminConstants.JSP_DICTIONARY + "/dictMappingAlias/update.jsp";
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-		model.addAttribute("criteria", criteria);
-		model.addAttribute("dictMappingAlias", dictMappingAlias);
-		model.addAttribute("dictBasicItem", dictBasicItem);
-		return AdminConstants.JSP_DICTIONARY + "/dictMappingAlias/update.jsp";
+		return null;
 	}
 	
 	@ResponseBody

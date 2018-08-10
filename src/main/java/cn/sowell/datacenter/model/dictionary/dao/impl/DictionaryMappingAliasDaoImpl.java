@@ -31,16 +31,18 @@ public class DictionaryMappingAliasDaoImpl implements DictionaryMappingAliasDao 
 	@Override
 	public List queryList(DictionaryMappingAliasCriteria criteria, PageInfo pageInfo) {
 		
-		String sql = "SELECT  b.id itemId, b.parent_name, b.parent_id, b.c_code, b.c_name, b.c_en_name, b.c_status, "
-				+ " c.id aliasId, c.mapping_id, c.basic_item_id, c.alias_name, c.priority_level "
-				+ " from t_sc_dictionary_basic_item b"
+		String sql = "SELECT 	b.id itemId, 	b.parent_id,	b.c_order,	b.c_name,	b.c_en_name,	b.c_status,"
+				+ "	c.id aliasId,	c.mapping_id,	c.basic_item_id,	c.alias_name,	c.priority_level, d.c_name parent_name FROM"
+				+ "	t_sc_cascadedict_basic_item b"
 				+ " LEFT OUTER JOIN ( "
-				+ "SELECT * from t_sc_dictionary_mapping_alias  a "
-				+ "WHERE mapping_id ='"+criteria.getMappingId()+"' ) c ON b.id= c.basic_item_id ";
+				+ " SELECT * from t_sc_cascadedict_mapping_alias  a "
+				+ " WHERE mapping_id ='"+criteria.getMappingId()+"' ) c ON b.id= c.basic_item_id "
+				+ " LEFT OUTER JOIN t_sc_cascadedict_basic_item d 	on b.parent_id=d.id "
+				+ "WHERE  b.id != 0 ";
 		DeferedParamQuery dQuery = new DeferedParamQuery(sql);
 		
 		if(TextUtils.hasText(criteria.getBtItemParentName())){
-			dQuery.appendCondition(" and b.parent_name like :parentName")
+			dQuery.appendCondition(" and d.c_name like :parentName")
 					.setParam("parentName", "%" + criteria.getBtItemParentName() + "%");
 		}
 		
@@ -54,11 +56,13 @@ public class DictionaryMappingAliasDaoImpl implements DictionaryMappingAliasDao 
 					.setParam("aliasName", "%" + criteria.getAliasName() + "%");
 		}
 		
-		Query countQuery = dQuery.createSQLQuery(sFactory.getCurrentSession(), true, new WrapForCountFunction());
+		dQuery.appendCondition(" ORDER BY b.c_update_time desc");
+		
+		Query countQuery = dQuery.createSQLQuery(sFactory.getCurrentSession(), false, new WrapForCountFunction());
 		Integer count = FormatUtils.toInteger(countQuery.uniqueResult());
 		pageInfo.setCount(count);
 		if(count > 0){
-			Query query = dQuery.createSQLQuery(sFactory.getCurrentSession(), true, null);
+			Query query = dQuery.createSQLQuery(sFactory.getCurrentSession(), false, null);
 			QueryUtils.setPagingParamWithCriteria(query , pageInfo);
 			return query.list();
 		}

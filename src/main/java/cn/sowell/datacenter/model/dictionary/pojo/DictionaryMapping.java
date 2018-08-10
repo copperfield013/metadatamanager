@@ -8,7 +8,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "t_sc_dictionary_mapping")
+@Table(name = "t_sc_cascadedict_mapping")
 public class DictionaryMapping {
 
 	@Id
