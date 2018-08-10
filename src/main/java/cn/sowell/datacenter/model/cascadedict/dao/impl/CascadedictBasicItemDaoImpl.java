@@ -84,5 +84,12 @@ public class CascadedictBasicItemDaoImpl implements CascadedictBasicItemDao {
 		String hql = "from CascadedictBasicItem where parentId=:parentId ORDER BY order";
 		return sFactory.getCurrentSession().createQuery(hql).setParameter("parentId", parentId).list();
 	}
+
+	@Override
+	public List<CascadedictBasicItem> getParentAll() {
+		String sql = "SELECT DISTINCT * FROM `t_sc_cascadedict_basic_item` b "
+				+ "WHERE b.id !=0 AND b.id in(SELECT DISTINCT parent_id FROM `t_sc_cascadedict_basic_item` WHERE parent_id is not null) ";
+		return sFactory.getCurrentSession().createSQLQuery(sql).addEntity(CascadedictBasicItem.class).list();
+	}
 	
 }

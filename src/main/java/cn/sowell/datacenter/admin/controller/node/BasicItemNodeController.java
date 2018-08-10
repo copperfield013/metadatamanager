@@ -2,20 +2,25 @@ package cn.sowell.datacenter.admin.controller.node;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import javax.annotation.Resource;
 import org.apache.commons.io.FileUtils;
+import org.apache.log4j.Logger;
+import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.ServletRequestDataBinder;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -30,6 +35,7 @@ import com.alibaba.fastjson.JSONObject;
 import cn.sowell.copframe.dto.ajax.AjaxPageResponse;
 import cn.sowell.copframe.dto.page.PageInfo;
 import cn.sowell.datacenter.admin.controller.AdminConstants;
+import cn.sowell.datacenter.admin.controller.cascadedict.CascadedictBasicItemController;
 import cn.sowell.datacenter.admin.controller.node.api.BasicItemNodes;
 import cn.sowell.datacenter.admin.controller.node.api.BasicItems;
 import cn.sowell.datacenter.admin.controller.node.api.DictionaryBasicItems;
@@ -37,13 +43,12 @@ import cn.sowell.datacenter.admin.controller.node.api.InlineResponse200;
 import cn.sowell.datacenter.admin.controller.node.api.InlineResponse2001;
 import cn.sowell.datacenter.admin.controller.node.api.InlineResponse2002;
 import cn.sowell.datacenter.admin.controller.node.api.RecordRelationTypes;
+import cn.sowell.datacenter.model.cascadedict.pojo.CascadedictBasicItem;
+import cn.sowell.datacenter.model.cascadedict.service.CascadedictBasicItemService;
 import cn.sowell.datacenter.model.dictionary.criteria.BasicItemCriteria;
 import cn.sowell.datacenter.model.dictionary.pojo.BasicItem;
-import cn.sowell.datacenter.model.dictionary.pojo.DictionaryBasicItem;
-import cn.sowell.datacenter.model.dictionary.pojo.OneLevelItem;
 import cn.sowell.datacenter.model.dictionary.pojo.RecordRelationType;
 import cn.sowell.datacenter.model.dictionary.service.BasicItemService;
-import cn.sowell.datacenter.model.dictionary.service.DictionaryBasicItemService;
 import cn.sowell.datacenter.model.dictionary.service.RecordRelationTypeService;
 import cn.sowell.datacenter.model.node.criteria.BasicItemNodeCriteria;
 import cn.sowell.datacenter.model.node.pojo.BasicItemNode;
@@ -59,19 +64,26 @@ import io.swagger.annotations.ApiResponses;
 @Controller
 @RequestMapping(AdminConstants.URI_NODE + "/basicItemNode")
 public class BasicItemNodeController {
+	
+	
+	Logger logger = Logger.getLogger(BasicItemNodeController.class);
+	@org.springframework.web.bind.annotation.InitBinder
+	public void InitBinder(ServletRequestDataBinder binder) {
+		System.out.println("执行了InitBinder方法");
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		dateFormat.setLenient(false);
+		binder.registerCustomEditor(Date.class, null, new CustomDateEditor(dateFormat, true));
+	}
     
 	@Resource
 	BasicItemNodeService basicItemNodeService;
 
 	@Resource
 	BasicItemService basicItemService;
-
 	@Resource
 	RecordRelationTypeService recordRelationTypeService;
-
 	@Resource
-	DictionaryBasicItemService dictBitemServices;
-	
+	CascadedictBasicItemService cascadedictBasicItemService;
 	 @ApiOperation(value = "获取实体列表信息", nickname = "list", notes = "获取实体列表", response = ModelAndView.class, tags={ "configurationFiles", })
 	    @ApiResponses(value = { 
 	        @ApiResponse(code = 200, message = "OK", response = ModelAndView.class),
@@ -186,13 +198,6 @@ public class BasicItemNodeController {
         method = RequestMethod.POST)
 	public ResponseEntity<Object> getDataType(Integer dataType) {
 		try {
-			//枚举类型传过来是字符型，等下在改
-			// 根据元数据找那个的dataType, 查找对应的节点中的dataType
-			/*if ("二进制型".equals(dataType)) {
-				dataType = "文件型";
-			} else if ("数字型小数".equals(dataType)) {
-				dataType = "数字型双精度";
-			}*/
 			ValueType valueTypeByCName = ValueType.getValueType(dataType);
 			
 			if("ERRORTYPE".equals(valueTypeByCName.getName())) {
@@ -316,7 +321,7 @@ public class BasicItemNodeController {
         method = RequestMethod.POST)
 	public ResponseEntity<DictionaryBasicItems> getCommLab() {
 		try {
-			List<DictionaryBasicItem> list = dictBitemServices.getDictBasicItemByParent(125);
+			 List<CascadedictBasicItem> list = cascadedictBasicItemService.getChildByParentId(125);
 			DictionaryBasicItems dictBasicItems = new DictionaryBasicItems();
 			dictBasicItems.commLab(list);
 			return new ResponseEntity<DictionaryBasicItems>(dictBasicItems, HttpStatus.OK);

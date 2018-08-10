@@ -1,52 +1,69 @@
 package cn.sowell.datacenter.admin.controller.dictionary;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
-
 import java.math.BigInteger;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
 
+import org.apache.log4j.Logger;
+import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.ServletRequestDataBinder;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
-import springfox.documentation.annotations.ApiIgnore;
+import com.abc.util.ValueType;
+import com.alibaba.fastjson.JSONObject;
+import com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException;
+
 import cn.sowell.copframe.dto.ajax.AjaxPageResponse;
+import cn.sowell.copframe.dto.ajax.JsonArrayResponse;
 import cn.sowell.copframe.dto.ajax.NoticeType;
 import cn.sowell.datacenter.admin.controller.AdminConstants;
 import cn.sowell.datacenter.admin.controller.node.api.BasicItems;
 import cn.sowell.datacenter.admin.controller.node.api.InlineResponse2003;
 import cn.sowell.datacenter.admin.controller.node.api.InlineResponse2004;
 import cn.sowell.datacenter.admin.controller.node.api.InlineResponse2005;
+import cn.sowell.datacenter.model.cascadedict.pojo.CascadedictBasicItem;
+import cn.sowell.datacenter.model.cascadedict.service.CascadedictBasicItemService;
 import cn.sowell.datacenter.model.dictionary.criteria.BasicItemCriteria;
 import cn.sowell.datacenter.model.dictionary.pojo.BasicItem;
-import cn.sowell.datacenter.model.dictionary.pojo.DictionaryBasicItem;
 import cn.sowell.datacenter.model.dictionary.pojo.OneLevelItem;
 import cn.sowell.datacenter.model.dictionary.pojo.Towlevelattr;
 import cn.sowell.datacenter.model.dictionary.pojo.TowlevelattrMultiattrMapping;
 import cn.sowell.datacenter.model.dictionary.service.BasicItemService;
 import cn.sowell.datacenter.model.dictionary.service.TowlevelattrMultiattrMappingService;
 import cn.sowell.datacenter.model.dictionary.service.TowlevelattrService;
-
-import com.abc.util.ValueType;
-import com.alibaba.fastjson.JSONObject;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+import springfox.documentation.annotations.ApiIgnore;
 
 @Api(tags="entityManager", description="实体管理接口")
 @Controller
 @RequestMapping(AdminConstants.URI_DICTIONARY + "/basicItem")
 public class BasicItemController {
+	
+	
+	Logger logger = Logger.getLogger(BasicItemController.class);
+	@org.springframework.web.bind.annotation.InitBinder
+	public void InitBinder(ServletRequestDataBinder binder) {
+		System.out.println("执行了InitBinder方法");
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		dateFormat.setLenient(false);
+		binder.registerCustomEditor(Date.class, null, new CustomDateEditor(dateFormat, true));
+	}
 	
 	@Resource
 	BasicItemService basicItemService;
@@ -56,6 +73,9 @@ public class BasicItemController {
 	
 	@Resource
 	TowlevelattrService towlevelattrService;
+	
+	@Resource
+	CascadedictBasicItemService cascadedictBasicItemService;
 	
 	@ApiOperation(value = "跳转到list页面获取实体信息", nickname = "list", notes = "跳转到list页面获取实体信息", response = ModelAndView.class, tags={ "entityManager", })
     @ApiResponses(value = { 
@@ -550,11 +570,17 @@ public class BasicItemController {
 		@ResponseBody
 		@RequestMapping("/getDictCode")
 		public String getDictCode(Long id){
-			List<DictionaryBasicItem> dictCode = basicItemService.getDictCode(id);
-			Map<String, Object> map = new HashMap<String, Object>();
-			map.put("dictList", dictCode);
-			JSONObject json = new JSONObject(map);
-			return json.toString();
+			 try {
+				List<CascadedictBasicItem> dictCode = basicItemService.getDictCode(id);
+				Map<String, Object> map = new HashMap<String, Object>();
+				map.put("dictList", dictCode);
+				JSONObject json = new JSONObject(map);
+				return json.toString();
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			return null;
 			
 		}
 		
@@ -636,5 +662,25 @@ public class BasicItemController {
 			}
 			return "false";
 		}
-			
+		
+		 
+	    //这里写获取枚举值的方法         
+	    @ResponseBody
+		@RequestMapping("/getDictPitem")
+		public String getDictPitem(){
+			Map<String, Object> map = new HashMap<String, Object>();
+			JSONObject jobj = new JSONObject(map);
+			try {
+				List<CascadedictBasicItem> childList = cascadedictBasicItemService.getParentAll();
+				map.put("code", 200);
+				map.put("msg", "success");
+				map.put("dictPitem", childList);
+				return jobj.toString();
+			} catch (Exception e) {
+				logger.error("添加失败", e);
+				map.put("code", 400);
+				map.put("msg", "error");
+				return jobj.toString();
+			}
+		}
 }

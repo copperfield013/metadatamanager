@@ -29,14 +29,8 @@ import cn.sowell.datacenter.admin.controller.AdminConstants;
 import cn.sowell.datacenter.model.demo.criteria.DemoCriteria;
 import cn.sowell.datacenter.model.demo.pojo.PlainDemo;
 import cn.sowell.datacenter.model.demo.service.DemoService;
-import cn.sowell.datacenter.model.dictionary.criteria.DictionaryBasicItemCriteria;
-import cn.sowell.datacenter.model.dictionary.criteria.DictionaryParentItemCriteria;
 import cn.sowell.datacenter.model.dictionary.pojo.BasicItem;
-import cn.sowell.datacenter.model.dictionary.pojo.DictionaryBasicItem;
-import cn.sowell.datacenter.model.dictionary.pojo.DictionaryParentItem;
 import cn.sowell.datacenter.model.dictionary.pojo.RecordRelationType;
-import cn.sowell.datacenter.model.dictionary.service.DictionaryBasicItemService;
-import cn.sowell.datacenter.model.dictionary.service.DictionaryParentItemService;
 import cn.sowell.datacenter.model.dictionary.service.RecordRelationTypeService;
 
 @Controller

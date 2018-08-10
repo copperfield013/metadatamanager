@@ -57,6 +57,10 @@ public interface CascadedictBasicItemService {
 	 */
 	List<CascadedictBasicItem> getChildByParentId(Integer parentId) throws Exception;
 	
-	
+	/**
+	 * 获取所有父亲， 不管是一级父亲还是二级父亲,只要你这个父亲下面有孩子就获取
+	 * @return
+	 */
+	List <CascadedictBasicItem> getParentAll();
 	
 }

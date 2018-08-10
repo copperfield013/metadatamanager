@@ -1,7 +1,5 @@
 package cn.sowell.datacenter.model.cascadedict.pojo;
 
-import java.util.Date;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;

@@ -18,9 +18,7 @@ import cn.sowell.copframe.utils.FormatUtils;
 import cn.sowell.copframe.utils.TextUtils;
 import cn.sowell.datacenter.model.dictionary.criteria.DictionaryMappingAliasCriteria;
 import cn.sowell.datacenter.model.dictionary.dao.DictionaryMappingAliasDao;
-import cn.sowell.datacenter.model.dictionary.pojo.DictionaryBasicItem;
 import cn.sowell.datacenter.model.dictionary.pojo.DictionaryMappingAlias;
-import cn.sowell.datacenter.model.dictionary.pojo.DictionaryParentItem;
 
 @Repository
 public class DictionaryMappingAliasDaoImpl implements DictionaryMappingAliasDao {

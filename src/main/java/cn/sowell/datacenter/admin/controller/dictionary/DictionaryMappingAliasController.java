@@ -21,14 +21,10 @@ import cn.sowell.datacenter.admin.controller.AdminConstants;
 import cn.sowell.datacenter.model.cascadedict.pojo.CascadedictBasicItem;
 import cn.sowell.datacenter.model.cascadedict.service.CascadedictBasicItemService;
 import cn.sowell.datacenter.model.dictionary.criteria.DictionaryMappingAliasCriteria;
-import cn.sowell.datacenter.model.dictionary.pojo.DictionaryBasicItem;
 import cn.sowell.datacenter.model.dictionary.pojo.DictionaryMapping;
 import cn.sowell.datacenter.model.dictionary.pojo.DictionaryMappingAlias;
-import cn.sowell.datacenter.model.dictionary.pojo.DictionaryParentItem;
-import cn.sowell.datacenter.model.dictionary.service.DictionaryBasicItemService;
 import cn.sowell.datacenter.model.dictionary.service.DictionaryMappingAliasService;
 import cn.sowell.datacenter.model.dictionary.service.DictionaryMappingService;
-import cn.sowell.datacenter.model.dictionary.service.DictionaryParentItemService;
 
 @Controller
 @RequestMapping(AdminConstants.URI_DICTIONARY + "/dictMappingAlias")
@@ -43,8 +39,6 @@ public class DictionaryMappingAliasController {
 	@Resource
 	CascadedictBasicItemService cascadedictBasicItemService;
 	
-	@Resource
-	DictionaryParentItemService dictParentItemService;
 	
 	Logger logger = Logger.getLogger(DictionaryMappingAliasController.class);
 	@org.springframework.web.bind.annotation.InitBinder

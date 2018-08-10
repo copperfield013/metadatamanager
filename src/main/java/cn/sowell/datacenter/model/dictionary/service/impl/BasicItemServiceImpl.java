@@ -17,16 +17,16 @@ import org.springframework.stereotype.Service;
 import com.abc.util.AttributeParter;
 import com.abc.util.ValueType;
 
+import cn.sowell.datacenter.model.cascadedict.pojo.CascadedictBasicItem;
+import cn.sowell.datacenter.model.cascadedict.service.CascadedictBasicItemService;
 import cn.sowell.datacenter.model.dictionary.criteria.BasicItemCriteria;
 import cn.sowell.datacenter.model.dictionary.dao.BasicItemDao;
 import cn.sowell.datacenter.model.dictionary.pojo.BasicItem;
-import cn.sowell.datacenter.model.dictionary.pojo.DictionaryBasicItem;
 import cn.sowell.datacenter.model.dictionary.pojo.OneLevelItem;
 import cn.sowell.datacenter.model.dictionary.pojo.RecordRelationType;
 import cn.sowell.datacenter.model.dictionary.pojo.Towlevelattr;
 import cn.sowell.datacenter.model.dictionary.pojo.TowlevelattrMultiattrMapping;
 import cn.sowell.datacenter.model.dictionary.service.BasicItemService;
-import cn.sowell.datacenter.model.dictionary.service.DictionaryBasicItemService;
 import cn.sowell.datacenter.model.dictionary.service.RecordRelationTypeService;
 import cn.sowell.datacenter.model.dictionary.service.TowlevelattrMultiattrMappingService;
 import cn.sowell.datacenter.model.dictionary.service.TowlevelattrService;
@@ -43,10 +43,9 @@ public class BasicItemServiceImpl implements BasicItemService {
 	TowlevelattrMultiattrMappingService tmms;
 	
 	@Resource
-	DictionaryBasicItemService dictionaryBasicItemService;
-	
-	@Resource
 	TowlevelattrService towlevelattrService;
+	@Resource
+	CascadedictBasicItemService cascadedictBasicItemService;
 	
 	@Resource
 	SessionFactory sFactory;
@@ -687,8 +686,6 @@ public class BasicItemServiceImpl implements BasicItemService {
 			}
 		}
 		
-		
-		
 		//以上程序执行完比， 应确保只有状态为1  和-1， 下面程序把所有状态为0的改为1
 		basicItemDao.excuteBySql("UPDATE t_sc_basic_item SET c_using_state=1 WHERE c_using_state=0");
 		}
@@ -699,21 +696,21 @@ public class BasicItemServiceImpl implements BasicItemService {
 	}
 
 	@Override
-	public List<DictionaryBasicItem> getDictCode(Long id) {
+	public List<CascadedictBasicItem> getDictCode(Long id) throws Exception {
 		
 		TowlevelattrMultiattrMapping mapping = tmms.getOne(id);
 		BasicItem basicItem = basicItemDao.get(BasicItem.class, mapping.getDictionaryAttr());
 		Integer dictParentId = basicItem.getOneLevelItem().getDictParentId();
 		
-		List<DictionaryBasicItem> dictBItemList = dictionaryBasicItemService.getDictBasicItemByParent(dictParentId);
+		List<CascadedictBasicItem> dictBItemList = cascadedictBasicItemService.getChildByParentId(dictParentId);
 		
 		List<Object[]> twoLevelList = towlevelattrService.getListByMappingId(Long.toString(id));
 		
 		for (Object[] two : twoLevelList) {
-			Iterator<DictionaryBasicItem> iterator = dictBItemList.iterator();
+			Iterator<CascadedictBasicItem> iterator = dictBItemList.iterator();
 	        while (iterator.hasNext()) {
-	        	DictionaryBasicItem dBitem = iterator.next();
-	             if (Integer.parseInt((String) two[3]) == dBitem.getCode()) {
+	        	CascadedictBasicItem dBitem = iterator.next();
+	             if (Integer.parseInt((String) two[3]) == dBitem.getId()) {
 	            	 dictBItemList.remove(dBitem);
 	            	 break;
 	             }

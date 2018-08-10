@@ -3,10 +3,8 @@ package cn.sowell.datacenter.admin.controller.node.api;
 import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import cn.sowell.datacenter.model.dictionary.pojo.DictionaryBasicItem;
+import cn.sowell.datacenter.model.cascadedict.pojo.CascadedictBasicItem;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,16 +18,16 @@ import org.springframework.validation.annotation.Validated;
 
 public class DictionaryBasicItems   {
   @JsonProperty("commLab")
-  private List<DictionaryBasicItem> commLab = null;
+  private List<CascadedictBasicItem> commLab = null;
 
-  public DictionaryBasicItems commLab(List<DictionaryBasicItem> commLab) {
+  public DictionaryBasicItems commLab(List<CascadedictBasicItem> commLab) {
     this.commLab = commLab;
     return this;
   }
 
-  public DictionaryBasicItems addCommLabItem(DictionaryBasicItem commLabItem) {
+  public DictionaryBasicItems addCommLabItem(CascadedictBasicItem commLabItem) {
     if (this.commLab == null) {
-      this.commLab = new ArrayList<DictionaryBasicItem>();
+      this.commLab = new ArrayList<CascadedictBasicItem>();
     }
     this.commLab.add(commLabItem);
     return this;
@@ -41,11 +39,11 @@ public class DictionaryBasicItems   {
   **/
   @ApiModelProperty(value = "")
 
-  public List<DictionaryBasicItem> getCommLab() {
+  public List<CascadedictBasicItem> getCommLab() {
     return commLab;
   }
 
-  public void setCommLab(List<DictionaryBasicItem> commLab) {
+  public void setCommLab(List<CascadedictBasicItem> commLab) {
     this.commLab = commLab;
   }
 

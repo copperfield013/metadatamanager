@@ -4,9 +4,9 @@ import java.math.BigInteger;
 import java.util.List;
 import java.util.Map;
 
+import cn.sowell.datacenter.model.cascadedict.pojo.CascadedictBasicItem;
 import cn.sowell.datacenter.model.dictionary.criteria.BasicItemCriteria;
 import cn.sowell.datacenter.model.dictionary.pojo.BasicItem;
-import cn.sowell.datacenter.model.dictionary.pojo.DictionaryBasicItem;
 import cn.sowell.datacenter.model.dictionary.pojo.Towlevelattr;
 
 public interface BasicItemService {
@@ -80,7 +80,7 @@ public interface BasicItemService {
 	 */
 	List<BasicItem> getDataByPId(String parent);
 
-	List<DictionaryBasicItem> getDictCode(Long id);
+	List<CascadedictBasicItem> getDictCode(Long id) throws Exception;
 
 	void createTowLevel(Towlevelattr criteria, String name);
 

@@ -71,4 +71,9 @@ public class CascadedictBasicItemServiceImpl implements CascadedictBasicItemServ
 		
 	}
 
+	@Override
+	public List<CascadedictBasicItem> getParentAll() {
+		return dictionaryBasicItemDao.getParentAll();
+	}
+
 }
