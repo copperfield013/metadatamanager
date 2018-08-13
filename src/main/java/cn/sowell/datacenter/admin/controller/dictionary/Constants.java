@@ -23,6 +23,7 @@ public interface Constants {
 			put(String.valueOf(ValueType.ENUMTYPE.getIndex()), ValueType.ENUMTYPE.getCName());
 			put(String.valueOf(ValueType.BYTES.getIndex()), ValueType.BYTES.getCName());
 			put(String.valueOf(ValueType.REFERENCE.getIndex()), ValueType.REFERENCE.getCName());
+			put(String.valueOf(ValueType.CASCADETYPE.getIndex()), ValueType.CASCADETYPE.getCName());
 		}
 	};
 	

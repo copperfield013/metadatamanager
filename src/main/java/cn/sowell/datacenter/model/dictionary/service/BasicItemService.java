@@ -7,6 +7,7 @@ import java.util.Map;
 import cn.sowell.datacenter.model.cascadedict.pojo.CascadedictBasicItem;
 import cn.sowell.datacenter.model.dictionary.criteria.BasicItemCriteria;
 import cn.sowell.datacenter.model.dictionary.pojo.BasicItem;
+import cn.sowell.datacenter.model.dictionary.pojo.CascadeAttr;
 import cn.sowell.datacenter.model.dictionary.pojo.Towlevelattr;
 
 public interface BasicItemService {
@@ -111,4 +112,27 @@ public interface BasicItemService {
 	 * @return
 	 */
 	public Object[] getBasicItemFix() throws Exception;
+
+	/**
+	 * 这里获取级联属性的孩子
+	 * @param code
+	 * @return
+	 */
+	List getCascadeAttrChild(String code);
+
+	/**
+	 * 保存级联属性的孩子
+	 * @param code
+	 * @param casCode
+	 * @param level
+	 * @throws Exception
+	 */
+	void saveCascaseAttrChild(CascadeAttr cascadeAttr) throws Exception;
+
+	/**
+	 * 删除级联属性的孩子
+	 * @param code
+	 * @param casCode
+	 */
+	void delCascaseAttrChild(String code, String casCode) throws Exception;
 }

@@ -357,8 +357,14 @@ public class BasicItemNodeController {
 		BasicItemNode btNode = basicItemNodeService.getOne(Integer.parseInt(nodeId));
 		BasicItem basicItem = btNode.getBasicItem();
 		ModelAndView mv = new ModelAndView();
+		List opsList = new ArrayList();
+		for (NodeOpsType f : NodeOpsType.values()) {
+			opsList.add(f.getName());
+		}
+		
 		mv.addObject("btNode", btNode);
 		mv.addObject("basicItem", basicItem);
+		mv.addObject("opsList", opsList);
 		mv.setViewName(AdminConstants.JSP_NODE + "/basicItemNode/edit.jsp");
 		return mv;
 	}

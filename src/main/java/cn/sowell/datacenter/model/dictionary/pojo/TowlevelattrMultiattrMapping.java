@@ -11,7 +11,7 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 @Entity
-@Table(name = "t_sc_towlevelattr_multiattr_mapping")
+@Table(name = "t_sc_twolevelattr_multiattr_mapping")
 public class TowlevelattrMultiattrMapping {
 
 	@Id

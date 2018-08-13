@@ -22,6 +22,7 @@ import cn.sowell.datacenter.model.cascadedict.service.CascadedictBasicItemServic
 import cn.sowell.datacenter.model.dictionary.criteria.BasicItemCriteria;
 import cn.sowell.datacenter.model.dictionary.dao.BasicItemDao;
 import cn.sowell.datacenter.model.dictionary.pojo.BasicItem;
+import cn.sowell.datacenter.model.dictionary.pojo.CascadeAttr;
 import cn.sowell.datacenter.model.dictionary.pojo.OneLevelItem;
 import cn.sowell.datacenter.model.dictionary.pojo.RecordRelationType;
 import cn.sowell.datacenter.model.dictionary.pojo.Towlevelattr;
@@ -764,6 +765,21 @@ public class BasicItemServiceImpl implements BasicItemService {
 	@Override
 	public Object[] getBasicItemFix() throws Exception {
 		return basicItemDao.getBasicItemFix();
+	}
+
+	@Override
+	public List getCascadeAttrChild(String code) {
+		return basicItemDao.getCascadeAttrChild(code);
+	}
+
+	@Override
+	public void saveCascaseAttrChild(CascadeAttr cascadeAttr) throws Exception {
+		basicItemDao.saveCascaseAttrChild(cascadeAttr);
+	}
+
+	@Override
+	public void delCascaseAttrChild(String code, String casCode) throws Exception{
+		basicItemDao.delCascaseAttrChild(code, casCode);
 	}
 
 }

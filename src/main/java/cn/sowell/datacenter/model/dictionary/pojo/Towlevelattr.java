@@ -9,7 +9,7 @@ import javax.persistence.Transient;
 import org.hibernate.annotations.GenericGenerator;
 
 @Entity
-@Table(name = "t_sc_towlevelattr")
+@Table(name = "t_sc_twolevel_attr")
 public class Towlevelattr {
 
 	@Id

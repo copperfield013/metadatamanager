@@ -382,6 +382,40 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
                 $CPF.closeLoading();
             });            
     		 
+    	} else if ("17" == $this.val()) {//级联类型
+    		$CPF.showLoading();
+	        $form.find("#dictParentId").remove();
+	        $form.find("#s2id_dictParentId").remove();
+	        $form.find("#span_enum").remove();
+	        $form.find("#refType").remove();
+	        $form.find("#refType_enum").remove(); 
+	        $form.find("#s2id_refType").remove();
+            //选中  则显示下拉列表       
+            Ajax.ajax('admin/dictionary/basicItem/getDictPitem', '', function(data) {
+            	var dictParentId = $form.find("#edit_dictParentId").val();
+                var dataArr = data.dictPitem;
+                var str = "<span id=\"span_enum\">字典序：</span><select id=\"dictParentId\" name=\"dictParentId\">";
+                if (dictParentId == "") {
+                	for (var p in dataArr) { //遍历json数组时，这么写p为索引，0,1
+                        str = str + "<option value=\"" + dataArr[p].id + "\">" + dataArr[p].name + "</option>"; 
+                    }
+                }else {
+                	for (var p in dataArr) { //遍历json数组时，这么写p为索引，0,1
+                        if (dictParentId == dataArr[p].id) {
+                            str = str + "<option selected=\"selected\"  value=\"" + dataArr[p].id + "\">" + dataArr[p].name + "</option>"; 
+                        } else {
+                            str = str + "<option value=\"" + dataArr[p].id + "\">" + dataArr[p].name + "</option>"; 
+                        }
+                    }
+                }
+                
+                str = str + "</select>";               
+                $form.find("#dataType").after(str);                
+                $form.find("#dictParentId").css("width","30%").select2();
+                $form.find("#dataRange").val("32").show();
+               $form.find("#cn_dataRange").show();               
+                $CPF.closeLoading();
+            }); 
     	}else {    		
     		$form.find("#cn_dataRange").show();
     		 $form.find("#dataRange").show();
@@ -620,7 +654,109 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
         }
     });
     
+    //点击 查看级联属性的孩子  显示div
+    $(".common_proper", $page).on("click", ".show_cascadeAttr_child", function() {
+       var code = $(this).closest('.entity_ul ').attr("entityid");
+      var $casecadeNode = $(this).closest('.comm_list').siblings(".cascadeAttr_child");
+       Ajax.ajax('admin/dictionary/basicItem/getCascadeAttrChild', {
+    	   code:code
+        }, function(data) {
+        	if (data.code == 200) {
+        	 var cascadeAttr = data.cascadeAttrChild;
+        	 $casecadeNode.find(".new_add_cascade_child").remove();
+        	 var str = '';
+        	 for (var key in cascadeAttr) {   
+                if(cascadeAttr[key][4] == '0'){                       
+                    str = str + "<div title=\"id:"+cascadeAttr[key][1]+", 名称："+cascadeAttr[key][2]+", 等级:"+cascadeAttr[key][3]+"\"  class='entity_attr new_add_cascade_child newadd'>"+cascadeAttr[key][2]+"<i class=\"icon status\"></i><ul class='entity_ul' ><li><a href='javascript:void(0)' code="+cascadeAttr[key][0]+" casCode="+cascadeAttr[key][1]+" class='delete_cascadeAttr_child'><i class='icon edit-entity'></i>删除属性</a></li></ul></div>"
+                } else if(cascadeAttr[key][4] == '2'){                        
+                    str = str + "<div title=\"id:"+cascadeAttr[key][1]+", 名称："+cascadeAttr[key][2]+", 等级:"+cascadeAttr[key][3]+"\"  class='entity_attr new_add_cascade_child stale'>"+cascadeAttr[key][2]+"<i class=\"icon status\"></i><ul class='entity_ul' ><li><a href='javascript:void(0)' code="+cascadeAttr[key][0]+" casCode="+cascadeAttr[key][1]+" class='delete_cascadeAttr_child'><i class='icon edit-entity'></i>删除属性</a></li></ul></div>"
+                } else if(cascadeAttr[key][4] == '-1'){                       
+                    str = str + "<div title=\"id:"+cascadeAttr[key][1]+", 名称："+cascadeAttr[key][2]+", 等级:"+cascadeAttr[key][3]+"\"  class='entity_attr new_add_cascade_child inerror'>"+cascadeAttr[key][2]+"<i class=\"icon status\"></i><ul class='entity_ul'  ><li><a href='javascript:void(0)' code="+cascadeAttr[key][0]+" casCode="+cascadeAttr[key][1]+" class='delete_cascadeAttr_child'><i class='icon edit-entity'></i>删除属性</a></li></ul></div>"
+                } else if(cascadeAttr[key][4] == '1'){                        
+                    str = str + "<div title=\"id:"+cascadeAttr[key][1]+", 名称："+cascadeAttr[key][2]+", 等级:"+cascadeAttr[key][3]+"\" class='entity_attr new_add_cascade_child inuse'>"+cascadeAttr[key][2]+"<i class=\"icon status\"></i><ul class='entity_ul'><li><a href='javascript:void(0)' code="+cascadeAttr[key][0]+" casCode="+cascadeAttr[key][1]+" class='delete_cascadeAttr_child'><i class='icon edit-entity'></i>删除属性</a></li></ul></div>"
+                }
+            }
+        	  str = str + "<div cascadeCode='"+code+"' class=\"entity_attr new_add_cascade_child entity_attr_img  add_cascadeAttr_child\"><img cascadeCode=\"" + code+ "\" alt=\"添加级联属性\" src=\"media/admin/dictionary/basicItem/addEntity_icon.png\"></div>"	  
+        	  $casecadeNode.append(str).show();	  
+        	} else {
+        		Dialog.notice("数据加载错误，重新点击！", "error");
+        	}
+        });
+      
+        $(this).closest('.comm_list ').siblings(".cascadeAttr_show").show();
+    });
     
+    //点击 添加级联属性的孩子  显示div
+    $(".common_proper", $page).on("click", ".add_cascadeAttr_child", function() {
+    	var $cascadeChilde = $(this).closest('.cascadeAttr_child').siblings(".cascadeAttr_child_show");
+    	var $form = $cascadeChilde.find("#cascadeAttr_form1");
+         var cascadeCode =  $(this).attr("cascadeCode");
+         $form.attr("cascadeCode", cascadeCode);
+        Ajax.ajax('admin/dictionary/basicItem/getAttrByPidGroupName', {
+        	cascadeCode:cascadeCode
+        }, function(data) {
+        	if (data.code == 200) {
+        		  var commAttr = data.commAttr;
+        		  var dictattr_enum='';
+                  for (var i = 0;i < commAttr.length;i++){
+                    dictattr_enum = dictattr_enum + " <option value =\"" + commAttr[i].code + "\">" + commAttr[i].cnName + "</option>";
+                  }
+                  $form.find("#casCode").append(dictattr_enum).css("width","30%").select2();
+        	} else {
+        		Dialog.notice("数据加载错误，重新点击！", "error");
+        	}
+        });
+      
+        $cascadeChilde.show();
+    });
+    
+    //取消     隐藏级联属性div添加孩子
+    $(".common_proper", $page).on("click", "#cascadeAttr_child_but_cancel", function() {
+    	$(this).closest(".cascadeAttr_child_show").hide();
+    });
+    
+    
+  //点击   删除级联属性的孩子
+    $(".common_proper", $page).on("click", ".delete_cascadeAttr_child", function() {
+    	var code = $(this).attr("code");
+    	var casCode = $(this).attr("cascode");
+        Ajax.ajax('admin/dictionary/basicItem/delCascaseAttrChild', {
+        	code:code,
+        	casCode:casCode
+        }, function(data) {
+        	if (data.code == 200) {
+        		 Dialog.notice("删除成功！", "success");
+        		  $('.show_cascadeAttr_child').trigger("click");
+        		  $casecadediv.hide();
+        	} else {
+        		Dialog.notice("删除失败，重新点击！", "error");
+        	}
+        });
+    });
+    
+  //点击   确认  ，添加级联属性的孩子
+    $(".common_proper", $page).on("click", "#cascadeAttr_child_but_confirm", function() {
+    	var $casecadediv = $(this).closest(".cascadeAttr_child_show");
+    	var $form = $(this).closest('.cascadeAttr_child_show').find("#cascadeAttr_form1");
+    	var cascadecode = $form.attr("cascadecode");
+    	var level = $form.find("#level").val();
+    	var casCode = $form.find("#casCode").val();
+    	
+        Ajax.ajax('admin/dictionary/basicItem/saveCascaseAttrChild', {
+        	code:cascadecode,
+        	casCode:casCode,
+        	level:level
+        }, function(data) {
+        	if (data.code == 200) {
+        		  var cascadeAttr = data.cascadeAttr;
+        		  $('.show_cascadeAttr_child').trigger("click");
+        		  $casecadediv.hide();
+        		  Dialog.notice("添加成功！", "success");
+        	} else {
+        		Dialog.notice(data.msg, "error");
+        	}
+        });
+    });
     
     //点击 添加二级属性  显示div
     $(".more_proper", $page).on("click", "#add_twoLevelAttr", function() {
@@ -750,7 +886,6 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
         var mappingId = $form.find("#mappingId").val();
         var dictionaryCode = $form.find("#dictionaryCode").val();
         var entityId = $(".common_proper").attr("parentid");
-        
         if (twoChildCheck($form)) {
         	 $CPF.showLoading();
         	 
@@ -794,7 +929,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
             var dictList = data.dictList;
             var str = "";
             for (var key in dictList) {
-                str = str + " <option value =\"" + dictList[key].code + "\">" + dictList[key].name + "</option>";
+                str = str + " <option value =\"" + dictList[key].id + "\">" + dictList[key].name + "</option>";
             }
             $form.find("#dictionaryCode").append(str).css("width","30%").select2();
         });
@@ -1340,6 +1475,32 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
                     $CPF.closeLoading();
                 });            
         		 
+        	} else if ("17" == jsonData.oneLevelItem.dataType) {
+        		Ajax.ajax('admin/dictionary/basicItem/getDictPitem', '', function(data) {
+    	            var dataArr = data.dictPitem;    	            
+    	            var dictParentId = $form1.find("#edit_dictParentId").val();
+    	            if (dictParentId != "") {
+    	                var str = "<span id=\"span_enum\">字典序：</span><select id=\"dictParentId\" name=\"dictParentId\">";
+    	                for (var p in dataArr) { //遍历json数组时，这么写p为索引，0,1
+    	                    if (dictParentId == dataArr[p].id) {
+    	                        str = str + "<option selected=\"selected\"  value=\"" + dataArr[p].id + "\">" + dataArr[p].name + "</option>"; 
+    	                    } else {
+    	                        str = str + "<option value=\"" + dataArr[p].id + "\">" + dataArr[p].name + "</option>"; 
+    	                    }
+    	                }
+    	                str = str + "</select>";
+    	                $form1.find("#span_enum").remove();
+    	                $form1.find("#dictParentId").remove();
+    	                $form1.find("#dataRange").show();
+    	                $form1.find("#cn_dataRange").show();
+    	                $form1.find("#dataType").after(str);
+    	                $form1.find("#s2id_dictParentId").remove(); 
+    	                $form1.find("#refType").remove();
+    	                $form1.find("#refType_enum").remove();
+    	                $form1.find("#s2id_refType").remove();
+    	                $form1.find("#dictParentId").css("width","30%").select2();	
+    	            }
+    	        });
         	} else {
             	$form1.find("#span_enum").remove();
                 $form1.find("#dictParentId").remove();	
@@ -1768,7 +1929,9 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
                 			"<div class=\"new_add_title\">" + "<span title=\"code:"+commonArr[i].code+",中文名称："+commonArr[i].cnName+"\">" +commonArr[i].cnName+ "</span>"
                 			if (statusStr != 2) {
                 				str = str + "<img id=\"edit_group\" groupId=\"" + commonArr[i].code + "\" src=\"media/admin/dictionary/basicItem/images/edit_ch.png\">"
-                			}
+                				/*str = str + "<div class=\"two-level-attr\" id=\"add_cascade_attr\" ><a href=\"javascript:void(0)\"\">添加级联属性</a></div>"
+                			*/}
+			            		
                 			str = str + "</div><div class=\"comm_list clear-fix\">";                		    
                 for (var j = 0; j < commonArr[i].childList.length; j++) {                    
                     if (commonArr[i].childList[j].usingState == '0') {
@@ -1798,8 +1961,16 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
 	                        }
                         }
 	                    if (statusStr != 2) {
-	                    str = str+"<li><a href=\"javascript:void(0)\" patentId=\""+commonArr[i].childList[j].parent+"\" class=\"delete_attr\"><i class=\"icon edit-entity\"></i>删除属性</a></li>"+  "</ul>" 
+	                    str = str+"<li><a href=\"javascript:void(0)\" patentId=\""+commonArr[i].childList[j].parent+"\" class=\"delete_attr\"><i class=\"icon edit-entity\"></i>删除属性</a></li>" 
 	                    }
+	                    
+	                    if (statusStr != 2 && commonArr[i].childList[j].oneLevelItem.dataType == '17') {
+		                    str = str+"<li><a href=\"javascript:void(0)\" patentId=\""+commonArr[i].childList[j].parent+"\" class=\"show_cascadeAttr_child\"><i class=\"icon edit-entity\"></i>查看级联属性孩子</a></li>";
+		                 }
+	                    if (statusStr != 2) {
+		                    str = str+  "</ul>"; 
+		                   }
+	                    
                     	str = str + "<i class=\"icon status\"></i>" +"</div>";
                   
                 }
@@ -1808,8 +1979,17 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
 						    "<img alt=\"添加普通属性\" src=\"media/admin/dictionary/basicItem/addEntity_icon.png\">" +
 						"</div>"
                 }	
-							
 				str = str + "</div>"	
+				
+				//查看级联属性的孩子start
+				str = str + "<div style='display: none;' class=\"entity_list cascadeAttr_child clear-fix\"><div class=\"new_add_title\"><span>级联属性孩子</span>" 
+                str = str +"</div><div class=\"clear-fix\"></div>"
+                str = str +"</div>"
+				//end
+                
+              //添加编辑级联属性的孩子  div		
+ 			    str = str + "<div style='padding-left: 1.8em;display: none;' class=\"cascadeAttr_child_show\"><img class=\"opera_entity_img\" src=\"media/admin/dictionary/basicItem/opera_entity_icon.png\"><span class=\"opera_entity_img\">级联属性孩子</span><form  id=\"cascadeAttr_form1\" class=\"opera_entity_form\"><input type=\"hidden\" id=\"id\" name=\"id\" value=\"\"><div><span class=\"opera_entity_label\">等级<span style=\"color: red;\">*</span></span><input type=\"number\" placeholder=\"只能是数字\" min='1' id=\"level\" name=\"level\" value=\"\"></div><div class=\"select-wrap\"><span class=\"opera_entity_label\">级联属性<span style=\"color: red;\">*</span></span><select id=\"casCode\" name=\"casCode\"></select></div><div class=\"select-wrap\"></div></form><div class=\"opera_entity_btn\"><span class=\"entity-btn-cancel\" id=\"cascadeAttr_child_but_cancel\">取消</span><span class=\"entity-btn-confirm\" id=\"cascadeAttr_child_but_confirm\">确认</span></div></div>";
+				
 				str = str + "<div class=\"opera_comm\"><img class=\"opera_entity_img\" src=\"media/admin/dictionary/basicItem/images/info.png\"><span id=\"add_comm_mes\"></span><form groupName="+commonArr[i].cnName+"  groupId="+commonArr[i].code+"   id=\"comm_opera_form1\" class=\"opera_entity_form\"><input type=\"hidden\" id=\"groupName\" name=\"groupName\" value=\"\"><input type=\"hidden\" id=\"comm_parent\" name=\"parent\" value=\"\"><input type=\"hidden\" id=\"edit_dataType\" value=\"\"><input type=\"hidden\" id=\"edit_dictParentId\" value=\"\"><input type=\"hidden\" name=\"code\" id=\"code\" /><div><span class=\"opera_entity_label\">中文名称<span style=\"color: red;\">*</span></span><input type=\"text\" name=\"cnName\" id=\"cnName\" /></div><div><span class=\"opera_entity_label\">英文名称</span><input type=\"text\" name=\"enName\" id=\"enName\" /></div><div class=\"select-wrap\"><span class=\"opera_entity_label\" id=\"cn_dataType\">数据类型<span style=\"color: red;\">*</span></span><select id=\"dataType\" class=\"enum_dataType_one\" name=\"dataType\"></select></div><div><span class=\"opera_entity_label\" id=\"cn_dataRange\">数据长度<span style=\"color: red;\">*</span></span><input type=\"text\" name=\"dataRange\" id=\"dataRange\"></div><div><span class=\"opera_entity_label\">描述</span><textarea name=\"description\" id=\"description\"></textarea></div></form><div class=\"opera_entity_btn\"><span class=\"entity-btn-cancel\" id=\"comm_but_cancel\">取消</span><span class=\"entity-btn-confirm\" id=\"comm_but_confirm\">确认</span></div></div>";
                 str = str + "<div class=\"opera_group\"><img class=\"opera_entity_img\" src=\"media/admin/dictionary/basicItem/images/info.png\"><span class=\"opera_entity_img\" id=\"add_group_mes\"></span><form id=\"group_opera_form1\" class=\"opera_entity_form\"><input type=\"hidden\" name=\"code\" id=\"code\" /><input type=\"hidden\" id=\"group_parent\" name=\"parent\" value=\"\"><input type=\"hidden\" name=\"dataType\" value=\"16\"><div><span class=\"opera_entity_label\">中文名称<span style=\"color: red;\">*</span></span><input type=\"text\" name=\"cnName\" id=\"cnName\" /></div><div><span class=\"opera_entity_label\">描述</span><textarea name=\"description\" id=\"description\"></textarea></div></form><div class=\"opera_entity_btn\"><span class=\"entity-btn-cancel\" id=\"group_but_cancel\">取消</span><span class=\"entity-btn-confirm\" id=\"group_but_confirm\">确认</span><span class=\"entity-btn-confirm\" id=\"group_but_del\">删除</span></div></div>";
                 if(commonArr[i].usingState == '0'){
@@ -1821,7 +2001,8 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
                 } else if(commonArr[i].usingState == '1'){
                 	str = str + "<i class=\"icon status inuse\"></div>";
                 }
-                                
+            
+                
                 $(".common_proper").append(str);
             }
             var moreArr = jsonData.moreProper; //多值属性

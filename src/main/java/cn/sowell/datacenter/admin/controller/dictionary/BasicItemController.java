@@ -37,6 +37,7 @@ import cn.sowell.datacenter.model.cascadedict.pojo.CascadedictBasicItem;
 import cn.sowell.datacenter.model.cascadedict.service.CascadedictBasicItemService;
 import cn.sowell.datacenter.model.dictionary.criteria.BasicItemCriteria;
 import cn.sowell.datacenter.model.dictionary.pojo.BasicItem;
+import cn.sowell.datacenter.model.dictionary.pojo.CascadeAttr;
 import cn.sowell.datacenter.model.dictionary.pojo.OneLevelItem;
 import cn.sowell.datacenter.model.dictionary.pojo.Towlevelattr;
 import cn.sowell.datacenter.model.dictionary.pojo.TowlevelattrMultiattrMapping;
@@ -675,6 +676,94 @@ public class BasicItemController {
 				map.put("code", 200);
 				map.put("msg", "success");
 				map.put("dictPitem", childList);
+				return jobj.toString();
+			} catch (Exception e) {
+				logger.error("添加失败", e);
+				map.put("code", 400);
+				map.put("msg", "error");
+				return jobj.toString();
+			}
+		}
+	    
+	    
+	  //这里获取普通分组下的可选属性    , 级联属性专用，其他勿用
+	    @ResponseBody
+		@RequestMapping("/getAttrByPidGroupName")
+		public String getAttrByPidGroupName(String cascadeCode){
+			Map<String, Object> map = new HashMap<String, Object>();
+			JSONObject jobj = new JSONObject(map);
+			try {
+				BasicItem basicItem = basicItemService.getBasicItem(cascadeCode);
+				List attrByPidGroupName = basicItemService.getAttrByPidGroupName(basicItem.getParent(), basicItem.getOneLevelItem().getGroupName());
+				map.put("code", 200);
+				map.put("msg", "success");
+				map.put("commAttr", attrByPidGroupName);
+				return jobj.toString();
+			} catch (Exception e) {
+				logger.error("添加失败", e);
+				map.put("code", 400);
+				map.put("msg", "error");
+				return jobj.toString();
+			}
+		}
+	    
+	    //这里获取级联属性的孩子， 级联属性专用
+	    @ResponseBody
+		@RequestMapping("/getCascadeAttrChild")
+		public String getCascadeAttrChild(String code){
+			Map<String, Object> map = new HashMap<String, Object>();
+			JSONObject jobj = new JSONObject(map);
+			try {
+				List cascadeAttrChild = basicItemService.getCascadeAttrChild(code);
+				map.put("code", 200);
+				map.put("msg", "success");
+				map.put("cascadeAttrChild", cascadeAttrChild);
+				return jobj.toString();
+			} catch (Exception e) {
+				logger.error("添加失败", e);
+				map.put("code", 400);
+				map.put("msg", "error");
+				return jobj.toString();
+			}
+		}
+	    
+	  //保存级联属性的孩子
+	    @ResponseBody
+		@RequestMapping("/saveCascaseAttrChild")
+		public String saveCascaseAttrChild(CascadeAttr cascadeAttr){
+	    	
+			Map<String, Object> map = new HashMap<String, Object>();
+			JSONObject jobj = new JSONObject(map);
+			try {
+				basicItemService.saveCascaseAttrChild(cascadeAttr);
+				map.put("code", 200);
+				map.put("msg", "success");
+				map.put("cascadeAttr", cascadeAttr);
+				return jobj.toString();
+			}catch (DataIntegrityViolationException e) {
+				logger.error("添加失败", e);
+				map.put("code", 400);
+				map.put("msg", "级联属性不能重复添加");
+				return jobj.toString();
+			} catch (Exception e) {
+				logger.error("添加失败", e);
+				map.put("code", 400);
+				map.put("msg", "添加失败");
+				return jobj.toString();
+			}
+		}
+	    
+	    
+	    //删除级联属性的孩子
+	    @ResponseBody
+		@RequestMapping("/delCascaseAttrChild")
+		public String delCascaseAttrChild(String code, String  casCode){
+			Map<String, Object> map = new HashMap<String, Object>();
+			JSONObject jobj = new JSONObject(map);
+			try {
+				basicItemService.delCascaseAttrChild(code,  casCode);
+				map.put("code", 200);
+				map.put("msg", "success");
 				return jobj.toString();
 			} catch (Exception e) {
 				logger.error("添加失败", e);

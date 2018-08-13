@@ -25,7 +25,9 @@
                 <input name="name" disabled type="text" class="edit-input" value="${btNode.name}">
                 <span class="entity-only-title">${btNode.basicItem.cnName}</span>
                 <select disabled class='node-ops-type' data-val='${btNode.opt}'>
-                	
+                	<c:forEach items="${opsList }" var="ops">
+                		<option value="${ops }" ${btNode.opt eq ops ? 'selected' : ''} >${ops }</option> 
+                	</c:forEach> 
                 </select>
                 <div class="btn-wrap">
                 	<i class="icon icon-save"></i>

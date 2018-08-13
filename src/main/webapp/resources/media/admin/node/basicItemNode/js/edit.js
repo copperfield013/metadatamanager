@@ -119,7 +119,6 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
     //获取孩子的方法   entityId: 此为实体id
 	function getChild(nodeId, isRelative, bar, entityId) {
 		$CPF.showLoading();
-		
 		//获取当前实体下， 所有的多值属性本省
 		var repeatList;
 		Ajax.ajax('admin/node/basicItemNode/getRepeat', {
@@ -387,7 +386,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 		 drag($(".dragEdit-wrap").length);
 	};
     
-/*	function addEntityOPT() {
+	function addEntityOPT() {
 		var $select = $("#operateEdit .entity-title").find(".node-ops-type");	
 		var selectedVal = $select.attr("data-val");
 		var html = "";						    			    	
@@ -401,7 +400,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
          };                
          $select.append(html);              
          $select.css({"width":"12%","font-size":"18px","marginLeft":"20px","margin-top": "-12px"}).select2();
-	}*/
+	}
 	
 	 //拖拽排序方法
     function drag(length) {

@@ -1,5 +1,6 @@
 package cn.sowell.datacenter.model.dictionary.dao.impl;
 
+import java.io.Serializable;
 import java.math.BigInteger;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -18,6 +19,7 @@ import cn.sowell.copframe.utils.TextUtils;
 import cn.sowell.datacenter.model.dictionary.criteria.BasicItemCriteria;
 import cn.sowell.datacenter.model.dictionary.dao.BasicItemDao;
 import cn.sowell.datacenter.model.dictionary.pojo.BasicItem;
+import cn.sowell.datacenter.model.dictionary.pojo.CascadeAttr;
 import cn.sowell.datacenter.model.node.pojo.BasicItemNodeGenerator;
 
 @Repository
@@ -413,8 +415,8 @@ public class BasicItemDaoImpl implements BasicItemDao {
 				+ "UNION "
 				+ " SELECT 	t.c_code CODE, 	t.c_cn_name NAME, c.c_data_type dataType "
 				+ " FROM 	t_sc_basic_item t "
-				+ " INNER JOIN t_sc_towlevelattr w on w.c_code=t.c_code "
-				+ "	left JOIN t_sc_towlevelattr_multiattr_mapping m 	on w.c_mapping_id=m.id"
+				+ " INNER JOIN t_sc_twolevel_attr w on w.c_code=t.c_code "
+				+ "	left JOIN t_sc_twolevelattr_multiattr_mapping m 	on w.c_mapping_id=m.id"
 				+ "	left JOIN t_sc_onelevel_item c on m.c_value_attr=c.c_code "
 				+ " WHERE 	t.c_parent =:entityId ";
 		 List list = sFactory.getCurrentSession().createSQLQuery(sql).setParameter("entityId", entityId).list();
@@ -441,6 +443,27 @@ public class BasicItemDaoImpl implements BasicItemDao {
 		}
 		
 		return (Object[]) list.get(0);
+	}
+
+	@Override
+	public List getCascadeAttrChild(String code) {
+		String sql = "SELECT b.c_code, b.c_cas_code, a.c_cn_name, b.c_level, a.c_using_state FROM t_sc_basic_item a "
+				+ " LEFT JOIN t_sc_cascade_attr b on a.c_code=b.c_cas_code "
+				+ "	WHERE a.c_code in ( SELECT c_cas_code FROM `t_sc_cascade_attr`	 WHERE c_code=:code)";
+		return sFactory.getCurrentSession().createSQLQuery(sql).setParameter("code", code).list();
+	}
+
+	@Override
+	public void saveCascaseAttrChild(CascadeAttr cascadeAttr) throws Exception {
+		sFactory.getCurrentSession().save(cascadeAttr);
+	}
+
+	@Override
+	public void delCascaseAttrChild(String code, String casCode) throws Exception {
+		String sql = " DELETE FROM t_sc_cascade_attr WHERE c_code=:code and c_cas_code=:casCode";
+		 sFactory.getCurrentSession().createSQLQuery(sql)
+				.setParameter("code", code)
+				.setParameter("casCode", casCode).executeUpdate();
 	}
 
 

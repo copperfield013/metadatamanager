@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import cn.sowell.copframe.dto.page.PageInfo;
 import cn.sowell.datacenter.model.dictionary.criteria.BasicItemCriteria;
 import cn.sowell.datacenter.model.dictionary.pojo.BasicItem;
+import cn.sowell.datacenter.model.dictionary.pojo.CascadeAttr;
 
 public interface BasicItemDao {
 	/**
@@ -161,4 +162,27 @@ public interface BasicItemDao {
 	 * @return
 	 */
 	public Object[] getBasicItemFix() throws Exception;
+
+	/**
+	 * 获取级联属性的孩子
+	 * @param code
+	 * @return
+	 */
+	List getCascadeAttrChild(String code);
+
+	/**
+	 * 保存级联属性的孩子
+	 * @param code
+	 * @param casCode
+	 * @param level
+	 * @throws Exception
+	 */
+	void saveCascaseAttrChild(CascadeAttr cascadeAttr) throws Exception;
+/**
+ * 删除级联属性的孩子
+ * @param code
+ * @param casCode
+ * @throws Exception
+ */
+	void delCascaseAttrChild(String code, String casCode) throws Exception;
 }
