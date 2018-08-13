@@ -3,7 +3,8 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 	var $page = $("#operateEdit");	
 	var nodeId = $(".entity-title", $page).attr("data-id");	
 	var entityId = $(".entity-title", $page).attr("data-abcattrCode");	//根节点对应的实体code: abcattrCode
-	
+	var $select = $("#operateEdit .entity-title").find(".node-ops-type");	
+	$select.css({"width":"12%","font-size":"18px","marginLeft":"20px","margin-top": "-12px"}).select2();
     $(function(){
 	    $CPF.showLoading();
 	    getNodeOpsType();
@@ -11,8 +12,8 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 	    drag($(".dragEdit-wrap", $page).length);       
 	    getChild(nodeId, false, null, entityId);  //直接执行
 	    $(".label-bar", $page).addClass("al-save");
-	    addEntityOPT();
 	    $CPF.closeLoading();
+	   /* addEntityOPT();*/
     })
     
 	function addUnfold(el) {		
@@ -386,7 +387,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 		 drag($(".dragEdit-wrap").length);
 	};
     
-	function addEntityOPT() {
+/*	function addEntityOPT() {
 		var $select = $("#operateEdit .entity-title").find(".node-ops-type");	
 		var selectedVal = $select.attr("data-val");
 		var html = "";						    			    	
@@ -400,7 +401,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
          };                
          $select.append(html);              
          $select.css({"width":"12%","font-size":"18px","marginLeft":"20px","margin-top": "-12px"}).select2();
-	}
+	}*/
 	
 	 //拖拽排序方法
     function drag(length) {
