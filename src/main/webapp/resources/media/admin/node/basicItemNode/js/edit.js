@@ -506,6 +506,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
     
     //普通属性初始化方法
     function initAttr(abcattr,abcattrCode,dataType,id,name,opt,order,parent,commList) {  
+    	var dataTypeList = dataTypeSTRINGList;
 			var attrHtml = "<li class='add-attr clear-fix'>"
 				+"<div class='icon-label attr'>";
             if(abcattrCode=="") {
@@ -520,10 +521,30 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
             for(var i=0; i<commList.length; i++) {  
             	if(commList[i][0] == abcattrCode) {
             		attrHtml += "<option item-data-type='"+commList[i][2]+"' data-id='"+commList[i][0]+"' value='"+commList[i][1]+"' selected>"+commList[i][1]+"</option>";
+            	
+            		var da = commList[i][2];
+    				if ("5" == da) {
+    					dataTypeList=dataTypeSTRINGList;
+    				} else if ("6"== da) {
+    					dataTypeList=dataTypeDATEList;
+    				}else if ("7"== da) {
+    					dataTypeList=dataTypeTIMEList;
+    				}else if ("1"== da) {
+    					dataTypeList=dataTypeINTList;
+    				}else if ("15"== da) {
+    					dataTypeList=dataTypeDOUBLEList;
+    				}else if ("11"== da) {
+    					dataTypeList=dataTypeREFERENCEList;
+    				}else if ("8"== da) {
+    					dataTypeList=dataTypeFILEList;
+    				}else if ("14"== da) {
+    					dataTypeList=dataTypeENUMList;
+    				}
+            	
             	}else {
             		attrHtml += "<option item-data-type='"+commList[i][2]+"' data-id='"+commList[i][0]+"' value='"+commList[i][1]+"'>"+commList[i][1]+"</option>";
             	}
-            	                
+            	
             }
 			attrHtml += "</select>";
 			attrHtml += "<select disabled class='data-type attr-type'>";      
@@ -531,26 +552,6 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 			//	dataType:commList[0][2]
 			//}, function(data){		
 			//	var dataTypeList = data.dataType;  
-			
-				var dataTypeList;
-				if ("5" == commList[0][2]) {
-					dataTypeList=dataTypeSTRINGList;
-				} else if ("6"== commList[0][2]) {
-					dataTypeList=dataTypeDATEList;
-				}else if ("7"== commList[0][2]) {
-					dataTypeList=dataTypeTIMEList;
-				}else if ("1"== commList[0][2]) {
-					dataTypeList=dataTypeINTList;
-				}else if ("15"== commList[0][2]) {
-					dataTypeList=dataTypeDOUBLEList;
-				}else if ("11"== commList[0][2]) {
-					dataTypeList=dataTypeREFERENCEList;
-				}else if ("8"== commList[0][2]) {
-					dataTypeList=dataTypeFILEList;
-				}else if ("14"== commList[0][2]) {
-					dataTypeList=dataTypeENUMList;
-				}
-				
 		    	for(var i=0; i<dataTypeList.length; i++) {
 		    		if(dataTypeList[i][0] == dataType) {
 		    			attrHtml += "<option value='"+dataTypeList[i][0]+"' selected>"+dataTypeList[i][1]+"</option>";
@@ -588,6 +589,8 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 			.find(".abc-attr")
 			.find("option:selected")
 			.attr("data-id");*/
+    	
+    	var dataTypeList = dataTypeSTRINGList;
 			var attrHtml = "<li class='add-attr clear-fix'>"
 				+ "<div class='icon-label attr'>";
 			 if(abcattrCode=="") {
@@ -602,9 +605,30 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
             for(var i=0; i<repeatChildList.length; i++) {    
             	if(repeatChildList[i].cnName == abcattr) {
             		attrHtml += "<option item-data-type='"+repeatChildList[i].oneLevelItem.dataType+"' data-id='"+repeatChildList[i].code+"' value='"+repeatChildList[i].cnName+"' selected>"+repeatChildList[i].cnName+"</option>";
+            		var da = repeatChildList[i].oneLevelItem.dataType
+    				if ("5" == da) {
+    					dataTypeList=dataTypeSTRINGList;
+    				} else if ("6"== da) {
+    					dataTypeList=dataTypeDATEList;
+    				}else if ("7"== da) {
+    					dataTypeList=dataTypeTIMEList;
+    				}else if ("1"== da) {
+    					dataTypeList=dataTypeINTList;
+    				}else if ("15"== da) {
+    					dataTypeList=dataTypeDOUBLEList;
+    				}else if ("11"== da) {
+    					dataTypeList=dataTypeREFERENCEList;
+    				}else if ("8"== da) {
+    					dataTypeList=dataTypeFILEList;
+    				}else if ("14"== da) {
+    					dataTypeList=dataTypeENUMList;
+    				}
+            	
             	}else {
             		attrHtml += "<option item-data-type='"+repeatChildList[i].oneLevelItem.dataType+"' data-id='"+repeatChildList[i].code+"' value='"+repeatChildList[i].cnName+"'>"+repeatChildList[i].cnName+"</option>";
             	}
+            	
+            	
             	                
             }
 			attrHtml += "</select>";
@@ -614,24 +638,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 		   // }, function(data){		    	
 		    //	var dataTypeList = data.dataType; 
 			
-				var dataTypeList = dataTypeSTRINGList;
-				if ("5" == repeatChildList[0].oneLevelItem.dataType) {
-					dataTypeList=dataTypeSTRINGList;
-				} else if ("6"== repeatChildList[0].oneLevelItem.dataType) {
-					dataTypeList=dataTypeDATEList;
-				}else if ("7"== repeatChildList[0].oneLevelItem.dataType) {
-					dataTypeList=dataTypeTIMEList;
-				}else if ("1"== repeatChildList[0].oneLevelItem.dataType) {
-					dataTypeList=dataTypeINTList;
-				}else if ("15"== repeatChildList[0].oneLevelItem.dataType) {
-					dataTypeList=dataTypeDOUBLEList;
-				}else if ("11"== repeatChildList[0].oneLevelItem.dataType) {
-					dataTypeList=dataTypeREFERENCEList;
-				}else if ("8"== repeatChildList[0].oneLevelItem.dataType) {
-					dataTypeList=dataTypeFILEList;
-				}else if ("14"== repeatChildList[0].oneLevelItem.dataType) {
-					dataTypeList=dataTypeENUMList;
-				}
+				
 		    	for(var i=0; i<dataTypeList.length; i++) {
 		    		if(dataTypeList[i][0] == dataType) {
 		    			attrHtml += "<option value='"+dataTypeList[i][0]+"' selected>"+dataTypeList[i][1]+"</option>";
@@ -2612,7 +2619,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
     	if ($dataType.hasClass("attr-type")) {
     		Ajax.ajax('admin/node/basicItemNode/getDataType', {
                 dataType:itemDataType
-            }, function(data){               
+            }, function(data){     
                  var dataTypeList = data.dataType;
                  var attrHtml="";
                  for(var i=0; i<dataTypeList.length; i++) {
