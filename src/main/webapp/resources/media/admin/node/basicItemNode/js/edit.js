@@ -1076,7 +1076,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 		}, function(data) {			
 			var data = data.labRela;
 			if(data.length == 0) {
-				alert("需先在数据模型中添加关系");
+				Dialog.notice("需先在数据模型中添加关系", "warning");
 			};
 			var html = "<ul class='tag-card'>";
 			var has; //判断是否已经选中
@@ -1602,7 +1602,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
         var editBar = $("#operateEdit").find(".label-bar.edit");
         var editEntity = $("#operateEdit").find(".entity-edit-wrap.edit");
         if(editBar.length > 0 || editEntity.length > 0) {
-            alert("请先保存正在编辑的节点");
+            Dialog.notice("请先保存正在编辑的节点", "warning");
             return true;
         }
     }
@@ -1621,7 +1621,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
     	
     	var ret = /.{3,}/;
         if(!ret.test(name.trim())){
-          alert("【"+name + "】 必须三个字符及以上");
+          Dialog.notice("【"+name + "】 必须三个字符及以上", "warning");
           return;
         }
     	
@@ -1656,12 +1656,12 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 			 id: id
 		 }, function(data) {
 			 if(data.state == "fail") {
-				 alert("属性名不能相同");
+				 Dialog.notice("属性名不能相同", "warning");
 				 $CPF.closeLoading();
 				 return;
 			 }
 			 if(data.state == "error") {
-				 alert("关系下只能有一个标签和一个实体");
+				 Dialog.notice("关系下只能有一个标签和一个实体", "warning");
 				 $CPF.closeLoading();
 				 return;
 			 }
@@ -1681,13 +1681,13 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
     	var $tagBar = $(el).closest(".label-bar");
     	if($(el).next(".icon-add-tag-relative").length > 0) { //关系下的标签 
     		if($tagBar.children(".tag-content").children("ul").children("li").length == 0) {
-    			alert("请至少选择一个关系");    			
+    			 Dialog.notice("请至少选择一个关系", "warning");
     			$tagBar.addClass("edit");
     			return;
     		}
     	}else {
     		if($tagBar.children(".tag-content").children("ul").children("li").length == 0) {
-    			alert("请至少选择一个标签");    			
+    			Dialog.notice("请至少选择一个标签", "warning");
     			$tagBar.addClass("edit");
     			return;
     		}
@@ -1738,12 +1738,12 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 			 id: id
 		 }, function(data) {
 			 if(data.state == "fail") {
-				 alert("属性名不能相同");
+				 Dialog.notice("属性名不能相同", "warning");
 				 $CPF.closeLoading();
 				 return;
 			 }
 			 if(data.state == "error") {
-				 alert("关系下只能有一个标签和一个实体");
+				 Dialog.notice("关系下只能有一个标签和一个实体", "warning");
 				 $CPF.closeLoading();
 				 return;
 			 }
@@ -1803,12 +1803,12 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 			 id: id
 		 }, function(data) {
 			 if(data.state == "fail") {
-				 alert("属性名不能相同");
+				 Dialog.notice("属性名不能相同", "warning");
 				 $CPF.closeLoading();
 				 return;
 			 }
 			 if(data.state == "error") {
-				 alert("关系下只能有一个标签和一个实体");
+				 Dialog.notice("关系下只能有一个标签和一个实体", "warning");
 				 $CPF.closeLoading();
 				 return;
 			 }
@@ -1865,12 +1865,12 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 			 id: id
 		 }, function(data) {
 			 if(data.state == "fail") {
-				 alert("属性名不能相同");
+				 Dialog.notice("属性名不能相同", "warning");
 				 $CPF.closeLoading();
 				 return;
 			 }
 			 if(data.state == "error") {
-				 alert("关系下只能有一个标签和一个实体");
+				 Dialog.notice("关系下只能有一个标签和一个实体", "warning");
 				 $CPF.closeLoading();
 				 return;
 			 }
@@ -1931,12 +1931,12 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 			 id: id
 		 }, function(data) {
 			 if(data.state == "fail") {
-				 alert("属性名不能相同");
+				 Dialog.notice("属性名不能相同", "warning");
 				 $CPF.closeLoading();
 				 return;
 			 }
 			 if(data.state == "error") {
-				 alert("关系下只能有一个标签和一个实体");
+				 Dialog.notice("关系下只能有一个标签和一个实体", "warning");
 				 $CPF.closeLoading();
 				 return;
 			 }
@@ -1998,12 +1998,12 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 			 id: id
 		 }, function(data) {
 			 if(data.state == "fail") {
-				 alert("属性名不能相同");
+				 Dialog.notice("属性名不能相同", "warning");
 				 $CPF.closeLoading();
 				 return;
 			 }
 			 if(data.state == "error") {
-				 alert("关系下只能有一个标签和一个实体");
+				 Dialog.notice("关系下只能有一个标签和一个实体", "warning");
 				 $CPF.closeLoading();
 				 return;
 			 }
@@ -2146,12 +2146,12 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 			 id: id
 		 }, function(data) {
 			 if(data.state == "fail") {
-				 alert("属性名不能相同");
+				 Dialog.notice("属性名不能相同", "warning");
 				 $CPF.closeLoading();
 				 return;
 			 }
 			 if(data.state == "error") {
-				 alert("关系下只能有一个标签和一个实体");
+				 Dialog.notice("关系下只能有一个标签和一个实体", "warning");
 				 $CPF.closeLoading();
 				 return;
 			 }
