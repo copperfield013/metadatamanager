@@ -707,6 +707,28 @@ public class BasicItemController {
 			}
 		}
 	    
+	    
+	    //这里获取多值属性下的可选属性    , 级联属性专用，其他勿用
+	    @ResponseBody
+		@RequestMapping("/getMoreAttrByPid")
+		public String getMoreAttrByPid(String cascadeCode){
+			Map<String, Object> map = new HashMap<String, Object>();
+			JSONObject jobj = new JSONObject(map);
+			try {
+				BasicItem basicItem = basicItemService.getBasicItem(cascadeCode);
+				List attrByPidGroupName = basicItemService.getDataByPId(basicItem.getParent());
+				map.put("code", 200);
+				map.put("msg", "success");
+				map.put("commAttr", attrByPidGroupName);
+				return jobj.toString();
+			} catch (Exception e) {
+				logger.error("添加失败", e);
+				map.put("code", 400);
+				map.put("msg", "error");
+				return jobj.toString();
+			}
+		}
+	    
 	    //这里获取级联属性的孩子， 级联属性专用
 	    @ResponseBody
 		@RequestMapping("/getCascadeAttrChild")
@@ -770,6 +792,6 @@ public class BasicItemController {
 				map.put("code", 400);
 				map.put("msg", "error");
 				return jobj.toString();
-			}
+			} 
 		}
 }

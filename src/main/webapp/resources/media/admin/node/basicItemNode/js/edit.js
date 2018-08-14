@@ -522,22 +522,21 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
             	if(commList[i][0] == abcattrCode) {
             		attrHtml += "<option item-data-type='"+commList[i][2]+"' data-id='"+commList[i][0]+"' value='"+commList[i][1]+"' selected>"+commList[i][1]+"</option>";
             	
-            		var da = commList[i][2];
-    				if ("5" == da) {
+    				if ("5" == commList[i][2]) {
     					dataTypeList=dataTypeSTRINGList;
-    				} else if ("6"== da) {
+    				} else if ("6"== commList[i][2]) {
     					dataTypeList=dataTypeDATEList;
-    				}else if ("7"== da) {
+    				}else if ("7"== commList[i][2]) {
     					dataTypeList=dataTypeTIMEList;
-    				}else if ("1"== da) {
+    				}else if ("1"== commList[i][2]) {
     					dataTypeList=dataTypeINTList;
-    				}else if ("15"== da) {
+    				}else if ("15"== commList[i][2]) {
     					dataTypeList=dataTypeDOUBLEList;
-    				}else if ("11"== da) {
+    				}else if ("11"== commList[i][2]) {
     					dataTypeList=dataTypeREFERENCEList;
-    				}else if ("8"== da) {
+    				}else if ("8"== commList[i][2]) {
     					dataTypeList=dataTypeFILEList;
-    				}else if ("14"== da) {
+    				}else if ("14"== commList[i][2]) {
     					dataTypeList=dataTypeENUMList;
     				}
             	
@@ -605,22 +604,21 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
             for(var i=0; i<repeatChildList.length; i++) {    
             	if(repeatChildList[i].cnName == abcattr) {
             		attrHtml += "<option item-data-type='"+repeatChildList[i].oneLevelItem.dataType+"' data-id='"+repeatChildList[i].code+"' value='"+repeatChildList[i].cnName+"' selected>"+repeatChildList[i].cnName+"</option>";
-            		var da = repeatChildList[i].oneLevelItem.dataType
-    				if ("5" == da) {
+    				if ("5" == repeatChildList[i].oneLevelItem.dataType) {
     					dataTypeList=dataTypeSTRINGList;
-    				} else if ("6"== da) {
+    				} else if ("6"== repeatChildList[i].oneLevelItem.dataType) {
     					dataTypeList=dataTypeDATEList;
-    				}else if ("7"== da) {
+    				}else if ("7"== repeatChildList[i].oneLevelItem.dataType) {
     					dataTypeList=dataTypeTIMEList;
-    				}else if ("1"== da) {
+    				}else if ("1"== repeatChildList[i].oneLevelItem.dataType) {
     					dataTypeList=dataTypeINTList;
-    				}else if ("15"== da) {
+    				}else if ("15"== repeatChildList[i].oneLevelItem.dataType) {
     					dataTypeList=dataTypeDOUBLEList;
-    				}else if ("11"== da) {
+    				}else if ("11"== repeatChildList[i].oneLevelItem.dataType) {
     					dataTypeList=dataTypeREFERENCEList;
-    				}else if ("8"== da) {
+    				}else if ("8"== repeatChildList[i].oneLevelItem.dataType) {
     					dataTypeList=dataTypeFILEList;
-    				}else if ("14"== da) {
+    				}else if ("14"== repeatChildList[i].oneLevelItem.dataType) {
     					dataTypeList=dataTypeENUMList;
     				}
             	
@@ -1335,14 +1333,14 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
             "<i class='icon icon-attr'></i>" +
             "<span class='text'>属性</span>" +
             "</div>" +
-            "<div class='label-bar attr edit' data-order='' data-id=''>" +
+            "<div class='label-bar attr  edit' data-order='' data-id=''>" +
             "<input type='text' class='edit-input text' value='属性名'>" +
             "<select class='abc-attr'>"            
             for(var i=0; i<data.length; i++) {
-            	attrHtml += "<option data-id='"+data[i][0]+"' value='"+data[i][1]+"'>"+data[i][1]+"</option>";                
+            	attrHtml += "<option item-data-type='"+data[i][2]+"' data-id='"+data[i][0]+"' value='"+data[i][1]+"'>"+data[i][1]+"</option>";                
             }
 			attrHtml += "</select>";
-			attrHtml += "<select class='data-type'>";            
+			attrHtml += "<select class='data-type attr-type'>";            
 		   Ajax.ajax('admin/node/basicItemNode/getDataType', {
 			   dataType:data[0][2]
 		   }, function(data){		    	
@@ -1404,10 +1402,10 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
             "<input type='text' class='edit-input text' value='属性名'>" +
             "<select class='abc-attr'>"            
             for(var i=0; i<data.length; i++) {
-            	attrHtml += "<option data-id='"+data[i].code+"' value='"+data[i].cnName+"'>"+data[i].cnName+"</option>";                
+            	attrHtml += "<option item-data-type='"+data[i].oneLevelItem.dataType+"' data-id='"+data[i].code+"' value='"+data[i].cnName+"'>"+data[i].cnName+"</option>";                
             }
 			attrHtml += "</select>";
-			attrHtml += "<select class='data-type'>";            
+			attrHtml += "<select class='data-type attr-type'>";            
 		    Ajax.ajax('admin/node/basicItemNode/getDataType', {
 		    	dataType:data[0].oneLevelItem.dataType
 		    }, function(data){		    	
@@ -2620,6 +2618,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
     		Ajax.ajax('admin/node/basicItemNode/getDataType', {
                 dataType:itemDataType
             }, function(data){     
+            	
                  var dataTypeList = data.dataType;
                  var attrHtml="";
                  for(var i=0; i<dataTypeList.length; i++) {

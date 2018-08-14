@@ -87,6 +87,10 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
                 "<i class='icon icon-card-attr'></i>" +
                 "<span class='text'>添加属性</span>" +
                 "</li>" +
+                "<li class='card-list add-cascade-attr'>" +
+                "<i class='icon icon-card-attr'></i>" +
+                "<span class='text'>添加级联属性</span>" +
+                "</li>" +
                 "<li class='card-list add-attr-group'>" +
                 "<i class='icon icon-card-attr-group'></i>" +
                 "<span class='text'>添加属性组</span>" +

@@ -447,9 +447,10 @@ public class BasicItemDaoImpl implements BasicItemDao {
 
 	@Override
 	public List getCascadeAttrChild(String code) {
-		String sql = "SELECT b.c_code, b.c_cas_code, a.c_cn_name, b.c_level, a.c_using_state FROM t_sc_basic_item a "
-				+ " LEFT JOIN t_sc_cascade_attr b on a.c_code=b.c_cas_code "
-				+ "	WHERE a.c_code in ( SELECT c_cas_code FROM `t_sc_cascade_attr`	 WHERE c_code=:code)";
+		String sql = "SELECT 	b.c_code,	b.c_cas_code,	a.c_cn_name,	b.c_level,	a.c_using_state "
+				+ " FROM 	t_sc_basic_item a 	LEFT JOIN t_sc_cascade_attr b ON a.c_code = b.c_cas_code "
+				+ " WHERE 	b.c_cas_code  IN ( SELECT c_cas_code FROM `t_sc_cascade_attr` WHERE c_code =:code) "
+				+ "	AND b.c_code=:code";
 		return sFactory.getCurrentSession().createSQLQuery(sql).setParameter("code", code).list();
 	}
 
