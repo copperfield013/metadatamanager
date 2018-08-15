@@ -19,7 +19,7 @@
 		
         <div class="entity-edit-wrap">
             <!-- 实体标题:begin -->
-            <div class="entity-title collapse-header  edit" data-order="" data-id="">
+            <div class="entity-title collapse-header  edit" data-abcattrcode="" data-order="" data-id="">
                 <div class="icon-label-master">
                     <i class="icon-root icon"></i>
                     <span class="text">ABC</span>

@@ -1516,19 +1516,27 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
       */
     function addCascadeAttr(el) {
         var $content = $(el).closest(".collapse-header").siblings(".collapse-content");
-        var entityId = $(".entity_attr.active", $page).attr("data-code");
-        if($(el).closest(".collapse-header").hasClass("attr-abc-title")) {
-        	entityId = $(el).closest(".attr-relative")
-        		.find(".attr-relative-title")
-        		.find(".label-bar")
-        		.find(".abc-attr ")
-        		.find("option:selected").attr("data-id");
+        var entityId = $(el).closest(".collapse-header").attr("data-abcattrcode");
+        if (entityId == undefined) {
+            entityId = $(el).closest(".collapse-header").closest(".collapse-content").siblings(".collapse-header").attr("data-abcattrcode");
         }
         $CPF.showLoading();
 		Ajax.ajax('admin/node/basicItemNode/getGroupCascaseAttr?entityId', {
 			entityId: entityId
-		}, function(data) {			
+		}, function(data) {	
+			
+			if (data.code == 400) {
+				Dialog.notice("操作失败！刷新后重试", "warning");
+				$CPF.closeLoading();		
+				return;
+			}
 			var data = data.groupCascaseAttr;
+			if(data.length == 0) {
+				Dialog.notice("没有级联属性可选， 请在模型中添加级联属性", "warning");
+				$CPF.closeLoading();		
+				return;
+			}
+			
 			var attrHtml = "<li class='add-attr clear-fix'>" +
             "<div class='icon-label attr' data-type='7' data-order='' data-id=''>" +
             "<i class='icon icon-attr'></i>" +
@@ -1592,8 +1600,21 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
         $CPF.showLoading();
 		Ajax.ajax('admin/node/basicItemNode/getMoreCascaseAttr?repeatId', {
 			repeatId: repeatId
-		}, function(data) {			
+		}, function(data) {	
+			
+			
+			if (data.code == 400) {
+				Dialog.notice("操作失败！刷新后重试", "warning");
+				$CPF.closeLoading();		
+				return;
+			}
 			var data = data.moreCascaseAttr;
+			if(data.length == 0) {
+				Dialog.notice("没有级联属性可选， 请在模型中添加级联属性", "warning");
+				$CPF.closeLoading();		
+				return;
+			}
+			
 			var attrHtml = "<li class='add-attr clear-fix'>" +
             "<div class='icon-label attr' data-order='' data-id=''>" +
             "<i class='icon icon-attr'></i>" +
@@ -1734,7 +1755,10 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
       */
     function addAttr(el) {
         var $content = $(el).closest(".collapse-header").siblings(".collapse-content");
-        var entityId = $(".entity_attr.active", $page).attr("data-code");
+        var entityId = $(el).closest(".collapse-header").attr("data-abcattrcode");
+        if (entityId == undefined) {
+        	entityId = $(el).closest(".collapse-header").closest(".collapse-content").siblings(".collapse-header").attr("data-abcattrcode");
+        }
         if($(el).closest(".collapse-header").hasClass("attr-abc-title")) {
         	entityId = $(el).closest(".attr-relative")
         		.find(".attr-relative-title")
@@ -1868,9 +1892,10 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
       */
     function addGroup(el) {
         var $content = $(el).closest(".collapse-header").siblings(".collapse-content");
+        var entityId = $(el).closest(".collapse-header").attr("data-abcattrcode");
         var dragWrapLen = $(".dragEdit-wrap").length + 1 ;
         var attrGroupHtml = "<li class='attr-group'>" +
-            "<div class='attr-group-title collapse-header' data-order='' data-id=''>" +
+            "<div class='attr-group-title collapse-header' data-abcattrcode='"+entityId+"' data-order='' data-id=''>" +
             "<div class='icon-label attr-group'>" +
             "<i class='icon icon-attr-group'></i>" +
             "<span class='text'>属性组</span>" +
@@ -1909,9 +1934,10 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
       */
     function addMoreAttr(el) {
         var $content = $(el).closest(".collapse-header").siblings(".collapse-content");
-        var entityId = $(".entity_attr.active", $page).attr("data-code");               
+        var entityId =$(el).closest(".collapse-header").attr("data-abcattrcode");               
         var dragWrapLen = $(".dragEdit-wrap").length + 1 ;
         $CPF.showLoading();
+        alert(entityId);
 		Ajax.ajax('admin/node/basicItemNode/getRepeat?entityId', {
 			entityId: entityId
 		}, function(data) {			
@@ -1965,7 +1991,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
         var $content = $(el).closest(".collapse-header").siblings(".collapse-content");
         var entityId;
         if($(el).closest(".collapse-header").hasClass("entity-title")){
-        	entityId = $(".entity_attr", $page).attr("data-code");
+        	entityId = $(el).closest(".collapse-header").attr("data-abcattrcode");
         }else {
         	entityId = $(el).closest(".collapse-header").find(".label-bar")
         					.find(".entity-only-title").attr("data-abcattr-code");
