@@ -782,4 +782,14 @@ public class BasicItemServiceImpl implements BasicItemService {
 		basicItemDao.delCascaseAttrChild(code, casCode);
 	}
 
+	@Override
+	public List getGroupCascaseAttr(String entityId) {
+		return basicItemDao.getGroupCascaseAttr(entityId);
+	}
+
+	@Override
+	public List getMoreCascaseAttr(String parentId) {
+		return basicItemDao.getMoreCascaseAttr(parentId);
+	}
+
 }

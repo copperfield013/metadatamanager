@@ -135,4 +135,18 @@ public interface BasicItemService {
 	 * @param casCode
 	 */
 	void delCascaseAttrChild(String code, String casCode) throws Exception;
+
+	/**
+	 * 根据实体id， 获取所有分组里面的级联属性
+	 * @param entityId
+	 * @return
+	 */
+	List getGroupCascaseAttr(String entityId);
+
+	/**
+	 * 根据多值属性的id，获取多值属性下的级联属性
+	 * @param string
+	 * @return
+	 */
+	List getMoreCascaseAttr(String parentId);
 }

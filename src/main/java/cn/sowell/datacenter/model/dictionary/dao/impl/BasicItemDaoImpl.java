@@ -15,6 +15,8 @@ import org.hibernate.SessionFactory;
 import org.hibernate.jdbc.Work;
 import org.springframework.stereotype.Repository;
 
+import com.abc.util.ValueType;
+
 import cn.sowell.copframe.utils.TextUtils;
 import cn.sowell.datacenter.model.dictionary.criteria.BasicItemCriteria;
 import cn.sowell.datacenter.model.dictionary.dao.BasicItemDao;
@@ -465,6 +467,26 @@ public class BasicItemDaoImpl implements BasicItemDao {
 		 sFactory.getCurrentSession().createSQLQuery(sql)
 				.setParameter("code", code)
 				.setParameter("casCode", casCode).executeUpdate();
+	}
+
+	@Override
+	public List getGroupCascaseAttr(String entityId) {
+		String sql = "SELECT a.c_code, a.c_cn_name, b.c_data_type FROM t_sc_basic_item a "
+				+ " inner join t_sc_onelevel_item b on a.c_code=b.c_code "
+				+ "WHERE a.c_parent=:entityId AND b.c_data_type=:dataType";
+		return sFactory.getCurrentSession().createSQLQuery(sql)
+				.setParameter("entityId", entityId)
+				.setParameter("dataType", ValueType.CASCADETYPE.getIndex()).list();
+	}
+
+	@Override
+	public List getMoreCascaseAttr(String parentId) {
+		String sql = "SELECT a.c_code, a.c_cn_name, b.c_data_type FROM t_sc_basic_item a "
+				+ " inner join t_sc_onelevel_item b on a.c_code=b.c_code "
+				+ " WHERE a.c_parent=:parentId AND b.c_data_type=:dataType";
+		return sFactory.getCurrentSession().createSQLQuery(sql)
+				.setParameter("parentId", parentId)
+				.setParameter("dataType", ValueType.CASCADETYPE.getIndex()).list();
 	}
 
 

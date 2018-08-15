@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html;charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ include file="/WEB-INF/jsp/common/base_empty.jsp"%>
-<div id="demo-list">
+<div id="dictMappingAlias-list">
 	<nav>
 		<form class="form-inline" action="admin/dictionary/dictMappingAlias/list">
 			<div class="form-group">
@@ -49,7 +49,7 @@
 </div>
 <script>
 	seajs.use(['dialog','utils'], function(Dialog, Utils){
-		var $page = $('#demo-list');
+		var $page = $('#dictMappingAlias-list');
 		Utils.datepicker($('#date', $page));
 		
 		$("tbody").on("click", "#edit", function() {

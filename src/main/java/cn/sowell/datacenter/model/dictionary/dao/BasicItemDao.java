@@ -185,4 +185,17 @@ public interface BasicItemDao {
  * @throws Exception
  */
 	void delCascaseAttrChild(String code, String casCode) throws Exception;
+	/**
+	 * 根据实体id, 获取实体下所有的级联属性
+	 * @param entityId
+	 * @return
+	 */
+	List getGroupCascaseAttr(String entityId);
+
+	/**
+	 * 根据多值属性的id， 获取多值属性下的级联属性
+	 * @param parentId
+	 * @return
+	 */
+	List getMoreCascaseAttr(String parentId);
 }

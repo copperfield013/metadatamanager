@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html;charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ include file="/WEB-INF/jsp/common/base_empty.jsp"%>
-<div id="demo-list">
+<div id="serviceBizzData-list">
 	<nav>
 		<form class="form-inline" action="admin/module/configModule/list">
 			 <div class="form-group">
@@ -53,7 +53,7 @@
 </div>
 <script>
 	seajs.use(['utils'], function(Utils){
-		var $page = $('#demo-list');
+		var $page = $('#serviceBizzData-list');
 		Utils.datepicker($('#date', $page));
 	});
 </script>

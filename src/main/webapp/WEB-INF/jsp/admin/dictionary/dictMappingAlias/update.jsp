@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html;charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ include file="/WEB-INF/jsp/common/base_empty.jsp"%>
-<div id="demo-update">
+<div id="dictMappingAlias-update">
 	<div class="page-header">
 		<div class="header-title">
 			<h1>修改</h1>
