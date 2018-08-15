@@ -430,8 +430,6 @@ public class BasicItemNodeController {
     	String fileName = bn.getName()+".xml";
     	File file = File.createTempFile(bn.getName(), ".xml");
 		//创建ABC配置文件
-	//	bn.getConfigFile(file);
-		
 		basicItemNodeService.getConfigFile(file, bn);
        HttpHeaders headers = new HttpHeaders();  
        String downloadFileName = new String(fileName.getBytes("UTF-8"),"iso-8859-1");//设置编码
