@@ -169,72 +169,6 @@ public class BasicItemNodeServiceImpl implements BasicItemNodeService {
 		return basicItemNodeDao.getAttribute(abcId);
 	}
 
-	/*@Override
-	public String refresh(String name) {
-		
-		Session currentSession = null;
-		Transaction bx = null;
-		try {
-			currentSession = sFactory.getCurrentSession();
-			bx = currentSession.beginTransaction();
-			String compquerSql = "SELECT id FROM v_dictionary_composite_remove WHERE module=:name";
-			List<BigInteger> compquerList = currentSession.createSQLQuery(compquerSql).setParameter("name", name).list();
-			
-			if (!compquerList.isEmpty()) {
-				String compDelSql = "delete from t_dictionary_composite where id in(";
-				for (BigInteger str : compquerList) {
-					compDelSql += str + ",";
-				}
-				compDelSql= compDelSql.substring(0, compDelSql.length()-1);
-				compDelSql += ")";
-				
-				currentSession.createSQLQuery(compDelSql).executeUpdate();
-			}
-			
-			String compUpdateSql = "UPDATE t_dictionary_composite t"
-					+ " inner join ("
-					+ " SELECT * FROM v_dictionary_composite_update WHERE module=:name "
-					+ ") c "
-					+ "on t.id=c.id "
-					+ "SET t.c_is_array=c.is_array;";
-			String compInsertSql = "Insert into t_dictionary_composite (c_name, c_title, c_module, c_is_array) "
-					+ " select name,title,module, is_array from v_dictionary_composite_add ";
-			
-			currentSession.createSQLQuery(compUpdateSql).setParameter("name", name).executeUpdate();
-			currentSession.createSQLQuery(compInsertSql).executeUpdate();
-			
-			String fielquerSql = "SELECT id FROM v_dictionary_field_remove WHERE module=:name";
-			List<BigInteger> fielquerlist = currentSession.createSQLQuery(fielquerSql).setParameter("name", name).list();
-			
-			if (!fielquerlist.isEmpty()) {
-				String fielDelSql ="delete from t_dictionary_field where id in(";
-				
-				for (BigInteger str : fielquerlist) {
-					fielDelSql += str + ",";
-				}
-				fielDelSql= fielDelSql.substring(0, fielDelSql.length()-1);
-				fielDelSql += ")";
-				
-				currentSession.createSQLQuery(fielDelSql).executeUpdate();
-			}
-			String fielUpdateSql = "UPDATE t_dictionary_field t "
-					+ "inner join (SELECT * FROM v_dictionary_field_update WHERE module=:name"
-					+ ") c on t.id=c.id SET t.c_type=c.ttype, t.c_abc_type=c.abc_type, t.optgroup_id=c.optgroup_id";
-			String fielInsertSql ="Insert into t_dictionary_field (composite_id, c_full_key, c_title, c_type, c_abc_type,optgroup_id ) "
-					+ "select comp_id,full_key, title, ttype, abc_type, optgroup_id from v_dictionary_field_add";
-			
-			
-			currentSession.createSQLQuery(fielUpdateSql).setParameter("name", name).executeUpdate();
-			currentSession.createSQLQuery(fielInsertSql).executeUpdate();
-			
-			bx.commit();
-			return "ok";
-		} catch (Exception e) {
-			bx.rollback();
-			return "error";
-		}
-	}*/
-
 	@Override
 	public BasicItemNode getAbc(String name) {
 		return basicItemNodeDao.getAbc(name);
@@ -262,7 +196,7 @@ public class BasicItemNodeServiceImpl implements BasicItemNodeService {
 		String prefix = "  ";
 		String head = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
 		FileManager.writeFileContent(file, head);
-		head = "<ABC name=\""+btn.getName()+"\" abcattr=\""+btn.getBasicItem().getCnName()+"\""+"\r\n"
+		head = "<"+NodeType.ABC.getName()+" name=\""+btn.getName()+"\" abcattr=\""+btn.getBasicItem().getCnName()+"\""+"\r\n"
 				+ "	 class=\"\" xmlns=\"http://www.w3school.com.cn\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">";
 		FileManager.writeFileContent(file, head);
 		
@@ -271,7 +205,7 @@ public class BasicItemNodeServiceImpl implements BasicItemNodeService {
 			createChild(basicItemNode, file, prefix);
 		}
 		
-		String endStr = "</ABC>";
+		String endStr = "</"+NodeType.ABC.getName()+">";
 		FileManager.writeFileContent(file, endStr);
 	}
 	
@@ -281,9 +215,9 @@ public class BasicItemNodeServiceImpl implements BasicItemNodeService {
 	 * @param bn
 	 * @throws IOException
 	 */
-	private void createAbc(File file, BasicItemNode bn, String prefix) throws IOException {
+	private void createAbc(File file, BasicItemNode bn, String prefix, NodeType nodeType) throws IOException {
 		String str = "";
-		str = prefix + "<ABC name=\""+bn.getName()+"\" abcattr=\""+bn.getBasicItem().getCnName()+"\">"+"\r\n";
+		str = prefix + "<"+nodeType.getName()+" name=\""+bn.getName()+"\" abcattr=\""+bn.getBasicItem().getCnName()+"\">"+"\r\n";
 		FileManager.writeFileContent(file, str);
 		
 		//获取ABC的所有直系孩子
@@ -291,7 +225,7 @@ public class BasicItemNodeServiceImpl implements BasicItemNodeService {
 		for (BasicItemNode basicItemNode : btNodeList) {
 			createChild(basicItemNode, file, prefix);
 		}
-		String endStr = prefix + "</ABC>";
+		String endStr = prefix + "</"+nodeType.getName()+">";
 		FileManager.writeFileContent(file, endStr);
 	}
 	
@@ -305,22 +239,25 @@ public class BasicItemNodeServiceImpl implements BasicItemNodeService {
 		NodeType nodeType = NodeType.getNodeType(basicItemNode.getType());
 		switch (nodeType) {
 		case ABC://只可能是关系下的ABC了
-			createAbc(file, basicItemNode, prefix);
+			createAbc(file, basicItemNode, prefix, nodeType);
 			break;
 		case ATTRIBUTE:
-			createAttribute(basicItemNode, file, prefix);
+			createAttribute(basicItemNode, file, prefix, nodeType);
 			break;
 		case LABEL:
-			createLabel(basicItemNode, file, prefix);
+			createLabel(basicItemNode, file, prefix, nodeType);
 			break;
 		case MULTIATTRIBUTE:
-			createMultiattribute(basicItemNode, file, prefix);
+			createMultiattribute(basicItemNode, file, prefix, nodeType);
 			break;
 		case RELATION:
-			createRelation(basicItemNode, file, prefix);
+			createRelation(basicItemNode, file, prefix, nodeType);
 			break;
 		case ATTRGROUP:
-			createAttrgroup(basicItemNode, file,prefix);
+			createAttrgroup(basicItemNode, file,prefix, nodeType);
+			break;
+		case CASATTRIBUTE:
+			createcaseAttr(basicItemNode, file,prefix, nodeType);
 			break;
 		case NONO:
 			break;
@@ -330,21 +267,33 @@ public class BasicItemNodeServiceImpl implements BasicItemNodeService {
 	}
 
 	/**
+	 * 创建级联属性
+	 * @param basicItemNode
+	 * @param file
+	 * @param prefix
+	 * @throws IOException 
+	 */
+	private void createcaseAttr(BasicItemNode basicItemNode, File file, String prefix,NodeType nodeType) throws IOException {
+		String str = prefix + "<"+nodeType.getName()+" name=\""+basicItemNode.getName()+"\" abcattr=\""+basicItemNode.getBasicItem().getCnName()+"\"  datatype=\""+basicItemNode.getDataType()+"\" ops=\""+basicItemNode.getOpt()+"\" />";
+		FileManager.writeFileContent(file, str);
+	}
+
+	/**
 	 * 生成关系
 	 * @param basicItemNode
 	 * @param file
 	 * @throws IOException 
 	 */
-	private void createRelation(BasicItemNode basicItemNode, File file, String prefix) throws IOException {
+	private void createRelation(BasicItemNode basicItemNode, File file, String prefix,NodeType nodeType) throws IOException {
 		
-		String str = prefix + "<relation name=\""+basicItemNode.getName()+"\" ops=\""+basicItemNode.getOpt()+"\"> ";
+		String str = prefix + "<"+nodeType.getName()+" name=\""+basicItemNode.getName()+"\" ops=\""+basicItemNode.getOpt()+"\"> ";
 		FileManager.writeFileContent(file, str);
 		
 		List<BasicItemNode> btNodeList = basicItemNodeDao.getChildByPid(basicItemNode.getId());
 		for (BasicItemNode bn2 : btNodeList) {
 			createChild(bn2, file, prefix);
 		}
-		str = prefix + "</relation>";
+		str = prefix + "</"+nodeType.getName()+">";
 		FileManager.writeFileContent(file, str);
 	}
 
@@ -354,8 +303,8 @@ public class BasicItemNodeServiceImpl implements BasicItemNodeService {
 	 * @param file
 	 * @throws IOException 
 	 */
-	private void createAttrgroup(BasicItemNode basicItemNode, File file, String prefix) throws IOException {
-		String str = prefix + "<attrgroup name=\""+basicItemNode.getName()+"\" ops=\""+basicItemNode.getOpt()+"\">";
+	private void createAttrgroup(BasicItemNode basicItemNode, File file, String prefix,NodeType nodeType) throws IOException {
+		String str = prefix + "<"+nodeType.getName()+" name=\""+basicItemNode.getName()+"\" ops=\""+basicItemNode.getOpt()+"\">";
 		FileManager.writeFileContent(file, str);
 		
 		List<BasicItemNode> btNodeList = basicItemNodeDao.getChildByPid(basicItemNode.getId());
@@ -363,7 +312,7 @@ public class BasicItemNodeServiceImpl implements BasicItemNodeService {
 			createChild(bn2, file, prefix);
 		}
 		
-		str = prefix + "</attrgroup>";
+		str = prefix + "</"+nodeType.getName()+">";
 		FileManager.writeFileContent(file, str);
 	}
 
@@ -373,14 +322,14 @@ public class BasicItemNodeServiceImpl implements BasicItemNodeService {
 	 * @param file
 	 * @throws IOException 
 	 */
-	private void createMultiattribute(BasicItemNode basicItemNode, File file, String prefix) throws IOException {
-		String str = prefix + "<multiattribute name=\""+basicItemNode.getName()+"\" abcattr=\""+basicItemNode.getBasicItem().getCnName()+"\" ops=\""+basicItemNode.getOpt()+"\"> ";
+	private void createMultiattribute(BasicItemNode basicItemNode, File file, String prefix,NodeType nodeType) throws IOException {
+		String str = prefix + "<"+nodeType.getName()+" name=\""+basicItemNode.getName()+"\" abcattr=\""+basicItemNode.getBasicItem().getCnName()+"\" ops=\""+basicItemNode.getOpt()+"\"> ";
 		FileManager.writeFileContent(file, str);
 		List<BasicItemNode> btNodeList = basicItemNodeDao.getChildByPid(basicItemNode.getId());
 		for (BasicItemNode bn2 : btNodeList) {
 			createChild(bn2, file, prefix);
 		}
-		str = prefix + "</multiattribute>";	
+		str = prefix + "</"+nodeType.getName()+">";	
 		FileManager.writeFileContent(file, str);
 	}
 
@@ -390,8 +339,8 @@ public class BasicItemNodeServiceImpl implements BasicItemNodeService {
 	 * @param file
 	 * @throws IOException 
 	 */
-	private void createLabel(BasicItemNode basicItemNode, File file, String prefix) throws IOException {
-		String str = prefix + "<label name=\""+basicItemNode.getName()+"\" subdomain=\""+basicItemNode.getSubdomain()+"\"	ops=\""+basicItemNode.getOpt()+"\" />";
+	private void createLabel(BasicItemNode basicItemNode, File file, String prefix,NodeType nodeType) throws IOException {
+		String str = prefix + "<"+nodeType.getName()+" name=\""+basicItemNode.getName()+"\" subdomain=\""+basicItemNode.getSubdomain()+"\"	ops=\""+basicItemNode.getOpt()+"\" />";
 		FileManager.writeFileContent(file, str);
 	}
 
@@ -401,8 +350,8 @@ public class BasicItemNodeServiceImpl implements BasicItemNodeService {
 	 * @param file
 	 * @throws IOException 
 	 */
-	private void createAttribute(BasicItemNode basicItemNode, File file, String prefix) throws IOException {
-		String str = prefix + "<attribute name=\""+basicItemNode.getName()+"\" abcattr=\""+basicItemNode.getBasicItem().getCnName()+"\"  datatype=\""+basicItemNode.getDataType()+"\" ops=\""+basicItemNode.getOpt()+"\" />";
+	private void createAttribute(BasicItemNode basicItemNode, File file, String prefix, NodeType nodeType) throws IOException {
+		String str = prefix + "<"+nodeType.getName()+" name=\""+basicItemNode.getName()+"\" abcattr=\""+basicItemNode.getBasicItem().getCnName()+"\"  datatype=\""+basicItemNode.getDataType()+"\" ops=\""+basicItemNode.getOpt()+"\" />";
 		FileManager.writeFileContent(file, str);
 	}
 
