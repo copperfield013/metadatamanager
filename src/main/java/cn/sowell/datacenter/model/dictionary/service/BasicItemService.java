@@ -149,4 +149,10 @@ public interface BasicItemService {
 	 * @return
 	 */
 	List getMoreCascaseAttr(String parentId);
+
+	/**
+	 * 级联属性还可以添加几个孩子
+	 * @param code
+	 */
+	BigInteger canAddChildCount(String code)  throws Exception;
 }

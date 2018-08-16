@@ -792,4 +792,9 @@ public class BasicItemServiceImpl implements BasicItemService {
 		return basicItemDao.getMoreCascaseAttr(parentId);
 	}
 
+	@Override
+	public BigInteger canAddChildCount(String code) throws Exception {
+		return basicItemDao.canAddChildCount(code);
+	}
+
 }

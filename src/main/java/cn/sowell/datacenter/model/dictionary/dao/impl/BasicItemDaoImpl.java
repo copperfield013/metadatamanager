@@ -491,5 +491,16 @@ public class BasicItemDaoImpl implements BasicItemDao {
 				.setParameter("dataType", ValueType.CASCADETYPE.getIndex()).list();
 	}
 
+	@Override
+	public BigInteger canAddChildCount(String code) throws Exception {
+		String sql = " SELECT (SELECT LENGTH(c_cas_pid)-LENGTH(REPLACE(c_cas_pid, '.', '')) as count  "
+				+ " FROM `t_sc_cascadedict_basic_item` "
+				+ " WHERE c_cas_pid LIKE (SELECT concat(c_cas_pid, '.', id, '%') FROM t_sc_cascadedict_basic_item "
+						+ " WHERE id=(SELECT c_dict_parent_id FROM t_sc_onelevel_item "
+						+ " WHERE c_code=:code)) ORDER BY LENGTH(c_cas_pid) DESC LIMIT 1)-"
+						+ " (SELECT count(*) FROM t_sc_cascade_attr where c_code=:code)";
+		return (BigInteger) sFactory.getCurrentSession().createSQLQuery(sql).setParameter("code", code).uniqueResult();
+	}
+
 
 }

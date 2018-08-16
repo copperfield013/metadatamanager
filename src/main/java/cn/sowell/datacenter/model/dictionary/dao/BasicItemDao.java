@@ -198,4 +198,11 @@ public interface BasicItemDao {
 	 * @return
 	 */
 	List getMoreCascaseAttr(String parentId);
+
+	/**
+	 * 级联属性添加孩子的数量
+	 * @param code
+	 * @return
+	 */
+	BigInteger canAddChildCount(String code) throws Exception;
 }

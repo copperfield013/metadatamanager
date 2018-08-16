@@ -776,6 +776,15 @@ public class BasicItemController {
 			Map<String, Object> map = new HashMap<String, Object>();
 			JSONObject jobj = new JSONObject(map);
 			try {
+				
+				BigInteger canAddChildCount = basicItemService.canAddChildCount(cascadeAttr.getCode());//获取可以添加孩子的数量
+				int count = Integer.valueOf(canAddChildCount.toString());
+				if (count<=0) {
+					map.put("code", 400);
+					map.put("msg", "级联属性的孩子已达到上限，不能添加");
+					return jobj.toString();
+				}
+				
 				basicItemService.saveCascaseAttrChild(cascadeAttr);
 				map.put("code", 200);
 				map.put("msg", "success");
