@@ -11,6 +11,8 @@
 			<div class="col-lg-12">
 				<form class="bv-form form-horizontal validate-form" action="admin/cascadedict/cascadedictBasicItem/do_update">
 					<input type="hidden" name="id" value="${dictBasicItem.id }" />
+					<input type="hidden" name="parentId" value="${dictBasicItem.parentId }" />
+					<input type="hidden" name="casPid" value="${dictBasicItem.casPid }" />
 					<div class="form-group">
 						<label class="col-lg-2 control-label" for="name" >名称</label>
 						<div class="col-lg-5">

@@ -91,5 +91,14 @@ public class CascadedictBasicItemDaoImpl implements CascadedictBasicItemDao {
 				+ "WHERE b.id !=0 AND b.id in(SELECT DISTINCT parent_id FROM `t_sc_cascadedict_basic_item` WHERE parent_id is not null) ";
 		return sFactory.getCurrentSession().createSQLQuery(sql).addEntity(CascadedictBasicItem.class).list();
 	}
+
+	@Override
+	public List<CascadedictBasicItem> getCascaseDictPitem() throws Exception {
+		String sql = "SELECT DISTINCT  a.* FROM `t_sc_cascadedict_basic_item` a "
+				+ " inner join t_sc_cascadedict_basic_item b on a.id=b.parent_id "
+				+ " inner join t_sc_cascadedict_basic_item c on b.id=c.parent_id "
+				+ " WHERE a.parent_id is not null AND a.id !=0 ";
+		return sFactory.getCurrentSession().createSQLQuery(sql).addEntity(CascadedictBasicItem.class).list();
+	}
 	
 }

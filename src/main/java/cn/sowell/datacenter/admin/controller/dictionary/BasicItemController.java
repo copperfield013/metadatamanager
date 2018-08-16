@@ -685,6 +685,25 @@ public class BasicItemController {
 			}
 		}
 	    
+	  //这里写获取级联属性枚举值的方法         
+	    @ResponseBody
+		@RequestMapping("/getCascaseDictPitem")
+		public String getCascaseDictPitem(){
+			Map<String, Object> map = new HashMap<String, Object>();
+			JSONObject jobj = new JSONObject(map);
+			try {
+				List<CascadedictBasicItem> childList = cascadedictBasicItemService.getCascaseDictPitem();
+				map.put("code", 200);
+				map.put("msg", "success");
+				map.put("dictPitem", childList);
+				return jobj.toString();
+			} catch (Exception e) {
+				logger.error("添加失败", e);
+				map.put("code", 400);
+				map.put("msg", "error");
+				return jobj.toString();
+			}
+		}
 	    
 	  //这里获取普通分组下的可选属性    , 级联属性专用，其他勿用
 	    @ResponseBody

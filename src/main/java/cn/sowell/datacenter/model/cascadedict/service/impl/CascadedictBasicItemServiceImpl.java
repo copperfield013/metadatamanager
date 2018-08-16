@@ -29,6 +29,9 @@ public class CascadedictBasicItemServiceImpl implements CascadedictBasicItemServ
 	public void create(CascadedictBasicItem dictParentItem) throws Exception{
 		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		dictParentItem.setUpdateTime(df.format(new Date()));
+		
+		CascadedictBasicItem one = dictionaryBasicItemDao.get(CascadedictBasicItem.class, dictParentItem.getParentId());
+		dictParentItem.setCasPid(one.getId() ==0? one.getId() +"":one.getCasPid()+"."+one.getId());
 		dictionaryBasicItemDao.insert(dictParentItem);
 	}
 
@@ -63,6 +66,8 @@ public class CascadedictBasicItemServiceImpl implements CascadedictBasicItemServ
 	public void saveOrUpdate(CascadedictBasicItem basicItem) throws Exception {
 		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		basicItem.setUpdateTime(df.format(new Date()));
+		CascadedictBasicItem one = dictionaryBasicItemDao.get(CascadedictBasicItem.class, basicItem.getParentId());
+		basicItem.setCasPid(one.getCasPid()+"."+one.getId());
 		if (basicItem.getId() == null) {
 			dictionaryBasicItemDao.insert(basicItem);
 		} else {
@@ -72,8 +77,13 @@ public class CascadedictBasicItemServiceImpl implements CascadedictBasicItemServ
 	}
 
 	@Override
-	public List<CascadedictBasicItem> getParentAll() {
+	public List<CascadedictBasicItem> getParentAll() throws Exception{
 		return dictionaryBasicItemDao.getParentAll();
+	}
+
+	@Override
+	public List<CascadedictBasicItem> getCascaseDictPitem() throws Exception{
+		return dictionaryBasicItemDao.getCascaseDictPitem();
 	}
 
 }

@@ -1601,8 +1601,6 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 		Ajax.ajax('admin/node/basicItemNode/getMoreCascaseAttr?repeatId', {
 			repeatId: repeatId
 		}, function(data) {	
-			
-			
 			if (data.code == 400) {
 				Dialog.notice("操作失败！刷新后重试", "warning");
 				$CPF.closeLoading();		

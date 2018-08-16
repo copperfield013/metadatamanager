@@ -391,7 +391,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
 	        $form.find("#refType_enum").remove(); 
 	        $form.find("#s2id_refType").remove();
             //选中  则显示下拉列表       
-            Ajax.ajax('admin/dictionary/basicItem/getDictPitem', '', function(data) {
+            Ajax.ajax('admin/dictionary/basicItem/getCascaseDictPitem', '', function(data) {
             	var dictParentId = $form.find("#edit_dictParentId").val();
                 var dataArr = data.dictPitem;
                 var str = "<span id=\"span_enum\">字典序：</span><select id=\"dictParentId\" name=\"dictParentId\">";
@@ -524,7 +524,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
 	        $form.find("#refType_enum").remove(); 
 	        $form.find("#s2id_refType").remove();
             //选中  则显示下拉列表       
-            Ajax.ajax('admin/dictionary/basicItem/getDictPitem', '', function(data) {
+            Ajax.ajax('admin/dictionary/basicItem/getCascaseDictPitem', '', function(data) {
             	var dictParentId = $form.find("#edit_dictParentId").val();
                 var dataArr = data.dictPitem;
                 var str = "<span id=\"span_enum\">字典序：</span><select id=\"dictParentId\" name=\"dictParentId\">";
@@ -1632,7 +1632,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
                 });            
         		 
         	} else if ("17" == jsonData.oneLevelItem.dataType) {
-        		Ajax.ajax('admin/dictionary/basicItem/getDictPitem', '', function(data) {
+        		Ajax.ajax('admin/dictionary/basicItem/getCascaseDictPitem', '', function(data) {
     	            var dataArr = data.dictPitem;    	            
     	            var dictParentId = $form1.find("#edit_dictParentId").val();
     	            if (dictParentId != "") {
@@ -1814,7 +1814,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
     		$form1.find("#refType_enum").remove(); 
     		$form1.find("#s2id_refType").remove();
             //选中  则显示下拉列表       
-            Ajax.ajax('admin/dictionary/basicItem/getDictPitem', '', function(data) {
+            Ajax.ajax('admin/dictionary/basicItem/getCascaseDictPitem', '', function(data) {
             	var dictParentId = $form1.find("#edit_dictParentId").val();
                 var dataArr = data.dictPitem;
                 var str = "<span id=\"span_enum\">字典序：</span><select id=\"dictParentId\" name=\"dictParentId\">";

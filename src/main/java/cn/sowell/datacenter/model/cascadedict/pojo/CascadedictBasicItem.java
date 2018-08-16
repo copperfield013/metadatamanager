@@ -19,9 +19,8 @@ public class CascadedictBasicItem {
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Integer id;
 	
-	/*@ApiModelProperty(value="父名称")
-	@Column(name = "parent_name")
-	private String parentName;*/
+	@Column(name = "c_cas_pid")
+	private String casPid;
 	
 	@ApiModelProperty(value="父id")
 	@Column(name = "parent_id")
@@ -113,4 +112,19 @@ public class CascadedictBasicItem {
 	public void setUpdateTime(String updateTime) {
 		this.updateTime = updateTime;
 	}
+
+	/**
+	 * @return the casPid
+	 */
+	public String getCasPid() {
+		return casPid;
+	}
+
+	/**
+	 * @param casPid the casPid to set
+	 */
+	public void setCasPid(String casPid) {
+		this.casPid = casPid;
+	}
+	
 }
