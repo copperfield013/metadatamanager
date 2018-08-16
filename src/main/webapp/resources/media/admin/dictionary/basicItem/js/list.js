@@ -753,6 +753,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
   //点击   删除多值级联属性的孩子
     $(".more_proper", $page).on("click", ".more_delete_cascadeAttr_child", function() {
     	var code = $(this).attr("code");
+    	 var $morecase = $(this).closest('.more_cascadeAttr_child').siblings(".more_list");
     	var casCode = $(this).attr("cascode");
         Ajax.ajax('admin/dictionary/basicItem/delCascaseAttrChild', {
         	code:code,
@@ -760,7 +761,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
         }, function(data) {
         	if (data.code == 200) {
         		 Dialog.notice("删除成功！", "success");
-        		  $('.more_show_cascadeAttr_child').trigger("click");
+        		 $morecase.find("[data-code-id='"+code+"']").find('.more_show_cascadeAttr_child').trigger("click");
         		  $casecadediv.hide();
         	} else {
         		Dialog.notice("删除失败，重新点击！", "error");
@@ -783,7 +784,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
         }, function(data) {
         	if (data.code == 200) {
         		  var cascadeAttr = data.cascadeAttr;
-        		  $('.more_show_cascadeAttr_child').trigger("click");
+        		  $casecadediv.siblings(".more_list").find("[data-code-id='"+cascadecode+"']").find('.more_show_cascadeAttr_child').trigger("click");
         		  $casecadediv.hide();
         		  Dialog.notice("添加成功！", "success");
         	} else {
@@ -858,6 +859,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
   //点击   删除分组级联属性的孩子
     $(".common_proper", $page).on("click", ".delete_cascadeAttr_child", function() {
     	var code = $(this).attr("code");
+    	var $cascade = $(this).closest('.cascadeAttr_child').siblings(".comm_list");
     	var casCode = $(this).attr("cascode");
         Ajax.ajax('admin/dictionary/basicItem/delCascaseAttrChild', {
         	code:code,
@@ -865,7 +867,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
         }, function(data) {
         	if (data.code == 200) {
         		 Dialog.notice("删除成功！", "success");
-        		  $('.show_cascadeAttr_child').trigger("click");
+        		 $cascade.find("[data-code-id='"+code+"']").find('.show_cascadeAttr_child').trigger("click");
         		  $casecadediv.hide();
         	} else {
         		Dialog.notice("删除失败，重新点击！", "error");
@@ -888,7 +890,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
         }, function(data) {
         	if (data.code == 200) {
         		  var cascadeAttr = data.cascadeAttr;
-        		  $('.show_cascadeAttr_child').trigger("click");
+        		  $casecadediv.siblings(".comm_list").find("[data-code-id='"+cascadecode+"']").find(".show_cascadeAttr_child").trigger("click");
         		  $casecadediv.hide();
         		  Dialog.notice("添加成功！", "success");
         	} else {
@@ -2214,7 +2216,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
                     str = str + "<div class=\"two-level-attr\" id=\"twoLevelAttr\" twoLevelId=\"" + moreArr[i].twoLevelAttr + "\"><a href=\"javascript:void(0)\"\">查看二级属性</a></div>"
                 }  
                 str = str + "</div><div class=\"clear-fix more_list\">";
-                for (var j = 0; j < moreArr[i].childList.length; j++) {                    
+                for (var j = 0; j < moreArr[i].childList.length; j++) {   
                     if (moreArr[i].childList[j].usingState == '0') {
                         str = str + "<div data-code-id=\""+moreArr[i].childList[j].code+"\" title=\"code:"+moreArr[i].childList[j].code+", 中文名称:"+moreArr[i].childList[j].cnName+",  英文名称:"+moreArr[i].childList[j].enName+",数据类型："+moreArr[i].childList[j].oneLevelItem.dataType+", 数据长度："+moreArr[i].childList[j].oneLevelItem.dataRange+", 字典序："+ moreArr[i].childList[j].oneLevelItem.dictParentId  +"  \" class=\"entity_attr newadd\">"  + moreArr[i].childList[j].cnName 
                         if (statusStr != 2) {
@@ -2241,11 +2243,11 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
                         }
                     }
                     if (statusStr != 2) {
-                    	str = str + "<li><a href=\"javascript:void(0)\" patentId=\""+moreArr[i].parent+"\" class=\"delete_attr\"><i class=\"icon edit-entity\"></i>删除属性</a></li>"
+                    	str = str + "<li><a href=\"javascript:void(0)\" patentId=\""+moreArr[i].parent+"\"  class=\"delete_attr\"><i class=\"icon edit-entity\"></i>删除属性</a></li>"
                     }
                     
                     if (statusStr != 2 && moreArr[i].childList[j].oneLevelItem.dataType == '17') {
-	                    str = str+"<li><a href=\"javascript:void(0)\" patentId=\""+commonArr[i].childList[j].parent+"\" class=\"more_show_cascadeAttr_child\"><i class=\"icon edit-entity\"></i>查看级联属性孩子</a></li>";
+	                    str = str+"<li><a href=\"javascript:void(0)\"  class=\"more_show_cascadeAttr_child\"><i class=\"icon edit-entity\"></i>查看级联属性孩子</a></li>";
 	                 }
                     
                     if (statusStr != 2) {

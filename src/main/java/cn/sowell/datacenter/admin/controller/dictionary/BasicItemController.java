@@ -778,6 +778,13 @@ public class BasicItemController {
 			try {
 				
 				BigInteger canAddChildCount = basicItemService.canAddChildCount(cascadeAttr.getCode());//获取可以添加孩子的数量
+				
+				if (canAddChildCount==null) {
+					map.put("code", 400);
+					map.put("msg", "请检查本属性链接的字典是否存在！");
+					return jobj.toString();
+				}
+				
 				int count = Integer.valueOf(canAddChildCount.toString());
 				if (count<=0) {
 					map.put("code", 400);
