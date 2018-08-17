@@ -134,7 +134,7 @@ public interface BasicItemService {
 	 * @param code
 	 * @param casCode
 	 */
-	void delCascaseAttrChild(String code, String casCode) throws Exception;
+	void deleteCascaseAttrChild(String code, String casCode) throws Exception;
 
 	/**
 	 * 根据实体id， 获取所有分组里面的级联属性

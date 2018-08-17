@@ -205,4 +205,13 @@ public interface BasicItemDao {
 	 * @return
 	 */
 	BigInteger canAddChildCount(String code) throws Exception;
+
+	/**
+	 * 返回级联属性的孩子， 放进对象中, level 升序排列--必须升序
+	 * @param code
+	 * @return
+	 */
+	List getCascadeAttrChildPojo(String code, String casCode) throws Exception;
+	
+	void updateCasCadeLevel(String code, String casCade, int level) throws Exception;
 }

@@ -454,7 +454,7 @@ public class BasicItemDaoImpl implements BasicItemDao {
 		String sql = "SELECT 	b.c_code,	b.c_cas_code,	a.c_cn_name,	b.c_level,	a.c_using_state "
 				+ " FROM 	t_sc_basic_item a 	LEFT JOIN t_sc_cascade_attr b ON a.c_code = b.c_cas_code "
 				+ " WHERE 	b.c_cas_code  IN ( SELECT c_cas_code FROM `t_sc_cascade_attr` WHERE c_code =:code) "
-				+ "	AND b.c_code=:code";
+				+ "	AND b.c_code=:code order by b.c_level asc";
 		return sFactory.getCurrentSession().createSQLQuery(sql).setParameter("code", code).list();
 	}
 
@@ -500,6 +500,23 @@ public class BasicItemDaoImpl implements BasicItemDao {
 						+ " WHERE c_code=:code)) ORDER BY LENGTH(c_cas_pid) DESC LIMIT 1)-"
 						+ " (SELECT count(*) FROM t_sc_cascade_attr where c_code=:code)";
 		return (BigInteger) sFactory.getCurrentSession().createSQLQuery(sql).setParameter("code", code).uniqueResult();
+	}
+
+	@Override
+	public List getCascadeAttrChildPojo(String code, String casCode) {
+		String sql =" SELECT c_code, c_cas_code, c_level FROM `t_sc_cascade_attr` WHERE c_code=:code  and c_cas_code !=:casCode order by c_level asc";
+		return sFactory.getCurrentSession().createSQLQuery(sql)
+				.setParameter("code", code)
+				.setParameter("casCode", casCode).list();
+	}
+
+	@Override
+	public void updateCasCadeLevel(String code, String casCade, int level) throws Exception {
+		String sql = "UPDATE t_sc_cascade_attr set c_level=:level  WHERE c_code=:code AND c_cas_code=:casCade";
+		sFactory.getCurrentSession().createSQLQuery(sql)
+		.setParameter("code", code)
+		.setParameter("casCade", casCade)
+		.setParameter("level", level).executeUpdate();
 	}
 
 

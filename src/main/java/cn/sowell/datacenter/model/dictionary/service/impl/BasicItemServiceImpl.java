@@ -774,12 +774,29 @@ public class BasicItemServiceImpl implements BasicItemService {
 
 	@Override
 	public void saveCascaseAttrChild(CascadeAttr cascadeAttr) throws Exception {
+		//添加的时候获取level， 编辑的时候level不能改变， 
+		List<CascadeAttr> cascadeAttrChild = basicItemDao.getCascadeAttrChild(cascadeAttr.getCode());
+		
+		if (cascadeAttrChild == null) {
+			cascadeAttr.setLevel(1);
+		} else {
+			cascadeAttr.setLevel(cascadeAttrChild.size()+1);
+		}
 		basicItemDao.saveCascaseAttrChild(cascadeAttr);
 	}
 
 	@Override
-	public void delCascaseAttrChild(String code, String casCode) throws Exception{
+	public void deleteCascaseAttrChild(String code, String casCode) throws Exception{
 		basicItemDao.delCascaseAttrChild(code, casCode);
+		//删除的时候按level升序重新排序
+		List cascadeAttrChildPojo = basicItemDao.getCascadeAttrChildPojo(code, casCode);
+		Iterator iterator = cascadeAttrChildPojo.iterator();
+		int count=0;
+		while (iterator.hasNext()) {
+			Object[] str = (Object[]) iterator.next();
+			count++;
+			basicItemDao.updateCasCadeLevel((String)str[0], (String)str[1], count);
+		}
 	}
 
 	@Override

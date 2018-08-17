@@ -818,12 +818,12 @@ public class BasicItemController {
 			Map<String, Object> map = new HashMap<String, Object>();
 			JSONObject jobj = new JSONObject(map);
 			try {
-				basicItemService.delCascaseAttrChild(code,  casCode);
+				basicItemService.deleteCascaseAttrChild(code,  casCode);
 				map.put("code", 200);
 				map.put("msg", "success");
 				return jobj.toString();
 			} catch (Exception e) {
-				logger.error("添加失败", e);
+				logger.error("删除失败", e);
 				map.put("code", 400);
 				map.put("msg", "error");
 				return jobj.toString();
