@@ -45,6 +45,7 @@ public class NodeTypeMappingOps {
 		for (NodeOpsType opsType : NodeOpsType.values()) {
 			opsTypes.add(opsType);
 		}
+		opsTypes.remove(NodeOpsType.MERGE);
 		
 		opsTypes = new HashSet();
 		opsMapping.put(NodeType.ATTRGROUP, opsTypes);
