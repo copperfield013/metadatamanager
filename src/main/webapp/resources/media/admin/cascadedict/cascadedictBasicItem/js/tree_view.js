@@ -66,7 +66,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 							"<i class='icon icon-attr-relative'></i><span class='text'>节点</span>" +
 						"</div>" + 
 						"<div class='label-bar attr-relative al-save'>"
-								nodeHtml = nodeHtml + "<input type='text' disabled class='edit-input text name' name='name' title='名称' value='"+nodeValue.name+"'>" +
+								nodeHtml = nodeHtml + "<span style='color: #363636;padding-right: 1em;' title='编号'>"+nodeValue.id+"</span><input type='text' disabled class='edit-input text name' name='name' title='名称' value='"+nodeValue.name+"'>" +
 								"<input type='text' disabled class='edit-input text enName' name='enName' title='英文名称' value='"+nodeValue.enName+"'>" +
 								"<select disabled name='status' class='abc-attr status'>";
 								 if(nodeValue.status == "启用") {            		
@@ -113,6 +113,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 					"<i class='icon icon-attr-relative'></i><span class='text'>节点</span>" +
 				"</div>" + 
 				"<div class='label-bar attr-relative al-save edit'>"+
+						"<span id='bianhaospan' style='color: #363636;padding-right: 1em;' title='编号'></span>"+
 						"<input type='text'  class='edit-input text name' name='name' title='名称' placeholder='名称' value=''>" +
 						"<input type='text'  class='edit-input text enName' name='enName' title='英文名称' placeholder='英文名称' value=''>" +
 						"<select name='status' class='abc-attr status'>"+
@@ -239,6 +240,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 			 	if (data.code == 200) {
 			 		var creteria = data.creteria;
 			    	$(el).closest(".collapse-header").attr("data-id", creteria.id);
+			    	$(el).closest(".collapse-header").find(".label-bar").find("#bianhaospan").html(creteria.id);
 			    	saveSuccess(el)
 			    	
 			 		Dialog.notice("保存成功！", "success");

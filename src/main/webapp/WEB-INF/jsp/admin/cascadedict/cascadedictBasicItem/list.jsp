@@ -16,6 +16,7 @@
 			<thead>
 				<tr>
 					<th>序号</th>
+					<th>编号</th>
 					<th>名称</th>
 					<th>英文名称</th>
 					<th>状态</th>
@@ -27,6 +28,7 @@
 				<c:forEach items="${list }" var="item" varStatus="i">
 					<tr>
 						<td>${i.index + 1 }</td>
+						<td>${item.id }</td>
 						<td>${item.name }</td>
 						<td>${item.enName }</td>
 						<td>${item.status }</td>

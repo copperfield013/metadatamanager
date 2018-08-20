@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -53,6 +54,7 @@ import cn.sowell.datacenter.model.dictionary.service.RecordRelationTypeService;
 import cn.sowell.datacenter.model.node.criteria.BasicItemNodeCriteria;
 import cn.sowell.datacenter.model.node.pojo.BasicItemNode;
 import cn.sowell.datacenter.model.node.service.BasicItemNodeService;
+import cn.sowell.datacenter.utils.NodeTypeMappingOps;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -133,14 +135,59 @@ public class BasicItemNodeController {
 			//判断当前父节点下有没有重复的名字
 			 boolean check = basicItemNodeService.check(basicItemNode);
 			 
+			 String msg = "";
+			 //判断当前节点ops, 修改后的权限小于等于父亲
+			 if(basicItemNode.getParentId() == null && NodeType.ABC.equals(NodeType.getNodeType(basicItemNode.getType()))) {
+				 inline.setState("200");
+			 } else { //就是有父亲的
+				 BasicItemNode parentNode = basicItemNodeService.getOne(basicItemNode.getParentId());
+				 
+				 NodeOpsType curOps = NodeOpsType.getNodeOpsType(Integer.parseInt(basicItemNode.getOpt()));
+				 NodeOpsType parentOps = NodeOpsType.getNodeOpsType(parentNode.getOpt());
+				 boolean include = parentOps.include(curOps);
+				 if (include) {//修改后的权限最大是父亲
+					 inline.setState("200");
+				 } else {
+					 inline.setState("400");
+					 inline.setMsg("节点ops权限应该小于等于父节点权限");	
+				 }
+			 }
+			 //判断当前节点ops, 修改后的权限大于等于孩子，要想权限修改为小于孩子， 应该先把孩子的权限修改小
+			 List<BasicItemNode> childNode =null;
+			 if (basicItemNode.getId() != null) {
+				 childNode = basicItemNodeService.getChildNode(basicItemNode.getId());
+			 }
+			 if (childNode!=null && childNode.size()>0) {//判断节点是否有孩子如果有孩子， 修改后的权限要大于等于孩子的最高权限
+				 NodeOpsType curOps = NodeOpsType.getNodeOpsType(Integer.parseInt(basicItemNode.getOpt()));
+				 //根据父id， 求出孩子的opt集合
+				 List childOptList = basicItemNodeService.getChildOptList(basicItemNode.getId());
+				 boolean compareOpt = NodeTypeMappingOps.compareOpt(childOptList, curOps);
+				 if (compareOpt) {
+					 inline.setState("200");
+				 } else {
+					 inline.setState("400");
+					 inline.setMsg("父节点opt不能比孩子opt小");	
+				 }
+			 } else {//--没有孩子
+				 if (inline.getState() !="400") {
+					 inline.setState("200");
+				 }
+			 }
+			 
+			 
+			 
 			 if ("true".equals(relaNodeChil)) {
-				 inline.setState("error");
+				 inline.setState("400");
+				 inline.setMsg("关系下只能有一个标签和一个实体");
 			 } else if (check) {//重复了
-					inline.setState("fail");
+					inline.setState("400");
+					inline.setMsg("属性名不能相同");
+			} else if (inline.getState() == "400") {
+				
 			} else {
 				basicItemNodeService.saveOrUpdate(basicItemNode);
 				inline.setNode(basicItemNode);
-				inline.setState("success");
+				inline.setState("200");
 			}
 			
              return new ResponseEntity<InlineResponse200>(inline, HttpStatus.OK);
@@ -173,11 +220,14 @@ public class BasicItemNodeController {
         @ApiResponse(code = 401, message = "操作失败") })
     @RequestMapping(value = "/getNodeOpsType",
         method = {RequestMethod.POST, RequestMethod.GET})
-	public ResponseEntity<Object> getNodeOpsType() {
+	public ResponseEntity<Object> getNodeOpsType(int opsCode) {
 		 try {
-			 	List list = new ArrayList();
-				for (NodeOpsType f : NodeOpsType.values()) {
-					list.add(f.getName());
+			 	List list =	new ArrayList();
+				NodeType nodeType = NodeType.getNodeType(opsCode); 
+				Collection<NodeOpsType> opsSetByNodeType = NodeTypeMappingOps.getOpsSetByNodeType(nodeType);
+				for (Iterator iterator = opsSetByNodeType.iterator(); iterator.hasNext();) {
+					NodeOpsType nodeOpsType = (NodeOpsType) iterator.next();
+					list.add(nodeOpsType.getName());
 				}
 				Map<String, Object> map = new HashMap<String, Object>();
 				map.put("nodeOpsType", list);
@@ -358,10 +408,11 @@ public class BasicItemNodeController {
 		BasicItem basicItem = btNode.getBasicItem();
 		ModelAndView mv = new ModelAndView();
 		List opsList = new ArrayList();
-		for (NodeOpsType f : NodeOpsType.values()) {
-			opsList.add(f.getName());
+		Collection<NodeOpsType> opsSetByNodeType = NodeTypeMappingOps.getOpsSetByNodeType(NodeType.ABC);
+		for (Iterator iterator = opsSetByNodeType.iterator(); iterator.hasNext();) {
+			NodeOpsType nodeOpsType = (NodeOpsType) iterator.next();
+			opsList.add(nodeOpsType.getName());
 		}
-		
 		mv.addObject("btNode", btNode);
 		mv.addObject("basicItem", basicItem);
 		mv.addObject("opsList", opsList);

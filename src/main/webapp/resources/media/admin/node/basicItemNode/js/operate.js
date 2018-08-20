@@ -27,11 +27,64 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 	
 	function getNodeOpsType() {
 		$CPF.showLoading();
-		Ajax.ajax('admin/node/basicItemNode/getNodeOpsType', '', function(data){		    	
+	    //ABC
+	    Ajax.ajax('admin/node/basicItemNode/getNodeOpsType', {
+	    	opsCode:1
+	    }, function(data){		    	
 	    	var data = data.nodeOpsType;
-	    	nodePosType = data;
+	    	nodePosTypeABC = data;
 	    	$CPF.closeLoading();
 	    }, {async: false})
+	    //ATTRIBUTE
+	    Ajax.ajax('admin/node/basicItemNode/getNodeOpsType', {
+	    	opsCode:2
+	    }, function(data){		    	
+	    	var data = data.nodeOpsType;
+	    	nodePosTypeATTRIBUTE = data;
+	    	$CPF.closeLoading();
+	    }, {async: false})
+	    //LABEL
+	     Ajax.ajax('admin/node/basicItemNode/getNodeOpsType', {
+	    	opsCode:3
+	    }, function(data){		    	
+	    	var data = data.nodeOpsType;
+	    	nodePosTypeLABEL = data;
+	    	$CPF.closeLoading();
+	    }, {async: false})
+	    //MULTIATTRIBUTE
+	     Ajax.ajax('admin/node/basicItemNode/getNodeOpsType', {
+	    	opsCode:4
+	    }, function(data){		    	
+	    	var data = data.nodeOpsType;
+	    	nodePosTypeMULTIATTR = data;
+	    	$CPF.closeLoading();
+	    }, {async: false})
+	    //RELATION
+	     Ajax.ajax('admin/node/basicItemNode/getNodeOpsType', {
+	    	opsCode:5
+	    }, function(data){		    	
+	    	var data = data.nodeOpsType;
+	    	nodePosTypeRELATION = data;
+	    	$CPF.closeLoading();
+	    }, {async: false})
+	    //ATTRGROUP
+	     Ajax.ajax('admin/node/basicItemNode/getNodeOpsType', {
+	    	opsCode:6
+	    }, function(data){		    	
+	    	var data = data.nodeOpsType;
+	    	nodePosTypeATTRGROUP = data;
+	    	$CPF.closeLoading();
+	    }, {async: false})
+	    //CASATTRIBUTE
+	    Ajax.ajax('admin/node/basicItemNode/getNodeOpsType', {
+	    	opsCode:7
+	    }, function(data){		    	
+	    	var data = data.nodeOpsType;
+	    	nodePosTypeCASATTRIBUTE = data;
+	    	$CPF.closeLoading();
+	    }, {async: false})
+	    
+	    
 	}
 	/*function getDataType() {
 		 $CPF.showLoading();
@@ -51,7 +104,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 	/**
      * 获取实体信息方法 示例     
      */
-	function getEntity(entity) {		
+	function getEntity(entity) {
 		var cnName = $(entity).attr("data-cnname");	
 		var entityId = $(entity).attr("data-code");	
 		$("#operate .entity-title>.edit-input").val(cnName);
@@ -59,7 +112,8 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 		$("#operate .entity-edit-wrap").addClass("active");
 		$("#operate .entity-title").attr("data-abcattrcode", entityId);
 		var $select = $("#operate .entity-edit-wrap").find(".node-ops-type");		
-		var html = "";						    			    	
+		var html = "";			
+		var nodePosType=nodePosTypeABC;
 	    for(var i=0; i<nodePosType.length; i++) {
 	    	if(nodePosType[i] === "写") {
 	    		html += "<option value='"+nodePosType[i]+"' selected>"+nodePosType[i]+"</option>";  	
@@ -511,7 +565,8 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
             "</ul>" +
             "</div>" +
             "<span class='icon icon-toright ban'></span>"
-            tagHtml += "<select class='node-ops-type'>";						    			    	
+            tagHtml += "<select class='node-ops-type'>";
+        	var nodePosType =nodePosTypeLABEL;
 		    for(var i=0; i<nodePosType.length; i++) {
 		    	if(nodePosType[i] === "写") {
 		    		tagHtml += "<option value='"+nodePosType[i]+"' selected>"+nodePosType[i]+"</option>";  	
@@ -586,7 +641,8 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 		    		}	            	        
 	            };
 	            attrHtml += "</select>";
-				attrHtml += "<select class='node-ops-type'>";						    			    	
+				attrHtml += "<select class='node-ops-type'>";	
+				var nodePosType =nodePosTypeCASATTRIBUTE;
 			    for(var i=0; i<nodePosType.length; i++) {
 			    	if(nodePosType[i] === "写") {
 			    		attrHtml += "<option value='"+nodePosType[i]+"' selected>"+nodePosType[i]+"</option>";  	
@@ -664,7 +720,8 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 		    		}	            	        
 	            };
 	            attrHtml += "</select>";
-				attrHtml += "<select class='node-ops-type'>";						    			    	
+				attrHtml += "<select class='node-ops-type'>";
+				var nodePosType = nodePosTypeCASATTRIBUTE;
 			    for(var i=0; i<nodePosType.length; i++) {
 			    	if(nodePosType[i] === "写") {
 			    		attrHtml += "<option value='"+nodePosType[i]+"' selected>"+nodePosType[i]+"</option>";  	
@@ -731,7 +788,8 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 		    		}	            	        
 	            };
 	            attrHtml += "</select>";
-				attrHtml += "<select class='node-ops-type'>";						    			    	
+				attrHtml += "<select class='node-ops-type'>";	
+				var nodePosType = nodePosTypeATTRIBUTE;
 			    for(var i=0; i<nodePosType.length; i++) {
 			    	if(nodePosType[i] === "写") {
 			    		attrHtml += "<option value='"+nodePosType[i]+"' selected>"+nodePosType[i]+"</option>";  	
@@ -795,7 +853,8 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 		    		}	            	        
 	            };
 	            attrHtml += "</select>";
-				attrHtml += "<select class='node-ops-type'>";						    			    	
+				attrHtml += "<select class='node-ops-type'>";	
+				var nodePosType = nodePosTypeATTRIBUTE;
 			    for(var i=0; i<nodePosType.length; i++) {
 			    	if(nodePosType[i] === "写") {
 			    		attrHtml += "<option value='"+nodePosType[i]+"' selected>"+nodePosType[i]+"</option>";  	
@@ -837,7 +896,9 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
             "</div>" +
             "<div class='label-bar attr-group edit'>" +
             "<input type='text' class='edit-input text' value='属性组名称'>" 
-            attrGroupHtml += "<select class='node-ops-type'>";						    			    	
+            attrGroupHtml += "<select class='node-ops-type'>";	
+        
+        	var nodePosType = nodePosTypeATTRGROUP;
 		    for(var i=0; i<nodePosType.length; i++) {
 		    	if(nodePosType[i] === "写") {
 		    		attrGroupHtml += "<option value='"+nodePosType[i]+"' selected>"+nodePosType[i]+"</option>";  	
@@ -889,7 +950,8 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
             	moreAttrHtml += "<option data-id='"+data[i].code+"' value='"+data[i].cnName+"'>"+data[i].cnName+"</option>";                
             }
             moreAttrHtml += "</select>";            		    	   
-	        moreAttrHtml += "<select class='node-ops-type'>";					    				    
+	        moreAttrHtml += "<select class='node-ops-type'>";	
+	        var nodePosType = nodePosTypeMULTIATTR;
 			for(var i=0; i<nodePosType.length; i++) {
 			    if(nodePosType[i] === "写"){
 			    	moreAttrHtml += "<option value='"+nodePosType[i]+"' selected>"+nodePosType[i]+"</option>";
@@ -948,7 +1010,8 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
             	relativeHtml += "<option data-id='"+data[i].code+"' value='"+data[i].cnName+"'>"+data[i].cnName+"</option>";                
             }
             relativeHtml += "</select>";
-            relativeHtml += "<select class='node-ops-type'>";						    			    	
+            relativeHtml += "<select class='node-ops-type'>";
+            var nodePosType = nodePosTypeRELATION;
 		    for(var i=0; i<nodePosType.length; i++) {
 		    	if(nodePosType[i] === "写") {
 		    		relativeHtml += "<option value='"+nodePosType[i]+"' selected>"+nodePosType[i]+"</option>";  	
@@ -1033,13 +1096,9 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 			 order: order,
 			 id: id
 		 }, function(data) {
-			 if(data.state == "fail") {
-				 Dialog.notice("属性名不能相同", "warning");
-				 $CPF.closeLoading();
-				 return;
-			 }
-			 if(data.state == "error") {
-				 Dialog.notice("关系下只能有一个标签和一个实体", "warning");
+			 
+			 if(data.state == "400") {
+				 Dialog.notice(data.msg, "warning");
 				 $CPF.closeLoading();
 				 return;
 			 }
@@ -1115,13 +1174,8 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 			 parentId: parentId,
 			 id: id
 		 }, function(data) {
-			 if(data.state == "fail") {
-				 Dialog.notice("属性名不能相同", "warning");
-				 $CPF.closeLoading();
-				 return;
-			 }
-			 if(data.state == "error") {
-				 Dialog.notice("关系下只能有一个标签和一个实体", "warning");
+			 if(data.state == "400") {
+				 Dialog.notice(data.msg, "warning");
 				 $CPF.closeLoading();
 				 return;
 			 }
@@ -1180,13 +1234,8 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 			 parentId: parentId,
 			 id: id
 		 }, function(data) {
-			 if(data.state == "fail") {
-				 Dialog.notice("属性名不能相同", "warning");
-				 $CPF.closeLoading();
-				 return;
-			 }
-			 if(data.state == "error") {
-				 Dialog.notice("关系下只能有一个标签和一个实体", "warning");
+			 if(data.state == "400") {
+				 Dialog.notice(data.msg, "warning");
 				 $CPF.closeLoading();
 				 return;
 			 }
@@ -1245,13 +1294,8 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 			 parentId: parentId,
 			 id: id
 		 }, function(data) {
-			 if(data.state == "fail") {
-				 Dialog.notice("属性名不能相同", "warning");
-				 $CPF.closeLoading();
-				 return;
-			 }
-			 if(data.state == "error") {
-				 Dialog.notice("关系下只能有一个标签和一个实体", "warning");
+			 if(data.state == "400") {
+				 Dialog.notice(data.msg, "warning");
 				 $CPF.closeLoading();
 				 return;
 			 }
@@ -1307,13 +1351,8 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 			 opt: opt,
 			 id: id
 		 }, function(data) {
-			 if(data.state == "fail") {
-				 Dialog.notice("属性名不能相同", "warning");
-				 $CPF.closeLoading();
-				 return;
-			 }
-			 if(data.state == "error") {
-				 Dialog.notice("关系下只能有一个标签和一个实体", "warning");
+			 if(data.state == "400") {
+				 Dialog.notice(data.msg, "warning");
 				 $CPF.closeLoading();
 				 return;
 			 }
@@ -1373,13 +1412,8 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 			 parentId: parentId,
 			 id: id
 		 }, function(data) {
-			 if(data.state == "fail") {
-				 Dialog.notice("属性名不能相同", "warning");
-				 $CPF.closeLoading();
-				 return;
-			 }
-			 if(data.state == "error") {
-				 Dialog.notice("关系下只能有一个标签和一个实体", "warning");
+			 if(data.state == "400") {
+				 Dialog.notice(data.msg, "warning");
 				 $CPF.closeLoading();
 				 return;
 			 }
@@ -1440,13 +1474,8 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 			 parentId: parentId,
 			 id: id
 		 }, function(data) {
-			 if(data.state == "fail") {
-				 Dialog.notice("属性名不能相同", "warning");
-				 $CPF.closeLoading();
-				 return;
-			 }
-			 if(data.state == "error") {
-				 Dialog.notice("关系下只能有一个标签和一个实体", "warning");
+			 if(data.state == "400") {
+				 Dialog.notice(data.msg, "warning");
 				 $CPF.closeLoading();
 				 return;
 			 }
@@ -1476,7 +1505,8 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 	            "</ul>" +
 	            "</div>" +
 	            "<span class='icon icon-toright ban'></span>";
-	            html += "<select class='node-ops-type'>";						    			    	
+	            html += "<select class='node-ops-type'>";
+	            var nodePosType = nodePosTypeLABEL;
 			    for(var i=0; i<nodePosType.length; i++) {
 			    	if(nodePosType[i] === "写") {
 			    		html += "<option value='"+nodePosType[i]+"' selected>"+nodePosType[i]+"</option>";  	
@@ -1501,7 +1531,8 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 	            "<div class='label-bar abc edit'>" +
 	            "<input class='edit-input text' value='"+abcattr+"'>"+
 	            "<span class='entity-only-title' data-abcattrcode='"+abcattrCode+"' data-abcattr-code='"+abcattrCode+"' data-abcattr='"+abcattr+"'>"+abcattr+"</span>"
-	            html += "<select class='node-ops-type'>";						    			    	
+	            html += "<select class='node-ops-type'>";
+		         var nodePosType=nodePosTypeABC;
 			    for(var i=0; i<nodePosType.length; i++) {
 			    	if(nodePosType[i] === "写") {
 			    		html += "<option value='"+nodePosType[i]+"' selected>"+nodePosType[i]+"</option>";  	
@@ -1579,13 +1610,8 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 			 parentId: parentId,
 			 id: id
 		 }, function(data) {
-			 if(data.state == "fail") {
-				 Dialog.notice("属性名不能相同", "warning");
-				 $CPF.closeLoading();
-				 return;
-			 }
-			 if(data.state == "error") {
-				 Dialog.notice("关系下只能有一个标签和一个实体", "warning");
+			 if(data.state == "400") {
+				 Dialog.notice(data.msg, "warning");
 				 $CPF.closeLoading();
 				 return;
 			 }

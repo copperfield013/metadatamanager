@@ -359,4 +359,9 @@ public class BasicItemNodeServiceImpl implements BasicItemNodeService {
 	public void insert(BasicItemNode basicItem) {
 		basicItemNodeDao.insert(basicItem);
 	}
+
+	@Override
+	public List getChildOptList(Integer id) {
+		return basicItemNodeDao.getChildOptList(id);
+	}
 }

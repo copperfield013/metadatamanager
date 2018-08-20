@@ -196,4 +196,10 @@ public class BasicItemNodeDaoImpl implements BasicItemNodeDao {
 		List list = sFactory.getCurrentSession().createQuery(hql).list();
 		return list;
 	}
+
+	@Override
+	public List getChildOptList(Integer id) {
+		String sql = "SELECT DISTINCT opt FROM t_sc_basic_item_node WHERE  parent_id=:id";
+		return sFactory.getCurrentSession().createSQLQuery(sql).setParameter("id", id).list();
+	}
 }

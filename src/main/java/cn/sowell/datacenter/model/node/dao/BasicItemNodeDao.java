@@ -103,4 +103,11 @@ public interface BasicItemNodeDao {
 	 * @return
 	 */
 	List<BasicItemNode> getAllData()  throws Exception;
+
+	/**
+	 * 根据父id， 获取孩子的opt集合
+	 * @param id
+	 * @return
+	 */
+	List getChildOptList(Integer id);
 }

@@ -19,6 +19,7 @@
 	                <i class="icon-root icon"></i>
 	                <span class="text">级联字典</span>
 	            </div>
+	            <span class="entity-only-title"  style="padding:20px;" title="编号">${basicItem.id}</span>
                 <span class="entity-only-title"  style="padding:20px;" title="名称">${basicItem.name}</span>
 	            <span class="entity-only-title"  style="padding:20px;" title="英文名称">${basicItem.enName}</span>
 	            <span class="entity-only-title"  style="padding:20px;" title="状态">${basicItem.status}</span>

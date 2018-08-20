@@ -20,6 +20,8 @@ public class InlineResponse200   {
 
   @JsonProperty("state")
   private String state = null;
+  @JsonProperty("msg")
+  private String msg = null;
 
   public InlineResponse200 node(BasicItemNode node) {
     this.node = node;
@@ -44,6 +46,26 @@ public class InlineResponse200   {
     this.state = state;
     return this;
   }
+  
+  
+  /**
+ * @return the msg
+ */
+public String getMsg() {
+	return msg;
+}
+
+/**
+ * @param msg the msg to set
+ */
+public void setMsg(String msg) {
+	this.msg = msg;
+}
+
+public InlineResponse200 msg(String msg) {
+	    this.msg = msg;
+	    return this;
+	  }
 
   /**
    * Get state
@@ -71,12 +93,13 @@ public class InlineResponse200   {
     }
     InlineResponse200 inlineResponse200 = (InlineResponse200) o;
     return Objects.equals(this.node, inlineResponse200.node) &&
+            Objects.equals(this.msg, inlineResponse200.msg)&&
         Objects.equals(this.state, inlineResponse200.state);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(node, state);
+    return Objects.hash(node, state, msg);
   }
 
   @Override
@@ -86,6 +109,7 @@ public class InlineResponse200   {
     
     sb.append("    node: ").append(toIndentedString(node)).append("\n");
     sb.append("    state: ").append(toIndentedString(state)).append("\n");
+    sb.append("    msg: ").append(toIndentedString(msg)).append("\n");
     sb.append("}");
     return sb.toString();
   }
