@@ -66,6 +66,11 @@ public class OneLevelItem {
 	  
 	  @OneToOne(mappedBy = "oneLevelItem")
 	  private BasicItem basicItem;
+
+	  
+	  @ApiModelProperty(value="是否记录历史", name="needHistory")
+	  @Column(name="c_need_history")
+	  private Integer needHistory;
 	  
 	public String getCode() {
 		return code;
@@ -247,5 +252,21 @@ public class OneLevelItem {
 	public void setRefType(String refType) {
 		this.refType = refType;
 	}
-	
+
+
+	/**
+	 * @return the needHistory
+	 */
+	public Integer getNeedHistory() {
+		return needHistory;
+	}
+
+
+	/**
+	 * @param needHistory the needHistory to set
+	 */
+	public void setNeedHistory(Integer needHistory) {
+		this.needHistory = needHistory;
+	}
+
 }

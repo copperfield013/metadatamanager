@@ -179,9 +179,12 @@ public class BasicItemController {
 			}else if ("7".equals(dType)) {
 				oneLevelItem.setDictParentId(0);
 			}else if ("10".equals(dType)) {
+				oneLevelItem.setNeedHistory(1);
 			}else if ("9".equals(dType)) {
+				oneLevelItem.setNeedHistory(1);
 				oneLevelItem.setDictParentId(0);
 			}else if ("16".equals(dType)) {
+				oneLevelItem.setNeedHistory(1);
 			} else if ("14".equals(dType)) {
 			} else if ("8".equals(dType)) {
 				oneLevelItem.setDictParentId(0);

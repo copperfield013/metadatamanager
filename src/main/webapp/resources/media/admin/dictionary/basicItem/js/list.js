@@ -320,7 +320,11 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
     	var $this = $(this);
     	var options=$(".enum_dataType_one option:selected");  //获取选中的项
     	var $form = $this.closest(".opera_comm").find("#comm_opera_form1");
-    	if ("14" == $this.val()) {    		
+    	$form.find("#cn_needHistory").hide();
+		$form.find("#needHistory").hide();
+		$form.find("#needHistory").find("option[value='1']").attr("selected",true);
+		$form.find("#needHistory").find("option[value='0']").removeAttr("selected");
+    	if ("14" == $this.val()) {   
     		 //如果是枚举， 则显示下拉列表
 	    	$CPF.showLoading();
 	        $form.find("#dictParentId").remove();
@@ -432,6 +436,10 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
     		} else if ("5"== $this.val() ) { //字符型
     			$form.find("#dataRange").val('32');
     		} else if ("8" == $this.val()) {
+    			$form.find("#cn_needHistory").show();
+    			$form.find("#needHistory").show();
+    			$form.find("#needHistory").find("option[value='1']").removeAttr("selected");
+    			$form.find("#needHistory").find("option[value='0']").attr("selected",true);
     			$form.find("#dataRange").val("BYTES").hide();
     			$form.find("#cn_dataRange").hide();
     		}
@@ -452,6 +460,12 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
     	var options=$(this).find("option:selected");    	
     	var $form  = $(this).parent().parent();
     	var entityId = $form.attr("entityId");
+    	
+    	$form.find("#cn_needHistory").hide();
+		$form.find("#needHistory").hide();
+		$form.find("#needHistory").find("option[value='1']").attr("selected",true);
+		$form.find("#needHistory").find("option[value='0']").removeAttr("selected");
+    	
     	if ("14" == options.val()) {    		
     		 //如果是枚举， 则显示下拉列表
 	    	$CPF.showLoading();
@@ -566,6 +580,10 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
     		} else if ("5"== options.val() ) { //字符型
     			$form.find("#dataRange").val('32');
     		} else if ("8" == options.val()) {
+    			$form.find("#cn_needHistory").show();
+    			$form.find("#needHistory").show();
+    			$form.find("#needHistory").find("option[value='1']").removeAttr("selected");
+    			$form.find("#needHistory").find("option[value='0']").attr("selected",true);
     			$form.find("#dataRange").val("BYTES").hide();
     			$form.find("#cn_dataRange").hide();
     		}
@@ -619,6 +637,11 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
         $form.find("#cn_dataRange").show();
         $form.find("#dataRange").val("32");
         $form.find("#description").val("");
+        
+        $form.find("#needHistory").hide();
+        $form.find("#cn_needHistory").hide();
+		$form.find("#needHistory").find("option[value='1']").attr("selected",true);
+        $form.find("#needHistory").find("option[value='0']").removeAttr("selected");
     });
     //点击 添加多值属性孩子加号 显示div
     $(".more_proper", $page).on("click", ".add_more_child", function() {
@@ -630,6 +653,12 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
     	$form.find("#dictParentId").attr("disabled", false);
     	 $form.find("#dataType").attr("disabled", false);
     	$form.find("#dataType").html("");
+    	
+    	$form.find("#needHistory").hide();
+    	$form.find("#cn_needHistory").hide();
+    	$form.find("#needHistory").find("option[value='1']").attr("selected",true);
+        $form.find("#needHistory").find("option[value='0']").removeAttr("selected");
+
         Ajax.ajax('admin/dictionary/basicItem/getDataType', '', function(data) {
             var str = "";
             for (var key in data) {
@@ -1273,7 +1302,9 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
         var refType = $(this).closest('.opera_comm').find("#refType").val();
         if (typeof(dictParentId) == "undefined") {
             dictParentId = "";
-        }        
+        }      
+        
+        var needHistory = $(this).closest('.opera_comm').find("#needHistory").val();
         var entityId = $(".common_proper").attr("parentId");
         var $form = $(this).closest(".opera_comm").find("#comm_opera_form1");
         
@@ -1293,7 +1324,8 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
                     groupName: groupName,
                     parent: parent,
                     description:description,
-                    refType:refType
+                    refType:refType,
+                    needHistory:needHistory
                 }, function(data) {
                 	$(this).closest('.opera_comm').hide();
                 	if ("" == code) {//新增一个属性
@@ -1406,7 +1438,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
         if (typeof(dictParentId) == "undefined") {
             dictParentId = "";
         }
-        
+        var needHistory = $form.find("#needHistory").val();
         if (checkForm($form)) {
         	$CPF.showLoading();
             var entityId = $(".more_proper").attr("parentId");
@@ -1420,7 +1452,8 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
                 groupName: groupName,
                 parent: parent,
                 description:description,
-                refType:refType
+                refType:refType,
+                needHistory:needHistory
             }, function(data) {
             	
             	 $(".opera_more_child").hide();
@@ -1574,6 +1607,18 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
             $form1.find("#edit_dataType").val(jsonData.oneLevelItem.dataType);
             $form1.find("#edit_dictParentId").val(jsonData.oneLevelItem.dictParentId);
             $form1.find("#dataType").html("");
+            
+            $form1.find("#needHistory").empty();
+            var str="";
+            if (1 == jsonData.oneLevelItem.needHistory) {
+                str = str + "<option selected=\"selected\"  value=\"1\">是</option><option value=\"0\">否</option>"; 
+            } else {
+            	 str = str + "<option   value=\"1\">是</option><option selected=\"selected\" value=\"0\">否</option>";
+            }
+            $form1.find("#needHistory").append(str);
+            
+            $form1.find("#needHistory").hide();
+    		$form1.find("#cn_needHistory").hide();
             if(ischecked) {
     			Ajax.ajax('admin/dictionary/basicItem/getDictPitem', '', function(data) {
     	            var dataArr = data.dictPitem;    	            
@@ -1676,6 +1721,9 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
             	} 
             	
             	if ("8" == jsonData.oneLevelItem.dataType) {
+            		$form1.find("#needHistory").show();
+            		$form1.find("#cn_needHistory").show();
+            		
             		$form1.find("#dataRange").val("BYTES").hide();
 	                $form1.find("#cn_dataRange").hide();
             	} 
@@ -1746,6 +1794,17 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
             $form1.find("#edit_dataType").val(jsonData.oneLevelItem.dataType);
             $form1.find("#edit_dictParentId").val(jsonData.oneLevelItem.dictParentId);
             $form1.find("#dataType").html("");  
+            
+            $form1.find("#needHistory").empty();
+            var str="";
+            if (1 == jsonData.oneLevelItem.needHistory) {
+                str = str + "<option selected=\"selected\"  value=\"1\">是</option><option value=\"0\">否</option>"; 
+            } else {
+            	 str = str + "<option   value=\"1\">是</option><option selected=\"selected\" value=\"0\">否</option>";
+            }
+            $form1.find("#needHistory").append(str);
+            $form1.find("#needHistory").hide();
+            $form1.find("#cn_needHistory").hide();
             
     		if(ischecked) {
     			Ajax.ajax('admin/dictionary/basicItem/getDictPitem', '', function(data) {
@@ -1859,6 +1918,9 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
 	           } 
  	          
  	         if ("8" == jsonData.oneLevelItem.dataType) {
+ 	        	 
+ 	        	 $form1.find("#needHistory").show();
+ 	        	 $form1.find("#cn_needHistory").show();
 	        	   	$form1.find("#dataRange").hide();
 	                $form1.find("#cn_dataRange").hide();
 	           } 
@@ -2180,7 +2242,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
               //添加编辑级联属性的孩子  div		
  			    str = str + "<div style='padding-left: 1.8em;display: none;' class=\"cascadeAttr_child_show\"><img class=\"opera_entity_img\" src=\"media/admin/dictionary/basicItem/opera_entity_icon.png\"><span class=\"opera_entity_img\">级联属性孩子</span><form  id=\"cascadeAttr_form1\" class=\"opera_entity_form\"><input type=\"hidden\" id=\"id\" name=\"id\" value=\"\"><div class=\"select-wrap\"><span class=\"opera_entity_label\">级联属性<span style=\"color: red;\">*</span></span><select id=\"casCode\" name=\"casCode\"></select></div><div class=\"select-wrap\"></div></form><div class=\"opera_entity_btn\"><span class=\"entity-btn-cancel\" id=\"cascadeAttr_child_but_cancel\">取消</span><span class=\"entity-btn-confirm\" id=\"cascadeAttr_child_but_confirm\">确认</span></div></div>";
 				
-				str = str + "<div class=\"opera_comm\"><img class=\"opera_entity_img\" src=\"media/admin/dictionary/basicItem/images/info.png\"><span id=\"add_comm_mes\"></span><form groupName="+commonArr[i].cnName+"  groupId="+commonArr[i].code+"   id=\"comm_opera_form1\" class=\"opera_entity_form\"><input type=\"hidden\" id=\"groupName\" name=\"groupName\" value=\"\"><input type=\"hidden\" id=\"comm_parent\" name=\"parent\" value=\"\"><input type=\"hidden\" id=\"edit_dataType\" value=\"\"><input type=\"hidden\" id=\"edit_dictParentId\" value=\"\"><input type=\"hidden\" name=\"code\" id=\"code\" /><div><span class=\"opera_entity_label\">中文名称<span style=\"color: red;\">*</span></span><input type=\"text\" name=\"cnName\" id=\"cnName\" /></div><div><span class=\"opera_entity_label\">英文名称</span><input type=\"text\" name=\"enName\" id=\"enName\" /></div><div class=\"select-wrap\"><span class=\"opera_entity_label\" id=\"cn_dataType\">数据类型<span style=\"color: red;\">*</span></span><select id=\"dataType\" class=\"enum_dataType_one\" name=\"dataType\"></select></div><div><span class=\"opera_entity_label\" id=\"cn_dataRange\">数据长度<span style=\"color: red;\">*</span></span><input type=\"text\" name=\"dataRange\" id=\"dataRange\"></div><div><span class=\"opera_entity_label\">描述</span><textarea name=\"description\" id=\"description\"></textarea></div></form><div class=\"opera_entity_btn\"><span class=\"entity-btn-cancel\" id=\"comm_but_cancel\">取消</span><span class=\"entity-btn-confirm\" id=\"comm_but_confirm\">确认</span></div></div>";
+				str = str + "<div class=\"opera_comm\"><img class=\"opera_entity_img\" src=\"media/admin/dictionary/basicItem/images/info.png\"><span id=\"add_comm_mes\"></span><form groupName="+commonArr[i].cnName+"  groupId="+commonArr[i].code+"   id=\"comm_opera_form1\" class=\"opera_entity_form\"><input type=\"hidden\" id=\"groupName\" name=\"groupName\" value=\"\"><input type=\"hidden\" id=\"comm_parent\" name=\"parent\" value=\"\"><input type=\"hidden\" id=\"edit_dataType\" value=\"\"><input type=\"hidden\" id=\"edit_dictParentId\" value=\"\"><input type=\"hidden\" name=\"code\" id=\"code\" /><div><span class=\"opera_entity_label\">中文名称<span style=\"color: red;\">*</span></span><input type=\"text\" name=\"cnName\" id=\"cnName\" /></div><div><span class=\"opera_entity_label\">英文名称</span><input type=\"text\" name=\"enName\" id=\"enName\" /></div><div class=\"select-wrap\"><span class=\"opera_entity_label\" id=\"cn_dataType\">数据类型<span style=\"color: red;\">*</span></span><select id=\"dataType\" class=\"enum_dataType_one\" name=\"dataType\"></select> <span style='display:none;' class=\"opera_entity_label\" id=\"cn_needHistory\">记录历史</span><select style='display:none;' id=\"needHistory\" class=\"needHistory\" name=\"needHistory\"><option value='1' selected='selected'>是</option><option value='0'>否</option></select></div><div><span class=\"opera_entity_label\" id=\"cn_dataRange\">数据长度<span style=\"color: red;\">*</span></span><input type=\"text\" name=\"dataRange\" id=\"dataRange\"></div><div><span class=\"opera_entity_label\">描述</span><textarea name=\"description\" id=\"description\"></textarea></div></form><div class=\"opera_entity_btn\"><span class=\"entity-btn-cancel\" id=\"comm_but_cancel\">取消</span><span class=\"entity-btn-confirm\" id=\"comm_but_confirm\">确认</span></div></div>";
                 str = str + "<div class=\"opera_group\"><img class=\"opera_entity_img\" src=\"media/admin/dictionary/basicItem/images/info.png\"><span class=\"opera_entity_img\" id=\"add_group_mes\"></span><form id=\"group_opera_form1\" class=\"opera_entity_form\"><input type=\"hidden\" name=\"code\" id=\"code\" /><input type=\"hidden\" id=\"group_parent\" name=\"parent\" value=\"\"><input type=\"hidden\" name=\"dataType\" value=\"16\"><div><span class=\"opera_entity_label\">中文名称<span style=\"color: red;\">*</span></span><input type=\"text\" name=\"cnName\" id=\"cnName\" /></div><div><span class=\"opera_entity_label\">描述</span><textarea name=\"description\" id=\"description\"></textarea></div></form><div class=\"opera_entity_btn\"><span class=\"entity-btn-cancel\" id=\"group_but_cancel\">取消</span><span class=\"entity-btn-confirm\" id=\"group_but_confirm\">确认</span><span class=\"entity-btn-confirm\" id=\"group_but_del\">删除</span></div></div>";
                 if(commonArr[i].usingState == '0'){
                 	str = str + "<i class=\"icon status newadd\"></div>";
@@ -2269,7 +2331,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
  			    str = str + "<div style='padding-left: 1.8em;display: none;' class=\"more_cascadeAttr_child_show\"><img class=\"opera_entity_img\" src=\"media/admin/dictionary/basicItem/opera_entity_icon.png\"><span class=\"opera_entity_img\">级联属性孩子</span><form  id=\"cascadeAttr_form1\" class=\"opera_entity_form\"><input type=\"hidden\" id=\"id\" name=\"id\" value=\"\"><div class=\"select-wrap\"><span class=\"opera_entity_label\">级联属性<span style=\"color: red;\">*</span></span><select id=\"casCode\" name=\"casCode\"></select></div><div class=\"select-wrap\"></div></form><div class=\"opera_entity_btn\"><span class=\"entity-btn-cancel\" id=\"more_cascadeAttr_child_but_cancel\">取消</span><span class=\"entity-btn-confirm\" id=\"more_cascadeAttr_child_but_confirm\">确认</span></div></div>";
 				
 				
-                str = str + "<div class=\"opera_more_child\"><img class=\"opera_entity_img\" src=\"media/admin/dictionary/basicItem/images/info.png\"><span id=\"add_more_child_mes\"></span><form groupName=\"" + moreArr[i].cnName + "\" groupId=\"" + moreArr[i].code + "\" id=\"more_child_opera_form1\" class=\"opera_entity_form\"><input type=\"hidden\" id=\"groupName\" name=\"groupName\" value=\"\"><input type=\"hidden\" id=\"comm_parent\" name=\"parent\" value=\"\"><input type=\"hidden\" id=\"edit_dataType\" value=\"\"><input type=\"hidden\" id=\"edit_dictParentId\" value=\"\"><input type=\"hidden\" name=\"code\" id=\"code\"/><div><span class=\"opera_entity_label\">中文名称<span style=\"color: red;\">*</span></span><input type=\"text\" name=\"cnName\" id=\"cnName\"/></div><div><span class=\"opera_entity_label\">英文名称</span><input type=\"text\" name=\"enName\" id=\"enName\"/></div><div class=\"select-wrap\"><span class=\"opera_entity_label\" id=\"cn_dataType\">数据类型<span style=\"color: red;\">*</span></span><select id=\"dataType\" class=\"enum_daType_two\" name=\"dataType\"></select></div><div><span class=\"opera_entity_label\" id=\"cn_dataRange\">数据长度<span style=\"color: red;\">*</span></span><input type=\"text\" name=\"dataRange\" id=\"dataRange\" /></div><div><span class=\"opera_entity_label\">描述</span><textarea name=\"description\" id=\"description\"></textarea></div></form><div class=\"opera_entity_btn\"><span class=\"entity-btn-cancel\" id=\"more_child_but_cancel\">取消</span><span class=\"entity-btn-confirm\" id=\"more_child_but_confirm\">确认</span></div></div>";                
+                str = str + "<div class=\"opera_more_child\"><img class=\"opera_entity_img\" src=\"media/admin/dictionary/basicItem/images/info.png\"><span id=\"add_more_child_mes\"></span><form groupName=\"" + moreArr[i].cnName + "\" groupId=\"" + moreArr[i].code + "\" id=\"more_child_opera_form1\" class=\"opera_entity_form\"><input type=\"hidden\" id=\"groupName\" name=\"groupName\" value=\"\"><input type=\"hidden\" id=\"comm_parent\" name=\"parent\" value=\"\"><input type=\"hidden\" id=\"edit_dataType\" value=\"\"><input type=\"hidden\" id=\"edit_dictParentId\" value=\"\"><input type=\"hidden\" name=\"code\" id=\"code\"/><div><span class=\"opera_entity_label\">中文名称<span style=\"color: red;\">*</span></span><input type=\"text\" name=\"cnName\" id=\"cnName\"/></div><div><span class=\"opera_entity_label\">英文名称</span><input type=\"text\" name=\"enName\" id=\"enName\"/></div><div class=\"select-wrap\"><span class=\"opera_entity_label\" id=\"cn_dataType\">数据类型<span style=\"color: red;\">*</span></span><select id=\"dataType\" class=\"enum_daType_two\" name=\"dataType\"></select><span style='display:none;'  class=\"opera_entity_label\" id=\"cn_needHistory\">记录历史记录</span><select style='display:none;' id=\"needHistory\" name=\"needHistory\"><option value='1' selected='selected'>是</option><option value='0'>否</option></select></div><div><span class=\"opera_entity_label\" id=\"cn_dataRange\">数据长度<span style=\"color: red;\">*</span></span><input type=\"text\" name=\"dataRange\" id=\"dataRange\" /></div><div><span class=\"opera_entity_label\">描述</span><textarea name=\"description\" id=\"description\"></textarea></div></form><div class=\"opera_entity_btn\"><span class=\"entity-btn-cancel\" id=\"more_child_but_cancel\">取消</span><span class=\"entity-btn-confirm\" id=\"more_child_but_confirm\">确认</span></div></div>";                
                 //这里是显示二级信息以及二级的孩子数据 start
                 str = str + "<div class=\"entity_list twoLevelAttr_child clear-fix\"><div class=\"new_add_title\"><span id=\"twoLevelAttr_name\"></span>" 
                 if (statusStr != 2) {		

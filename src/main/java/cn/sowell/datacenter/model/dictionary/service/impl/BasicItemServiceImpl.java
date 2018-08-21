@@ -349,6 +349,7 @@ public class BasicItemServiceImpl implements BasicItemService {
 						btKey.setUsingState(0);
 						btKey.getOneLevelItem().setGroupName(obj.getOneLevelItem().getGroupName());
 						btKey.getOneLevelItem().setDictParentId(0);
+						btKey.getOneLevelItem().setNeedHistory(obj.getOneLevelItem().getNeedHistory());
 						
 						btSuffix.setCnName(AttributeParter.getBytesSuffixCNName(obj.getCnName()));
 						btSuffix.getOneLevelItem().setTableName(obj.getOneLevelItem().getTableName());
@@ -357,6 +358,7 @@ public class BasicItemServiceImpl implements BasicItemService {
 						btSuffix.setUsingState(0);
 						btSuffix.getOneLevelItem().setGroupName(obj.getOneLevelItem().getGroupName());
 						btSuffix.getOneLevelItem().setDictParentId(0);
+						btSuffix.getOneLevelItem().setNeedHistory(obj.getOneLevelItem().getNeedHistory());
 						
 						btKBSize.setCnName(AttributeParter.getBytesKBSizeCNName(obj.getCnName()));
 						btKBSize.getOneLevelItem().setTableName(obj.getOneLevelItem().getTableName());
@@ -365,6 +367,7 @@ public class BasicItemServiceImpl implements BasicItemService {
 						btKBSize.setUsingState(0);
 						btKBSize.getOneLevelItem().setGroupName(obj.getOneLevelItem().getGroupName());
 						btKBSize.getOneLevelItem().setDictParentId(0);
+						btKBSize.getOneLevelItem().setNeedHistory(obj.getOneLevelItem().getNeedHistory());
 						
 						btName.setCnName(AttributeParter.getBytesNameCNName(obj.getCnName()));
 						btName.getOneLevelItem().setTableName(obj.getOneLevelItem().getTableName());
@@ -373,6 +376,7 @@ public class BasicItemServiceImpl implements BasicItemService {
 						btName.setUsingState(0);
 						btName.getOneLevelItem().setGroupName(obj.getOneLevelItem().getGroupName());
 						btName.getOneLevelItem().setDictParentId(0);
+						btName.getOneLevelItem().setNeedHistory(obj.getOneLevelItem().getNeedHistory());
 						
 						basicItemDao.update(btKey);
 						basicItemDao.update(btSuffix);
@@ -406,6 +410,8 @@ public class BasicItemServiceImpl implements BasicItemService {
 				childOne.setUsingState(0);
 				childOne.getOneLevelItem().setDictParentId(0);
 				childOne.getOneLevelItem().setGroupName(obj.getCode());
+				childOne.getOneLevelItem().setNeedHistory(obj.getOneLevelItem().getNeedHistory());
+				
 			BasicItem childTwo = new BasicItem();//多值属性唯一编码
 				childTwo.setCode(AttributeParter.getRepeatKeyName(obj.getCode()));
 				     childTwo.getOneLevelItem().setCode(AttributeParter.getRepeatKeyName(obj.getCode()));
@@ -417,6 +423,7 @@ public class BasicItemServiceImpl implements BasicItemService {
 				childTwo.setUsingState(0);
 				childTwo.getOneLevelItem().setGroupName(obj.getCode());
 				childTwo.getOneLevelItem().setDictParentId(0);
+				childTwo.getOneLevelItem().setNeedHistory(obj.getOneLevelItem().getNeedHistory());
 			basicItemDao.insert(childOne);
 			basicItemDao.insert(childTwo);
 		}
@@ -441,7 +448,8 @@ public class BasicItemServiceImpl implements BasicItemService {
 		btKey.setUsingState(0);
 		btKey.getOneLevelItem().setGroupName(obj.getOneLevelItem().getGroupName());
 		btKey.getOneLevelItem().setDictParentId(0);
-   
+		btKey.getOneLevelItem().setNeedHistory(obj.getOneLevelItem().getNeedHistory());
+		
 		BasicItem btSuffix = new BasicItem();
 		btSuffix.setCode(AttributeParter.getBytesSuffixName(obj.getCode()));
 		btSuffix.getOneLevelItem().setCode(AttributeParter.getBytesSuffixName(obj.getCode()));
@@ -454,7 +462,8 @@ public class BasicItemServiceImpl implements BasicItemService {
 		btSuffix.setUsingState(0);
 		btSuffix.getOneLevelItem().setGroupName(obj.getOneLevelItem().getGroupName());
 		btSuffix.getOneLevelItem().setDictParentId(0);
-   
+		btSuffix.getOneLevelItem().setNeedHistory(obj.getOneLevelItem().getNeedHistory());
+		
 		BasicItem btKBSize = new BasicItem();
 		btKBSize.setCode(AttributeParter.getBytesKBSizeName(obj.getCode()));
 		btKBSize.getOneLevelItem().setCode(AttributeParter.getBytesKBSizeName(obj.getCode()));
@@ -467,6 +476,7 @@ public class BasicItemServiceImpl implements BasicItemService {
 		btKBSize.setUsingState(0);
 		btKBSize.getOneLevelItem().setGroupName(obj.getOneLevelItem().getGroupName());
 		btKBSize.getOneLevelItem().setDictParentId(0);
+		btKBSize.getOneLevelItem().setNeedHistory(obj.getOneLevelItem().getNeedHistory());
 		
 		BasicItem btName = new BasicItem();
 		btName.setCode(AttributeParter.getBytesNameName(obj.getCode()));
@@ -480,6 +490,7 @@ public class BasicItemServiceImpl implements BasicItemService {
 		btName.setUsingState(0);
 		btName.getOneLevelItem().setGroupName(obj.getOneLevelItem().getGroupName());
 		btName.getOneLevelItem().setDictParentId(0);
+		btName.getOneLevelItem().setNeedHistory(obj.getOneLevelItem().getNeedHistory());
 		
 		basicItemDao.insert(btKey);
 		basicItemDao.insert(btSuffix);
