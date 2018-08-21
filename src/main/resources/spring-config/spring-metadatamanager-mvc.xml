@@ -114,5 +114,4 @@
 			class="cn.sowell.datacenter.common.interceptor.CommonRequestAttributeSetInterceptor" />
 	</mvc:interceptors>
 
-	<task:annotation-driven /> <!-- 定时器开关 -->
 </beans>
