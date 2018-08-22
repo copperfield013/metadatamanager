@@ -51,11 +51,11 @@ public interface CascadedictBasicItemService {
 	void delete(CascadedictBasicItem creteria) throws Exception;
 
 	/**
-	 * 根据ParentId查询子数据
+	 * 根据实体code查询子数据
 	 * @param parentId
 	 * @return
 	 */
-	List<CascadedictBasicItem> getChildByParentId(Integer parentId) throws Exception;
+	List<CascadedictBasicItem> getChildByParentId(Integer entityCode) throws Exception;
 	
 	/**
 	 * 获取所有父亲， 不管是一级父亲还是二级父亲,只要你这个父亲下面有孩子就获取

@@ -235,8 +235,13 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
         for (var i = 0; i < $tag.length; i++) {
             hasArray.push($($tag[i]).children("span").text());
         };        
+        
+        var entityCode = $(el).closest(".collapse-content").siblings(".collapse-header").attr("data-abcattrcode");
+        
         $CPF.showLoading();
-		Ajax.ajax('admin/node/basicItemNode/getCommLab', '', function(data) {
+		Ajax.ajax('admin/node/basicItemNode/getCommLab', {
+			entityCode:entityCode
+		}, function(data) {
 			console.log(data);
 			var data = data.commLab;
 			var html = "<ul class='tag-card'>"+						

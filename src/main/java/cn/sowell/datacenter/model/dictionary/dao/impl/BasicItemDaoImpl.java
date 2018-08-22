@@ -1,6 +1,5 @@
 package cn.sowell.datacenter.model.dictionary.dao.impl;
 
-import java.io.Serializable;
 import java.math.BigInteger;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -15,6 +14,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.jdbc.Work;
 import org.springframework.stereotype.Repository;
 
+import com.abc.util.AttributeParter;
 import com.abc.util.ValueType;
 
 import cn.sowell.copframe.utils.TextUtils;
@@ -22,6 +22,7 @@ import cn.sowell.datacenter.model.dictionary.criteria.BasicItemCriteria;
 import cn.sowell.datacenter.model.dictionary.dao.BasicItemDao;
 import cn.sowell.datacenter.model.dictionary.pojo.BasicItem;
 import cn.sowell.datacenter.model.dictionary.pojo.CascadeAttr;
+import cn.sowell.datacenter.model.dictionary.pojo.OneLevelItem;
 import cn.sowell.datacenter.model.node.pojo.BasicItemNodeGenerator;
 
 @Repository
@@ -349,7 +350,7 @@ public class BasicItemDaoImpl implements BasicItemDao {
 		.append("     FROM ")
 		.append("      information_schema.tables t ")
 		.append("   WHERE ")
-		.append("   t.table_schema = 'abctest') b ON a.tablename = b.table_name ")
+		.append("   t.table_schema = '"+DataBaseName+"') b ON a.tablename = b.table_name ")
 		.append(" WHERE ")
 		.append("   b.table_name IS NULL  ");
 		
@@ -517,6 +518,47 @@ public class BasicItemDaoImpl implements BasicItemDao {
 		.setParameter("code", code)
 		.setParameter("casCade", casCade)
 		.setParameter("level", level).executeUpdate();
+	}
+
+	@Override
+	public OneLevelItem getLableObj(String code) throws Exception {
+		String sql = "SELECT b.* FROM t_sc_basic_item  a "
+				+ "inner join t_sc_onelevel_item  b "
+				+ "on a.c_code=b.c_code "
+				+ "WHERE c_parent=:code "
+				+ "AND b.c_data_type=:dataType";
+		return (OneLevelItem) sFactory.getCurrentSession().createSQLQuery(sql)
+				.addEntity(OneLevelItem.class)
+				.setParameter("code", code)
+				.setParameter("dataType", ValueType.LABLETYPE.getIndex()).uniqueResult();
+	}
+
+	@Override
+	public List getAllEntity() {
+		String sql = "SELECT a.c_code, a.c_cn_name FROM t_sc_basic_item a "
+				+ "LEFT JOIN t_sc_onelevel_item b "
+				+ "ON a.c_code=b.c_code WHERE b.c_data_type=10";
+		return sFactory.getCurrentSession().createSQLQuery(sql).list();
+	}
+
+	@Override
+	public List queryCreLable() {
+		StringBuffer sb = new StringBuffer();
+		sb.append(" SELECT ")
+		.append("  concat(\"create table \", a.tablename,\"( `id`  bigint(20) NOT NULL AUTO_INCREMENT,  ")
+		.append(" `ABP0001`  varchar(32) Not NULL ,`\", a.code, \""+AttributeParter.getRepeatKeyName("")+"`  varchar(32) DEFAULT NULL, `\" , a.code, \""+AttributeParter.getRepeatEditTimeName("")+"`  varchar(32) DEFAULT NULL, `\" ,a.code,\""+AttributeParter.getLabelValueName("")+"` ")
+		.append(" varchar(32) DEFAULT NULL,PRIMARY KEY (`id`))\")  ")
+		.append(" FROM ")
+		.append(" 	(SELECT CONCAT('t_', b.c_parent,'_', a.c_code) tablename, a.c_code code FROM t_sc_onelevel_item a")
+		.append(" 	inner join t_sc_basic_item b ")
+		.append(" on a.c_code=b.c_code")
+		.append(" WHERE c_data_type ="+ValueType.LABLETYPE.getIndex()+") a  ")
+		.append("  LEFT JOIN (SELECT table_name FROM information_schema.tables t  WHERE  ")
+		.append("  t.table_schema = '"+DataBaseName+"') b ON a.tablename = b.table_name ")
+		.append(" 	WHERE ")
+		.append(" b.table_name IS NULL ");
+		
+		return sFactory.getCurrentSession().createSQLQuery(sb.toString()).list();
 	}
 
 

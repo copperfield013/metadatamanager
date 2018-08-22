@@ -85,13 +85,19 @@ public class BasicItemController {
     @RequestMapping(value = "/list",
         method = RequestMethod.POST)
 	public ModelAndView list(){
-		BasicItemCriteria criteria = new BasicItemCriteria();
-		criteria.getOneLevelItem().setDataType(String.valueOf(ValueType.RECORD.getIndex()));
-		List<BasicItem> list = basicItemService.queryList(criteria);
-		ModelAndView mv = new ModelAndView();
-		mv.addObject("list", list);
-		mv.setViewName(AdminConstants.JSP_DICTIONARY + "/basicItem/list.jsp");
-		return mv;
+		try {
+			BasicItemCriteria criteria = new BasicItemCriteria();
+			criteria.getOneLevelItem().setDataType(String.valueOf(ValueType.RECORD.getIndex()));
+			List<BasicItem> list = basicItemService.queryList(criteria);
+			ModelAndView mv = new ModelAndView();
+			mv.addObject("list", list);
+			mv.setViewName(AdminConstants.JSP_DICTIONARY + "/basicItem/list.jsp");
+			return mv;
+		} catch (Exception e) {
+			logger.error("操作失败", e);
+			e.printStackTrace();
+		}
+		return null;
 	}
 	
 	//ajax 获取实体列表
@@ -164,7 +170,7 @@ public class BasicItemController {
         @ApiResponse(code = 401, message = "操作失败") })
     @RequestMapping(value = "/do_add",
         method = RequestMethod.POST)
-	public ResponseEntity doAdd(@ApiParam(name="BasicItem", value="传入json格式", required=true)BasicItem basicItem, OneLevelItem oneLevelItem){
+	public ResponseEntity doAdd(@ApiParam(name="BasicItem", value="传入json格式", required=true)BasicItem basicItem, OneLevelItem oneLevelItem, Integer cascadedict){
 			String dType = oneLevelItem.getDataType();
 			String comm = null;
 			
@@ -224,7 +230,7 @@ public class BasicItemController {
 			
 			for(int i=0; i<10; i++) {
                 try {
-                	basicItemService.saveOrUpdate(basicItem, flag, comm);
+                	basicItemService.saveOrUpdate(basicItem, flag, comm, cascadedict);
         			
         			if (String.valueOf(ValueType.RECORD.getIndex()).equals(basicItem.getOneLevelItem().getDataType())) {
         				return new ResponseEntity<AjaxPageResponse>(AjaxPageResponse.CLOSE_AND_REFRESH_PAGE("操作成功", "basicItem_list"), HttpStatus.OK);
@@ -668,7 +674,7 @@ public class BasicItemController {
 		}
 		
 		 
-	    //这里写获取枚举值的方法         
+	    //这里写获取枚举值的方法    添加编辑实体的标签枚举也是这个方法     
 	    @ResponseBody
 		@RequestMapping("/getDictPitem")
 		public String getDictPitem(){
@@ -831,5 +837,25 @@ public class BasicItemController {
 				map.put("msg", "error");
 				return jobj.toString();
 			} 
+		}
+	    
+	    //这里获取实体选择的那个标签
+	    @ResponseBody
+		@RequestMapping("/getLableObj")
+		public String getLableObj(String code){
+			Map<String, Object> map = new HashMap<String, Object>();
+			JSONObject jobj = new JSONObject(map);
+			try {
+				OneLevelItem lableObj = basicItemService.getLableObj(code);
+				map.put("code", 200);
+				map.put("msg", "操作成功");
+				map.put("lableObj", lableObj);
+				return jobj.toString();
+			} catch (Exception e) {
+				logger.error("操作失败", e);
+				map.put("code", 400);
+				map.put("msg", "操作失败");
+				return jobj.toString();
+			}
 		}
 }

@@ -8,6 +8,7 @@ import cn.sowell.datacenter.model.cascadedict.pojo.CascadedictBasicItem;
 import cn.sowell.datacenter.model.dictionary.criteria.BasicItemCriteria;
 import cn.sowell.datacenter.model.dictionary.pojo.BasicItem;
 import cn.sowell.datacenter.model.dictionary.pojo.CascadeAttr;
+import cn.sowell.datacenter.model.dictionary.pojo.OneLevelItem;
 import cn.sowell.datacenter.model.dictionary.pojo.Towlevelattr;
 
 public interface BasicItemService {
@@ -58,8 +59,15 @@ public interface BasicItemService {
 	 * @return
 	 */
 	 Map<String, List> getAttrByPid(String parentId);
-	
-	void saveOrUpdate(BasicItem obj, String flag, String comm)  throws Exception ;
+	/**
+	 * 
+	 * @param obj
+	 * @param flag
+	 * @param comm
+	 * @param cascadedict   生成实体，选择一个字典标签
+	 * @throws Exception
+	 */
+	void saveOrUpdate(BasicItem obj, String flag, String comm, Integer cascadedict)  throws Exception ;
 
 	/**
 	 * 
@@ -155,4 +163,16 @@ public interface BasicItemService {
 	 * @param code
 	 */
 	BigInteger canAddChildCount(String code)  throws Exception;
+	
+	/**
+	 * 根据实体code， 获取本实体下对应的标签
+	 * @param code
+	 * @return
+	 * @throws Exception
+	 */
+	OneLevelItem getLableObj(String code) throws Exception;
+
+	List getAllEntity();
+
+	void createLablea(String code);
 }

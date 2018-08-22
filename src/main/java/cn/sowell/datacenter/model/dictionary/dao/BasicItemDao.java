@@ -10,6 +10,7 @@ import cn.sowell.copframe.dto.page.PageInfo;
 import cn.sowell.datacenter.model.dictionary.criteria.BasicItemCriteria;
 import cn.sowell.datacenter.model.dictionary.pojo.BasicItem;
 import cn.sowell.datacenter.model.dictionary.pojo.CascadeAttr;
+import cn.sowell.datacenter.model.dictionary.pojo.OneLevelItem;
 
 public interface BasicItemDao {
 	/**
@@ -127,6 +128,7 @@ public interface BasicItemDao {
 	 */
 	public List queryEntityCol(String entityCode);
 	
+	
 	/**
 	 *  * 根据父id获取所有孩子
 	 * @param parent
@@ -214,4 +216,23 @@ public interface BasicItemDao {
 	List getCascadeAttrChildPojo(String code, String casCode) throws Exception;
 	
 	void updateCasCadeLevel(String code, String casCade, int level) throws Exception;
+
+	/**
+	 * 根据实体code， 获取本实体下对应的标签
+	 * @param code
+	 * @return
+	 * @throws Exception
+	 */
+	OneLevelItem getLableObj(String code) throws Exception;
+
+	/**
+	 * 获取所有实体
+	 * @return
+	 */
+	List getAllEntity();
+	/**
+	 * 查询当前实体对应的标签的表生成语句
+	 * @return
+	 */
+	public List queryCreLable();
 }

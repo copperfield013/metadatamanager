@@ -296,7 +296,7 @@ public class BasicItemServiceImpl implements BasicItemService {
 	}
 
 	@Override
-	public void saveOrUpdate(BasicItem obj, String flag, String comm) throws Exception {
+	public void saveOrUpdate(BasicItem obj, String flag, String comm, Integer cascadedict) throws Exception {
 		//生成code 规则：实体code IBTE0001 开始  其他code规则 IBT00001开始
 		if ("add".equals(flag)) {
 			String dataType = obj.getOneLevelItem().getDataType();
@@ -397,6 +397,26 @@ public class BasicItemServiceImpl implements BasicItemService {
 		basicItemDao.saveOrUpdate(obj, flag);
 		//basicItemDao.saveOrUpdate(oneLevelItem, flag);
 		
+		//如果是记录类型， 选择一个标签字典， 生成一条标签字典类
+		if ("add".equals(flag)) {
+			String dataType = obj.getOneLevelItem().getDataType();
+			if (String.valueOf(ValueType.RECORD.getIndex()).equals(dataType)) {
+				BasicItem bt = createLable(obj, cascadedict);
+				basicItemDao.insert(bt);
+			}
+		} else {//编辑记录类型， 确认字典是否编辑了， 如果编辑了则修改
+			OneLevelItem one = basicItemDao.getLableObj(obj.getCode());
+			if (one == null) {
+				BasicItem bt = createLable(obj, cascadedict);
+				basicItemDao.insert(bt);
+			} else {
+				if (!one.getDictParentId().equals(cascadedict)) {
+					one.setDictParentId(cascadedict);
+					basicItemDao.update(one);
+				}
+			}
+		}
+		
 		//如果是重复类型， 默认生成两个孩子， 
 		if (String.valueOf(ValueType.REPEAT.getIndex()).equals(obj.getOneLevelItem().getDataType()) && "add".equals(flag)) {
 			BasicItem childOne = new BasicItem();//多值属性编辑时间
@@ -429,6 +449,51 @@ public class BasicItemServiceImpl implements BasicItemService {
 		}
 		
 		
+	}
+
+	/**
+	 * @param code
+	 * @param cascadedict
+	 * @return
+	 */
+	private BasicItem createLable(BasicItem obj, Integer cascadedict) {
+		String attrCode = basicItemDao.getAttrCode();
+		BasicItem bt = new BasicItem();
+		bt.setCode(attrCode);
+		bt.setCnName("标签");
+		bt.setParent(obj.getCode());
+		bt.setUsingState(1);
+		bt.getOneLevelItem().setCode(attrCode);
+		bt.getOneLevelItem().setDataType(String.valueOf(ValueType.LABLETYPE.getIndex()));
+		bt.getOneLevelItem().setDictParentId(cascadedict);
+		bt.getOneLevelItem().setNeedHistory(1);
+		return bt;
+	}
+	
+	/**
+	 * @param code
+	 * @param cascadedict
+	 * @return
+	 */
+/*	private BasicItem createLable(String code, Integer cascadedict) {
+		String attrCode = basicItemDao.getAttrCode();
+		BasicItem bt = new BasicItem();
+		bt.setCode(attrCode);
+		bt.setCnName("标签");
+		//bt.setParent(code.getCode());
+		bt.setParent(code);
+		bt.setUsingState(1);
+		bt.getOneLevelItem().setCode(attrCode);
+		bt.getOneLevelItem().setDataType(String.valueOf(ValueType.LABLETYPE.getIndex()));
+		bt.getOneLevelItem().setDictParentId(cascadedict);
+		bt.getOneLevelItem().setNeedHistory(1);
+		return bt;
+	}*/
+	
+	@Override
+	public void createLablea(String code) {
+		//BasicItem createLable = createLable(code, 125);
+		//basicItemDao.insert(createLable);
 	}
 
 	/**
@@ -505,6 +570,8 @@ public class BasicItemServiceImpl implements BasicItemService {
 
 	@Override
 	public void createTabCol() {
+		
+		
 		//查询需要创建的表
 		List queryCreTab = basicItemDao.queryCreTab();
 			Iterator iterator = queryCreTab.iterator();
@@ -698,6 +765,18 @@ public class BasicItemServiceImpl implements BasicItemService {
 			}
 		}
 		
+		
+		//创建标签表
+		List queryCreLable = basicItemDao.queryCreLable();
+		for (Object object : queryCreLable) {
+			try {
+				basicItemDao.excuteBySql(object.toString());
+			} catch (Exception e) {
+				e.printStackTrace();
+				continue;
+			}
+		}
+		
 		//以上程序执行完比， 应确保只有状态为1  和-1， 下面程序把所有状态为0的改为1
 		basicItemDao.excuteBySql("UPDATE t_sc_basic_item SET c_using_state=1 WHERE c_using_state=0");
 		}
@@ -823,6 +902,17 @@ public class BasicItemServiceImpl implements BasicItemService {
 	@Override
 	public BigInteger canAddChildCount(String code) throws Exception {
 		return basicItemDao.canAddChildCount(code);
+	}
+
+	@Override
+	public OneLevelItem getLableObj(String code) throws Exception {
+		return basicItemDao.getLableObj(code);
+	}
+
+	@Override
+	public List getAllEntity() {
+		
+		return basicItemDao.getAllEntity();
 	}
 
 }

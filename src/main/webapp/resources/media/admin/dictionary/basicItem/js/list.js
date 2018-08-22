@@ -286,6 +286,21 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
     	$("#entity_opera_form1").find("#cnName").val("");
     	$("#entity_opera_form1").find("#enName").val("");
     	$("#entity_opera_form1").find("#description").val("");
+    	$CPF.showLoading();
+    	Ajax.ajax('admin/dictionary/basicItem/getDictPitem', '', function(data) {
+            var dataArr = data.dictPitem;
+            if (data.code == 200) {
+            	var str = "";
+            	for (var p in dataArr) { //遍历json数组时，这么写p为索引，0,1
+            		str = str + "<option value=\"" + dataArr[p].id + "\">" + dataArr[p].name + "</option>"; 
+            	}
+            	$("#entity_opera_form1").find("#cascadedict").append(str);
+            	$("#entity_opera_form1").find("#cascadedict").css("width","20%").select2();
+            } else {
+            	Dialog.notice("标签字典加载失败", "error");
+            }
+            $CPF.closeLoading();
+        });          
     	  $(".common_proper").hide();
           $(".more_proper").hide();
           $(".entity_relation").hide();
@@ -1573,6 +1588,54 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
         Ajax.ajax('admin/dictionary/basicItem/getOne', {
             id: entityId
         }, function(jsonData) {
+        	
+        	Ajax.ajax('admin/dictionary/basicItem/getLableObj', {
+                code: jsonData.code
+            }, function(data) {
+            	var lableObj = data.lableObj;
+                if (data.code == 200) {
+                	 if (lableObj == null) {
+                		 Dialog.notice("当前实体没有选择标签", "warning");
+                		 Ajax.ajax('admin/dictionary/basicItem/getDictPitem', '', function(data) {
+                             var dataArr = data.dictPitem;
+                             if (data.code == 200) {
+                                 var str = "";
+                                 for (var p in dataArr) { //遍历json数组时，这么写p为索引，0,1
+                                	 str = str + "<option value=\"" + dataArr[p].id + "\">" + dataArr[p].name + "</option>"; 
+                                 }
+                                 $("#entity_opera_form1").find("#cascadedict").append(str);
+                                 $("#entity_opera_form1").find("#cascadedict").css("width","20%").select2();
+                             } else {
+                                 Dialog.notice("标签字典加载失败", "error");
+                             }
+                             $CPF.closeLoading();
+                         });  
+                	 } else {
+                		 Ajax.ajax('admin/dictionary/basicItem/getDictPitem', '', function(data) {
+                             var dataArr = data.dictPitem;
+                             if (data.code == 200) {
+                                 var str = "";
+                                 for (var p in dataArr) { //遍历json数组时，这么写p为索引，0,1
+                                	 if (lableObj.dictParentId == dataArr[p].id) {
+                                		 str = str + "<option selected='selected' value=\"" + dataArr[p].id + "\">" + dataArr[p].name + "</option>"; 
+                                	 } else {
+                                		 str = str + "<option value=\"" + dataArr[p].id + "\">" + dataArr[p].name + "</option>"; 
+                                	 }
+                                 }
+                                 $("#entity_opera_form1").find("#cascadedict").append(str);
+                                 $("#entity_opera_form1").find("#cascadedict").css("width","20%").select2();
+                             } else {
+                                 Dialog.notice("标签字典加载失败", "error");
+                             }
+                             $CPF.closeLoading();
+                         });  
+                	 }
+                } else {
+                	Dialog.notice("加载失败", "error");
+                }
+            });
+        	
+        	
             var $form1 = $(".opera_entity").children("form");
             $form1.find("#code").val(jsonData.code);
             $form1.find("#code").attr("readonly", "readonly");

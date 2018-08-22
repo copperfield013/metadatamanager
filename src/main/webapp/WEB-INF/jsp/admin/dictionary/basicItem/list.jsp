@@ -53,7 +53,12 @@
 					<div>
 						<span class="opera_entity_label">描述</span>
 						<textarea name="description" id="description" rows="" cols=""></textarea>
-					</div>					
+					</div>	
+					<div style="width: 92%;">
+						<span class="opera_entity_label">请为标签选择字典<span style="color: red;">*</span></span>
+						<select id="cascadedict" name="cascadedict">
+						</select>
+					</div>
 				</form>
 				<div class="opera_entity_btn">
 					<span class="entity-btn-cancel" id="entity_but_cancel">取消</span>

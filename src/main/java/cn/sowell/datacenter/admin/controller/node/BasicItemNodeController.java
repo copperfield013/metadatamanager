@@ -48,6 +48,7 @@ import cn.sowell.datacenter.model.cascadedict.pojo.CascadedictBasicItem;
 import cn.sowell.datacenter.model.cascadedict.service.CascadedictBasicItemService;
 import cn.sowell.datacenter.model.dictionary.criteria.BasicItemCriteria;
 import cn.sowell.datacenter.model.dictionary.pojo.BasicItem;
+import cn.sowell.datacenter.model.dictionary.pojo.OneLevelItem;
 import cn.sowell.datacenter.model.dictionary.pojo.RecordRelationType;
 import cn.sowell.datacenter.model.dictionary.service.BasicItemService;
 import cn.sowell.datacenter.model.dictionary.service.RecordRelationTypeService;
@@ -369,9 +370,10 @@ public class BasicItemNodeController {
         @ApiResponse(code = 400, message = "操作失败", response = String.class) })
     @RequestMapping(value = "/getCommLab",
         method = RequestMethod.POST)
-	public ResponseEntity<DictionaryBasicItems> getCommLab() {
+	public ResponseEntity<DictionaryBasicItems> getCommLab(String entityCode) {
 		try {
-			 List<CascadedictBasicItem> list = cascadedictBasicItemService.getChildByParentId(125);
+			OneLevelItem lableObj = basicItemService.getLableObj(entityCode);
+			 List<CascadedictBasicItem> list = cascadedictBasicItemService.getChildByParentId(lableObj.getDictParentId());
 			DictionaryBasicItems dictBasicItems = new DictionaryBasicItems();
 			dictBasicItems.commLab(list);
 			return new ResponseEntity<DictionaryBasicItems>(dictBasicItems, HttpStatus.OK);
