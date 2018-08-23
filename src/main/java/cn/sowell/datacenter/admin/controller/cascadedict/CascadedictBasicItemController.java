@@ -1,6 +1,7 @@
 package cn.sowell.datacenter.admin.controller.cascadedict;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -97,9 +98,16 @@ public class CascadedictBasicItemController {
 	public String getOne(Integer id, Model model){
 		try {
 			CascadedictBasicItem one = cascadedictBasicItemService.getOne(id);
-			CascadedictBasicItem parent = cascadedictBasicItemService.getOne(one.getParentId());
+			
+			List<CascadedictBasicItem> list = new ArrayList<CascadedictBasicItem>();
+			String casPid = one.getCasPid();
+			String[] str = casPid.split("\\.");
+			for (int i=0;i<str.length-1; i++) {
+				CascadedictBasicItem one2 = cascadedictBasicItemService.getOne(Integer.parseInt(str[i+1]));
+				list.add(one2);
+			}
 			model.addAttribute("basicItem", one);
-			model.addAttribute("basicItemParent", parent);
+			model.addAttribute("parentList", list);
 			return AdminConstants.JSP_CASCADEDICT + "/cascadedictBasicItem/childmanage_tree.jsp";
 		} catch (Exception e) {
 			logger.error("失败", e);
