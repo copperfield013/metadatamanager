@@ -136,7 +136,7 @@ public interface BasicItemService {
 	 * @param level
 	 * @throws Exception
 	 */
-	void saveCascaseAttrChild(CascadeAttr cascadeAttr) throws Exception;
+	CascadeAttr saveCascaseAttrChild(String code, String cnName, String description) throws Exception;
 
 	/**
 	 * 删除级联属性的孩子

@@ -780,13 +780,13 @@ public class BasicItemController {
 	  //保存级联属性的孩子
 	    @ResponseBody
 		@RequestMapping("/saveCascaseAttrChild")
-		public String saveCascaseAttrChild(CascadeAttr cascadeAttr){
+		public String saveCascaseAttrChild(String code, String cnName, String description){
 	    	
 			Map<String, Object> map = new HashMap<String, Object>();
 			JSONObject jobj = new JSONObject(map);
 			try {
 				
-				BigInteger canAddChildCount = basicItemService.canAddChildCount(cascadeAttr.getCode());//获取可以添加孩子的数量
+				BigInteger canAddChildCount = basicItemService.canAddChildCount(code);//获取可以添加孩子的数量
 				
 				if (canAddChildCount==null) {
 					map.put("code", 400);
@@ -801,7 +801,7 @@ public class BasicItemController {
 					return jobj.toString();
 				}
 				
-				basicItemService.saveCascaseAttrChild(cascadeAttr);
+				CascadeAttr cascadeAttr = basicItemService.saveCascaseAttrChild(code, cnName, description);
 				map.put("code", 200);
 				map.put("msg", "success");
 				map.put("cascadeAttr", cascadeAttr);
@@ -827,6 +827,7 @@ public class BasicItemController {
 			Map<String, Object> map = new HashMap<String, Object>();
 			JSONObject jobj = new JSONObject(map);
 			try {
+				
 				basicItemService.deleteCascaseAttrChild(code,  casCode);
 				map.put("code", 200);
 				map.put("msg", "success");

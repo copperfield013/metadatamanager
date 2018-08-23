@@ -863,20 +863,44 @@ public class BasicItemServiceImpl implements BasicItemService {
 	}
 
 	@Override
-	public void saveCascaseAttrChild(CascadeAttr cascadeAttr) throws Exception {
+	public CascadeAttr saveCascaseAttrChild(String code, String cnName, String description) throws Exception {
+		
+		BasicItem parent = basicItemDao.get(BasicItem.class, code);
+		
+		BasicItem bt = new BasicItem();
+		String attrCode = basicItemDao.getAttrCode();
+		bt.setCode(attrCode);
+		bt.getOneLevelItem().setCode(attrCode);
+		bt.setCnName(cnName);
+		bt.setParent(parent.getCode());
+		bt.setUsingState(0);
+		bt.getOneLevelItem().setDataType(String.valueOf(ValueType.SUBCASTYPE.getIndex()));
+		bt.getOneLevelItem().setDataRange("32");
+		bt.getOneLevelItem().setDictParentId(0);
+		bt.getOneLevelItem().setNeedHistory(1);
+		basicItemDao.insert(bt);
+		if (parent.getOneLevelItem().getTableName() != null && parent.getOneLevelItem().getTableName()!="") {
+			bt.getOneLevelItem().setTableName(parent.getOneLevelItem().getTableName());
+		} 
+		CascadeAttr cascadeAttr = new CascadeAttr();
+		cascadeAttr.setCode(code);
+		cascadeAttr.setCasCode(attrCode);
 		//添加的时候获取level， 编辑的时候level不能改变， 
 		List<CascadeAttr> cascadeAttrChild = basicItemDao.getCascadeAttrChild(cascadeAttr.getCode());
 		
-		if (cascadeAttrChild == null) {
+		if (cascadeAttrChild.isEmpty()) {
 			cascadeAttr.setLevel(1);
 		} else {
 			cascadeAttr.setLevel(cascadeAttrChild.size()+1);
 		}
 		basicItemDao.saveCascaseAttrChild(cascadeAttr);
+		return cascadeAttr;
 	}
 
 	@Override
 	public void deleteCascaseAttrChild(String code, String casCode) throws Exception{
+		BasicItem basicItem = basicItemDao.get(BasicItem.class, casCode);
+		basicItemDao.delete(basicItem);
 		basicItemDao.delCascaseAttrChild(code, casCode);
 		//删除的时候按level升序重新排序
 		List cascadeAttrChildPojo = basicItemDao.getCascadeAttrChildPojo(code, casCode);

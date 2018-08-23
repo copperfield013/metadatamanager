@@ -17,7 +17,7 @@ public class CascadeAttr{
 	  @Id
 	  @Column(name="c_code")
 	  @GenericGenerator(name = "system-uuid", strategy = "uuid")
-	  private String code;//单独生成规则
+	  private String code;
 	 
 	  @Column(name="c_cas_code")
 	  private String casCode;

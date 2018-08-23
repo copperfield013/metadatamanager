@@ -240,12 +240,14 @@ public class BasicItemDaoImpl implements BasicItemDao {
 			.append(" WHEN '"+ValueType.BYTES.getIndex()+"' THEN 'MediumBlob' ")
 			.append(" WHEN '"+ValueType.ENUMTYPE.getIndex()+"' THEN 'varchar(32)'")
 			.append(" WHEN '"+ValueType.REFERENCE.getIndex()+"' THEN 'varchar(32)'")
+			.append(" WHEN '"+ValueType.SUBCASTYPE.getIndex()+"' THEN 'varchar(32)'")
 			.append(" END, ")
 			.append("'  default NULL ') ")
 			.append("FROM ")
 			.append("(SELECT  *  FROM  t_sc_onelevel_item WHERE ")
 			.append(" c_data_type != '"+ValueType.RECORD.getIndex()+"' ")
 			.append("AND c_data_type != '"+ValueType.REPEAT.getIndex()+"'")
+			.append("AND c_data_type != '"+ValueType.LABLETYPE.getIndex()+"'")
 			.append("AND c_data_type != '"+ValueType.CASCADETYPE.getIndex()+"'")
 			.append(" AND c_data_type != '"+ValueType.GROUP.getIndex()+"') a ")
 			.append(" LEFT JOIN ")
@@ -280,6 +282,7 @@ public class BasicItemDaoImpl implements BasicItemDao {
 		 .append(" WHEN '8' THEN    'mediumblob'  ")
 		 .append("  WHEN '11' THEN    'varchar(32)'  ")
 		 .append("  WHEN '14' THEN    'varchar(32)'  ")
+		 .append(" WHEN '"+ValueType.SUBCASTYPE.getIndex()+"' THEN 'varchar(32)'")
 		 .append(" END col_type  ")
 		 .append(" FROM ")
 		 .append("     t_sc_onelevel_item a  ")
@@ -287,6 +290,7 @@ public class BasicItemDaoImpl implements BasicItemDao {
 		 .append("  a.c_data_type != '16' ")
 		 .append(" AND a.c_data_type != '10' ")
 		 .append(" AND a.c_data_type != '17' ")
+		 .append("AND c_data_type != '"+ValueType.LABLETYPE.getIndex()+"'")
 		 .append(" AND a.c_data_type != '9' ")
 		 .append("     ) aa ")
 		 .append("    LEFT JOIN ( SELECT col.Column_name, col.column_type, col.table_name FROM information_schema.COLUMNS col WHERE table_schema = '"+DataBaseName+"' ) bb  ")
@@ -454,6 +458,7 @@ public class BasicItemDaoImpl implements BasicItemDao {
 				+ " WHERE	t.c_parent =:entityId "
 				+ " AND o.c_data_type != '9' "
 				+ " AND o.c_data_type != '16' "
+				+ " AND o.c_data_type != '18' "
 				+ " AND t.c_using_state = '1' "
 				+ "UNION "
 				+ " SELECT 	t.c_code CODE, 	t.c_cn_name NAME, c.c_data_type dataType "
