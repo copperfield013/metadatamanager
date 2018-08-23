@@ -14,6 +14,7 @@ import java.util.Map;
 import javax.annotation.Resource;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
+import org.junit.Ignore;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -32,6 +33,7 @@ import com.abc.mapping.node.NodeOpsType;
 import com.abc.mapping.node.NodeType;
 import com.abc.util.ValueType;
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 
 import cn.sowell.copframe.dto.ajax.AjaxPageResponse;
 import cn.sowell.copframe.dto.page.PageInfo;
@@ -325,20 +327,20 @@ public class BasicItemNodeController {
 	// ajax 根据实体id， 获取当前实体下的所有普通属性，
 	// 还有当前实体下的所有二级属性
 	@ResponseBody
-	 @ApiOperation(value = "根据实体id， 获取当前实体下的所有普通属性和二级属性", nickname = "getComm", notes = "根据实体id， 获取当前实体下的所有普通属性和二级属性", response = Object.class, tags={ "configurationFiles", })
-    @ApiResponses(value = { 
-        @ApiResponse(code = 200, message = "操作成功", response = Object.class),
-        @ApiResponse(code = 400, message = "操作失败", response = String.class) })
     @RequestMapping(value = "/getComm", method = RequestMethod.POST)
-	public ResponseEntity<Object> getComm(String entityId) {
+	public String getComm(String entityId) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		JSONObject jobj = new JSONObject(map);
 		try {
 			List list = basicItemService.getComm(entityId);
-			Map<String, Object> map = new HashMap<String, Object>();
+			map.put("code", 200);
 			map.put("comm", list);
-			JSONObject jobj = new JSONObject(map);
-			return new ResponseEntity<Object>(jobj, HttpStatus.OK);
-        } catch (Exception e) {                
-            return new ResponseEntity<Object>(HttpStatus.INTERNAL_SERVER_ERROR);
+			map.put("msg", "加载成功！");
+			return jobj.toJSONString();
+        } catch (Exception e) {   
+        	map.put("code", 400);
+			map.put("msg", "加载失败！");
+            return jobj.toJSONString();
         }
 	}
 	
@@ -422,22 +424,23 @@ public class BasicItemNodeController {
 		return mv;
 	}
 	
+	@Ignore
 	@ResponseBody
-	@ApiOperation(value = "通过父节点id， 获取孩子", nickname = "getChildNode", notes = "通过父节点id， 获取孩子", response = BasicItemNodes.class, tags={ "configurationFiles", })
-    @ApiResponses(value = { 
-        @ApiResponse(code = 200, message = "OK", response = BasicItemNodes.class),
-        @ApiResponse(code = 400, message = "操作失败", response = String.class) })
-    @RequestMapping(value = "/getChildNode",
-        method = RequestMethod.POST)
-	public ResponseEntity<BasicItemNodes> getChildNode(Integer nodeId) {
+    @RequestMapping(value = "/getChildNode")
+	public String getChildNode(Integer nodeId) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		JSONObject jobj = new JSONObject();
 		try {
 			List<BasicItemNode> list = basicItemNodeService.getChildNode(nodeId);
-			BasicItemNodes btItemNodes = new BasicItemNodes();
-			btItemNodes.childNode(list);
-			return new ResponseEntity<BasicItemNodes>(btItemNodes, HttpStatus.OK);
+			map.put("childNode", list);
+			map.put("code", 200);
+			map.put("msg", "加载成功！");
+			return jobj.toJSONString(map, SerializerFeature.DisableCircularReferenceDetect);
         } catch (Exception e) {  
         	e.printStackTrace();
-            return new ResponseEntity<BasicItemNodes>(HttpStatus.INTERNAL_SERVER_ERROR);
+        	map.put("code", 200);
+			map.put("msg", "加载成功！");
+			return jobj.toString();
         }
 	}
 
