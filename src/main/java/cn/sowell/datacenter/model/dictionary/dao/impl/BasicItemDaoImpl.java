@@ -92,18 +92,18 @@ public class BasicItemDaoImpl implements BasicItemDao {
 
 	@Override
 	public List<BasicItem> getDataByPId(String parent, String dataType) {
-		String sql = "SELECT * FROM t_sc_basic_item "
-				+ "WHERE c_parent=:parent "
-				+ "AND c_code not like '%_P' "
-				+ "AND c_code not like '%_ED' "
-				+ "AND c_code not like '%_SF' "
-				+ "AND c_code not like '%_SK' "
-				+ "AND c_code not like '%_N' ";
+		String sql = "SELECT * FROM t_sc_basic_item t left join t_sc_onelevel_item o ON t.c_code = o.c_code "
+				+ "WHERE t.c_parent=:parent "
+				+ "AND t.c_code not like '%_P' "
+				+ "AND t.c_code not like '%_ED' "
+				+ "AND t.c_code not like '%_SF' "
+				+ "AND t.c_code not like '%_SK' "
+				+ "AND t.c_code not like '%_N' ";
 				if (dataType!="" && dataType!=null) {
-					sql+="AND c_data_type="+dataType+"";
+					sql+="AND o.c_data_type="+dataType+"";
 				}
 				sql+= " ORDER BY  "
-				+ "CAST((reverse( - ( - reverse( substring_index( c_code, '_', 1 ) ) ) )) as SIGNED) ASC";
+				+ "CAST((reverse( - ( - reverse( substring_index( t.c_code, '_', 1 ) ) ) )) as SIGNED) ASC";
 		List<BasicItem> list = sFactory.getCurrentSession().createSQLQuery(sql).addEntity(BasicItem.class).setParameter("parent", parent).list();
 		return list;
 	}
