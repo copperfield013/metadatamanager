@@ -24,6 +24,14 @@
 	            <span class="entity-only-title"  style="padding:20px;" title="英文名称">${basicItem.enName}</span>
 	            <span class="entity-only-title"  style="padding:20px;" title="状态">${basicItem.status}</span>
 	            <span class="entity-only-title"  style="padding:20px;" title="排序">${basicItem.order}</span>
+               
+                <span class="entity-only-title"  style="padding:77px;" title="父亲编号">
+                ${basicItemParent.id eq 0? '': basicItemParent.id}
+                </span>
+                <span class="entity-only-title"  style="padding:0px;" title="父亲名称">
+                	<a class="tab" href="admin/cascadedict/cascadedictBasicItem/getOne?id=${basicItemParent.id eq 0? '': basicItemParent.id}" target="cascadedictBasicItem_child" title="管理子数据">${basicItemParent.name eq '根'? '':basicItemParent.name}</a>
+                </span>
+               
                 <div class="btn-wrap">
                 	<!-- <i class="icon icon-save"></i> -->
                     <i class="icon icon-add"></i> 

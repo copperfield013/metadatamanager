@@ -97,7 +97,9 @@ public class CascadedictBasicItemController {
 	public String getOne(Integer id, Model model){
 		try {
 			CascadedictBasicItem one = cascadedictBasicItemService.getOne(id);
+			CascadedictBasicItem parent = cascadedictBasicItemService.getOne(one.getParentId());
 			model.addAttribute("basicItem", one);
+			model.addAttribute("basicItemParent", parent);
 			return AdminConstants.JSP_CASCADEDICT + "/cascadedictBasicItem/childmanage_tree.jsp";
 		} catch (Exception e) {
 			logger.error("失败", e);
