@@ -102,7 +102,7 @@ public class BasicItemDaoImpl implements BasicItemDao {
 				if (dataType!="" && dataType!=null) {
 					sql+="AND c_data_type="+dataType+"";
 				}
-				sql+= "ORDER BY  "
+				sql+= " ORDER BY  "
 				+ "CAST((reverse( - ( - reverse( substring_index( c_code, '_', 1 ) ) ) )) as SIGNED) ASC";
 		List<BasicItem> list = sFactory.getCurrentSession().createSQLQuery(sql).addEntity(BasicItem.class).setParameter("parent", parent).list();
 		return list;
