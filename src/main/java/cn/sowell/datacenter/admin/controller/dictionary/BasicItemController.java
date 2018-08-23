@@ -470,7 +470,7 @@ public class BasicItemController {
 				
 				List<BasicItem> btList = null;
 				if (String.valueOf(ValueType.GROUP.getIndex()).equals(bt.getOneLevelItem().getDataType())) {
-					btList = basicItemService.getAttrByPidGroupName(bt.getParent(), bt.getCode());
+					btList = basicItemService.getAttrByPidGroupName(bt.getParent(), bt.getCode(), "");
 				} else if (String.valueOf(ValueType.REPEAT.getIndex()).equals(bt.getOneLevelItem().getDataType())) {
 					btList = basicItemService.getDataByPId(bt.getParent() + "_" + bt.getCode());
 				} else {
@@ -722,7 +722,7 @@ public class BasicItemController {
 			JSONObject jobj = new JSONObject(map);
 			try {
 				BasicItem basicItem = basicItemService.getBasicItem(cascadeCode);
-				List attrByPidGroupName = basicItemService.getAttrByPidGroupName(basicItem.getParent(), basicItem.getOneLevelItem().getGroupName());
+				List attrByPidGroupName = basicItemService.getAttrByPidGroupName(basicItem.getParent(), basicItem.getOneLevelItem().getGroupName(), String.valueOf(ValueType.STRING.getIndex()));
 				map.put("code", 200);
 				map.put("msg", "success");
 				map.put("commAttr", attrByPidGroupName);

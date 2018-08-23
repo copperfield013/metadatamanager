@@ -70,12 +70,13 @@ public interface BasicItemService {
 	void saveOrUpdate(BasicItem obj, String flag, String comm, Integer cascadedict)  throws Exception ;
 
 	/**
-	 * 
+	 * 根据实体code， 分组code， 获取分组下的属性
 	 * @param parent  父亲id
 	 * @param groupName   分组名称
+	 * @param dataType 获取分组下指定类型的属性
 	 * @return
 	 */
-	List getAttrByPidGroupName(String parent, String groupName);
+	List getAttrByPidGroupName(String parent, String groupName, String dataType);
 	
 	/**
 	 * 查询当前数据需要生成的表、字段， 并生成

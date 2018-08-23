@@ -105,10 +105,37 @@ public class BasicItemDaoImpl implements BasicItemDao {
 	}
 
 	@Override
-	public List getAttrByPidGroupName(String parent, String groupName) {
-		String sql = "SELECT * FROM	t_sc_basic_item t	INNER JOIN t_sc_onelevel_item o	on t.c_code=o.c_code  WHERE	t.c_parent =:parent 	AND o.c_group_name =:groupName 	AND t.c_code NOT LIKE '%_P' AND t.c_code not like '%_ED' AND t.c_code not like '%_SF' AND t.c_code not like '%_SK' AND t.c_code not like '%_N'  ORDER BY  CAST((reverse( - ( - reverse( substring_index(t.c_code, '_', 1 ) ) ) )) as SIGNED) ASC";
-		List<BasicItem> list = sFactory.getCurrentSession().createSQLQuery(sql).addEntity(BasicItem.class).setParameter("parent", parent).setParameter("groupName", groupName).list();
-		return list;
+	public List getAttrByPidGroupName(String parent, String groupName, String dataType) {
+		StringBuffer sb = new StringBuffer();
+		sb.append(" SELECT * FROM t_sc_basic_item t ")
+		.append(" INNER JOIN t_sc_onelevel_item o ON t.c_code = o.c_code  ")
+		.append(" WHERE ")
+		.append(" 	t.c_parent =:parent  ")
+		.append(" 	AND o.c_group_name =:groupName  ")
+		.append(" 	AND t.c_code NOT LIKE '%_P'  ")
+		.append(" AND t.c_code NOT LIKE '%_ED' ")
+		.append(" 	AND t.c_code NOT LIKE '%_SF'  ")
+		.append(" 	AND t.c_code NOT LIKE '%_SK'  ")
+		.append(" 	AND t.c_code NOT LIKE '%_N'  ");
+		if (dataType != "" && dataType !=null) {
+			sb.append(" 	AND o.c_data_type="+dataType+" ");
+		}
+		sb.append(" ORDER BY")
+		.append(" CAST( ( reverse( - ( - reverse( substring_index( t.c_code, '_', 1 ) ) ) ) ) AS SIGNED ) ASC ");
+		
+		String sql = sb.toString();
+		try {
+			List<BasicItem> list = sFactory.getCurrentSession()
+					.createSQLQuery(sql)
+					.addEntity(BasicItem.class)
+					.setParameter("parent", parent)
+					.setParameter("groupName", groupName)
+					.list();
+			return list;
+		} catch (HibernateException e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 	@Override

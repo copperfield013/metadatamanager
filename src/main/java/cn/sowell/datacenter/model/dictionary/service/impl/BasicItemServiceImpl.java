@@ -96,7 +96,7 @@ public class BasicItemServiceImpl implements BasicItemService {
 					bt.setChildList(childList);
 				} else if (String.valueOf(ValueType.GROUP.getIndex()).equals(oneLevelItem.getDataType())) {//分组数据
 					attrList.add(bt);
-					List childList = basicItemDao.getAttrByPidGroupName(bt.getParent(), bt.getCode());
+					List childList = basicItemDao.getAttrByPidGroupName(bt.getParent(), bt.getCode(),"");
 					bt.setChildList(childList);
 				}
 			}
@@ -564,8 +564,8 @@ public class BasicItemServiceImpl implements BasicItemService {
 	}
 
 	@Override
-	public List getAttrByPidGroupName(String parent, String groupName) {
-		return basicItemDao.getAttrByPidGroupName(parent, groupName);
+	public List getAttrByPidGroupName(String parent, String groupName, String dataType) {
+		return basicItemDao.getAttrByPidGroupName(parent, groupName, dataType);
 	}
 
 	@Override

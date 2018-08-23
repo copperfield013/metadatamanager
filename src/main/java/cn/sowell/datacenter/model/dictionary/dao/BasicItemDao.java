@@ -58,9 +58,10 @@ public interface BasicItemDao {
 	 * 
 	 * @param parent  父亲id
 	 * @param groupName   分组名称
+	 * @param dataType 可选，填入数字，怎获取分组下的所有的这个属性
 	 * @return
 	 */
-	List getAttrByPidGroupName(String parent, String groupName);
+	List getAttrByPidGroupName(String parent, String groupName, String dataType);
 	
 	void saveOrUpdate(Object obj, String flag)  throws Exception ;
 	
