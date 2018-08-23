@@ -73,7 +73,7 @@ public class BasicItemServiceImpl implements BasicItemService {
 		//按分组存放普通属性 
 		List attrList = new ArrayList(); 
 		//根据parentId获取下面所有的孩子   包括普通属性和多值属性
-		List<BasicItem> chilAll = basicItemDao.getDataByPId(parentId);
+		List<BasicItem> chilAll = basicItemDao.getDataByPId(parentId, "");
 		
 		Iterator<BasicItem> iterator = chilAll.iterator();
 		while (iterator.hasNext()) {
@@ -92,7 +92,7 @@ public class BasicItemServiceImpl implements BasicItemService {
 					}
 					
 					moreList.add(bt);
-					List<BasicItem> childList = basicItemDao.getDataByPId(bt.getParent() + "_"+ bt.getCode());
+					List<BasicItem> childList = basicItemDao.getDataByPId(bt.getParent() + "_"+ bt.getCode(), "");
 					bt.setChildList(childList);
 				} else if (String.valueOf(ValueType.GROUP.getIndex()).equals(oneLevelItem.getDataType())) {//分组数据
 					attrList.add(bt);
@@ -181,7 +181,7 @@ public class BasicItemServiceImpl implements BasicItemService {
 					
 					//查询当前实体对应的所有表中存在的所有字段
 					List colList = basicItemDao.queryEntityCol(basicItem.getCode());
-					List<BasicItem> chilList = basicItemDao.getDataByPId(basicItem.getCode());
+					List<BasicItem> chilList = basicItemDao.getDataByPId(basicItem.getCode(), "");
 					
 					Iterator<BasicItem> iterator2 = chilList.iterator();
 					
@@ -254,7 +254,7 @@ public class BasicItemServiceImpl implements BasicItemService {
 		pastDue(basicItem, status);
 		//记录类型
 		if (String.valueOf(ValueType.RECORD.getIndex()).equals(basicItem.getOneLevelItem().getDataType())) {
-			List<BasicItem> basicItemList = basicItemDao.getDataByPId(basicItem.getCode());
+			List<BasicItem> basicItemList = basicItemDao.getDataByPId(basicItem.getCode(), "");
 			for(BasicItem bItem : basicItemList) {
 				pastDue(bItem, status);
 				OneLevelItem oneLevelItem = bItem.getOneLevelItem();
@@ -287,7 +287,7 @@ public class BasicItemServiceImpl implements BasicItemService {
 	 */
 	private void repeatPastDue(BasicItem basicItem, Integer status) {
 		if (basicItem != null) {
-			List<BasicItem> basicItemList = basicItemDao.getDataByPId(basicItem.getParent() + "_"+ basicItem.getCode());
+			List<BasicItem> basicItemList = basicItemDao.getDataByPId(basicItem.getParent() + "_"+ basicItem.getCode(), "");
 			for(BasicItem bItem : basicItemList) {
 				pastDue(bItem, status);
 			}
@@ -782,8 +782,8 @@ public class BasicItemServiceImpl implements BasicItemService {
 		}
 
 	@Override
-	public List<BasicItem> getDataByPId(String parent) {
-		return basicItemDao.getDataByPId(parent);
+	public List<BasicItem> getDataByPId(String parent, String dataType) {
+		return basicItemDao.getDataByPId(parent, dataType);
 	}
 
 	@Override

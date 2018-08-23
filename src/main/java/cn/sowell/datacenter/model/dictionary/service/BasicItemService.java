@@ -88,7 +88,7 @@ public interface BasicItemService {
 	 * @param parent
 	 * @return
 	 */
-	List<BasicItem> getDataByPId(String parent);
+	List<BasicItem> getDataByPId(String parent, String dataType);
 
 	List<CascadedictBasicItem> getDictCode(Long id) throws Exception;
 

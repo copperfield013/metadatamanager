@@ -472,9 +472,9 @@ public class BasicItemController {
 				if (String.valueOf(ValueType.GROUP.getIndex()).equals(bt.getOneLevelItem().getDataType())) {
 					btList = basicItemService.getAttrByPidGroupName(bt.getParent(), bt.getCode(), "");
 				} else if (String.valueOf(ValueType.REPEAT.getIndex()).equals(bt.getOneLevelItem().getDataType())) {
-					btList = basicItemService.getDataByPId(bt.getParent() + "_" + bt.getCode());
+					btList = basicItemService.getDataByPId(bt.getParent() + "_" + bt.getCode(), "");
 				} else {
-					btList = basicItemService.getDataByPId(id);
+					btList = basicItemService.getDataByPId(id, "");
 				}
 				 
 				if (!btList.isEmpty()) {
@@ -509,7 +509,7 @@ public class BasicItemController {
 	public ResponseEntity<InlineResponse2005> getDataByPid(String id){
 		try {
 			BasicItem basicItem = basicItemService.getBasicItem(id);
-			List<BasicItem> btList = basicItemService.getDataByPId(basicItem.getParent()+ "_" + basicItem.getCode());
+			List<BasicItem> btList = basicItemService.getDataByPId(basicItem.getParent()+ "_" + basicItem.getCode(), "");
 			Map<String, Object> map = new HashMap<String, Object>();
 			InlineResponse2005 inline = new InlineResponse2005();
 			inline.child(btList);
@@ -744,7 +744,7 @@ public class BasicItemController {
 			JSONObject jobj = new JSONObject(map);
 			try {
 				BasicItem basicItem = basicItemService.getBasicItem(cascadeCode);
-				List attrByPidGroupName = basicItemService.getDataByPId(basicItem.getParent());
+				List attrByPidGroupName = basicItemService.getDataByPId(basicItem.getParent(), String.valueOf(ValueType.STRING.getIndex()));
 				map.put("code", 200);
 				map.put("msg", "success");
 				map.put("commAttr", attrByPidGroupName);
