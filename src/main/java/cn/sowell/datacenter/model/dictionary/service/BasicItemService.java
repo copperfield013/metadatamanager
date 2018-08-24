@@ -40,7 +40,7 @@ public interface BasicItemService {
 	 * 从数据库中删除一个BasicItem对象
 	 * @param id
 	 */
-	void delete(BasicItem basicItem);
+	void delete(BasicItem basicItem) throws Exception;;
 	/**
 	 * 从数据库中删除一个BasicItem对象
 	 * @param basicItem
@@ -171,7 +171,7 @@ public interface BasicItemService {
 	 * @return
 	 * @throws Exception
 	 */
-	OneLevelItem getLableObj(String code) throws Exception;
+	BasicItem getLableObj(String code) throws Exception;
 
 	List getAllEntity();
 

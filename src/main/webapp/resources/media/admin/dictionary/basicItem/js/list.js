@@ -1599,7 +1599,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
         	Ajax.ajax('admin/dictionary/basicItem/getLableObj', {
                 code: jsonData.code
             }, function(data) {
-            	var lableObj = data.lableObj;
+            	var lableObj = data.lableObj.oneLevelItem;
                 if (data.code == 200) {
                 	 if (lableObj == null) {
                 		 Dialog.notice("当前实体没有选择标签", "warning");

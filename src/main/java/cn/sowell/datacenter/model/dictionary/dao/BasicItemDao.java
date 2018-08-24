@@ -224,7 +224,7 @@ public interface BasicItemDao {
 	 * @return
 	 * @throws Exception
 	 */
-	OneLevelItem getLableObj(String code) throws Exception;
+	BasicItem getLableObj(String code) throws Exception;
 
 	/**
 	 * 获取所有实体

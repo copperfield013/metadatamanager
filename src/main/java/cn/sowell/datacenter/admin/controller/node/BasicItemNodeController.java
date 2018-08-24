@@ -374,8 +374,8 @@ public class BasicItemNodeController {
         method = RequestMethod.POST)
 	public ResponseEntity<DictionaryBasicItems> getCommLab(String entityCode) {
 		try {
-			OneLevelItem lableObj = basicItemService.getLableObj(entityCode);
-			 List<CascadedictBasicItem> list = cascadedictBasicItemService.getChildByParentId(lableObj.getDictParentId());
+			BasicItem lableObj = basicItemService.getLableObj(entityCode);
+			 List<CascadedictBasicItem> list = cascadedictBasicItemService.getChildByParentId(lableObj.getOneLevelItem().getDictParentId());
 			DictionaryBasicItems dictBasicItems = new DictionaryBasicItems();
 			dictBasicItems.commLab(list);
 			return new ResponseEntity<DictionaryBasicItems>(dictBasicItems, HttpStatus.OK);

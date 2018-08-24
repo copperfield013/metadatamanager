@@ -98,7 +98,8 @@ public class BasicItemDaoImpl implements BasicItemDao {
 				+ "AND t.c_code not like '%_ED' "
 				+ "AND t.c_code not like '%_SF' "
 				+ "AND t.c_code not like '%_SK' "
-				+ "AND t.c_code not like '%_N' ";
+				+ "AND t.c_code not like '%_N' "
+				+ "AND o.c_data_type !="+ValueType.LABLETYPE.getIndex()+" ";
 				if (dataType!="" && dataType!=null) {
 					sql+="AND o.c_data_type="+dataType+"";
 				}
@@ -564,14 +565,14 @@ public class BasicItemDaoImpl implements BasicItemDao {
 	}
 
 	@Override
-	public OneLevelItem getLableObj(String code) throws Exception {
-		String sql = "SELECT b.* FROM t_sc_basic_item  a "
+	public BasicItem getLableObj(String code) throws Exception {
+		String sql = "SELECT * FROM t_sc_basic_item  a "
 				+ "inner join t_sc_onelevel_item  b "
 				+ "on a.c_code=b.c_code "
 				+ "WHERE c_parent=:code "
 				+ "AND b.c_data_type=:dataType";
-		return (OneLevelItem) sFactory.getCurrentSession().createSQLQuery(sql)
-				.addEntity(OneLevelItem.class)
+		return (BasicItem) sFactory.getCurrentSession().createSQLQuery(sql)
+				.addEntity(BasicItem.class)
 				.setParameter("code", code)
 				.setParameter("dataType", ValueType.LABLETYPE.getIndex()).uniqueResult();
 	}

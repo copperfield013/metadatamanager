@@ -847,7 +847,7 @@ public class BasicItemController {
 			Map<String, Object> map = new HashMap<String, Object>();
 			JSONObject jobj = new JSONObject(map);
 			try {
-				OneLevelItem lableObj = basicItemService.getLableObj(code);
+				BasicItem lableObj = basicItemService.getLableObj(code);
 				map.put("code", 200);
 				map.put("msg", "操作成功");
 				map.put("lableObj", lableObj);

@@ -119,7 +119,7 @@ public class BasicItemServiceImpl implements BasicItemService {
 	}
 
 	@Override
-	public void delete(BasicItem basicItem) {
+	public void delete(BasicItem basicItem) throws Exception {
 		//这里删除伴生属性
 		if (String.valueOf(ValueType.REPEAT.getIndex()).equals(basicItem.getOneLevelItem().getDataType())) {
 			BasicItem btp = basicItemDao.get(BasicItem.class,  AttributeParter.getRepeatKeyName(basicItem.getCode()));
@@ -149,6 +149,9 @@ public class BasicItemServiceImpl implements BasicItemService {
                 basicItemDao.delete(btName);
             }
             
+        } else if (String.valueOf(ValueType.RECORD.getIndex()).equals(basicItem.getOneLevelItem().getDataType())) {
+        	BasicItem lableObj = basicItemDao.getLableObj(basicItem.getCode());
+        	basicItemDao.delete(lableObj);
         }
 		
 		basicItemDao.delete(basicItem);
@@ -405,13 +408,13 @@ public class BasicItemServiceImpl implements BasicItemService {
 				basicItemDao.insert(bt);
 			}
 		} else {//编辑记录类型， 确认字典是否编辑了， 如果编辑了则修改
-			OneLevelItem one = basicItemDao.getLableObj(obj.getCode());
+			BasicItem one = basicItemDao.getLableObj(obj.getCode());
 			if (one == null) {
 				BasicItem bt = createLable(obj, cascadedict);
 				basicItemDao.insert(bt);
 			} else {
-				if (!one.getDictParentId().equals(cascadedict)) {
-					one.setDictParentId(cascadedict);
+				if (!one.getOneLevelItem().getDictParentId().equals(cascadedict)) {
+					one.getOneLevelItem().setDictParentId(cascadedict);
 					basicItemDao.update(one);
 				}
 			}
@@ -929,7 +932,7 @@ public class BasicItemServiceImpl implements BasicItemService {
 	}
 
 	@Override
-	public OneLevelItem getLableObj(String code) throws Exception {
+	public BasicItem getLableObj(String code) throws Exception {
 		return basicItemDao.getLableObj(code);
 	}
 
