@@ -88,7 +88,7 @@ public class BasicItemController {
 		try {
 			BasicItemCriteria criteria = new BasicItemCriteria();
 			criteria.getOneLevelItem().setDataType(String.valueOf(ValueType.RECORD.getIndex()));
-			List<BasicItem> list = basicItemService.queryList(criteria);
+			List<BasicItem> list = basicItemService.queryList(criteria, "");
 			ModelAndView mv = new ModelAndView();
 			mv.addObject("list", list);
 			mv.setViewName(AdminConstants.JSP_DICTIONARY + "/basicItem/list.jsp");
@@ -112,7 +112,7 @@ public class BasicItemController {
 		try {
 			BasicItemCriteria criteria = new BasicItemCriteria();
 			criteria.getOneLevelItem().setDataType(String.valueOf(ValueType.RECORD.getIndex()));
-			List<BasicItem> list = basicItemService.queryList(criteria);
+			List<BasicItem> list = basicItemService.queryList(criteria, "");
 			BasicItems bts = new BasicItems();
 			bts.entity(list);
 			return new ResponseEntity<BasicItems>(bts, HttpStatus.OK);
@@ -134,7 +134,7 @@ public class BasicItemController {
 				BasicItemCriteria criteria = new BasicItemCriteria();
 				criteria.getOneLevelItem().setDataType(String.valueOf(ValueType.RECORD.getIndex()));
 				criteria.setUsingState(1);
-				List<BasicItem> list = basicItemService.queryList(criteria);
+				List<BasicItem> list = basicItemService.queryList(criteria, "");
 				BasicItems bts = new BasicItems();
 				bts.entity(list);
 				return new ResponseEntity<BasicItems>(bts, HttpStatus.OK);

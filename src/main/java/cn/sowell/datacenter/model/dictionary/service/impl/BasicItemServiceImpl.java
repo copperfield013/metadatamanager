@@ -53,8 +53,8 @@ public class BasicItemServiceImpl implements BasicItemService {
 	
 	
 	@Override
-	public List<BasicItem> queryList(BasicItemCriteria criteria) {
-		return basicItemDao.queryList(criteria);
+	public List<BasicItem> queryList(BasicItemCriteria criteria, String dataType) {
+		return basicItemDao.queryList(criteria, dataType);
 	}
 
 	@Override

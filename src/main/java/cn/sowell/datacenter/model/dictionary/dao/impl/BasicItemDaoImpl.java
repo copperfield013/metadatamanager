@@ -33,7 +33,7 @@ public class BasicItemDaoImpl implements BasicItemDao {
 	SessionFactory sFactory;
 	
 	@Override
-	public List<BasicItem> queryList(BasicItemCriteria criteria) {
+	public List<BasicItem> queryList(BasicItemCriteria criteria, String dataType) {
 		StringBuffer sb = new StringBuffer();
 		sb.append("SELECT CAST((reverse( - ( - reverse( substring_index( b.c_code, '_', 1 ) ) ) ) ) as SIGNED) as c_order, b.* FROM t_sc_basic_item b inner JOIN t_sc_onelevel_item o on b.c_code=o.c_code WHERE 1=1 ");
 		
@@ -49,6 +49,11 @@ public class BasicItemDaoImpl implements BasicItemDao {
 		if(criteria.getOneLevelItem() !=null && TextUtils.hasText(criteria.getOneLevelItem().getDataType())){
 			sb.append(" AND o.c_data_type=:dataType");
 		}
+		
+		if(dataType !="" && dataType != null){
+			sb.append(" AND o.c_data_type!="+dataType+"");
+		}
+		
 		sb.append(" ORDER BY c_order ASC");
 		
 		SQLQuery query = sFactory.getCurrentSession().createSQLQuery(sb.toString())
@@ -460,6 +465,7 @@ public class BasicItemDaoImpl implements BasicItemDao {
 				+ " AND o.c_data_type != '9' "
 				+ " AND o.c_data_type != '16' "
 				+ " AND o.c_data_type != '18' "
+				+ " AND o.c_data_type != '"+ValueType.CASCADETYPE.getIndex()+"' "
 				+ " AND t.c_using_state = '1' "
 				+ "UNION "
 				+ " SELECT 	t.c_code CODE, 	t.c_cn_name NAME, c.c_data_type dataType "

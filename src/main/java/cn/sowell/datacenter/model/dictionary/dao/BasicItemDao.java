@@ -17,9 +17,10 @@ public interface BasicItemDao {
 	 * 从数据库中根据条件分页查询列表
 	 * @param criteria
 	 * @param pageInfo
+	 * @param dataType 不需要的数据类型
 	 * @return
 	 */
-	List<BasicItem> queryList(BasicItemCriteria criteria);
+	List<BasicItem> queryList(BasicItemCriteria criteria, String dataType);
 
 	/**
 	 * 对象插入到数据表中

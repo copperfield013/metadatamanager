@@ -17,9 +17,10 @@ public interface BasicItemService {
 	 * 根据条件对象查询分页
 	 * @param criteria
 	 * @param pageInfo
+	 * @param dataType 不需要的属性类型
 	 * @return
 	 */
-	List<BasicItem> queryList(BasicItemCriteria criteria);
+	List<BasicItem> queryList(BasicItemCriteria criteria, String dataType);
 
 	/**
 	 * 创建一个BasicItem对象

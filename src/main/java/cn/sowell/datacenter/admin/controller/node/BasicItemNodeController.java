@@ -288,7 +288,7 @@ public class BasicItemNodeController {
 			criteria.getOneLevelItem().setDataType(String.valueOf(ValueType.REPEAT.getIndex()));
 			criteria.setUsingState(1);
 
-			List<BasicItem> list = basicItemService.queryList(criteria);
+			List<BasicItem> list = basicItemService.queryList(criteria, "");
 			InlineResponse2002 inline = new InlineResponse2002();
 			inline.repeat(list);
 			return new ResponseEntity<InlineResponse2002>(inline, HttpStatus.OK);
@@ -313,7 +313,7 @@ public class BasicItemNodeController {
         		BasicItemCriteria criteria = new BasicItemCriteria();
         		criteria.setParent(repeat.getParent() + "_" + repeatId);
         		criteria.setUsingState(1);
-        		list = basicItemService.queryList(criteria);
+        		list = basicItemService.queryList(criteria, String.valueOf(ValueType.CASCADETYPE.getIndex()));
         	}
     		
     		InlineResponse2001 inline = new InlineResponse2001();
@@ -394,7 +394,7 @@ public class BasicItemNodeController {
 		BasicItemCriteria criteria = new BasicItemCriteria();
 		criteria.getOneLevelItem().setDataType(String.valueOf(ValueType.RECORD.getIndex()));
 		criteria.setUsingState(1);
-		List<BasicItem> list = basicItemService.queryList(criteria);
+		List<BasicItem> list = basicItemService.queryList(criteria, "");
 		ModelAndView mv = new ModelAndView();
 		mv.addObject("list", list);
 		mv.setViewName(AdminConstants.JSP_NODE + "/basicItemNode/operate.jsp");
