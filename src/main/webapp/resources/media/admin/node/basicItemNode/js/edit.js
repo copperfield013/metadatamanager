@@ -2204,7 +2204,6 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
          }
          var abcattrCode = "";
         
-     	alert("111111111");
 		 Ajax.ajax(' admin/node/basicItemNode/getLableObj', {
        	 entityId:entityCode
 		 }, function(data) {
