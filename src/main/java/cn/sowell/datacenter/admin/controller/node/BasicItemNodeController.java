@@ -583,4 +583,31 @@ public class BasicItemNodeController {
 		}
 	}
     
+    
+    /**
+     * 根据实体Code , 获取实体对应的唯一标签pojo
+     * @param entityId  实体id
+     * @return
+     */
+    @ResponseBody
+	@RequestMapping("/getLableObj")
+	public String getLableObj(String entityId){
+		Map<String, Object> map = new HashMap<String, Object>();
+		JSONObject jobj = new JSONObject(map);
+		try {
+			BasicItem lableObj = basicItemService.getLableObj(entityId);
+			map.put("code", 200);
+			map.put("msg", "操作成功！");
+			map.put("lableObj", lableObj);
+			return jobj.toString();
+		} catch (Exception e) {
+			logger.error("添加失败", e);
+			map.put("code", 400);
+			map.put("msg", "操作失败！");
+			return jobj.toString();
+		}
+	}
+    
+   
+    
 }
