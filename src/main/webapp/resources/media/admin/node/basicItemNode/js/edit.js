@@ -2198,7 +2198,18 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
     
     //标签保存修改方法
     function tagSave(el) {
-    	alert("保存标签方法");
+    	 var entityCode = $(el).closest(".collapse-content").siblings(".collapse-header").attr("data-abcattrcode");
+         if(entityCode == undefined) {
+      	   entityCode =  $(el).closest(".collapse-content").siblings(".collapse-header").closest(".collapse-content").siblings(".collapse-header").attr("data-abcattrcode");
+         }
+         var abcattrCode = "";
+        
+     	alert("111111111");
+		 Ajax.ajax(' admin/node/basicItemNode/getLableObj', {
+       	 entityId:entityCode
+		 }, function(data) {
+			var lableObj = data.lableObj; 
+			
     	var $tagBar = $(el).closest(".label-bar");
     	if($(el).next(".icon-add-tag-relative").length > 0) { //关系下的标签 
     		if($tagBar.children(".tag-content").children("ul").children("li").length == 0) {
@@ -2207,6 +2218,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
     			return;
     		}
     	}else {
+    		abcattrCode =lableObj.code;
     		if($tagBar.children(".tag-content").children("ul").children("li").length == 0) {
     			Dialog.notice("请至少选择一个标签", "warning");
     			$tagBar.addClass("edit");
@@ -2256,7 +2268,8 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 			 opt: opt,
 			 order: order,
 			 parentId: parentId,
-			 id: id
+			 id: id,
+			 abcattrCode:abcattrCode
 		 }, function(data) {
 			 if(data.state == "400") {
 				 Dialog.notice(data.msg, "warning");
@@ -2272,6 +2285,8 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 			 saveSuccess(el)
 			 $CPF.closeLoading();
 		});
+    	
+		 });
     };
     
     //属性保存修改方法
