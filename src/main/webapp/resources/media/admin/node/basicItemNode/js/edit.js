@@ -1228,6 +1228,11 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
         };  
         
        var entityCode = $(el).closest(".collapse-content").siblings(".collapse-header").attr("data-abcattrcode");
+       
+       if(entityCode == undefined) {
+    	   entityCode =  $(el).closest(".collapse-content").siblings(".collapse-header").closest(".collapse-content").siblings(".collapse-header").attr("data-abcattrcode");
+       }
+       
         $CPF.showLoading();
 		Ajax.ajax('admin/node/basicItemNode/getCommLab', {
 			entityCode:entityCode
@@ -1544,7 +1549,9 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
      * 添加标签方法
      * @param {当前点击元素对应的加号} el
       */
-    function addTag(el) {    	
+    function addTag(el) {   
+    	
+    	alert("添加标签方法");
         var $content = $(el).closest(".collapse-header").siblings(".collapse-content");
         var tagHtml = "<li class='add-tag clear-fix'>" +
             "<div class='icon-label tag'>" +
@@ -2191,6 +2198,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
     
     //标签保存修改方法
     function tagSave(el) {
+    	alert("保存标签方法");
     	var $tagBar = $(el).closest(".label-bar");
     	if($(el).next(".icon-add-tag-relative").length > 0) { //关系下的标签 
     		if($tagBar.children(".tag-content").children("ul").children("li").length == 0) {
@@ -2523,7 +2531,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 	            "</div>" +
 	            "<span class='icon icon-toright ban'></span>"
 	            html += "<select class='node-ops-type'>";	
-			 var nodePosType = nodePosTypeLABEL;
+			 	var nodePosType = nodePosTypeLABEL;
 			    for(var i=0; i<nodePosType.length; i++) {
 			    	if(nodePosType[i] === "写") {
 			    		html += "<option value='"+nodePosType[i]+"' selected>"+nodePosType[i]+"</option>";  	
