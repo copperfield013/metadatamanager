@@ -2547,7 +2547,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 	            "</div>" +
 	            "<div class='label-bar abc edit'>" +
 	            "<input class='edit-input text' value='"+abcattr+"'>"+
-	            "<span class='entity-only-title' data-abcattr-code='"+abcattrCode+"' data-abcattr='"+abcattr+"'>"+abcattr+"</span>";
+	            "<span class='entity-only-title' data-abcattr-code='"+data.basicItem.code+"' data-abcattr='"+abcattr+"'>"+abcattr+"</span>";
 	            html += "<select class='node-ops-type'>";	
 	            var nodePosType = nodePosTypeLABEL;
 			    for(var i=0; i<nodePosType.length; i++) {
