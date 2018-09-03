@@ -21,7 +21,7 @@ import cn.sowell.datacenter.DataCenterConstants;
 
 
 @Entity
-@Table(name="t_admin_user")
+@Table(name="t_sb_admin_user")
 public class AdminUser implements UserDetails, UserIdentifier{
 	/**
 	 * 
