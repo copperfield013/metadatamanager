@@ -1550,8 +1550,6 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
      * @param {当前点击元素对应的加号} el
       */
     function addTag(el) {   
-    	
-    	alert("添加标签方法");
         var $content = $(el).closest(".collapse-header").siblings(".collapse-content");
         var tagHtml = "<li class='add-tag clear-fix'>" +
             "<div class='icon-label tag'>" +
