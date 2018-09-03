@@ -10,14 +10,14 @@
 			<div class="header-title">
 				<h1>父节点列表</h1>
 				<c:forEach items="${parentList }" var="item" varStatus="status">
-			<c:if test="${!status.last}">
-				<a class="tab" href="admin/cascadedict/cascadedictBasicItem/getOne?id=${item.id }" target="cascadedictBasicItem_child" title="管理子数据">${item.name }</a>
-				->
-			</c:if>
-			<c:if test="${status.last}">
-				<a class="tab" href="admin/cascadedict/cascadedictBasicItem/getOne?id=${item.id }" target="cascadedictBasicItem_child" title="管理子数据">${item.name }</a>
-			</c:if>
-		</c:forEach>
+					<c:if test="${!status.last}">
+						<a class="tab" href="admin/cascadedict/cascadedictBasicItem/getOne?id=${item.id }" target="cascadedictBasicItem_child" title="管理子数据">${item.name }</a>
+						->
+					</c:if>
+					<c:if test="${status.last}">
+						<a class="tab" href="admin/cascadedict/cascadedictBasicItem/getOne?id=${item.id }" target="cascadedictBasicItem_child" title="管理子数据">${item.name }</a>
+					</c:if>
+				</c:forEach>
 			</div>
 		</div>
         <div class="entity-edit-wrap active">
