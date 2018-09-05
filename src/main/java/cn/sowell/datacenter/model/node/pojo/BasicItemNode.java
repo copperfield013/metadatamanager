@@ -70,9 +70,6 @@ public class BasicItemNode {
 	 @JoinColumn(name = "abcattr_code")
 	 private BasicItem basicItem;
 	
-	/*@OneToMany(fetch=FetchType.LAZY, mappedBy="parentId")
-	private List<BasicItemNode> btNodeList = new ArrayList<BasicItemNode>();*/
-
 	public Integer getId() {
 		return id;
 	}

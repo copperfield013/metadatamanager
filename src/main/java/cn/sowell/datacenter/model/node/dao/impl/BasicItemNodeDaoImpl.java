@@ -8,6 +8,8 @@ import javax.annotation.Resource;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.transform.Transformers;
+import org.hibernate.type.StandardBasicTypes;
 import org.springframework.stereotype.Repository;
 
 import com.abc.mapping.node.NodeType;
@@ -82,9 +84,43 @@ public class BasicItemNodeDaoImpl implements BasicItemNodeDao {
 	}
 
 	@Override
-	public List<BasicItemNode> getChildByPid(Integer parentId) {
-		String hql = " FROM BasicItemNode WHERE parentId=:parentId ORDER BY order ASC";
-		return	sFactory.getCurrentSession().createQuery(hql).setParameter("parentId", parentId).list();
+	public List<BasicItemNodeCriteria> getChildByPid(Integer parentId) {
+		String sql = "SELECT a.id,a.type, a.name, a.abcattr_code abcattrCode, "
+				+ " a.data_type dataType, a.subdomain, a.opt, a.c_order 'order',"
+				+ " a.parent_id parentId,   b.c_code basicItemCode, b.c_cn_name basicItemCnName "
+				+ " FROM `t_sc_basic_item_node` a "
+				+ "LEFT JOIN t_sc_basic_item b on a.abcattr_code=b.c_code "
+				+ " WHERE parent_id=:parentId ORDER BY a.c_order ASC";
+		
+		 List list = sFactory.getCurrentSession().createSQLQuery(sql)
+				 .addScalar("id",StandardBasicTypes.INTEGER)
+				 .addScalar("type", StandardBasicTypes.INTEGER)
+				 .addScalar("name", StandardBasicTypes.STRING)
+				 .addScalar("abcattrCode", StandardBasicTypes.STRING)
+				 .addScalar("dataType", StandardBasicTypes.STRING)
+				 .addScalar("subdomain", StandardBasicTypes.STRING)
+				 .addScalar("opt", StandardBasicTypes.STRING)
+				 .addScalar("order", StandardBasicTypes.INTEGER)
+				 .addScalar("parentId", StandardBasicTypes.INTEGER)
+				 .addScalar("basicItemCode", StandardBasicTypes.STRING)
+				 .addScalar("basicItemCnName", StandardBasicTypes.STRING)
+				.setParameter("parentId", parentId)
+				.setResultTransformer(Transformers.aliasToBean(BasicItemNodeCriteria.class))
+				.list();
+		 
+		 return list;
+	}
+	
+	
+	@Override
+	public List<BasicItemNode> getChildByParent(Integer parentId) {
+		String sql = "SELECT * FROM `t_sc_basic_item_node` "
+				+ " WHERE parent_id=:parentId ORDER BY c_order ASC";
+		
+		return sFactory.getCurrentSession().createSQLQuery(sql)
+				.addEntity(BasicItemNode.class)
+				.setParameter("parentId", parentId)
+				.list();
 	}
 
 	@Override
@@ -202,4 +238,5 @@ public class BasicItemNodeDaoImpl implements BasicItemNodeDao {
 		String sql = "SELECT DISTINCT opt FROM t_sc_basic_item_node WHERE  parent_id=:id";
 		return sFactory.getCurrentSession().createSQLQuery(sql).setParameter("id", id).list();
 	}
+
 }

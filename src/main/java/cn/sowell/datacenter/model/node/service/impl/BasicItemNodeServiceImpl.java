@@ -79,11 +79,11 @@ public class BasicItemNodeServiceImpl implements BasicItemNodeService {
 					//只删除分组， 不删除孩子
 					//获取所有孩子， 给孩子更改父亲， 父亲就是分组的父亲
 					
-					List<BasicItemNode> pchil = basicItemNodeDao.getChildByPid(btn.getParentId());
+					List<BasicItemNode> pchil = basicItemNodeDao.getChildByParent(btn.getParentId());
 					BasicItemNode btend = pchil.get(pchil.size()-1);
 					int order = btend.getOrder();
 					
-					List<BasicItemNode> childByPid = basicItemNodeDao.getChildByPid(btn.getId());
+					List<BasicItemNode> childByPid = basicItemNodeDao.getChildByParent(btn.getId());
 					for (BasicItemNode basicItemNode : childByPid) {
 						basicItemNode.setParentId(btn.getParentId());
 						//给孩子换父亲， 并把父亲的所有孩子重新排序
@@ -140,7 +140,7 @@ public class BasicItemNodeServiceImpl implements BasicItemNodeService {
 	}
 
 	@Override
-	public List<BasicItemNode> getChildNode(Integer nodeId) {
+	public List<BasicItemNodeCriteria> getChildNode(Integer nodeId) {
 		return basicItemNodeDao.getChildByPid(nodeId);
 	}
 
@@ -200,8 +200,8 @@ public class BasicItemNodeServiceImpl implements BasicItemNodeService {
 				+ "	 class=\"\" xmlns=\"http://www.w3school.com.cn\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">";
 		FileManager.writeFileContent(file, head);
 		
-		List<BasicItemNode> btNodeList = basicItemNodeDao.getChildByPid(btn.getId());
-		for (BasicItemNode basicItemNode : btNodeList) {
+		List<BasicItemNodeCriteria> btNodeList = basicItemNodeDao.getChildByPid(btn.getId());
+		for (BasicItemNodeCriteria basicItemNode : btNodeList) {
 			createChild(basicItemNode, file, prefix);
 		}
 		
@@ -215,14 +215,14 @@ public class BasicItemNodeServiceImpl implements BasicItemNodeService {
 	 * @param bn
 	 * @throws IOException
 	 */
-	private void createAbc(File file, BasicItemNode bn, String prefix, NodeType nodeType) throws IOException {
+	private void createAbc(File file, BasicItemNodeCriteria bn, String prefix, NodeType nodeType) throws IOException {
 		String str = "";
-		str = prefix + "<"+nodeType.getName()+" name=\""+bn.getName()+"\" abcattr=\""+bn.getBasicItem().getCnName()+"\">"+"\r\n";
+		str = prefix + "<"+nodeType.getName()+" name=\""+bn.getName()+"\" abcattr=\""+bn.getBasicItemCnName()+"\">"+"\r\n";
 		FileManager.writeFileContent(file, str);
 		
 		//获取ABC的所有直系孩子
-		List<BasicItemNode> btNodeList = basicItemNodeDao.getChildByPid(bn.getId());
-		for (BasicItemNode basicItemNode : btNodeList) {
+		List<BasicItemNodeCriteria> btNodeList = basicItemNodeDao.getChildByPid(bn.getId());
+		for (BasicItemNodeCriteria basicItemNode : btNodeList) {
 			createChild(basicItemNode, file, prefix);
 		}
 		String endStr = prefix + "</"+nodeType.getName()+">";
@@ -234,7 +234,7 @@ public class BasicItemNodeServiceImpl implements BasicItemNodeService {
 	 * @param basicItemNode
 	 * @throws IOException 
 	 */
-	private void createChild(BasicItemNode basicItemNode, File file, String prefix) throws IOException {
+	private void createChild(BasicItemNodeCriteria basicItemNode, File file, String prefix) throws IOException {
 		prefix += "   ";
 		NodeType nodeType = NodeType.getNodeType(basicItemNode.getType());
 		switch (nodeType) {
@@ -273,8 +273,8 @@ public class BasicItemNodeServiceImpl implements BasicItemNodeService {
 	 * @param prefix
 	 * @throws IOException 
 	 */
-	private void createcaseAttr(BasicItemNode basicItemNode, File file, String prefix,NodeType nodeType) throws IOException {
-		String str = prefix + "<"+nodeType.getName()+" name=\""+basicItemNode.getName()+"\" abcattr=\""+basicItemNode.getBasicItem().getCnName()+"\"  datatype=\""+basicItemNode.getDataType()+"\" ops=\""+basicItemNode.getOpt()+"\" />";
+	private void createcaseAttr(BasicItemNodeCriteria basicItemNode, File file, String prefix,NodeType nodeType) throws IOException {
+		String str = prefix + "<"+nodeType.getName()+" name=\""+basicItemNode.getName()+"\" abcattr=\""+basicItemNode.getBasicItemCnName()+"\"  datatype=\""+basicItemNode.getDataType()+"\" ops=\""+basicItemNode.getOpt()+"\" />";
 		FileManager.writeFileContent(file, str);
 	}
 
@@ -284,13 +284,13 @@ public class BasicItemNodeServiceImpl implements BasicItemNodeService {
 	 * @param file
 	 * @throws IOException 
 	 */
-	private void createRelation(BasicItemNode basicItemNode, File file, String prefix,NodeType nodeType) throws IOException {
+	private void createRelation(BasicItemNodeCriteria basicItemNode, File file, String prefix,NodeType nodeType) throws IOException {
 		
 		String str = prefix + "<"+nodeType.getName()+" name=\""+basicItemNode.getName()+"\" ops=\""+basicItemNode.getOpt()+"\"> ";
 		FileManager.writeFileContent(file, str);
 		
-		List<BasicItemNode> btNodeList = basicItemNodeDao.getChildByPid(basicItemNode.getId());
-		for (BasicItemNode bn2 : btNodeList) {
+		List<BasicItemNodeCriteria> btNodeList = basicItemNodeDao.getChildByPid(basicItemNode.getId());
+		for (BasicItemNodeCriteria bn2 : btNodeList) {
 			createChild(bn2, file, prefix);
 		}
 		str = prefix + "</"+nodeType.getName()+">";
@@ -303,12 +303,12 @@ public class BasicItemNodeServiceImpl implements BasicItemNodeService {
 	 * @param file
 	 * @throws IOException 
 	 */
-	private void createAttrgroup(BasicItemNode basicItemNode, File file, String prefix,NodeType nodeType) throws IOException {
+	private void createAttrgroup(BasicItemNodeCriteria basicItemNode, File file, String prefix,NodeType nodeType) throws IOException {
 		String str = prefix + "<"+nodeType.getName()+" name=\""+basicItemNode.getName()+"\" ops=\""+basicItemNode.getOpt()+"\">";
 		FileManager.writeFileContent(file, str);
 		
-		List<BasicItemNode> btNodeList = basicItemNodeDao.getChildByPid(basicItemNode.getId());
-		for (BasicItemNode bn2 : btNodeList) {
+		List<BasicItemNodeCriteria> btNodeList = basicItemNodeDao.getChildByPid(basicItemNode.getId());
+		for (BasicItemNodeCriteria bn2 : btNodeList) {
 			createChild(bn2, file, prefix);
 		}
 		
@@ -322,11 +322,11 @@ public class BasicItemNodeServiceImpl implements BasicItemNodeService {
 	 * @param file
 	 * @throws IOException 
 	 */
-	private void createMultiattribute(BasicItemNode basicItemNode, File file, String prefix,NodeType nodeType) throws IOException {
-		String str = prefix + "<"+nodeType.getName()+" name=\""+basicItemNode.getName()+"\" abcattr=\""+basicItemNode.getBasicItem().getCnName()+"\" ops=\""+basicItemNode.getOpt()+"\"> ";
+	private void createMultiattribute(BasicItemNodeCriteria basicItemNode, File file, String prefix,NodeType nodeType) throws IOException {
+		String str = prefix + "<"+nodeType.getName()+" name=\""+basicItemNode.getName()+"\" abcattr=\""+basicItemNode.getBasicItemCnName()+"\" ops=\""+basicItemNode.getOpt()+"\"> ";
 		FileManager.writeFileContent(file, str);
-		List<BasicItemNode> btNodeList = basicItemNodeDao.getChildByPid(basicItemNode.getId());
-		for (BasicItemNode bn2 : btNodeList) {
+		List<BasicItemNodeCriteria> btNodeList = basicItemNodeDao.getChildByPid(basicItemNode.getId());
+		for (BasicItemNodeCriteria bn2 : btNodeList) {
 			createChild(bn2, file, prefix);
 		}
 		str = prefix + "</"+nodeType.getName()+">";	
@@ -339,7 +339,7 @@ public class BasicItemNodeServiceImpl implements BasicItemNodeService {
 	 * @param file
 	 * @throws IOException 
 	 */
-	private void createLabel(BasicItemNode basicItemNode, File file, String prefix,NodeType nodeType) throws IOException {
+	private void createLabel(BasicItemNodeCriteria basicItemNode, File file, String prefix,NodeType nodeType) throws IOException {
 		String str = prefix + "<"+nodeType.getName()+" name=\""+basicItemNode.getName()+"\" subdomain=\""+basicItemNode.getSubdomain()+"\"	ops=\""+basicItemNode.getOpt()+"\" />";
 		FileManager.writeFileContent(file, str);
 	}
@@ -350,8 +350,8 @@ public class BasicItemNodeServiceImpl implements BasicItemNodeService {
 	 * @param file
 	 * @throws IOException 
 	 */
-	private void createAttribute(BasicItemNode basicItemNode, File file, String prefix, NodeType nodeType) throws IOException {
-		String str = prefix + "<"+nodeType.getName()+" name=\""+basicItemNode.getName()+"\" abcattr=\""+basicItemNode.getBasicItem().getCnName()+"\"  datatype=\""+basicItemNode.getDataType()+"\" ops=\""+basicItemNode.getOpt()+"\" />";
+	private void createAttribute(BasicItemNodeCriteria basicItemNode, File file, String prefix, NodeType nodeType) throws IOException {
+		String str = prefix + "<"+nodeType.getName()+" name=\""+basicItemNode.getName()+"\" abcattr=\""+basicItemNode.getBasicItemCnName()+"\"  datatype=\""+basicItemNode.getDataType()+"\" ops=\""+basicItemNode.getOpt()+"\" />";
 		FileManager.writeFileContent(file, str);
 	}
 

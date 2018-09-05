@@ -346,7 +346,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 									.closest(".collapse-content")
 									.prev(".collapse-header")
 									.find(".entity-only-title")
-									.attr("data-abcattr-code");
+									.attr("data-abcattrcode");
         }
                 
         var rightRecordType = $(el).closest(".label-bar.tag")
@@ -769,6 +769,11 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 			entityId: entityId
 		}, function(data) {			
 			var data = data.comm;
+			 if (data.length == 0) {
+                Dialog.notice("请在模型中添加属性", "warning");
+                $CPF.closeLoading();    
+                return;
+	           } 
 			var attrHtml = "<li class='add-attr clear-fix'>" +
             "<div class='icon-label attr' data-order='' data-id=''>" +
             "<i class='icon icon-attr'></i>" +
@@ -943,7 +948,12 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 		Ajax.ajax('admin/node/basicItemNode/getRepeat?entityId', {
 			entityId: entityId
 		}, function(data) {			
-			var data = data.repeat;					
+			var data = data.repeat;	
+			 if (data.length == 0) {
+		            Dialog.notice("请在模型中添加多值属性", "warning");
+		            $CPF.closeLoading();    
+		            return;
+		      } 
             var moreAttrHtml = "<li class='more-attr clear-fix'>" +
             "<div class='more-attr-title collapse-header' data-order='' data-id=''>" +
             "<div class='icon-label more-attr'>" +
@@ -997,7 +1007,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
         	entityId = $(el).closest(".collapse-header").attr("data-abcattrcode");
         }else {
         	entityId = $(el).closest(".collapse-header").find(".label-bar")
-        					.find(".entity-only-title").attr("data-abcattr-code");
+        					.find(".entity-only-title").attr("data-abcattrcode");
         }
         var dragWrapLen = $(".drag-wrap").length + 1;
         $CPF.showLoading();
@@ -1551,7 +1561,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 	            "</div>" +
 	            "<div class='label-bar abc edit'>" +
 	            "<input class='edit-input text' value='"+abcattr+"'>"+
-	            "<span class='entity-only-title' data-abcattrcode='"+abcattrCode+"' data-abcattr-code='"+abcattrCode+"' data-abcattr='"+abcattr+"'>"+abcattr+"</span>"
+	            "<span class='entity-only-title' data-abcattrcode='"+abcattrCode+"' data-abcattr='"+abcattr+"'>"+abcattr+"</span>"
 	            html += "<select class='node-ops-type'>";
 		         var nodePosType=nodePosTypeABC;
 			    for(var i=0; i<nodePosType.length; i++) {
@@ -1617,7 +1627,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
     	var parentId = $abcBar.closest(".collapse-content").prev(".collapse-header")
     						.attr("data-id"); 
     	var abcattr = $abcBar.children(".entity-only-title").attr("data-abcattr");    	
-    	var abcattrCode = $abcBar.children(".entity-only-title").attr("data-abcattr-code");    	  
+    	var abcattrCode = $abcBar.children(".entity-only-title").attr("data-abcattrcode");    	  
     	
     	$CPF.showLoading();
     	Ajax.ajax('admin/node/basicItemNode/saveOrUpdate', {

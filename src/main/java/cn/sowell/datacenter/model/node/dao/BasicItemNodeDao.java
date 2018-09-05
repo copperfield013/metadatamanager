@@ -51,7 +51,15 @@ public interface BasicItemNodeDao {
 	 * @param integer
 	 * @return
 	 */
-	List<BasicItemNode> getChildByPid(Integer parentId);
+	List<BasicItemNodeCriteria> getChildByPid(Integer parentId);
+	
+	
+	/**
+	 * 根据父id， 获取所有孩子
+	 * @param integer
+	 * @return
+	 */
+	List<BasicItemNode> getChildByParent(Integer parentId);
 	
 	public void executeSql(String sql);
 

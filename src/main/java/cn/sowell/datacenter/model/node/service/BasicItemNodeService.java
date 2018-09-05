@@ -62,7 +62,7 @@ public interface BasicItemNodeService {
 	 * @param nodeId
 	 * @return
 	 */
-	List<BasicItemNode> getChildNode(Integer nodeId);
+	List<BasicItemNodeCriteria> getChildNode(Integer nodeId);
 	
 	/**
 	 * 判断当前父节点下有没有重复的名字

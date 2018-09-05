@@ -226,26 +226,26 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 				 var order = data[i].order;		
 				 if(data[i].type == 1) {
 					 var abcattr;
-					 var abcattrCode;
-					 var istrue = data[i].basicItem;
-						if (istrue == undefined) {
+					 var abcattrCode = data[i].abcattrCode;
+                     var basicItemCode = data[i].basicItemCode;
+						if (abcattrCode != undefined &&basicItemCode == undefined) {
 							abcattr = "";
 							abcattrCode = "";
 						} else {
-							abcattr = data[i].basicItem.cnName;
-							 abcattrCode = data[i].basicItem.code;
+							abcattr = data[i].basicItemCnName;
+							 abcattrCode = data[i].basicItemCode;
 						}
 					 initAbc(abcattr, abcattrCode, id, name,opt, order, parent);//此abc只能是关系下的abc
 				 }else if(data[i].type == 2) {	
 					 var abcattr;
-					 var abcattrCode;
-					 var istrue = data[i].basicItem;
-						if (istrue == undefined) {
+					 var abcattrCode = data[i].abcattrCode;
+                     var basicItemCode = data[i].basicItemCode;
+						if (abcattrCode != undefined &&basicItemCode == undefined) {
 							abcattr = "";
 							abcattrCode = "";
 						} else {
-							abcattr = data[i].basicItem.cnName;
-							 abcattrCode = data[i].basicItem.code;
+							abcattr = data[i].basicItemCnName;
+							 abcattrCode = data[i].basicItemCode;
 						}
 					 if(isAttrM) {	
 						 initAttrM(abcattr,abcattrCode,dataType, id, name, opt, order, parent,repeatChildList);
@@ -256,26 +256,26 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 					 initTag(subdomain,abcattrCode,id,name,opt,order,parent, isRelative);
 				 }else if(data[i].type == 4) {
 					 var abcattr;
-					 var abcattrCode;
-					 var istrue = data[i].basicItem;
-						if (istrue == undefined) {
+					 var abcattrCode = data[i].abcattrCode;
+                     var basicItemCode = data[i].basicItemCode;
+						if (abcattrCode != undefined &&basicItemCode == undefined) {
 							abcattr = "";
 							abcattrCode = "";
 						} else {
-							abcattr = data[i].basicItem.cnName;
-							abcattrCode = data[i].basicItem.code;
+							abcattr = data[i].basicItemCnName;
+							abcattrCode = data[i].basicItemCode;
 						}
 					 initMoreAttr(abcattrCode,abcattr, dataType, id, name, opt, order, parent,repeatList);
 				 }else if(data[i].type == 5) {
 					 var abcattr;
-					 var abcattrCode;
-					 var istrue = data[i].basicItem;
-						if (istrue == undefined) {
+					 var abcattrCode = data[i].abcattrCode;
+                     var basicItemCode = data[i].basicItemCode;
+						if (abcattrCode != undefined &&basicItemCode == undefined) {
 							abcattr = "";
 							abcattrCode = "";
 						} else {
-							abcattr = data[i].basicItem.cnName;
-							 abcattrCode = data[i].basicItem.code;
+							abcattr = data[i].basicItemCnName;
+							 abcattrCode = data[i].basicItemCode;
 						}
 					 initRelative(abcattr, abcattrCode, id, name,opt, order, parent);
 				 }else if(data[i].type == 6) {
@@ -283,13 +283,14 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 				 }else if(data[i].type == 7) {	
 					 var abcattr;
 					 var abcattrCode;
-					 var istrue = data[i].basicItem;
-						if (istrue == undefined) {
+					 var abcattrCode = data[i].abcattrCode;
+                     var basicItemCode = data[i].basicItemCode;
+						if (abcattrCode != undefined &&basicItemCode == undefined) {
 							abcattr = "";
 							abcattrCode = "";
 						} else {
-							abcattr = data[i].basicItem.cnName;
-							abcattrCode = data[i].basicItem.code;
+							abcattr = data[i].basicItemCnName;
+							abcattrCode = data[i].basicItemCode;
 						}
 						if(isAttrM) {	
 							initCascadeAttrM(abcattr,abcattrCode,dataType, id, name, opt, order, parent,moreCascaseAttrList);
@@ -323,7 +324,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 	        	entityId = $(".entity_attr", $page).attr("data-code");
 	        }else {
 	        	entityId = $(el).closest(".collapse-header").find(".label-bar")
-	        					.find(".entity-only-title").attr("data-abcattr-code");
+	        					.find(".entity-only-title").attr("data-abcattrcode");
 	        }
 		 if(chLength >= 2) {
 			 nest = "repeat"
@@ -367,7 +368,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
            "</div>" +
            "<div class='label-bar abc edit'>" +
            "<input class='edit-input text' value='"+abcattr+"'>"+
-           "<span class='entity-only-title' data-abcattr-code='"+abcattrCode+"' data-abcattr='"+abcattr+"'>"+abcattr+"</span>";
+           "<span class='entity-only-title' data-abcattrcode='"+abcattrCode+"' data-abcattr='"+abcattr+"'>"+abcattr+"</span>";
            html += "<select diabled class='node-ops-type'>";
            var nodePosType= nodePosTypeABC;
 		    for(var i=0; i<nodePosType.length; i++) {
@@ -415,7 +416,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 	          "</div>" +
 	          "<div class='label-bar abc edit'>" +
 	          "<input class='edit-input text' value='"+abcattr+"'>"+
-	          "<span class='entity-only-title' data-abcattr-code='"+abcattrCode+"' data-abcattr='"+abcattr+"'>"+abcattr+"</span>";
+	          "<span class='entity-only-title' data-abcattrcode='"+abcattrCode+"' data-abcattr='"+abcattr+"'>"+abcattr+"</span>";
 	          html += "<select class='node-ops-type'>";		
 	          var nodePosType = nodePosTypeABC;
 			    for(var i=0; i<nodePosType.length; i++) {
@@ -573,7 +574,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 			        "</div>" +
 			        "<div class='label-bar abc'>" +
 			        "<input class='edit-input text' value='"+name+"'>"+
-			        "<span class='entity-only-title' data-abcattr-code='"+abcattrCode+"' data-abcattr='"+abcattr+"'>"+abcattr+"</span>"
+			        "<span class='entity-only-title' data-abcattrcode='"+abcattrCode+"' data-abcattr='"+abcattr+"'>"+abcattr+"</span>"
 			        abcHtml += "<select disabled class='node-ops-type'>";	
     	 			var nodePosType = nodePosTypeABC;
 				    for(var i=0; i<nodePosType.length; i++) {
@@ -1338,7 +1339,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 									.closest(".collapse-content")
 									.prev(".collapse-header")
 									.find(".entity-only-title")
-									.attr("data-abcattr-code");
+									.attr("data-abcattrcode");
         }
         var rightRecordType = $(el).closest(".label-bar.tag")
         						.closest(".collapse-content")
@@ -1845,6 +1846,11 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 			entityId: entityId
 		}, function(data) {			
 			var data = data.comm;
+			if (data.length == 0) {
+                Dialog.notice("请在模型中添加属性", "warning");
+                $CPF.closeLoading();    
+                return;
+	          } 
 			var attrHtml = "<li class='add-attr clear-fix'>" +
             "<div class='icon-label attr' data-order='' data-id=''>" +
             "<i class='icon icon-attr'></i>" +
@@ -2017,7 +2023,13 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 		Ajax.ajax('admin/node/basicItemNode/getRepeat?entityId', {
 			entityId: entityId
 		}, function(data) {			
-			var data = data.repeat;			
+			var data = data.repeat;		
+			
+			if (data.length == 0) {
+				Dialog.notice("请在模型中添加多值属性", "warning");
+				$CPF.closeLoading();	
+				return;
+			}
             var moreAttrHtml = "<li class='more-attr clear-fix'>" +
             "<div class='more-attr-title collapse-header' data-order='' data-id=''>" +
             "<div class='icon-label more-attr'>" +
@@ -2071,7 +2083,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
         	entityId = $(el).closest(".collapse-header").attr("data-abcattrcode");
         }else {
         	entityId = $(el).closest(".collapse-header").find(".label-bar")
-        					.find(".entity-only-title").attr("data-abcattr-code");
+        					.find(".entity-only-title").attr("data-abcattrcode");
         }
         var dragWrapLen = $(".dragEdit-wrap").length + 1 ;
         $CPF.showLoading();
@@ -2561,13 +2573,13 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 	            "</div>" +
 	            "</li>" +
 	            "<li class='entity-ch-wrap "+nest+"'>" +
-	            "<div class='attr-abc-title collapse-header' data-order='' data-id=''>" +
+	            "<div class='attr-abc-title collapse-header' data-abcattrcode='"+data.basicItem.code+"'  data-order='' data-id=''>" +
 	            "<div class='icon-label abc'>" +
 	            "<i class='icon icon-abc'></i><span class='text'>ABC</span>" +
 	            "</div>" +
 	            "<div class='label-bar abc edit'>" +
 	            "<input class='edit-input text' value='"+abcattr+"'>"+
-	            "<span class='entity-only-title' data-abcattr-code='"+data.basicItem.code+"' data-abcattr='"+abcattr+"'>"+abcattr+"</span>";
+	            "<span class='entity-only-title' data-abcattrcode='"+data.basicItem.code+"' data-abcattr='"+abcattr+"'>"+abcattr+"</span>";
 	            html += "<select class='node-ops-type'>";	
 	            var nodePosType = nodePosTypeLABEL;
 			    for(var i=0; i<nodePosType.length; i++) {
@@ -2586,7 +2598,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 	            "</div>" +
 	            "</div>" +
 	            "</div>" +
-	            "<ul class='drag-wrap-repeat dragEdit-wrap collapse-content collapse-content-active' id='dragEdit-"+dragWrapLen+"'>" +
+	            "<ul class='drag-wrap-repeat dragEdit-wrap collapse-content collapse-content-active' data-abcattrcode='"+data.basicItem.code+"' id='dragEdit-"+dragWrapLen+"'>" +
 	            "</ul>" +
 	            "</li>"	
 	         var $content = $relativeBar.parent(".collapse-header").next(".collapse-content");				 
@@ -2641,7 +2653,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
     	var parentId = $abcBar.closest(".collapse-content").prev(".collapse-header")
     						.attr("data-id"); 
     	var abcattr = $abcBar.children(".entity-only-title").attr("data-abcattr");    	
-    	var abcattrCode = $abcBar.children(".entity-only-title").attr("data-abcattr-code");    	  
+    	var abcattrCode = $abcBar.children(".entity-only-title").attr("data-abcattrcode");    	  
     	
     	$CPF.showLoading();
     	Ajax.ajax('admin/node/basicItemNode/saveOrUpdate', {

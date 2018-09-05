@@ -156,7 +156,7 @@ public class BasicItemNodeController {
 				 }
 			 }
 			 //判断当前节点ops, 修改后的权限大于等于孩子，要想权限修改为小于孩子， 应该先把孩子的权限修改小
-			 List<BasicItemNode> childNode =null;
+			 List<BasicItemNodeCriteria> childNode =null;
 			 if (basicItemNode.getId() != null) {
 				 childNode = basicItemNodeService.getChildNode(basicItemNode.getId());
 			 }
@@ -431,7 +431,7 @@ public class BasicItemNodeController {
 		Map<String, Object> map = new HashMap<String, Object>();
 		JSONObject jobj = new JSONObject();
 		try {
-			List<BasicItemNode> list = basicItemNodeService.getChildNode(nodeId);
+			List<BasicItemNodeCriteria> list = basicItemNodeService.getChildNode(nodeId);
 			map.put("childNode", list);
 			map.put("code", 200);
 			map.put("msg", "加载成功！");
