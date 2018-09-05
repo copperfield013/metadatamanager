@@ -228,7 +228,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 					 var abcattr;
 					 var abcattrCode = data[i].abcattrCode;
                      var basicItemCode = data[i].basicItemCode;
-						if (abcattrCode != undefined &&basicItemCode == undefined) {
+						if (basicItemCode == undefined) {
 							abcattr = "";
 							abcattrCode = "";
 						} else {
@@ -240,7 +240,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 					 var abcattr;
 					 var abcattrCode = data[i].abcattrCode;
                      var basicItemCode = data[i].basicItemCode;
-						if (abcattrCode != undefined &&basicItemCode == undefined) {
+						if (basicItemCode == undefined) {
 							abcattr = "";
 							abcattrCode = "";
 						} else {
@@ -258,7 +258,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 					 var abcattr;
 					 var abcattrCode = data[i].abcattrCode;
                      var basicItemCode = data[i].basicItemCode;
-						if (abcattrCode != undefined &&basicItemCode == undefined) {
+						if (basicItemCode == undefined) {
 							abcattr = "";
 							abcattrCode = "";
 						} else {
@@ -270,7 +270,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 					 var abcattr;
 					 var abcattrCode = data[i].abcattrCode;
                      var basicItemCode = data[i].basicItemCode;
-						if (abcattrCode != undefined &&basicItemCode == undefined) {
+						if (basicItemCode == undefined) {
 							abcattr = "";
 							abcattrCode = "";
 						} else {
@@ -285,7 +285,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 					 var abcattrCode;
 					 var abcattrCode = data[i].abcattrCode;
                      var basicItemCode = data[i].basicItemCode;
-						if (abcattrCode != undefined &&basicItemCode == undefined) {
+						if (basicItemCode == undefined) {
 							abcattr = "";
 							abcattrCode = "";
 						} else {
