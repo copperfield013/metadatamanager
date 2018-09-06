@@ -119,4 +119,13 @@ public interface BasicItemNodeService {
 	 * @return
 	 */
 	List getChildOptList(Integer id);
+	
+	/**
+	 * 根据父id， 获取所有孩子
+	 * @param integer
+	 * @return
+	 */
+	public List<BasicItemNode> getChildByParent(Integer parentId);
+
+	void copyNode(Integer nodeId) throws Exception;
 }

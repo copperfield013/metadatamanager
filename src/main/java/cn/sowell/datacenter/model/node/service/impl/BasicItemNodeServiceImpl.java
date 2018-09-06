@@ -3,6 +3,8 @@ package cn.sowell.datacenter.model.node.service.impl;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigInteger;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -363,5 +365,45 @@ public class BasicItemNodeServiceImpl implements BasicItemNodeService {
 	@Override
 	public List getChildOptList(Integer id) {
 		return basicItemNodeDao.getChildOptList(id);
+	}
+
+	@Override
+	public List<BasicItemNode> getChildByParent(Integer parentId) {
+		return basicItemNodeDao.getChildByParent(parentId);
+	}
+
+	@Override
+	public void copyNode(Integer nodeId) throws Exception {
+		BasicItemNode one = this.getOne(nodeId);
+		
+		BasicItemNode newbt = getNewBasicItemNode(one, null);
+		newbt.setName(one.getName()+"copy"+new SimpleDateFormat("yyyyMMdd HHssmm").format(new Date()));
+		this.insert(newbt);
+		copyNode(nodeId, newbt.getId());
+	}
+	private BasicItemNode getNewBasicItemNode(BasicItemNode bt, Integer newParenId) {
+		BasicItemNode newbt = new BasicItemNode();
+		newbt.setBasicItem(bt.getBasicItem());
+		newbt.setDataType(bt.getDataType());
+		newbt.setName(bt.getName());
+		newbt.setOpt(bt.getOpt());
+		newbt.setOrder(bt.getOrder());
+		newbt.setParentId(newParenId);
+		newbt.setSubdomain(bt.getSubdomain());
+		newbt.setType(bt.getType());
+		return newbt;
+	}
+	
+	private void copyNode(Integer parentId, Integer newParenId) {
+		List<BasicItemNode> childByParent = this.getChildByParent(parentId);
+		
+		for (BasicItemNode basicItemNode : childByParent) {
+			Integer pid = basicItemNode.getId();
+			//这些都是要复制的
+			//此处复制写着信息
+			BasicItemNode newbt = getNewBasicItemNode(basicItemNode, newParenId);
+			this.insert(newbt);
+			copyNode(pid, newbt.getId());
+		}
 	}
 }

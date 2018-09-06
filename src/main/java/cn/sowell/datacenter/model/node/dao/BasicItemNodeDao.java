@@ -59,7 +59,7 @@ public interface BasicItemNodeDao {
 	 * @param integer
 	 * @return
 	 */
-	List<BasicItemNode> getChildByParent(Integer parentId);
+	public List<BasicItemNode> getChildByParent(Integer parentId);
 	
 	public void executeSql(String sql);
 

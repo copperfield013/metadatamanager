@@ -33,6 +33,7 @@
 							<a title="预览" nodeId="${item.id }" id="preview" href="javascript:;">预览</a>
 							<a id="download" nodeId="${item.id }" href="javascript:;" >下载</a>
 							<a class="tab" href="admin/node/basicItemNode/edit?nodeId=${item.id }" title="修改" target="basicItemNode_edit" >修改</a>
+							<a href="admin/node/basicItemNode/copyNode?nodeId=${item.id }" confirm="确认复制【${item.name }】？">复制</a>
 							<a href="admin/node/basicItemNode/do_delete?id=${item.id }&isDelChil=false" confirm="确认删除？">删除</a>
 						</td>
 					</tr>
@@ -47,8 +48,14 @@
 		var $page = $('#basicItemNode-list');
 	$("tbody", $page).on("click", "#download", function (e) {
 		var nodeId = $(this).attr("nodeId");
-		var url="admin/node/basicItemNode/download?nodeId=" + nodeId;
-		Ajax.download(url);
+		
+		Dialog.confirm('确认下载配置文件？', function(yes){
+        	if(yes){
+        		var url="admin/node/basicItemNode/download?nodeId=" + nodeId;
+        		Ajax.download(url);
+        	}
+		});
+		
   	 });  
 	
 	//预览弹出框

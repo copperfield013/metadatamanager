@@ -2,6 +2,7 @@ package cn.sowell.datacenter.admin.controller.node;
 
 import java.io.File;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -14,6 +15,7 @@ import java.util.Map;
 import javax.annotation.Resource;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
+import org.hibernate.exception.GenericJDBCException;
 import org.junit.Ignore;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.http.HttpHeaders;
@@ -48,6 +50,7 @@ import cn.sowell.datacenter.admin.controller.node.api.InlineResponse2002;
 import cn.sowell.datacenter.admin.controller.node.api.RecordRelationTypes;
 import cn.sowell.datacenter.model.cascadedict.pojo.CascadedictBasicItem;
 import cn.sowell.datacenter.model.cascadedict.service.CascadedictBasicItemService;
+import cn.sowell.datacenter.model.demo.pojo.PlainDemo;
 import cn.sowell.datacenter.model.dictionary.criteria.BasicItemCriteria;
 import cn.sowell.datacenter.model.dictionary.pojo.BasicItem;
 import cn.sowell.datacenter.model.dictionary.pojo.OneLevelItem;
@@ -608,6 +611,25 @@ public class BasicItemNodeController {
 		}
 	}
     
-   
+    
+    /**
+     * 复制配置文件
+     * @param entityId  实体id
+     * @return
+     */
+    @ResponseBody
+	@RequestMapping("/copyNode")
+	public AjaxPageResponse copyNode(Integer nodeId){
+		try {
+			basicItemNodeService.copyNode(nodeId);
+			return AjaxPageResponse.REFRESH_LOCAL("复制成功");
+		}catch (GenericJDBCException e) {
+			logger.error("已存在重名文件", e);
+			return AjaxPageResponse.FAILD("已存在重名文件！");
+		} catch (Exception e) {
+			logger.error("复制失败", e);
+			return AjaxPageResponse.FAILD("复制失败！");
+		}
+	}
     
 }
