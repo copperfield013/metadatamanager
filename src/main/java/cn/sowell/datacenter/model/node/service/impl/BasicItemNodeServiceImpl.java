@@ -377,7 +377,7 @@ public class BasicItemNodeServiceImpl implements BasicItemNodeService {
 		BasicItemNode one = this.getOne(nodeId);
 		
 		BasicItemNode newbt = getNewBasicItemNode(one, null);
-		newbt.setName(one.getName()+"copy"+new SimpleDateFormat("yyyyMMdd HHssmm").format(new Date()));
+		newbt.setName(one.getName()+"copy"+new SimpleDateFormat("yyyyMMdd HHmmss").format(new Date()));
 		this.insert(newbt);
 		copyNode(nodeId, newbt.getId());
 	}
