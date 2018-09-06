@@ -45,7 +45,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 	    	var data = data.nodeOpsType;
 	    	nodePosTypeABC = data;
 	    	$CPF.closeLoading();
-	    }, {async: false})
+	    }, {async: true})
 	    //ATTRIBUTE
 	    Ajax.ajax('admin/node/basicItemNode/getNodeOpsType', {
 	    	opsCode:2
@@ -53,7 +53,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 	    	var data = data.nodeOpsType;
 	    	nodePosTypeATTRIBUTE = data;
 	    	$CPF.closeLoading();
-	    }, {async: false})
+	    }, {async: true})
 	    //LABEL
 	     Ajax.ajax('admin/node/basicItemNode/getNodeOpsType', {
 	    	opsCode:3
@@ -61,7 +61,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 	    	var data = data.nodeOpsType;
 	    	nodePosTypeLABEL = data;
 	    	$CPF.closeLoading();
-	    }, {async: false})
+	    }, {async: true})
 	    //MULTIATTRIBUTE
 	     Ajax.ajax('admin/node/basicItemNode/getNodeOpsType', {
 	    	opsCode:4
@@ -69,7 +69,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 	    	var data = data.nodeOpsType;
 	    	nodePosTypeMULTIATTR = data;
 	    	$CPF.closeLoading();
-	    }, {async: false})
+	    }, {async: true})
 	    //RELATION
 	     Ajax.ajax('admin/node/basicItemNode/getNodeOpsType', {
 	    	opsCode:5
@@ -77,7 +77,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 	    	var data = data.nodeOpsType;
 	    	nodePosTypeRELATION = data;
 	    	$CPF.closeLoading();
-	    }, {async: false})
+	    }, {async: true})
 	    //ATTRGROUP
 	     Ajax.ajax('admin/node/basicItemNode/getNodeOpsType', {
 	    	opsCode:6
@@ -85,7 +85,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 	    	var data = data.nodeOpsType;
 	    	nodePosTypeATTRGROUP = data;
 	    	$CPF.closeLoading();
-	    }, {async: false})
+	    }, {async: true})
 	    //CASATTRIBUTE
 	    Ajax.ajax('admin/node/basicItemNode/getNodeOpsType', {
 	    	opsCode:7
@@ -93,7 +93,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 	    	var data = data.nodeOpsType;
 	    	nodePosTypeCASATTRIBUTE = data;
 	    	$CPF.closeLoading();
-	    }, {async: false})
+	    }, {async: true})
 	}	
 	
 	function getDataType() {
@@ -103,49 +103,49 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 		    }, function(data){			    	
 		    dataTypeSTRINGList = data.dataType;
 		    $CPF.closeLoading();
-		  }, {async: false})
+		  }, {async: true})
 		  
 		   Ajax.ajax('admin/node/basicItemNode/getDataType', {
 		    	dataType:'6'
 		    }, function(data){			    	
 		    dataTypeDATEList = data.dataType;
 		    $CPF.closeLoading();
-		  }, {async: false})
+		  }, {async: true})
 		  
 		   Ajax.ajax('admin/node/basicItemNode/getDataType', {
 		    	dataType:'7'
 		    }, function(data){			    	
 		    dataTypeTIMEList = data.dataType;
 		    $CPF.closeLoading();
-		  }, {async: false})
+		  }, {async: true})
 		  
 		   Ajax.ajax('admin/node/basicItemNode/getDataType', {
 		    	dataType:'1'
 		    }, function(data){			    	
 		    dataTypeINTList = data.dataType;
 		    $CPF.closeLoading();
-		  }, {async: false})
+		  }, {async: true})
 		  
 		   Ajax.ajax('admin/node/basicItemNode/getDataType', {
 		    	dataType:'15'
 		    }, function(data){			    	
 		    dataTypeDOUBLEList = data.dataType;
 		    $CPF.closeLoading();
-		  }, {async: false})
+		  }, {async: true})
 		  
 		  Ajax.ajax('admin/node/basicItemNode/getDataType', {
 		    	dataType:'11'
 		    }, function(data){			    	
 		    dataTypeREFERENCEList = data.dataType;
 		    $CPF.closeLoading();
-		  }, {async: false})
+		  }, {async: true})
 		  
 		  Ajax.ajax('admin/node/basicItemNode/getDataType', {
 		    	dataType:'8'
 		    }, function(data){			    	
 		    dataTypeFILEList = data.dataType;
 		    $CPF.closeLoading();
-		  }, {async: false})
+		  }, {async: true})
 		  
 		  
 		  Ajax.ajax('admin/node/basicItemNode/getDataType', {
@@ -153,14 +153,14 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 		    }, function(data){			    	
 		    dataTypeENUMList = data.dataType;
 		    $CPF.closeLoading();
-		  }, {async: false})
+		  }, {async: true})
 		  
 		   Ajax.ajax('admin/node/basicItemNode/getDataType', {
 		    	dataType:'17'
 		    }, function(data){			    	
 		    dataTypeCASCADETYPEList = data.dataType;
 		    $CPF.closeLoading();
-		  }, {async: false})
+		  }, {async: true})
 	}
 	
 	//预览弹出框
@@ -305,7 +305,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 				 }				 
 			 }				 
 			 $CPF.closeLoading();
-	    }, {async: false});	 
+	    }, {async: true});	 
 		})
 		})
 		})
