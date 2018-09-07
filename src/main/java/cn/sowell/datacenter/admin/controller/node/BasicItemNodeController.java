@@ -262,7 +262,8 @@ public class BasicItemNodeController {
 			
 			Collection<ValueType> canTransType = ValueTypeMapping.getCanTransType(valueTypeByCName);
 			List list = new ArrayList();
-			for (ValueType valueType : canTransType) {
+			for (Iterator iterator = canTransType.iterator(); iterator.hasNext();) {
+				ValueType valueType = (ValueType) iterator.next();
 				String str[] = {valueType.getName(),valueType.getCName()};
 				list.add(str);
 			}
