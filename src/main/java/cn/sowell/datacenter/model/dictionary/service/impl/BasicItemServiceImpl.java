@@ -401,12 +401,11 @@ public class BasicItemServiceImpl implements BasicItemService {
 		//basicItemDao.saveOrUpdate(oneLevelItem, flag);
 		
 		//如果是记录类型， 选择一个标签字典， 生成一条标签字典类
+		String dataType = obj.getOneLevelItem().getDataType();
+		if (String.valueOf(ValueType.RECORD.getIndex()).equals(dataType)) {
 		if ("add".equals(flag)) {
-			String dataType = obj.getOneLevelItem().getDataType();
-			if (String.valueOf(ValueType.RECORD.getIndex()).equals(dataType)) {
 				BasicItem bt = createLable(obj, cascadedict);
 				basicItemDao.insert(bt);
-			}
 		} else {//编辑记录类型， 确认字典是否编辑了， 如果编辑了则修改
 			BasicItem one = basicItemDao.getLableObj(obj.getCode());
 			if (one == null) {
@@ -419,7 +418,7 @@ public class BasicItemServiceImpl implements BasicItemService {
 				}
 			}
 		}
-		
+	}	
 		//如果是重复类型， 默认生成两个孩子， 
 		if (String.valueOf(ValueType.REPEAT.getIndex()).equals(obj.getOneLevelItem().getDataType()) && "add".equals(flag)) {
 			BasicItem childOne = new BasicItem();//多值属性编辑时间
