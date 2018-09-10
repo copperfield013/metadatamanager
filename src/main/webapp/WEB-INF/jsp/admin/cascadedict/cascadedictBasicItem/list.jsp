@@ -4,6 +4,7 @@
 	<nav>
 		<form class="form-inline" action="admin/cascadedict/cascadedictBasicItem/list">
 			<div class="form-group">
+				<input type="hidden" class="form-control" name="parentId" value="${criteria.parentId }" />
 				<label for="name">名称</label>
 				<input type="text" class="form-control" name="name" value="${criteria.name }" />
 			</div>
