@@ -305,7 +305,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 				 }				 
 			 }				 
 			 $CPF.closeLoading();
-	    }, {async: true});	 
+	    }, {async: false});	 
 		})
 		})
 		})
@@ -578,7 +578,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 			        abcHtml += "<select disabled class='node-ops-type'>";	
     	 			var nodePosType = nodePosTypeABC;
 				    for(var i=0; i<nodePosType.length; i++) {
-				    	if(nodePosType[i] === "写") {
+				    	if(nodePosType[i] === opt) {
 				    		abcHtml += "<option value='"+nodePosType[i]+"' selected>"+nodePosType[i]+"</option>";  	
 				    	}else {
 				    		abcHtml += "<option value='"+nodePosType[i]+"'>"+nodePosType[i]+"</option>"; 
