@@ -69,9 +69,10 @@ public class TowlevelattrDaoImpl implements TowlevelattrDao {
 	@Override
 	public List getListByMappingId(String mappingId) {
 		
-		String sql = "SELECT w.c_code, t.c_cn_name, t.c_using_state, w.c_dictionary_code FROM `t_sc_twolevel_attr` w "
+		String sql = "SELECT w.c_code, t.c_cn_name, t.c_using_state, w.c_dictionary_code, 	d.c_name FROM `t_sc_twolevel_attr` w "
 				+ " inner join t_sc_basic_item t "
-				+ " on w.c_code=t.c_code "
+				+ " on w.c_code=t.c_code  "
+				+ " left join t_sc_cascadedict_basic_item d on d.id=w.c_dictionary_code"
 				+ " WHERE w.c_mapping_id=:mappingId";
 		
 		List list = sFactory.getCurrentSession().createSQLQuery(sql).setParameter("mappingId", mappingId).list();
