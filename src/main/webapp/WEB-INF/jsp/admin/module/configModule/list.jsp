@@ -3,11 +3,11 @@
 <div id="demo-list">
 	<nav>
 		<form class="form-inline" action="admin/module/configModule/list">
-			 <div class="form-group">
+			<%--  <div class="form-group">
 				<label for="name">模块</label>
 				<input type="text" class="form-control" name="moduleName" value="${criteria.moduleName }" />
 			</div>
-			<button type="submit" class="btn btn-default">查询</button>
+			<button type="submit" class="btn btn-default">查询</button> --%>
 			<a class="btn btn-primary tab" href="admin/module/configModule/add" title="创建" target="configModule_add" >创建</a>
 		</form>
 	</nav>
