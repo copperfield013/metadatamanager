@@ -2,7 +2,7 @@
 <%@ include file="/WEB-INF/jsp/common/base_empty.jsp"%>
 <div id="serviceBizzData-list">
 	<nav>
-		<form class="form-inline" action="admin/module/configModule/list">
+		<form class="form-inline" action="admin/dataservice/serviceBizzData/list">
 			 <div class="form-group">
 				<label for="name">数据服务</label>
 				<input type="text" class="form-control" name="name" value="${criteria.name }" />

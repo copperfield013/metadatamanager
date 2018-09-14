@@ -148,15 +148,20 @@ public class BasicItemNodeController {
 			 } else { //就是有父亲的
 				 BasicItemNode parentNode = basicItemNodeService.getOne(basicItemNode.getParentId());
 				 
-				 NodeOpsType curOps = NodeOpsType.getNodeOpsType(Integer.parseInt(basicItemNode.getOpt()));
-				 NodeOpsType parentOps = NodeOpsType.getNodeOpsType(parentNode.getOpt());
-				 boolean include = parentOps.include(curOps);
-				 if (include) {//修改后的权限最大是父亲
-					 inline.setState("200");
-				 } else {
-					 inline.setState("400");
-					 inline.setMsg("节点ops权限应该小于等于父节点权限");	
+				 //多值属性下的孩子过滤掉
+				 if (!NodeType.MULTIATTRIBUTE.equals(NodeType.getNodeType(parentNode.getType()))) {
+					 NodeOpsType curOps = NodeOpsType.getNodeOpsType(Integer.parseInt(basicItemNode.getOpt()));
+					 NodeOpsType parentOps = NodeOpsType.getNodeOpsType(parentNode.getOpt());
+					 boolean include = parentOps.include(curOps);
+					 if (include) {//修改后的权限最大是父亲
+						 inline.setState("200");
+					 } else {
+						 inline.setState("400");
+						 inline.setMsg("节点ops权限应该小于等于父节点权限");	
+					 }
 				 }
+				 
+				 
 			 }
 			 //判断当前节点ops, 修改后的权限大于等于孩子，要想权限修改为小于孩子， 应该先把孩子的权限修改小
 			 List<BasicItemNodeCriteria> childNode =null;

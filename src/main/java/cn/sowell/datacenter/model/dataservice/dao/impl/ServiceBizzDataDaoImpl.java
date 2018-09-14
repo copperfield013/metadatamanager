@@ -40,7 +40,7 @@ public class ServiceBizzDataDaoImpl implements ServiceBizzDataDao {
 		Integer count = FormatUtils.toInteger(countQuery.uniqueResult());
 		pageInfo.setCount(count);
 		if(count > 0){
-			Query query = dQuery.createQuery(sFactory.getCurrentSession(), false, null);
+			Query query = dQuery.createQuery(sFactory.getCurrentSession(), true, null);
 			QueryUtils.setPagingParamWithCriteria(query , pageInfo);
 			return query.list();
 		}
