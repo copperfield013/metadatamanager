@@ -1622,7 +1622,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
                                  for (var p in dataArr) { //遍历json数组时，这么写p为索引，0,1
                                 	 str = str + "<option value=\"" + dataArr[p].id + "\">" + dataArr[p].name + "</option>"; 
                                  }
-                                 $("#entity_opera_form1").find("#cascadedict").append(str);
+                                 $("#entity_opera_form1").find("#cascadedict").empty().append(str);
                                  $("#entity_opera_form1").find("#cascadedict").css("width","20%").select2();
                              } else {
                                  Dialog.notice("标签字典加载失败", "error");
@@ -1643,7 +1643,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
                                 		 str = str + "<option value=\"" + dataArr[p].id + "\">" + dataArr[p].name + "</option>"; 
                                 	 }
                                  }
-                                 $("#entity_opera_form1").find("#cascadedict").append(str);
+                                 $("#entity_opera_form1").find("#cascadedict").empty().append(str);
                                  $("#entity_opera_form1").find("#cascadedict").css("width","20%").select2();
                              } else {
                                  Dialog.notice("标签字典加载失败", "error");
