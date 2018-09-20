@@ -1610,9 +1610,10 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
         	Ajax.ajax('admin/dictionary/basicItem/getLableObj', {
                 code: jsonData.code
             }, function(data) {
-            	var lableObj = data.lableObj.oneLevelItem;
+            	var lableObj = data.lableObj;
+
                 if (data.code == 200) {
-                	 if (lableObj == null) {
+                	 if (lableObj == undefined) {
                 		 Dialog.notice("当前实体没有选择标签", "warning");
                 		 Ajax.ajax('admin/dictionary/basicItem/getDictPitem', '', function(data) {
                              var dataArr = data.dictPitem;
@@ -1629,6 +1630,8 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
                              $CPF.closeLoading();
                          });  
                 	 } else {
+                		 
+                		 var lableObj = data.lableObj.oneLevelItem;
                 		 Ajax.ajax('admin/dictionary/basicItem/getDictPitem', '', function(data) {
                              var dataArr = data.dictPitem;
                              if (data.code == 200) {
