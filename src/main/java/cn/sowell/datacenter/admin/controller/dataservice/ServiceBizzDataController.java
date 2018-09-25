@@ -159,31 +159,6 @@ public class ServiceBizzDataController {
 		}
 	}
 	
-	@ResponseBody
-	@ApiOperation(value = "刷新枚举值", nickname = "refreshDictMapper", notes = "刷新枚举值",response = AjaxPageResponse.class, tags={ "serviceBizzData", })
-    @ApiResponses(value = { 
-        @ApiResponse(code = 200, message = "操作成功", response = AjaxPageResponse.class),
-        @ApiResponse(code = 401, message = "操作失败") })
-    @RequestMapping(value = "/refreshDictMapper",
-        method = RequestMethod.POST)
-	public ResponseEntity<AjaxPageResponse> refreshDictMapper(Integer id){
-		try {
-			ServiceBizzData serviceBizzData = sBizzDataService.getOne(id);
-			String params = null;
-			String method = "loadDictionaryMapperFromDB";
-			String url = buildWSURL(serviceBizzData);
-			String wsdlResult = WebServiceUtil.getWsdlResult(url, method, params);
-			
-			if ("true".equals(wsdlResult)) {
-				return new ResponseEntity<AjaxPageResponse>(AjaxPageResponse.REFRESH_LOCAL("刷新成功"), HttpStatus.OK);
-			} else {
-				return new ResponseEntity<AjaxPageResponse>(AjaxPageResponse.FAILD("刷新失败"), HttpStatus.INTERNAL_SERVER_ERROR);
-			}
-		} catch (Exception e) {
-			return new ResponseEntity<AjaxPageResponse>(AjaxPageResponse.FAILD("刷新失败"), HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-	}
-	
 	 @ApiOperation(value = "跳转到编辑页面", nickname = "edit", notes = "跳转到编辑页面", response = ModelAndView.class, tags={ "serviceBizzData", })
     @ApiResponses(value = { 
         @ApiResponse(code = 200, message = "操作成功", response = ModelAndView.class),
