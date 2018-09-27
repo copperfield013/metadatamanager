@@ -2,6 +2,7 @@ package cn.sowell.datacenter.admin.controller.dictionary;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -21,6 +22,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.alibaba.fastjson.JSONObject;
 
 import cn.sowell.copframe.dto.ajax.AjaxPageResponse;
 import cn.sowell.copframe.dto.ajax.NoticeType;
@@ -119,6 +122,57 @@ public class RecordRelationTypeController {
 		} catch (Exception e) {
 			logger.error("删除失败", e);
 			return "{\"code\":400, \"msg\":\"操作失败\"}";
+		}
+	}
+	
+	/**
+	 * 编辑关系名称， 获取关系记录
+	 * @param typeCode
+	 * @param isPastDue
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping("/edit")
+	public String edit(String typeCode){
+		Map<String, Object> map = new HashMap<String, Object>();
+		JSONObject jobj = new JSONObject(map);
+		try {
+			RecordRelationType recordRelationType = recordRelationTypeService.getRecordRelationType(typeCode);
+			map.put("recordRelationType", recordRelationType);
+			map.put("code", 200);
+			map.put("msg", "成功！");
+			return jobj.toJSONString();
+		} catch (Exception e) {
+			map.put("code", 400);
+			map.put("msg", "失败！");
+			return jobj.toJSONString();
+		}
+	}
+	
+	
+	/**
+	 * 保存编辑后的 关系名称
+	 * @param typeCode
+	 * @param isPastDue
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping("/do_edit")
+	public String edit(String name, String typeCode){
+		Map<String, Object> map = new HashMap<String, Object>();
+		JSONObject jobj = new JSONObject(map);
+		try {
+			RecordRelationType recordRelationType = recordRelationTypeService.getRecordRelationType(typeCode);
+			recordRelationType.setName(name);
+			recordRelationTypeService.update(recordRelationType);
+			map.put("recordRelationType", recordRelationType);
+			map.put("code", 200);
+			map.put("msg", "成功！");
+			return jobj.toJSONString();
+		} catch (Exception e) {
+			map.put("code", 400);
+			map.put("msg", "失败！");
+			return jobj.toJSONString();
 		}
 	}
 	

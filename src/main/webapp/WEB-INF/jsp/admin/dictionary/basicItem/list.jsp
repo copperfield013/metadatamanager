@@ -181,6 +181,22 @@
 				        <span class="entity-btn-confirm" id="relation_but_confirm">确认</span>
 				    </div>
 				</div>
+				<!-- 编辑关系名称 -->
+				<div class="opera_relation_edit" style="display: none;">
+				    <img class="opera_entity_img" src="media/admin/dictionary/basicItem/images/info.png">
+				    <span id="add_relation_mes">编辑关系名称</span>
+				    <form id="entity_relation_form_edit" class="opera_entity_form">
+				          <input type="hidden" name="typeCode" id="typeCode" />
+				        <div>
+				            <span class="opera_entity_label">关系名称<span style="color: red;">*</span></span>
+				            <input type="text" name="name" id="name" />
+				        </div>
+				    </form>
+				    <div class="opera_entity_btn">
+				        <span class="entity-btn-cancel" id="relation_but_cancel_edit">取消</span>
+				        <span class="entity-btn-confirm" id="relation_but_confirm_edit">确认</span>
+				    </div>
+				</div>
 		 </div>
 	</div>	    
 </div>

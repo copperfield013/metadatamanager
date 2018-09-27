@@ -280,6 +280,53 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
 	   });
    });
    
+   
+   //编辑关系名称
+   $(".entity-list", $page).on("click", ".edit_rela", function() {
+	   var typeCode = $(this).parent().parent().attr("typeCode");
+	   
+	   var patentId = $(this).attr("patentId");
+	  
+	  Ajax.ajax('admin/dictionary/recordRelationType/edit', {
+		  typeCode:typeCode
+	  }, function(data) {
+		  $(".opera_relation_edit").children("#entity_relation_form_edit").find("#name").val(data.recordRelationType.name);
+		  $(".opera_relation_edit").children("#entity_relation_form_edit").find("#typeCode").val(data.recordRelationType.typeCode);
+		  $(".opera_relation_edit").show();
+	  });
+   });
+   
+   
+   // 点击取消  取消编辑关系名称
+   $(".entity_relation", $page).on("click", "#relation_but_cancel_edit", function() {
+       $(".opera_relation_edit").hide();
+   });
+   
+   // 点击确认  保存编辑后的关系名称
+   $(".entity_relation", $page).on("click", "#relation_but_confirm_edit", function() {
+	  var $ore =  $(this).closest(".opera_relation_edit");
+	  var $form =  $ore.children("#entity_relation_form_edit");
+	  var name =  $form.find("#name").val();
+	  var typeCode = $form.find("#typeCode").val();
+	   
+	   Ajax.ajax('admin/dictionary/recordRelationType/do_edit', {
+			  typeCode:typeCode,
+			  name:name
+		  }, function(data) {
+			  if (data.code == 200) {
+				  var recordRelationType = data.recordRelationType;
+				  
+				  relaAttr(recordRelationType.leftRecordType);
+			  } else {
+				  Dialog.notice(msg, "error");
+			  }
+			  
+			  $ore.hide();
+			  /*$(".opera_relation_edit").children("#entity_relation_form_edit").find("#name").val(data.recordRelationType.name);
+			  $(".opera_relation_edit").show();*/
+		  });
+   });
+   
     //点击 添加实体 显示div
     $("#add_entity", $page).click(function() {
     	$("#entity_opera_form1").find("#code").val("");
@@ -2232,13 +2279,15 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
            	
            	str = str+"\">" + entityRelation[i].name
            	+"<ul class=\"entity_ul\" patentId=\""+parentId+"\" typeCode=\""+entityRelation[i].typeCode+"\">" 
-				+"<li><a href=\"javascript:void(0)\" patentId=\""+parentId+"\" class=\"delete_rela\"><i class=\"icon edit-entity\"></i>删除关系</a></li>"
-				if (entityRelation[i].usingState != 2) {
-					str = str+"<li><a href=\"javascript:void(0)\"  class=\"chang_status_rela rela_past\"><i class=\"icon edit-entity\"></i>过期关系</a></li>"
-				}
-           	if (entityRelation[i].usingState == 2) {
-           		str = str+"<li><a href=\"javascript:void(0)\" class=\"chang_status_rela\"><i class=\"icon edit-entity\"></i>解除过期</a></li>"
-           	}
+           	+"<li><a href=\"javascript:void(0)\" patentId=\""+parentId+"\" class=\"edit_rela\"><i class=\"icon edit-entity\"></i>编辑名称</a></li>"
+        	if (entityRelation[i].usingState != 2) {
+				str = str+"<li><a href=\"javascript:void(0)\"  class=\"chang_status_rela rela_past\"><i class=\"icon edit-entity\"></i>过期关系</a></li>"
+			}
+        	if (entityRelation[i].usingState == 2) {
+        		str = str+"<li><a href=\"javascript:void(0)\" class=\"chang_status_rela\"><i class=\"icon edit-entity\"></i>解除过期</a></li>"
+        	}
+        	str = str+"<li><a href=\"javascript:void(0)\" patentId=\""+parentId+"\" class=\"delete_rela\"><i class=\"icon edit-entity\"></i>删除关系</a></li>";
+			
            	str = str+"</ul>"
 				+"<i class=\"icon delete\"></i> <i class=\"icon status\"></i>"
 				+"</div>"  
@@ -2465,13 +2514,15 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
             	
             	str = str+"\">" + entityRelation[i].name
             	+"<ul class=\"entity_ul\" patentId=\""+parentId+"\" typeCode=\""+entityRelation[i].typeCode+"\">" 
-				+"<li><a href=\"javascript:void(0)\" patentId=\""+parentId+"\" class=\"delete_rela\"><i class=\"icon edit-entity\"></i>删除关系</a></li>"
-				if (entityRelation[i].usingState != 2) {
+            	+"<li><a href=\"javascript:void(0)\" patentId=\""+parentId+"\" class=\"edit_rela\"><i class=\"icon edit-entity\"></i>编辑名称</a></li>"
+            	if (entityRelation[i].usingState != 2) {
 					str = str+"<li><a href=\"javascript:void(0)\"  class=\"chang_status_rela rela_past\"><i class=\"icon edit-entity\"></i>过期关系</a></li>"
 				}
             	if (entityRelation[i].usingState == 2) {
             		str = str+"<li><a href=\"javascript:void(0)\" class=\"chang_status_rela\"><i class=\"icon edit-entity\"></i>解除过期</a></li>"
             	}
+            	str = str+"<li><a href=\"javascript:void(0)\" patentId=\""+parentId+"\" class=\"delete_rela\"><i class=\"icon edit-entity\"></i>删除关系</a></li>";
+				
             	str = str+"</ul>"
 				+"<i class=\"icon delete\"></i> <i class=\"icon status\"></i>"
 				+"</div>"  
