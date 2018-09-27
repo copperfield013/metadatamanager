@@ -271,14 +271,14 @@ public class OneLevelItem {
 	}
 	
 	public String getDataTypeCName() {
+		if (this.dataType == null || "".equals(this.dataType)) {
+			return "";
+		}
+		
 		ValueType valueType = ValueType.getValueType(Integer.parseInt(this.dataType));
 		return valueType.getCName();
 	}
 	
-	public String getDataTypeName() {
-		ValueType valueType = ValueType.getValueType(Integer.parseInt(this.dataType));
-		return valueType.getName();
-	}
 	
 
 }

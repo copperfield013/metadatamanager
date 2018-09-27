@@ -2084,6 +2084,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
     
     //实体选择点击事件绑定
     $("#operate").on("click", ".entity_attr", function() {
+    	
     	var $attrArray = $(".entity_attr",$page);
     	for(var i=0; i<$attrArray.length; i++) {
     		if($($attrArray[i]).hasClass("active")) { //已经有选择过的了 就不能再点击选择了
