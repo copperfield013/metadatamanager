@@ -1,14 +1,15 @@
 package cn.sowell.datacenter.model.dictionary.pojo;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
+
+import com.abc.util.ValueType;
+
 import io.swagger.annotations.ApiModelProperty;
 
 @Entity
@@ -268,5 +269,16 @@ public class OneLevelItem {
 	public void setNeedHistory(Integer needHistory) {
 		this.needHistory = needHistory;
 	}
+	
+	public String getDataTypeCName() {
+		ValueType valueType = ValueType.getValueType(Integer.parseInt(this.dataType));
+		return valueType.getCName();
+	}
+	
+	public String getDataTypeName() {
+		ValueType valueType = ValueType.getValueType(Integer.parseInt(this.dataType));
+		return valueType.getName();
+	}
+	
 
 }
