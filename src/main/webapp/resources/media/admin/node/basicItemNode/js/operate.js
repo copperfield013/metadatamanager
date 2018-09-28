@@ -2094,9 +2094,9 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
     	}    
     	var en = $(this);
     	$(this).addClass("active"); 
-    	Dialog.confirm("是: 直接生成实体对应的配置文件.否：手动生成配置文件", function(isYes) {
+    	Dialog.confirm("是: 直接生成实体对应的配置文件. 否：手动生成配置文件", function(isYes) {
     		if (isYes) {
-    			Dialog.confirm("是否确认生成配置文件？", function(isYes) {
+    			Dialog.confirm("【生成普通属性和多值属性的配置文件， 关系和二级属性需手动添加】， 是否确认？", function(isYes) {
     	    		
     	    		if (isYes) {
     	    			$CPF.showLoading();
