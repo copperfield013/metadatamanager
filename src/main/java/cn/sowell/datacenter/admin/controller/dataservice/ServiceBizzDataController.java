@@ -146,7 +146,7 @@ public class ServiceBizzDataController {
 			String url = buildWSURL(serviceBizzData);
 			String wsdlResult = WebServiceUtil.getWsdlResult(url, method, params);
 			String dataUrl = "http://"+serviceBizzData.getIp()+":"+serviceBizzData.getPort()+"/"+serviceBizzData.getName()+"/services/configReloadService?wsdl";
-			String dataResult = WebServiceUtil.getWsdlResult(dataUrl, "syncModule", null);
+			String dataResult = WebServiceUtil.getWsdlResult(dataUrl, "syncCache", null);
 			//String syncFieldResult = WebServiceUtil.getWsdlResult(dataUrl, "syncField", null);
 			
 			if ("true".equals(wsdlResult)) {
