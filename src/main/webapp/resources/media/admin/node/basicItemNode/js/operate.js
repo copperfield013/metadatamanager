@@ -2085,14 +2085,38 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
     //实体选择点击事件绑定
     $("#operate").on("click", ".entity_attr", function() {
     	
+    	var entityId = $(this).attr("data-code");
     	var $attrArray = $(".entity_attr",$page);
     	for(var i=0; i<$attrArray.length; i++) {
     		if($($attrArray[i]).hasClass("active")) { //已经有选择过的了 就不能再点击选择了
     			return;
     		}
-    	}    	
-    	$(this).addClass("active");    		
-    	getEntity(this);
+    	}    
+    	var en = $(this);
+    	$(this).addClass("active"); 
+    	Dialog.confirm("是: 直接生成实体对应的配置文件.否：手动生成配置文件", function(isYes) {
+    		
+    		if (isYes) {
+    			Dialog.confirm("是否确认生成配置文件？", function(isYes) {
+    	    		
+    	    		if (isYes) {
+    	    			Ajax.ajax('admin/node/basicItemNode/createConfigFile', {
+    	    				entityId:entityId
+    	                }, function(data){ 
+    	                	
+    	                }); 
+    	    			
+    	    			
+    	    		} 
+    	    	});
+    			 
+    		} else {
+    			   		
+    	    	getEntity(en);
+    		}
+    	});
+    	
+    	
     })
     
     //修改名称

@@ -394,7 +394,6 @@ public class BasicItemController {
 	@RequestMapping(value="/attrByPid", method=RequestMethod.POST)
 	public ResponseEntity<InlineResponse2004> attrByPid(String parentId) {
         try {
-        	System.out.println();
         	Map<String, List> attrByPid = basicItemService.getAttrByPid(parentId);
         	InlineResponse2004 inline = new InlineResponse2004();
     		inline.commonProper(attrByPid.get("commonProper"));//普通属性

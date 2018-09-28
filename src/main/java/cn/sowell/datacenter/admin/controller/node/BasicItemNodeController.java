@@ -638,4 +638,94 @@ public class BasicItemNodeController {
 		}
 	}
     
+    
+    /**
+     * 根据实体id直接生成配置文件
+     * @param entityId  实体id
+     * @return
+     */
+    @ResponseBody
+	@RequestMapping("/createConfigFile")
+	public AjaxPageResponse createConfigFile(String entityId){
+		try {
+			//生成配置文件的根节点
+			BasicItem basicItem = basicItemService.getBasicItem(entityId);
+			String name = "【" +basicItem.getCnName() + "】自动生成" + System.currentTimeMillis();
+			BasicItemNode pbtn = createBasicItemNode(NodeType.ABC.getCode(), name, ValueType.STRING.getName(), null, NodeOpsType.WRITE.getIndex()+"", null, basicItem);
+			basicItemNodeService.saveOrUpdate(pbtn);
+			
+			//获取模型数据
+			Map<String, List> attrByPid = basicItemService.getAttrByPid(entityId);
+			List commonList = attrByPid.get("commonProper");//普通属性
+			List moreList = attrByPid.get("moreProper");//多值属性
+			List relaList = attrByPid.get("entityRela");//实体关系
+			
+			Iterator iterator = commonList.iterator();
+			//生成属性组及其孩子节点
+			while (iterator.hasNext()) {
+				BasicItem bt = (BasicItem)iterator.next();//获取的是实体的普通分组
+				//生成属性组btn
+				BasicItemNode groupBtn = createBasicItemNode(NodeType.ATTRGROUP.getCode(), bt.getCnName(), ValueType.STRING.getName(), null, NodeOpsType.WRITE.getIndex()+"", pbtn.getId(), null);
+				basicItemNodeService.saveOrUpdate(groupBtn);
+				
+				List childList = bt.getChildList();//分组下的所有孩子
+				Iterator childIter = childList.iterator();
+				while (childIter.hasNext()) {
+					BasicItem childBt = (BasicItem)childIter.next();
+					createAttribute(groupBtn, childBt);
+				}
+			}
+			
+			//生成多值属性及其孩子节点
+			Iterator moreIter = moreList.iterator();
+			while (moreIter.hasNext()) {
+				BasicItem moreBt = (BasicItem) moreIter.next();//获取的实体的多值类型
+				BasicItemNode moreBtn = createBasicItemNode(NodeType.MULTIATTRIBUTE.getCode(), moreBt.getCnName(), ValueType.STRING.getName(), null, NodeOpsType.WRITE.getIndex()+"", pbtn.getId(), moreBt);
+				basicItemNodeService.saveOrUpdate(moreBtn);
+				
+				List childMoreList = moreBt.getChildList();
+				Iterator childMoreIter = childMoreList.iterator();
+				
+				while (childMoreIter.hasNext()) {
+					BasicItem childBt = (BasicItem)childMoreIter.next();
+					createAttribute(moreBtn, childBt);
+				}
+			}
+			
+			return AjaxPageResponse.CLOSE_AND_REFRESH_PAGE("操作失败", "basicItemNode_list");
+		}catch (Exception e) {
+			logger.error("操作失败！", e);
+			return AjaxPageResponse.FAILD("操作失败！");
+		}
+	}
+    
+    /**生成普通属性和级联属性
+	 * @param parrentBtn
+	 * @param childBt
+	 * @throws NumberFormatException
+	 */
+	private void createAttribute(BasicItemNode parrentBtn, BasicItem childBt) throws NumberFormatException {
+		String dataType = childBt.getOneLevelItem().getDataType();
+		//级联属性
+		if(ValueType.CASCADETYPE.equals(ValueType.getValueType(Integer.parseInt(dataType)))) {
+			BasicItemNode casAttr = createBasicItemNode(NodeType.CASATTRIBUTE.getCode(), childBt.getCnName(), ValueType.STRING.getName(), null, NodeOpsType.WRITE.getIndex()+"", parrentBtn.getId(), childBt);
+			basicItemNodeService.saveOrUpdate(casAttr);
+		} else {//普通属性
+			BasicItemNode attr = createBasicItemNode(NodeType.ATTRIBUTE.getCode(), childBt.getCnName(), ValueType.STRING.getName(), null, NodeOpsType.WRITE.getIndex()+"", parrentBtn.getId(), childBt);
+			basicItemNodeService.saveOrUpdate(attr);
+		}
+	}
+	
+	//生成btn对象
+	private BasicItemNode createBasicItemNode(Integer type, String name, String dataType, String subdomain, String opt, Integer parentId, BasicItem basicItem) {
+		BasicItemNode btn = new BasicItemNode();
+		btn.setType(type);
+		btn.setName(name);
+		btn.setDataType(dataType);
+		btn.setSubdomain(subdomain);
+		btn.setOpt(opt);
+		btn.setParentId(parentId);
+		btn.setBasicItem(basicItem);
+		return btn;
+	}
 }
