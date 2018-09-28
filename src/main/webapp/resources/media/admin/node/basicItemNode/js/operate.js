@@ -2095,23 +2095,22 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
     	var en = $(this);
     	$(this).addClass("active"); 
     	Dialog.confirm("是: 直接生成实体对应的配置文件.否：手动生成配置文件", function(isYes) {
-    		
     		if (isYes) {
     			Dialog.confirm("是否确认生成配置文件？", function(isYes) {
     	    		
     	    		if (isYes) {
+    	    			$CPF.showLoading();
     	    			Ajax.ajax('admin/node/basicItemNode/createConfigFile', {
     	    				entityId:entityId
     	                }, function(data){ 
-    	                	
+    	                	$CPF.closeLoading();
     	                }); 
     	    			
-    	    			
+    	    			$CPF.closeLoading();
     	    		} 
     	    	});
     			 
     		} else {
-    			   		
     	    	getEntity(en);
     		}
     	});
