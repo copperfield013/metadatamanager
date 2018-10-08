@@ -830,6 +830,8 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 		        "</li>";		           		        
 		        var $html = $(attrHtml).prependTo($(parent));
 		        $html.find("select").css({"width":"15%","marginLeft":"16px"}).select2();
+		        
+		        drag($(".dragEdit-wrap").length);
 		 // }, {async: false})
     }
 	
