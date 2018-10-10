@@ -2007,6 +2007,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
         	$(this).find("select").removeAttr("disabled");
     	}else {
     		$(this).find(".edit-input").removeAttr("disabled");
+    		$(this).find(".node-ops-type").removeAttr("disabled");
     	}    	
         $(this).addClass("edit");
     })
