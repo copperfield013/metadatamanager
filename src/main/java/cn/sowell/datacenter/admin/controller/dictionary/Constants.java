@@ -24,6 +24,9 @@ public interface Constants {
 			put(String.valueOf(ValueType.BYTES.getIndex()), ValueType.BYTES.getCName());
 			put(String.valueOf(ValueType.REFERENCE.getIndex()), ValueType.REFERENCE.getCName());
 			put(String.valueOf(ValueType.CASCADETYPE.getIndex()), ValueType.CASCADETYPE.getCName());
+			
+			put(String.valueOf(ValueType.STRING_PREENUM.getIndex()), ValueType.STRING_PREENUM.getCName());
+			put(String.valueOf(ValueType.ENUMTYPE_MULTI.getIndex()), ValueType.ENUMTYPE_MULTI.getCName());
 		}
 	};
 	

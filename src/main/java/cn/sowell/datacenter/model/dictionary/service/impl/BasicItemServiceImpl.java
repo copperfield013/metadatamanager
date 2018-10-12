@@ -450,6 +450,23 @@ public class BasicItemServiceImpl implements BasicItemService {
 			basicItemDao.insert(childTwo);
 		}
 		
+		//如果是枚举类型多选
+		if (String.valueOf(ValueType.ENUMTYPE_MULTI.getIndex()).equals(dataType)) {
+			if ("add".equals(flag)) {
+				String parentCode = obj.getParent();
+				String code = obj.getCode();
+				StringBuffer sb = new StringBuffer();
+				sb.append("CREATE TABLE ")
+				.append("t_")
+				.append(parentCode + "_" + code)
+				.append(" ( `id` BIGINT ( 20 ) NOT NULL AUTO_INCREMENT,")
+				.append(" `ABP0001` VARCHAR ( 32 ) DEFAULT NULL, ")
+				.append(code + " VARCHAR ( 32 ) DEFAULT NULL,")
+				.append(" PRIMARY KEY ( `id` ) )");
+				
+				basicItemDao.excuteBySql(sb.toString());
+			} 
+		}	
 		
 	}
 
