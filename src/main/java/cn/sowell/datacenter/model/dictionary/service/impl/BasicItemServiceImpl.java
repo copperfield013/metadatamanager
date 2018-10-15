@@ -120,8 +120,8 @@ public class BasicItemServiceImpl implements BasicItemService {
 
 	@Override
 	public void delete(BasicItem basicItem) throws Exception {
-		//这里删除伴生属性
-		if (String.valueOf(ValueType.REPEAT.getIndex()).equals(basicItem.getOneLevelItem().getDataType())) {
+		//这里删除重复类型伴生属性和枚举类型多选伴生属性
+		if (String.valueOf(ValueType.REPEAT.getIndex()).equals(basicItem.getOneLevelItem().getDataType()) || String.valueOf(ValueType.ENUMTYPE_MULTI.getIndex()).equals(basicItem.getOneLevelItem().getDataType())) {
 			BasicItem btp = basicItemDao.get(BasicItem.class,  AttributeParter.getRepeatKeyName(basicItem.getCode()));
 			BasicItem btEd = basicItemDao.get(BasicItem.class,  AttributeParter.getRepeatEditTimeName(basicItem.getCode()));
 			
@@ -421,38 +421,25 @@ public class BasicItemServiceImpl implements BasicItemService {
 	}	
 		//如果是重复类型， 默认生成两个孩子， 
 		if (String.valueOf(ValueType.REPEAT.getIndex()).equals(obj.getOneLevelItem().getDataType()) && "add".equals(flag)) {
-			BasicItem childOne = new BasicItem();//多值属性编辑时间
-				childOne.setCode(AttributeParter.getRepeatEditTimeName(obj.getCode()));
-				   childOne.getOneLevelItem().setCode(AttributeParter.getRepeatEditTimeName(obj.getCode()));
-				childOne.setCnName(AttributeParter.getRepeatEditTimeCNName(""));
-				childOne.getOneLevelItem().setDataType(String.valueOf(ValueType.DATETIME.getIndex()));
-				childOne.getOneLevelItem().setDataRange(ValueType.DATETIME.getName());
-				childOne.getOneLevelItem().setTableName(obj.getOneLevelItem().getTableName());
-				childOne.setParent(obj.getParent()+ "_" + obj.getCode());
-				childOne.setUsingState(0);
-				childOne.getOneLevelItem().setDictParentId(0);
-				childOne.getOneLevelItem().setGroupName(obj.getCode());
-				childOne.getOneLevelItem().setNeedHistory(obj.getOneLevelItem().getNeedHistory());
-				
-			BasicItem childTwo = new BasicItem();//多值属性唯一编码
-				childTwo.setCode(AttributeParter.getRepeatKeyName(obj.getCode()));
-				     childTwo.getOneLevelItem().setCode(AttributeParter.getRepeatKeyName(obj.getCode()));
-				childTwo.setCnName(AttributeParter.getRepeatKeyCNName(""));
-				childTwo.getOneLevelItem().setDataType(String.valueOf(ValueType.STRING.getIndex()));
-				childTwo.getOneLevelItem().setDataRange("32");
-				childTwo.getOneLevelItem().setTableName(obj.getOneLevelItem().getTableName());
-				childTwo.setParent(obj.getParent()+ "_" + obj.getCode());
-				childTwo.setUsingState(0);
-				childTwo.getOneLevelItem().setGroupName(obj.getCode());
-				childTwo.getOneLevelItem().setDictParentId(0);
-				childTwo.getOneLevelItem().setNeedHistory(obj.getOneLevelItem().getNeedHistory());
-			basicItemDao.insert(childOne);
-			basicItemDao.insert(childTwo);
+			createAttr(obj, AttributeParter.getRepeatEditTimeCNName(null), AttributeParter.getRepeatKeyCNName(null));
 		}
 		
 		//如果是枚举类型多选
 		if (String.valueOf(ValueType.ENUMTYPE_MULTI.getIndex()).equals(dataType)) {
 			if ("add".equals(flag)) {
+				List<BasicItem> attrList = createAttr(obj, AttributeParter.getRepeatEditTimeCNName(obj.getCnName()), AttributeParter.getRepeatKeyCNName(obj.getCnName()));//枚举类型多选，生成伴生属性
+				List<String> sqlStr = new ArrayList<String>();
+				Iterator<BasicItem> iterator = attrList.iterator();
+				while (iterator.hasNext()) {
+					BasicItem bt = iterator.next();
+					String btcode = bt.getCode();
+					if (btcode.contains(AttributeParter.getRepeatEditTimeName(""))) {
+						sqlStr.add(btcode +" datetime , ");
+					} else if (btcode.contains(AttributeParter.getRepeatKeyName(""))){
+						sqlStr.add(btcode +" VARCHAR ( " + bt.getOneLevelItem().getDataRange() + ") , ");
+					}
+				}
+				
 				String parentCode = obj.getParent();
 				String code = obj.getCode();
 				StringBuffer sb = new StringBuffer();
@@ -462,6 +449,8 @@ public class BasicItemServiceImpl implements BasicItemService {
 				.append(" ( `id` BIGINT ( 20 ) NOT NULL AUTO_INCREMENT,")
 				.append(" `ABP0001` VARCHAR ( 32 ) DEFAULT NULL, ")
 				.append(code + " VARCHAR ( 32 ) DEFAULT NULL,")
+				.append(sqlStr.get(0))
+				.append(sqlStr.get(1))
 				.append(" PRIMARY KEY ( `id` ) )");
 				
 				basicItemDao.excuteBySql(sb.toString());
@@ -470,6 +459,42 @@ public class BasicItemServiceImpl implements BasicItemService {
 		
 	}
 
+	//重复类型和枚举类型多选生成伴生属性
+	private List<BasicItem> createAttr(BasicItem obj, String EditTimeCnName, String keyCnName) {
+		BasicItem childOne = new BasicItem();//多值属性编辑时间
+		childOne.setCode(AttributeParter.getRepeatEditTimeName(obj.getCode()));
+		   childOne.getOneLevelItem().setCode(AttributeParter.getRepeatEditTimeName(obj.getCode()));
+		childOne.setCnName(EditTimeCnName);
+		childOne.getOneLevelItem().setDataType(String.valueOf(ValueType.DATETIME.getIndex()));
+		childOne.getOneLevelItem().setDataRange(ValueType.DATETIME.getName());
+		childOne.getOneLevelItem().setTableName(obj.getOneLevelItem().getTableName());
+		childOne.setParent(obj.getParent()+ "_" + obj.getCode());
+		childOne.setUsingState(0);
+		childOne.getOneLevelItem().setDictParentId(0);
+		childOne.getOneLevelItem().setGroupName(obj.getCode());
+		childOne.getOneLevelItem().setNeedHistory(obj.getOneLevelItem().getNeedHistory());
+		
+	BasicItem childTwo = new BasicItem();//多值属性唯一编码
+		childTwo.setCode(AttributeParter.getRepeatKeyName(obj.getCode()));
+		     childTwo.getOneLevelItem().setCode(AttributeParter.getRepeatKeyName(obj.getCode()));
+		childTwo.setCnName(keyCnName);
+		childTwo.getOneLevelItem().setDataType(String.valueOf(ValueType.STRING.getIndex()));
+		childTwo.getOneLevelItem().setDataRange("32");
+		childTwo.getOneLevelItem().setTableName(obj.getOneLevelItem().getTableName());
+		childTwo.setParent(obj.getParent()+ "_" + obj.getCode());
+		childTwo.setUsingState(0);
+		childTwo.getOneLevelItem().setGroupName(obj.getCode());
+		childTwo.getOneLevelItem().setDictParentId(0);
+		childTwo.getOneLevelItem().setNeedHistory(obj.getOneLevelItem().getNeedHistory());
+	basicItemDao.insert(childOne);
+	basicItemDao.insert(childTwo);
+	
+	List<BasicItem> list = new ArrayList<BasicItem>();
+	list.add(childOne);
+	list.add(childTwo);
+	return list;
+	}
+	
 	/**
 	 * @param code
 	 * @param cascadedict

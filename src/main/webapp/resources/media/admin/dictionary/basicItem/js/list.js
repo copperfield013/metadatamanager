@@ -1882,6 +1882,8 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
             $form1.find("#edit_dictParentId").val(jsonData.oneLevelItem.dictParentId);
             $form1.find("#dataType").html("");
             
+            $form1.find("#dataType").attr("disabled", false);
+            
             $form1.find("#needHistory").empty();
             var str="";
             if (1 == jsonData.oneLevelItem.needHistory) {
@@ -1938,6 +1940,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
     	                $form1.find("#dataRange").hide();
     	                $form1.find("#cn_dataRange").hide();
     	                $form1.find("#dataType").after(str);
+    	                $form1.find("#dataType").attr("disabled", true);
     	                $form1.find("#s2id_dictParentId").remove(); 
     	                $form1.find("#refType").remove();
     	                $form1.find("#refType_enum").remove();
@@ -2341,11 +2344,17 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
     		
     		 Ajax.ajax('admin/dictionary/basicItem/isTwoattr', {
     	  			id:entityId
-    	  		}, function(data) {    
+    	  		}, function(data) {  
+    	  			
+    	  			
+    	  		  if ("1401"==jsonData.oneLevelItem.dataType) {	 
+    	  			$form1.find("#dataType").attr("disabled", true);
+    	  		  }
+    	  			
     	            if (true == data) {	 
     	            	$form1.find("#dictParentId").attr("disabled", true);
     	            	$form1.find("#dataType").attr("disabled", true);
-    	            } else {
+    	            } else if ("1401"!=jsonData.oneLevelItem.dataType) {
     	            	$form1.find("#dictParentId").attr("disabled", false);
     	            	$form1.find("#dataType").attr("disabled", false);
     	            }
