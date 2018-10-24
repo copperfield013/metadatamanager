@@ -36,7 +36,7 @@
 						<td>${item.order }</td>
 						<td>
 							<a class="tab" href="admin/cascadedict/cascadedictBasicItem/getOne?id=${item.id }" target="cascadedictBasicItem_child" title="管理子数据">管理子数据</a>
-							<%-- <a href="javascript:;" itemId="${item.id }" id="managerChild"  title="管理子数据">管理子数据</a> --%>
+							<%-- <a class="tab" href="admin/cascadedict/cascadedictSubsection/getOne?id=${item.id }" target="cascadedictSubsection_tree" title="字典再分">字典再分</a> --%>
 							<a href="javascript:;" itemId="${item.id }" title="修改" id="edit">修改</a>
 							<a href="admin/cascadedict/cascadedictBasicItem/do_delete/${item.id }" confirm="确认删除？">删除</a>
 						</td>

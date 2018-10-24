@@ -37,6 +37,16 @@ public class BasicItemNodeGenerator {
 		return String.format("%03d", this.id); 
 	}
 	
+	
+	/**
+	 * 输入前缀，组合需要的code
+	 * @param prefix
+	 * @return
+	 */
+	public String getPrefixCode(String prefix) {
+		return prefix + getFormat();
+	}
+	
 	/**
 	 * 输入前缀组合实体的code
 	 * @param prefix

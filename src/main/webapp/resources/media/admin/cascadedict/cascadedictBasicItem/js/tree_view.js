@@ -34,38 +34,199 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
      */
     function getChildByParentId(parentId){
     	$CPF.showLoading();
-    	Ajax.ajax("admin/cascadedict/cascadedictBasicItem/getChildByParentId", {
+    	
+    	var parent = $(".collapse-header[data-id='" + parentId + "']", $page).next(".collapse-content")[0];
+    	$(parent).html(""); //清空子节点
+    	
+    	Ajax.ajax("admin/cascadedict/cascadedictSubsection/getSubSelectByParentId", {
     		parentId:parentId
 		},function(data){
-			console.log("children data is :");
-			console.log(data);
-			console.log("============"+data.code);
 			if (data.code==200 && data.childList.length>0) {
-				initTreeNode(data.childList);
-				Dialog.notice("数据加载成功！", "success");
+				initTreeNodeSubselection(data.childList, parent);
+				Dialog.notice("分部数据加载成功！", "success");
 			} else if (data.code==200 && data.childList.length==0) {
-				Dialog.notice("当前节点没有孩子！", "warning");
+				Dialog.notice("当前节点没有分部！", "warning");
 			} else {
-				Dialog.notice("孩子数据加载错误！", "error");
+				Dialog.notice("分部数据加载错误！", "error");
+			}
+			
+	    	Ajax.ajax("admin/cascadedict/cascadedictBasicItem/getChildByParentId", {
+	    		parentId:parentId
+			},function(data){
+				if (data.code==200 && data.childList.length>0) {
+					initTreeNode(data.childList, parent);
+					Dialog.notice("字典数据加载成功！", "success");
+				} else if (data.code==200 && data.childList.length==0) {
+					Dialog.notice("当前节点没有孩子字典！", "warning");
+				} else {
+					Dialog.notice("孩子字典数据加载错误！", "error");
+				}
+				$CPF.closeLoading();
+			});
+			$CPF.closeLoading();
+		});
+    	
+    	$CPF.closeLoading();
+    }
+    
+    
+    /**
+     * 加载subChild
+     */
+    function getSubChildByPid(parentId){
+    	$CPF.showLoading();
+    	var $colHeader = $(".collapse-header[data-id='" + parentId + "']", $page);
+    	var parent = $(".collapse-header[data-id='" + parentId + "']", $page).next(".collapse-content")[0];
+    	$(parent).html(""); //清空子节点
+    	
+    	Ajax.ajax("admin/cascadedict/cascadedictSubsection/getSubChildByPid", {
+    		subsectionId:parentId
+		},function(data){
+			if (data.code==200 && data.childList.length>0) {
+				initTreeNodeSubChild(data.childList, parent, $colHeader);
+				Dialog.notice("分部孩子加载成功！", "success");
+			} else if (data.code==200 && data.childList.length==0) {
+				Dialog.notice("当前分部没有孩子！", "warning");
+			} else {
+				Dialog.notice("分部孩子数据加载错误！", "error");
 			}
 			$CPF.closeLoading();
 		});
     }
-    function initTreeNode(childList){
+    
+    //加载分部数据
+    function initTreeNodeSubselection(childList, parent){
     	$CPF.showLoading();
     	
     	var dragWrapLen = $(".dragEdit-wrap", $page).length + 1 ;
-    	var id = childList[0].parentId;
-    	var parent = $(".collapse-header[data-id='" + id + "']", $page).next(".collapse-content")[0];	
+    	
+    	//var id = childList[0].parentId;
+    		
     	var nodeHtml='';
     	 for (var nodeValue of childList){
 				 nodeHtml = nodeHtml + 
 				"<li class='attr-relative'>" + 
 					"<div class='attr-relative-title attr-relative collapse-header' data-id='" + nodeValue.id + "'  data-parentId='"+nodeValue.parentId+"'>" + 
 						"<div class='icon-label attr-relative'>" + 
-							"<i class='icon icon-attr-relative'></i><span class='text'>节点</span>" +
+							"<i class='icon icon-attr-group'></i><span class='text'>分部</span>" +
 						"</div>" + 
-						"<div class='label-bar attr-relative al-save'>"
+						"<div class='label-bar attr-relative attr-subselection al-save'>"
+								nodeHtml = nodeHtml + "<span style='color: #363636;padding-right: 1em;' title='分部号'>"+nodeValue.id+"</span><input type='text' disabled class='edit-input text name' name='name' title='名称' value='"+nodeValue.name+"'>" +
+								"<select disabled name='status' class='abc-attr status'>";
+								 if(nodeValue.status == "启用") {            		
+									 nodeHtml = nodeHtml +  "<option value='启用' selected>启用</option><option value='废弃'>废弃</option>";			    			
+						          }else {            				            		
+						        	  nodeHtml = nodeHtml +  "<option value='启用' >启用</option><option value='废弃' selected>废弃</option>";
+						          }	
+				            	nodeHtml = nodeHtml +"</select>"+
+								"<input type='text' style='width:65px;' disabled class='edit-input text order' name='order'  title='排序' value='"+nodeValue.order+"'>"
+							nodeHtml = nodeHtml + 
+							"<div class='btn-wrap'>" + 
+								"<i class='icon icon-save'></i>" +
+								"<i class='icon icon-add-abc abc'></i>" +
+								"<i class='icon icon-trash'></i>" + 
+								"<i class='icon icon-arrow-sm active'></i>" +
+							"</div>" +
+						"</div>" +
+					"</div>" +
+					"<ul class='drag-wrap-repeat need-ajax dragEdit-wrap collapse-content collapse-content-inactive' id='dragEdit-"+dragWrapLen+"'>" +
+					"</ul>" + 
+		        "</li>";
+				 
+				 dragWrapLen = dragWrapLen + 1;
+    	}
+    	
+    	//$(parent).html(""); //清空子节点
+    	var $html = $(nodeHtml).appendTo($(parent));
+    	$html.find("select").css({"width":"12%","marginLeft":"16px"}).select2();
+    	$CPF.closeLoading();
+    }
+    
+    //加载分部孩子数据
+    function initTreeNodeSubChild(childList, parent,colHeader){
+    	$CPF.showLoading();
+    	var dragWrapLen = $(".dragEdit-wrap", $page).length + 1 ;
+    	//这里获取可以选择的字典
+    	var dictParentId = $(colHeader).attr("data-parentid");
+    	
+    	$CPF.showLoading();
+    	Ajax.ajax("admin/cascadedict/cascadedictBasicItem/getChildByParentId", {
+    		parentId:dictParentId
+		},function(data){
+			var dictList = data.childList;
+			if (data.code==200 && dictList.length>0) {
+		    	var nodeHtml='';
+		    	 for (var nodeValue of childList){
+						 nodeHtml = nodeHtml + 
+						"<li class='attr-relative'>" + 
+							"<div class='attr-relative-title attr-relative collapse-header' data-id='" + nodeValue.id + "'  data-parentId='"+nodeValue.subsectionId+"'>" + 
+								"<div class='icon-label attr-relative'>" + 
+									"<i class='icon icon-attr-relative'></i><span class='text'>字典</span>" +
+								"</div>" + 
+								"<div class='label-bar attr-relative attr-subselection-child al-save'>"
+										nodeHtml = nodeHtml + "<span style='color: #363636;padding-right: 1em;' title='分部孩子号'>"+nodeValue.id+"</span>" +
+										"<select disabled name='childId' class='abc-attr childId'>";
+											 for (var nodeKey of dictList){
+												 if (nodeKey.id == nodeValue.childId) {
+													 nodeHtml+="<option  value='"+nodeKey.id+"' selected>"+nodeKey.name+"</option>";
+												 } else {
+													 nodeHtml+="<option  value='"+nodeKey.id+"'>"+nodeKey.name+"</option>";
+												 }
+											 }
+										nodeHtml +="</select>"+
+										"<select disabled name='status' class='abc-attr status'>";
+										 if(nodeValue.status == "启用") {            		
+											 nodeHtml = nodeHtml +  "<option value='启用' selected>启用</option><option value='废弃'>废弃</option>";			    			
+								          }else {            				            		
+								        	  nodeHtml = nodeHtml +  "<option value='启用' >启用</option><option value='废弃' selected>废弃</option>";
+								          }	
+						            	nodeHtml = nodeHtml +"</select>"+
+										"<input type='text' style='width:65px;' disabled class='edit-input text order' name='order'  title='排序' value='"+nodeValue.order+"'>"
+									nodeHtml = nodeHtml + 
+									"<div class='btn-wrap'>" + 
+										"<i class='icon icon-save'></i>" +
+										/*"<i class='icon icon-add-abc abc'></i>" +*/
+										"<i class='icon icon-trash'></i>" + 
+										/*"<i class='icon icon-arrow-sm active'></i>" +*/
+									"</div>" +
+								"</div>" +
+							"</div>" +
+							"<ul class='drag-wrap-repeat need-ajax dragEdit-wrap collapse-content collapse-content-inactive' id='dragEdit-"+dragWrapLen+"'>" +
+							"</ul>" + 
+				        "</li>";
+						 
+						 dragWrapLen = dragWrapLen + 1;
+		    	}
+		    	
+		    	var $html = $(nodeHtml).appendTo($(parent));
+		    	$html.find("select").css({"width":"12%","marginLeft":"16px"}).select2();
+		    	$CPF.closeLoading();
+		    	
+			} else if (data.code==200 && data.childList.length==0) {
+				Dialog.notice("没有可选字典，请先添加！", "warning");
+			} else {
+				Dialog.notice("可选字典数据加载错误！", "error");
+			}
+			$CPF.closeLoading();
+		});
+    }
+    
+    //加载孩子字典
+    function initTreeNode(childList, parent){
+    	$CPF.showLoading();
+    	
+    	var dragWrapLen = $(".dragEdit-wrap", $page).length + 1 ;
+    	//var id = childList[0].parentId;
+    	//var parent = $(".collapse-header[data-id='" + id + "']", $page).next(".collapse-content")[0];	
+    	var nodeHtml='';
+    	 for (var nodeValue of childList){
+				 nodeHtml = nodeHtml + 
+				"<li class='attr-relative'>" + 
+					"<div class='attr-relative-title attr-relative collapse-header' data-id='" + nodeValue.id + "'  data-parentId='"+nodeValue.parentId+"'>" + 
+						"<div class='icon-label attr-relative'>" + 
+							"<i class='icon icon-attr-relative'></i><span class='text'>字典</span>" +
+						"</div>" + 
+						"<div class='label-bar attr-relative attr-relative-save al-save'>"
 								nodeHtml = nodeHtml + "<span style='color: #363636;padding-right: 1em;' title='编号'>"+nodeValue.id+"</span><input type='text' disabled class='edit-input text name' name='name' title='名称' value='"+nodeValue.name+"'>" +
 								"<input type='text' disabled class='edit-input text enName' name='enName' title='英文名称' value='"+nodeValue.enName+"'>" +
 								"<select disabled name='status' class='abc-attr status'>";
@@ -92,27 +253,188 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 				 dragWrapLen = dragWrapLen + 1;
     	}
     	
-    	$(parent).html(""); //清空子节点
+    	//$(parent).html(""); //清空子节点
     	var $html = $(nodeHtml).appendTo($(parent));
     	$html.find("select").css({"width":"12%","marginLeft":"16px"}).select2();
     	$CPF.closeLoading();
     }
-	
+    
+    
     /**
-     * 添加孩子
-     * @param el
-     * @returns
+     * 跟实体添加页面弹出方法
+     * @param {当前点击元素,dom对象} el 
      */
     function pop(el) {
+    	
+    	 var html = "<ul class='card'>";        
+         html += "<li class='card-list add-dict'>" +
+             "<i class='icon icon-card-tag'></i>" +
+             "<span class='text'>添加字典</span>" +
+             "</li>" +
+             "<li class='card-list add-subselection'>" +
+             "<i class='icon icon-card-attr'></i>" +
+             "<span class='text'>添加分部</span>" +
+             "</li>"+
+             "</ul>";
+    	
+    	 var labelBar = $(el).closest(".label-bar");
+         if (labelBar.hasClass("attr-subselection")) {
+        	 html = "<ul class='card'>";        
+             html += "<li class='card-list add-subselect-child-dict'>" +
+                 "<i class='icon icon-card-tag'></i>" +
+                 "<span class='text'>选择字典</span>" +
+                 "</li>" +
+                 "</ul>";
+         }
+            
+        var wrap = $("#tree_view_panel");
+        var offsetx = $(el).offset().left;
+        var offsety = $(el).offset().top;
+        var wrapOffsetx = wrap.offset().left;
+        var wrapOffsety = wrap.offset().top;
+        var top = offsety - wrapOffsety + 30;
+        var left = offsetx -wrapOffsetx - 90;
+        var popHtml = $(html).appendTo(wrap);
+        popHtml.css({
+            "top": top,
+            "left": left
+        });
+
+    };
+    
+    
+    //添加页中的事件绑定
+    $("#tree_view_panel").on("click", ".card>li.card-list", function (e) {
+    	e.stopPropagation();
+        if ($("#tree_view_panel").find(".icon-add.active").length > 0) {
+            var el = $("#tree_view_panel").find(".icon-add.active")[0];
+        } else if ($("#tree_view_panel").find(".icon-add-abc.active").length > 0) {
+            var el = $("#tree_view_panel").find(".icon-add-abc.active")[0];
+        }
+        if ($(this).hasClass("add-dict")) {
+            addDict(el);
+        } else if ($(this).hasClass("add-subselection")) {
+            addSubselection(el);
+        } else if ($(this).hasClass("add-subselect-child-dict")) {
+        	addSubChildDict(el);
+        }
+        removePop();
+        $(el).removeClass("active");
+    	
+    	
+    });
+    
+    
+    /**
+     * 添加分部
+      */
+    function addSubselection(el) {
     	var $content = $(el).closest(".collapse-header").siblings(".collapse-content");
         var dragWrapLen = $(".dragEdit-wrap").length + 1 ;
         $CPF.showLoading();
         var nodeHtml = "<li class='attr-relative'>" + 
 			"<div class='attr-relative-title attr-relative collapse-header' data-id=''  data-parentId=''>" + 
 				"<div class='icon-label attr-relative'>" + 
-					"<i class='icon icon-attr-relative'></i><span class='text'>节点</span>" +
+					"<i class='icon icon-attr-group'></i><span class='text'>分部</span>" +
 				"</div>" + 
-				"<div class='label-bar attr-relative al-save edit'>"+
+				"<div class='label-bar attr-relative attr-subselection  al-save edit'>"+
+						"<span id='bianhaospan' style='color: #363636;padding-right: 1em;' title='分部号'></span>"+
+						"<input type='text'  class='edit-input text name' name='name' title='名称' placeholder='名称' value=''>" +
+						"<select name='status' class='abc-attr status'>"+
+							"<option value='启用' selected>启用</option><option value='废弃'>废弃</option>"+			    			
+		            	"</select>"+
+						"<input type='text' style='width:65px;' class='edit-input text order' name='order' placeholder='排序'  title='排序' value=''>"+
+					"<div class='btn-wrap'>" + 
+						"<i class='icon icon-save'></i>" +
+						"<i class='icon icon-add-abc abc'></i>" +
+						"<i class='icon icon-trash'></i>" + 
+						"<i class='icon icon-arrow-sm active'></i>" +
+					"</div>" +
+				"</div>" +
+			"</div>" +
+			"<ul class='drag-wrap-repeat need-ajax dragEdit-wrap collapse-content collapse-content-inactive' id='dragEdit-"+dragWrapLen+"'>" +
+			"</ul>" + 
+        "</li>";       		    
+		    var $html = $(nodeHtml).prependTo($content);
+            $html.find("select").css({"width":"12%","marginLeft":"16px"}).select2();
+            addUnfold(el);
+		    $CPF.closeLoading();	
+    }
+    
+    /**
+     * 添加分部的孩子
+      */
+    function addSubChildDict(el) {
+    	
+    	var $content = $(el).closest(".collapse-header").siblings(".collapse-content");
+        var dragWrapLen = $(".dragEdit-wrap").length + 1 ;
+    	
+    	//这里获取可以选择的字典
+    	var dictParentId = $(el).closest(".collapse-header").attr("data-parentid");
+    	
+    	$CPF.showLoading();
+    	Ajax.ajax("admin/cascadedict/cascadedictBasicItem/getChildByParentId", {
+    		parentId:dictParentId
+		},function(data){
+			var dictList = data.childList;
+			if (data.code==200 && dictList.length>0) {
+				
+		        var nodeHtml = "<li class='attr-relative'>" + 
+					"<div class='attr-relative-title attr-relative collapse-header' data-id=''  data-parentId=''>" + 
+						"<div class='icon-label attr-relative'>" + 
+							"<i class='icon icon-attr-relative'></i><span class='text'>字典</span>" +
+						"</div>" + 
+						"<div class='label-bar attr-relative attr-subselection-child  al-save edit'>"+
+								"<span id='bianhaospan' style='color: #363636;padding-right: 1em;' title='分部孩子编号'></span>"+
+								"<select name='childId' class='abc-attr childId'>";
+								 for (var nodeValue of dictList){
+									 nodeHtml+="<option  title='"+nodeValue.id+"' value='"+nodeValue.id+"'>"+nodeValue.name+"</option>";
+								 }
+								 nodeHtml +="</select>"+
+								 "<select name='status' class='abc-attr status'>"+
+									"<option value='启用' selected>启用</option><option value='废弃'>废弃</option>"+			    			
+				            	"</select>"+
+				            	"<input type='text' style='width:65px;' class='edit-input text order' name='order' placeholder='排序'  title='排序' value=''>"+
+							"<div class='btn-wrap'>" + 
+								"<i class='icon icon-save'></i>" +
+								/*"<i class='icon icon-add-abc abc'></i>" +*/
+								"<i class='icon icon-trash'></i>" + 
+								/*"<i class='icon icon-arrow-sm active'></i>" +*/
+							"</div>" +
+						"</div>" +
+					"</div>" +
+					"<ul class='drag-wrap-repeat need-ajax dragEdit-wrap collapse-content collapse-content-inactive' id='dragEdit-"+dragWrapLen+"'>" +
+					"</ul>" + 
+		        "</li>";       		    
+				    var $html = $(nodeHtml).prependTo($content);
+		            $html.find("select").css({"width":"12%","marginLeft":"16px"}).select2();
+		            addUnfold(el);
+				    $CPF.closeLoading();	
+			} else if (data.code==200 && data.childList.length==0) {
+				Dialog.notice("没有可选字典，请先添加！", "warning");
+			} else {
+				Dialog.notice("可选字典数据加载错误！", "error");
+			}
+			$CPF.closeLoading();
+		});
+    	
+    }
+	
+    /**
+     * 添加字典
+     * @param el
+     * @returns
+     */
+    function addDict(el) {
+    	var $content = $(el).closest(".collapse-header").siblings(".collapse-content");
+        var dragWrapLen = $(".dragEdit-wrap").length + 1 ;
+        $CPF.showLoading();
+        var nodeHtml = "<li class='attr-relative'>" + 
+			"<div class='attr-relative-title attr-relative collapse-header' data-id=''  data-parentId=''>" + 
+				"<div class='icon-label attr-relative'>" + 
+					"<i class='icon icon-attr-relative'></i><span class='text'>字典</span>" +
+				"</div>" + 
+				"<div class='label-bar attr-relative attr-relative-save al-save edit'>"+
 						"<span id='bianhaospan' style='color: #363636;padding-right: 1em;' title='编号'></span>"+
 						"<input type='text'  class='edit-input text name' name='name' title='名称' placeholder='名称' value=''>" +
 						"<input type='text'  class='edit-input text enName' name='enName' title='英文名称' placeholder='英文名称' value=''>" +
@@ -161,7 +483,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
             "<span class='opera cancel'>取消</span>" +
             "<span class='opera confirm'>确认</span>" +
             "</div>" +
-            "</div>"
+            "</div>";
 
         var wrap = $("#tree_view_panel");
         var offsetx = $(el).offset().left;
@@ -207,7 +529,89 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
         }
     }
     
-    //关系保存修改方法
+  //subselection保存修改方法
+    function subselectionSave(el) {
+    	var $relativeBar = $(el).closest(".label-bar");
+    	var id = $(el).closest(".collapse-header").attr("data-id");
+    	var parentId = $(el).closest(".collapse-content").siblings(".collapse-header").attr("data-id");
+    	var name = $relativeBar.children(".name").val();
+    	var enName = $relativeBar.children(".enName").val();  
+    	var status = $relativeBar.children(".status").find("option:selected").val();
+    	var order = $relativeBar.children(".order").val();
+    	
+    	var reg = /^[0-9]*$/;
+    	if (!reg.test(order)) {
+    		Dialog.notice("【排序】只能输入数字！", "warning");
+    		return false;
+    	}
+    	if (name.length ==0) {
+    		Dialog.notice("【名称】不能为空！", "warning");
+    		return false;
+    	}
+    	
+    	var dragWrapLen = $(".dragEdit-wrap").length + 1 ;    	
+    	$CPF.showLoading();
+    	Ajax.ajax('admin/cascadedict/cascadedictSubsection/saveOrUpdate', {
+    		id:id,
+    		name: name,
+    		status: status,	
+    		order: order,
+    		parentId:parentId
+		 }, function(data) {
+			 	if (data.code == 200) {
+			 		var creteria = data.creteria;
+			    	$(el).closest(".collapse-header").attr("data-id", creteria.id);
+			    	$(el).closest(".collapse-header").find(".label-bar").find("#bianhaospan").html(creteria.id);
+			    	saveSuccess(el)
+			    	
+			 		Dialog.notice("保存成功！", "success");
+			 	} else {
+			 		Dialog.notice("保存失败！", "error");
+			 	}
+			 	 $CPF.closeLoading();
+		 });
+    };
+    
+  //subselection孩子的保存修改方法
+    function attrSubChildSave(el) {
+    	var $relativeBar = $(el).closest(".label-bar");
+    	var id = $(el).closest(".collapse-header").attr("data-id");
+    	var subsectionId = $(el).closest(".collapse-content").siblings(".collapse-header").attr("data-id");
+    	var childId = $relativeBar.children(".childId").find("option:selected").val();
+    	var status = $relativeBar.children(".status").find("option:selected").val();
+    	var order = $relativeBar.children(".order").val();
+    	
+    	var reg = /^[0-9]*$/;
+    	if (!reg.test(order)) {
+    		Dialog.notice("【排序】只能输入数字！", "warning");
+    		return false;
+    	}
+    	
+    	var dragWrapLen = $(".dragEdit-wrap").length + 1 ;    	
+    	$CPF.showLoading();
+    	Ajax.ajax('admin/cascadedict/cascadedictSubsection/saveOrUpSubChild', {
+    		id:id,
+    		subsectionId: subsectionId,
+    		status: status,	
+    		order: order,
+    		childId:childId
+		 }, function(data) {
+			 	if (data.code == 200) {
+			 		var creteria = data.creteria;
+			    	$(el).closest(".collapse-header").attr("data-id", creteria.id);
+			    	$(el).closest(".collapse-header").find(".label-bar").find("#bianhaospan").html(creteria.id);
+			    	saveSuccess(el)
+			    	
+			 		Dialog.notice("保存成功！", "success");
+			 	} else {
+			 		Dialog.notice("保存失败！", "error");
+			 	}
+			 	 $CPF.closeLoading();
+		 });
+    };
+    
+    
+    //字典保存修改方法
     function relativeSave(el) {  
     	var $relativeBar = $(el).closest(".label-bar");
     	var id = $(el).closest(".collapse-header").attr("data-id");
@@ -309,6 +713,67 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
     	} 
     };   
     
+    
+  //subselection 删除方法
+    function subselectionDel(el) {
+    	var $relativeBar = $(el).closest(".label-bar");
+    	var id = $relativeBar.closest(".collapse-header").attr("data-id");
+    	var callback = function() {
+    		$relativeBar.closest("li.attr-relative").remove();    		
+    	};
+    	
+    	if (id.length==0) {
+    		callback();
+    		removePop();
+    		return;
+    	}
+    	if($relativeBar.hasClass("al-save")){
+    		$CPF.showLoading();
+        	Ajax.ajax('admin/cascadedict/cascadedictSubsection/doDelte/' + id, {			
+    		 }, function(data) {
+    			if(data.code==200) {
+    				callback();
+    	    		removePop();
+    	    		Dialog.notice("删除成功！", "success");
+    			}  else {
+    				removePop();
+    				Dialog.notice(data.msg, "error");
+    			}
+    		});
+        	$CPF.closeLoading();
+    	} 
+    };   
+    
+    //subChild 删除方法
+    function subChildDel(el) {
+    	var $relativeBar = $(el).closest(".label-bar");
+    	var id = $relativeBar.closest(".collapse-header").attr("data-id");
+    	var callback = function() {
+    		$relativeBar.closest("li.attr-relative").remove();    		
+    	};
+    	
+    	if (id.length==0) {
+    		callback();
+    		removePop();
+    		return;
+    	}
+    	if($relativeBar.hasClass("al-save")){
+    		$CPF.showLoading();
+        	Ajax.ajax('admin/cascadedict/cascadedictSubsection/doDelSubChild/' + id, {			
+    		 }, function(data) {
+    			if(data.code==200) {
+    				callback();
+    	    		removePop();
+    	    		Dialog.notice("删除成功！", "success");
+    			}  else {
+    				removePop();
+    				Dialog.notice(data.msg, "error");
+    			}
+    		});
+        	$CPF.closeLoading();
+    	} 
+    };  
+    
     //tag删除
     $page.on("click", function () {  
         removePop();
@@ -336,6 +801,12 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
                 .addClass("collapse-content-active");
         }        
        if(needAjax) {
+    	  var subselection =  $(this).closest(".label-bar").hasClass("attr-subselection");
+    	  if (subselection) {//这里是加载subChild
+    		  getSubChildByPid(parentId);
+    		  return;
+    	  }
+    	   
     	   getChildByParentId(parentId);
     	   $content.removeClass("need-ajax");
         } else {
@@ -417,12 +888,12 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
         	attrSave(this);
         }else if(labelBar.hasClass("more-attr")) {
         	moreAttrSave(this);
-        }else if(labelBar.hasClass("attr-group")) {
-        	attrGroupSave(this);
-        }else if(labelBar.hasClass("attr-relative")) {
+        }else if(labelBar.hasClass("attr-subselection-child")) {
+        	attrSubChildSave(this);
+        }else if(labelBar.hasClass("attr-relative-save")) {
         	relativeSave(this);
-        }else if(labelBar.hasClass("abc")) {
-        	abcSave(this);
+        }else if(labelBar.hasClass("attr-subselection")) {
+        	subselectionSave(this);
         }
 
     });
@@ -431,13 +902,22 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
     $("#tree_view_panel").on("click", ".opera.confirm", function(e) {  
     	e.stopPropagation();    
         var entityTitle = $(".icon-trash.active").closest(".entity-title");
-        var labelBar = $(".icon-trash-sm.active").closest(".label-bar");
+        var labelBar = $(".icon-trash.active").closest(".label-bar");
+        var el = $(".icon-trash.active")[0]; 
         if(entityTitle.length > 0) {
-        	var el = $(".icon-trash.active")[0];
         	entityDelete(el);
         	return;
         } 
-        var el = $(".icon-trash.active")[0];        
+        if (labelBar.hasClass("attr-subselection")) {
+        	subselectionDel(el);
+        	return;
+        }
+        
+        if (labelBar.hasClass("attr-subselection-child")) {
+        	subChildDel(el);
+        	return;
+        }
+        
         relativeDelete(el);
     })
     

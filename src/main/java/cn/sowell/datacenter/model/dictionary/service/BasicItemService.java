@@ -24,7 +24,7 @@ public interface BasicItemService {
 
 	/**
 	 * 创建一个BasicItem对象
-	 * @param BasicItem
+	 * @param CascadedictSubsection
 	 */
 	void create(BasicItem basicItem);
 

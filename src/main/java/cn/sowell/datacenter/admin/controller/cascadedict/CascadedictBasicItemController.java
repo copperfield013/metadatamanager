@@ -28,7 +28,9 @@ import cn.sowell.copframe.dto.page.PageInfo;
 import cn.sowell.datacenter.admin.controller.AdminConstants;
 import cn.sowell.datacenter.model.cascadedict.criteria.CascadedictBasicItemCriteria;
 import cn.sowell.datacenter.model.cascadedict.pojo.CascadedictBasicItem;
+import cn.sowell.datacenter.model.cascadedict.pojo.CascadedictSubsection;
 import cn.sowell.datacenter.model.cascadedict.service.CascadedictBasicItemService;
+import cn.sowell.datacenter.model.cascadedict.service.CascadedictSubsectionService;
 
 @Controller
 @RequestMapping(AdminConstants.URI_CASCADEDICT + "/cascadedictBasicItem")
@@ -36,6 +38,9 @@ public class CascadedictBasicItemController {
 	
 	@Resource
 	CascadedictBasicItemService cascadedictBasicItemService;
+	
+	@Resource
+	CascadedictSubsectionService csService;
 	
 	Logger logger = Logger.getLogger(CascadedictBasicItemController.class);
 	@org.springframework.web.bind.annotation.InitBinder
@@ -202,6 +207,13 @@ public class CascadedictBasicItemController {
 		Map<String, Object> map = new HashMap<String, Object>();
 		JSONObject jobj = new JSONObject(map);
 		try {
+			List<CascadedictSubsection> subSelectList = csService.getSubSelectByParentId(String.valueOf(id));
+			
+			if (!subSelectList.isEmpty()) {
+				map.put("code", 400);
+				map.put("msg", "请先删除孩子");
+				return jobj.toString();
+			}
 			cascadedictBasicItemService.delete(id);
 			map.put("code", 200);
 			map.put("msg", "success");
