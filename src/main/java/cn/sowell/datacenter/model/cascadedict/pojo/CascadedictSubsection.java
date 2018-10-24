@@ -20,13 +20,13 @@ public class CascadedictSubsection {
 	  @Id
 	  @Column(name="id")
 	  @GenericGenerator(name = "system-uuid", strategy = "uuid")
-	  private String id;//单独生成规则
+	  private Integer id;//单独生成规则
 	  
 	  @Column(name="c_name")
 	  private String name;
 	 
 	  @Column(name="parent_id")
-	  private String parentId;
+	  private Integer parentId;
 	  
 	  @Column(name="c_status")
 	  private String status;
@@ -40,7 +40,7 @@ public class CascadedictSubsection {
 	/**
 	 * @return the id
 	 */
-	public String getId() {
+	public Integer getId() {
 		return id;
 	}
 
@@ -54,7 +54,7 @@ public class CascadedictSubsection {
 	/**
 	 * @return the parentId
 	 */
-	public String getParentId() {
+	public Integer getParentId() {
 		return parentId;
 	}
 
@@ -82,7 +82,7 @@ public class CascadedictSubsection {
 	/**
 	 * @param id the id to set
 	 */
-	public void setId(String id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
 
@@ -96,7 +96,7 @@ public class CascadedictSubsection {
 	/**
 	 * @param parentId the parentId to set
 	 */
-	public void setParentId(String parentId) {
+	public void setParentId(Integer parentId) {
 		this.parentId = parentId;
 	}
 

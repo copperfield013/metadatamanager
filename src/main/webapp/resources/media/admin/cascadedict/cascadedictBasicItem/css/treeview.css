@@ -146,7 +146,13 @@ body {
     margin-left: 98px;
     background-color: #f0f1f1;
 }
-#tree_view_panel .icon-label.attr-relative {
+
+#tree_view_panel .icon-label.attr-relative-sub {
+    background-color: rgba(0,0,0,.3);
+    width: 98px;
+}
+
+#tree_view_panel .icon-label.attr-relative-dict {
     background-color: #5ed1e0;
     width: 98px;
 }

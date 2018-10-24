@@ -14,7 +14,7 @@ public interface CascadedictSubsectionService {
 	 * @return
 	 * @throws Exception
 	 */
-	List<CascadedictSubsection> getSubSelectByParentId(String parentId) throws Exception;
+	List<CascadedictSubsection> getSubSelectByParentId(Integer parentId) throws Exception;
 	
 	/**
 	 * 根据父subSelectionId，  获取subChild
@@ -22,7 +22,7 @@ public interface CascadedictSubsectionService {
 	 * @return
 	 * @throws Exception
 	 */
-	List<CascadedictSubsectionChild> getSubChildByPid(String subsectionId) throws Exception;
+	List<CascadedictSubsectionChild> getSubChildByPid(Integer subsectionId) throws Exception;
 	
 	/**
 	 * 创建一个CascadedictSubsection对象
@@ -30,7 +30,7 @@ public interface CascadedictSubsectionService {
 	 */
 	void create(CascadedictSubsection subsection) throws Exception;
 
-	CascadedictSubsection getOne(String id) throws Exception;
+	CascadedictSubsection getOne(Integer id) throws Exception;
 
 	/**
 	 * 更新一个CascadedictSubsection对象
@@ -42,19 +42,19 @@ public interface CascadedictSubsectionService {
 	 * 从数据库中删除一个CascadedictSubsection对象
 	 * @param id
 	 */
-	void deleteByObj(Object id) throws Exception;
+	void deleteByObj(Object obj) throws Exception;
 	
 	/**
 	 * 从数据库中删除一个CascadedictSubsection对象
 	 * @param id
 	 */
-	void deleteById(String id) throws Exception;
+	void deleteById(Integer id) throws Exception;
 	
 	/**
 	 * 从数据库中删除一个CascadedictSubsectionChild对象
 	 * @param id
 	 */
-	void delSubChildById(String id) throws Exception;
+	void delSubChildById(Integer id) throws Exception;
 	
 	/**
 	 * 保存或者是修改CascadedictSubsection对象

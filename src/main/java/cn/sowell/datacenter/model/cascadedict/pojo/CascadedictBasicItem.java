@@ -7,6 +7,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.GenericGenerator;
+
 import io.swagger.annotations.ApiModelProperty;
 
 @Entity
@@ -14,10 +16,10 @@ import io.swagger.annotations.ApiModelProperty;
 public class CascadedictBasicItem {
 
 	@ApiModelProperty(value="主键id")
-	@Id
-	@Column(name = "id")
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	private Integer id;
+	 @Id
+	  @Column(name="id")
+	  @GenericGenerator(name = "system-uuid", strategy = "uuid")
+	  private Integer id;
 	
 	@Column(name = "c_cas_pid")
 	private String casPid;

@@ -43,11 +43,11 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 		},function(data){
 			if (data.code==200 && data.childList.length>0) {
 				initTreeNodeSubselection(data.childList, parent);
-				Dialog.notice("分部数据加载成功！", "success");
+				Dialog.notice("子集数据加载成功！", "success");
 			} else if (data.code==200 && data.childList.length==0) {
-				Dialog.notice("当前节点没有分部！", "warning");
+				Dialog.notice("当前节点没有子集！", "warning");
 			} else {
-				Dialog.notice("分部数据加载错误！", "error");
+				Dialog.notice("子集数据加载错误！", "error");
 			}
 			
 	    	Ajax.ajax("admin/cascadedict/cascadedictBasicItem/getChildByParentId", {
@@ -84,17 +84,17 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 		},function(data){
 			if (data.code==200 && data.childList.length>0) {
 				initTreeNodeSubChild(data.childList, parent, $colHeader);
-				Dialog.notice("分部孩子加载成功！", "success");
+				Dialog.notice("子集孩子加载成功！", "success");
 			} else if (data.code==200 && data.childList.length==0) {
-				Dialog.notice("当前分部没有孩子！", "warning");
+				Dialog.notice("当前子集没有孩子！", "warning");
 			} else {
-				Dialog.notice("分部孩子数据加载错误！", "error");
+				Dialog.notice("子集孩子数据加载错误！", "error");
 			}
 			$CPF.closeLoading();
 		});
     }
     
-    //加载分部数据
+    //加载子集数据
     function initTreeNodeSubselection(childList, parent){
     	$CPF.showLoading();
     	
@@ -107,11 +107,11 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 				 nodeHtml = nodeHtml + 
 				"<li class='attr-relative'>" + 
 					"<div class='attr-relative-title attr-relative collapse-header' data-id='" + nodeValue.id + "'  data-parentId='"+nodeValue.parentId+"'>" + 
-						"<div class='icon-label attr-relative'>" + 
-							"<i class='icon icon-attr-group'></i><span class='text'>分部</span>" +
+						"<div class='icon-label attr-relative-sub attr-relative'>" + 
+							"<i class='icon icon-attr-group'></i><span class='text'>子集</span>" +
 						"</div>" + 
 						"<div class='label-bar attr-relative attr-subselection al-save'>"
-								nodeHtml = nodeHtml + "<span style='color: #363636;padding-right: 1em;' title='分部号'>"+nodeValue.id+"</span><input type='text' disabled class='edit-input text name' name='name' title='名称' value='"+nodeValue.name+"'>" +
+								nodeHtml = nodeHtml + "<span style='color: #363636;padding-right: 1em;' title='子集号'>"+nodeValue.id+"</span><input type='text' disabled class='edit-input text name' name='name' title='名称' value='"+nodeValue.name+"'>" +
 								"<select disabled name='status' class='abc-attr status'>";
 								 if(nodeValue.status == "启用") {            		
 									 nodeHtml = nodeHtml +  "<option value='启用' selected>启用</option><option value='废弃'>废弃</option>";			    			
@@ -142,7 +142,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
     	$CPF.closeLoading();
     }
     
-    //加载分部孩子数据
+    //加载子集孩子数据
     function initTreeNodeSubChild(childList, parent,colHeader){
     	$CPF.showLoading();
     	var dragWrapLen = $(".dragEdit-wrap", $page).length + 1 ;
@@ -160,11 +160,11 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 						 nodeHtml = nodeHtml + 
 						"<li class='attr-relative'>" + 
 							"<div class='attr-relative-title attr-relative collapse-header' data-id='" + nodeValue.id + "'  data-parentId='"+nodeValue.subsectionId+"'>" + 
-								"<div class='icon-label attr-relative'>" + 
+								"<div class='icon-label attr-relative-dict attr-relative'>" + 
 									"<i class='icon icon-attr-relative'></i><span class='text'>字典</span>" +
 								"</div>" + 
 								"<div class='label-bar attr-relative attr-subselection-child al-save'>"
-										nodeHtml = nodeHtml + "<span style='color: #363636;padding-right: 1em;' title='分部孩子号'>"+nodeValue.id+"</span>" +
+										nodeHtml = nodeHtml + "<span style='color: #363636;padding-right: 1em;' title='子集孩子号'>"+nodeValue.id+"</span>" +
 										"<select disabled name='childId' class='abc-attr childId'>";
 											 for (var nodeKey of dictList){
 												 if (nodeKey.id == nodeValue.childId) {
@@ -223,10 +223,10 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 				 nodeHtml = nodeHtml + 
 				"<li class='attr-relative'>" + 
 					"<div class='attr-relative-title attr-relative collapse-header' data-id='" + nodeValue.id + "'  data-parentId='"+nodeValue.parentId+"'>" + 
-						"<div class='icon-label attr-relative'>" + 
+						"<div class='icon-label attr-relative-dict attr-relative'>" + 
 							"<i class='icon icon-attr-relative'></i><span class='text'>字典</span>" +
 						"</div>" + 
-						"<div class='label-bar attr-relative attr-relative-save al-save'>"
+						"<div class='label-bar attr-relative-dict attr-relative attr-relative-save al-save'>"
 								nodeHtml = nodeHtml + "<span style='color: #363636;padding-right: 1em;' title='编号'>"+nodeValue.id+"</span><input type='text' disabled class='edit-input text name' name='name' title='名称' value='"+nodeValue.name+"'>" +
 								"<input type='text' disabled class='edit-input text enName' name='enName' title='英文名称' value='"+nodeValue.enName+"'>" +
 								"<select disabled name='status' class='abc-attr status'>";
@@ -273,7 +273,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
              "</li>" +
              "<li class='card-list add-subselection'>" +
              "<i class='icon icon-card-attr'></i>" +
-             "<span class='text'>添加分部</span>" +
+             "<span class='text'>添加子集</span>" +
              "</li>"+
              "</ul>";
     	
@@ -326,19 +326,20 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
     
     
     /**
-     * 添加分部
+     * 添加子集
       */
     function addSubselection(el) {
+    	//var parentId = $(el).closest(".collapse-header").attr("data-parentid");
     	var $content = $(el).closest(".collapse-header").siblings(".collapse-content");
         var dragWrapLen = $(".dragEdit-wrap").length + 1 ;
         $CPF.showLoading();
         var nodeHtml = "<li class='attr-relative'>" + 
 			"<div class='attr-relative-title attr-relative collapse-header' data-id=''  data-parentId=''>" + 
-				"<div class='icon-label attr-relative'>" + 
-					"<i class='icon icon-attr-group'></i><span class='text'>分部</span>" +
+				"<div class='icon-label attr-relative-sub attr-relative'>" + 
+					"<i class='icon icon-attr-group'></i><span class='text'>子集</span>" +
 				"</div>" + 
 				"<div class='label-bar attr-relative attr-subselection  al-save edit'>"+
-						"<span id='bianhaospan' style='color: #363636;padding-right: 1em;' title='分部号'></span>"+
+						"<span id='bianhaospan' style='color: #363636;padding-right: 1em;' title='子集号'></span>"+
 						"<input type='text'  class='edit-input text name' name='name' title='名称' placeholder='名称' value=''>" +
 						"<select name='status' class='abc-attr status'>"+
 							"<option value='启用' selected>启用</option><option value='废弃'>废弃</option>"+			    			
@@ -362,7 +363,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
     }
     
     /**
-     * 添加分部的孩子
+     * 添加子集的孩子
       */
     function addSubChildDict(el) {
     	
@@ -381,11 +382,11 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 				
 		        var nodeHtml = "<li class='attr-relative'>" + 
 					"<div class='attr-relative-title attr-relative collapse-header' data-id=''  data-parentId=''>" + 
-						"<div class='icon-label attr-relative'>" + 
+						"<div class='icon-label attr-relative-dict attr-relative'>" + 
 							"<i class='icon icon-attr-relative'></i><span class='text'>字典</span>" +
 						"</div>" + 
 						"<div class='label-bar attr-relative attr-subselection-child  al-save edit'>"+
-								"<span id='bianhaospan' style='color: #363636;padding-right: 1em;' title='分部孩子编号'></span>"+
+								"<span id='bianhaospan' style='color: #363636;padding-right: 1em;' title='子集孩子编号'></span>"+
 								"<select name='childId' class='abc-attr childId'>";
 								 for (var nodeValue of dictList){
 									 nodeHtml+="<option  title='"+nodeValue.id+"' value='"+nodeValue.id+"'>"+nodeValue.name+"</option>";
@@ -430,8 +431,8 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
         var dragWrapLen = $(".dragEdit-wrap").length + 1 ;
         $CPF.showLoading();
         var nodeHtml = "<li class='attr-relative'>" + 
-			"<div class='attr-relative-title attr-relative collapse-header' data-id=''  data-parentId=''>" + 
-				"<div class='icon-label attr-relative'>" + 
+			"<div class='attr-relative-title attr-relative-dict attr-relative collapse-header' data-id=''  data-parentId=''>" + 
+				"<div class='icon-label attr-relative-dict attr-relative'>" + 
 					"<i class='icon icon-attr-relative'></i><span class='text'>字典</span>" +
 				"</div>" + 
 				"<div class='label-bar attr-relative attr-relative-save al-save edit'>"+
@@ -561,6 +562,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 			 	if (data.code == 200) {
 			 		var creteria = data.creteria;
 			    	$(el).closest(".collapse-header").attr("data-id", creteria.id);
+			    	$(el).closest(".collapse-header").attr("data-parentid", creteria.parentId);
 			    	$(el).closest(".collapse-header").find(".label-bar").find("#bianhaospan").html(creteria.id);
 			    	saveSuccess(el)
 			    	

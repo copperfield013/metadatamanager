@@ -12,6 +12,7 @@ import cn.sowell.copframe.dto.page.PageInfo;
 import cn.sowell.datacenter.model.cascadedict.criteria.CascadedictBasicItemCriteria;
 import cn.sowell.datacenter.model.cascadedict.dao.CascadedictBasicItemDao;
 import cn.sowell.datacenter.model.cascadedict.pojo.CascadedictBasicItem;
+import cn.sowell.datacenter.model.cascadedict.pojo.CascadedictCodeGenerator;
 import cn.sowell.datacenter.model.cascadedict.service.CascadedictBasicItemService;
 
 @Service
@@ -32,6 +33,10 @@ public class CascadedictBasicItemServiceImpl implements CascadedictBasicItemServ
 		
 		CascadedictBasicItem one = dictionaryBasicItemDao.get(CascadedictBasicItem.class, dictParentItem.getParentId());
 		dictParentItem.setCasPid(one.getId() ==0? one.getId() +"":one.getCasPid()+"."+one.getId());
+		
+		CascadedictCodeGenerator cc = new CascadedictCodeGenerator();
+		dictionaryBasicItemDao.insert(cc);
+		dictParentItem.setId(cc.getId());
 		dictionaryBasicItemDao.insert(dictParentItem);
 	}
 
@@ -69,6 +74,10 @@ public class CascadedictBasicItemServiceImpl implements CascadedictBasicItemServ
 		CascadedictBasicItem one = dictionaryBasicItemDao.get(CascadedictBasicItem.class, basicItem.getParentId());
 		basicItem.setCasPid(one.getCasPid()+"."+one.getId());
 		if (basicItem.getId() == null) {
+			
+			CascadedictCodeGenerator cc = new CascadedictCodeGenerator();
+			dictionaryBasicItemDao.insert(cc);
+			basicItem.setId(cc.getId());
 			dictionaryBasicItemDao.insert(basicItem);
 		} else {
 			dictionaryBasicItemDao.update(basicItem);

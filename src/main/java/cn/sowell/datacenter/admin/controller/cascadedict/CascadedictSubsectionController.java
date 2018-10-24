@@ -57,7 +57,7 @@ public class CascadedictSubsectionController {
 	 */
 	@ResponseBody
 	@RequestMapping("/getSubSelectByParentId")
-	public String getSubSelectByParentId(String parentId, Model model){
+	public String getSubSelectByParentId(Integer parentId, Model model){
 		Map<String, Object> map = new HashMap<String, Object>();
 		JSONObject jobj = new JSONObject(map);
 		try {
@@ -84,7 +84,7 @@ public class CascadedictSubsectionController {
 	 */
 	@ResponseBody
 	@RequestMapping("/getSubChildByPid")
-	public String getSubChildByPid(String subsectionId, Model model){
+	public String getSubChildByPid(Integer subsectionId, Model model){
 		Map<String, Object> map = new HashMap<String, Object>();
 		JSONObject jobj = new JSONObject(map);
 		try {
@@ -149,7 +149,7 @@ public class CascadedictSubsectionController {
 	
 	@ResponseBody
 	@RequestMapping("/doDelte/{id}")
-	public String do_delte(@PathVariable String id){
+	public String do_delte(@PathVariable Integer id){
 		Map<String, Object> map = new HashMap<String, Object>();
 		JSONObject jobj = new JSONObject(map);
 		try {
@@ -175,7 +175,7 @@ public class CascadedictSubsectionController {
 	
 	@ResponseBody
 	@RequestMapping("/doDelSubChild/{id}")
-	public String doDelSubChild(@PathVariable String id){
+	public String doDelSubChild(@PathVariable Integer id){
 		Map<String, Object> map = new HashMap<String, Object>();
 		JSONObject jobj = new JSONObject(map);
 		try {

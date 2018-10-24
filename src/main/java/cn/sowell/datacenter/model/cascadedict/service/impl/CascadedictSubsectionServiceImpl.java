@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import cn.sowell.datacenter.model.cascadedict.dao.CascadedictSubsectionDao;
 import cn.sowell.datacenter.model.cascadedict.pojo.CascadedictBasicItem;
+import cn.sowell.datacenter.model.cascadedict.pojo.CascadedictCodeGenerator;
 import cn.sowell.datacenter.model.cascadedict.pojo.CascadedictSubsection;
 import cn.sowell.datacenter.model.cascadedict.pojo.CascadedictSubsectionChild;
 import cn.sowell.datacenter.model.cascadedict.service.CascadedictSubsectionService;
@@ -27,7 +28,7 @@ public class CascadedictSubsectionServiceImpl implements CascadedictSubsectionSe
 	}
 
 	@Override
-	public CascadedictSubsection getOne(String id) throws Exception {
+	public CascadedictSubsection getOne(Integer id) throws Exception {
 		return cascadedictSubsection.get(CascadedictSubsection.class, id);
 	}
 
@@ -46,9 +47,9 @@ public class CascadedictSubsectionServiceImpl implements CascadedictSubsectionSe
 		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		subsection.setUpdateTime(df.format(new Date()));
 		if (subsection.getId() == null || "".equals(subsection.getId())) {
-			BasicItemNodeGenerator btNg = new BasicItemNodeGenerator();
+			CascadedictCodeGenerator btNg = new CascadedictCodeGenerator();
 			cascadedictSubsection.insert(btNg);
-			String id = btNg.getPrefixCode("");
+			Integer id = btNg.getId();
 			subsection.setId(id);
 			cascadedictSubsection.insert(subsection);
 		} else {
@@ -58,7 +59,7 @@ public class CascadedictSubsectionServiceImpl implements CascadedictSubsectionSe
 	}
 
 	@Override
-	public void deleteById(String id) throws Exception {
+	public void deleteById(Integer id) throws Exception {
 		
 		
 		
@@ -66,12 +67,12 @@ public class CascadedictSubsectionServiceImpl implements CascadedictSubsectionSe
 	}
 
 	@Override
-	public List<CascadedictSubsection> getSubSelectByParentId(String parentId) throws Exception {
+	public List<CascadedictSubsection> getSubSelectByParentId(Integer parentId) throws Exception {
 		return cascadedictSubsection.getSubSelectByParentId(parentId);
 	}
 	
 	@Override
-	public List<CascadedictSubsectionChild> getSubChildByPid(String subsectionId) throws Exception {
+	public List<CascadedictSubsectionChild> getSubChildByPid(Integer subsectionId) throws Exception {
 		return cascadedictSubsection.getSubChildByPid(subsectionId);
 	}
 
@@ -80,9 +81,9 @@ public class CascadedictSubsectionServiceImpl implements CascadedictSubsectionSe
 		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		subChild.setUpdateTime(df.format(new Date()));
 		if (subChild.getId() == null || "".equals(subChild.getId())) {
-			BasicItemNodeGenerator btNg = new BasicItemNodeGenerator();
+			CascadedictCodeGenerator btNg = new CascadedictCodeGenerator();
 			cascadedictSubsection.insert(btNg);
-			String id = btNg.getPrefixCode("");
+			Integer id = btNg.getId();
 			subChild.setId(id);
 			cascadedictSubsection.insert(subChild);
 		} else {
@@ -91,7 +92,7 @@ public class CascadedictSubsectionServiceImpl implements CascadedictSubsectionSe
 	}
 
 	@Override
-	public void delSubChildById(String id) throws Exception {
+	public void delSubChildById(Integer id) throws Exception {
 		cascadedictSubsection.delSubChildById(id);
 	}
 

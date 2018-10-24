@@ -26,7 +26,7 @@ public class CascadedictSubsectionDaoImpl implements CascadedictSubsectionDao {
 	}
 	
 	@Override
-	public <T> T get(Class<T> clazz, String id) throws Exception{
+	public <T> T get(Class<T> clazz, Integer id) throws Exception{
 		return sFactory.getCurrentSession().get(clazz, id);
 	}
 	
@@ -46,25 +46,25 @@ public class CascadedictSubsectionDaoImpl implements CascadedictSubsectionDao {
 	}
 
 	@Override
-	public void deleteById(String id) throws Exception {
+	public void deleteById(Integer id) throws Exception {
 		String sql = "DELETE FROM t_sc_cascadedict_subsection where id=:id";
 		sFactory.getCurrentSession().createSQLQuery(sql).setParameter("id", id).executeUpdate();
 	}
 
 	@Override
-	public List<CascadedictSubsection> getSubSelectByParentId(String parentId) throws Exception {
+	public List<CascadedictSubsection> getSubSelectByParentId(Integer parentId) throws Exception {
 		String hql = "from CascadedictSubsection where parentId=:parentId ORDER BY order";
 		return sFactory.getCurrentSession().createQuery(hql).setParameter("parentId", parentId).list();
 	}
 
 	@Override
-	public void delSubChildById(String id) throws Exception {
+	public void delSubChildById(Integer id) throws Exception {
 		String sql = "DELETE FROM t_sc_cascadedict_subsection_child where id=:id";
 		sFactory.getCurrentSession().createSQLQuery(sql).setParameter("id", id).executeUpdate();
 	}
 
 	@Override
-	public List<CascadedictSubsectionChild> getSubChildByPid(String subsectionId) throws Exception {
+	public List<CascadedictSubsectionChild> getSubChildByPid(Integer subsectionId) throws Exception {
 		String hql = "from CascadedictSubsectionChild where subsectionId=:subsectionId ORDER BY order";
 		return sFactory.getCurrentSession().createQuery(hql).setParameter("subsectionId", subsectionId).list();
 	

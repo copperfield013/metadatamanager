@@ -207,7 +207,7 @@ public class CascadedictBasicItemController {
 		Map<String, Object> map = new HashMap<String, Object>();
 		JSONObject jobj = new JSONObject(map);
 		try {
-			List<CascadedictSubsection> subSelectList = csService.getSubSelectByParentId(String.valueOf(id));
+			List<CascadedictSubsection> subSelectList = csService.getSubSelectByParentId(id);
 			
 			if (!subSelectList.isEmpty()) {
 				map.put("code", 400);

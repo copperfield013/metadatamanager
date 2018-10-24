@@ -15,7 +15,7 @@ public interface CascadedictSubsectionDao {
 	 * @return
 	 * @throws Exception
 	 */
-	List<CascadedictSubsection> getSubSelectByParentId(String parentId) throws Exception;
+	List<CascadedictSubsection> getSubSelectByParentId(Integer parentId) throws Exception;
 	
 	/**
 	 * 获取subChild列表
@@ -23,7 +23,7 @@ public interface CascadedictSubsectionDao {
 	 * @return
 	 * @throws Exception
 	 */
-	List<CascadedictSubsectionChild> getSubChildByPid(String subsectionId) throws Exception;
+	List<CascadedictSubsectionChild> getSubChildByPid(Integer subsectionId) throws Exception;
 	
 	/**
 	 * 对象插入到数据表中
@@ -37,7 +37,7 @@ public interface CascadedictSubsectionDao {
 	 * @param id
 	 * @return
 	 */
-	<T> T get(Class<T> clazz, String id) throws Exception;
+	<T> T get(Class<T> clazz, Integer id) throws Exception;
 
 	/**
 	 * 更新一个pojo对象
@@ -55,14 +55,14 @@ public interface CascadedictSubsectionDao {
 	 * 从数据库中删除一个对象
 	 * @param pojo
 	 */
-	void deleteById(String id) throws Exception;
+	void deleteById(Integer id) throws Exception;
 	
 	/**
 	 * 删除subChild， 根据id删除
 	 * @param id
 	 * @throws Exception
 	 */
-	void delSubChildById(String id) throws Exception;
+	void delSubChildById(Integer id) throws Exception;
 	
 	/**
 	 * 主键id生成
