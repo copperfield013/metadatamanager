@@ -154,7 +154,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
     		parentId:dictParentId
 		},function(data){
 			var dictList = data.childList;
-			if (data.code==200 && dictList.length>0) {
+			if (data.code==200) {
 		    	var nodeHtml='';
 		    	 for (var nodeValue of childList){
 						 nodeHtml = nodeHtml + 
@@ -202,8 +202,6 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 		    	$html.find("select").css({"width":"12%","marginLeft":"16px"}).select2();
 		    	$CPF.closeLoading();
 		    	
-			} else if (data.code==200 && data.childList.length==0) {
-				Dialog.notice("没有可选字典，请先添加！", "warning");
 			} else {
 				Dialog.notice("可选字典数据加载错误！", "error");
 			}
