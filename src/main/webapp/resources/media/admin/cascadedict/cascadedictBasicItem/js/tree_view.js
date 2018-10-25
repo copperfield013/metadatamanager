@@ -180,8 +180,8 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 								          }else {            				            		
 								        	  nodeHtml = nodeHtml +  "<option value='启用' >启用</option><option value='废弃' selected>废弃</option>";
 								          }	
-						            	nodeHtml = nodeHtml +"</select>"+
-										"<input type='text' style='width:65px;' disabled class='edit-input text order' name='order'  title='排序' value='"+nodeValue.order+"'>"
+						            	nodeHtml = nodeHtml +"</select>";
+										/*"<input type='text' style='width:65px;' disabled class='edit-input text order' name='order'  title='排序' value='"+nodeValue.order+"'>"*/
 									nodeHtml = nodeHtml + 
 									"<div class='btn-wrap'>" + 
 										"<i class='icon icon-save'></i>" +
@@ -395,7 +395,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 								 "<select name='status' class='abc-attr status'>"+
 									"<option value='启用' selected>启用</option><option value='废弃'>废弃</option>"+			    			
 				            	"</select>"+
-				            	"<input type='text' style='width:65px;' class='edit-input text order' name='order' placeholder='排序'  title='排序' value=''>"+
+				            	/*"<input type='text' style='width:65px;' class='edit-input text order' name='order' placeholder='排序'  title='排序' value=''>"+*/
 							"<div class='btn-wrap'>" + 
 								"<i class='icon icon-save'></i>" +
 								/*"<i class='icon icon-add-abc abc'></i>" +*/
@@ -581,13 +581,13 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
     	var subsectionId = $(el).closest(".collapse-content").siblings(".collapse-header").attr("data-id");
     	var childId = $relativeBar.children(".childId").find("option:selected").val();
     	var status = $relativeBar.children(".status").find("option:selected").val();
-    	var order = $relativeBar.children(".order").val();
+    /*	var order = $relativeBar.children(".order").val();
     	
     	var reg = /^[0-9]*$/;
     	if (!reg.test(order)) {
     		Dialog.notice("【排序】只能输入数字！", "warning");
     		return false;
-    	}
+    	}*/
     	
     	var dragWrapLen = $(".dragEdit-wrap").length + 1 ;    	
     	$CPF.showLoading();
@@ -595,7 +595,6 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
     		id:id,
     		subsectionId: subsectionId,
     		status: status,	
-    		order: order,
     		childId:childId
 		 }, function(data) {
 			 	if (data.code == 200) {
