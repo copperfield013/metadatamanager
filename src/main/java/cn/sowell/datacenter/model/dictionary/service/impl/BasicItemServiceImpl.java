@@ -511,6 +511,7 @@ public class BasicItemServiceImpl implements BasicItemService {
 		bt.getOneLevelItem().setDataType(String.valueOf(ValueType.LABLETYPE.getIndex()));
 		bt.getOneLevelItem().setDictParentId(cascadedict);
 		bt.getOneLevelItem().setNeedHistory(1);
+		bt.getOneLevelItem().setTableName("t_" + obj.getCode() + "_" + attrCode);
 		return bt;
 	}
 	
