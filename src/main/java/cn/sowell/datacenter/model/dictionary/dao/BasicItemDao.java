@@ -99,6 +99,13 @@ public interface BasicItemDao {
 	List queryCreRelaTab();
 	
 	/**
+	 * 创建实体对应的实体编辑时间表
+	 * t_abce001_m
+	 * @return
+	 */
+	List queryCreEntityEditTimeTab();
+	
+	/**
 	 * 执行传进来的sql语句
 	 * @param sql
 	 */

@@ -600,7 +600,7 @@ public class BasicItemDaoImpl implements BasicItemDao {
 		StringBuffer sb = new StringBuffer();
 		sb.append(" SELECT ")
 		.append("  concat(\"create table \", a.tablename,\"( `id`  bigint(20) NOT NULL AUTO_INCREMENT,  ")
-		.append(" `ABP0001`  varchar(32) Not NULL ,`\", a.code, \""+AttributeParter.getRepeatKeyName("")+"`  varchar(32) DEFAULT NULL, `\" , a.code, \""+AttributeParter.getRepeatEditTimeName("")+"`  varchar(32) DEFAULT NULL, `\" ,a.code,\""+AttributeParter.getLabelValueName("")+"` ")
+		.append(" `ABP0001`  varchar(32) Not NULL ,`\", a.code, \""+AttributeParter.getLeafKeyName("")+"`  varchar(32) DEFAULT NULL, `\" , a.code, \""+AttributeParter.getLeafEditTimeName("")+"`  varchar(32) DEFAULT NULL, `\" ,a.code,\""+AttributeParter.getLabelValueName("")+"` ")
 		.append(" varchar(32) DEFAULT NULL,PRIMARY KEY (`id`))\")  ")
 		.append(" FROM ")
 		.append(" 	(SELECT CONCAT('t_', b.c_parent,'_', a.c_code) tablename, a.c_code code FROM t_sc_onelevel_item a")
@@ -610,6 +610,24 @@ public class BasicItemDaoImpl implements BasicItemDao {
 		.append("  LEFT JOIN (SELECT table_name FROM information_schema.tables t  WHERE  ")
 		.append("  t.table_schema = '"+DataBaseName+"') b ON a.tablename = b.table_name ")
 		.append(" 	WHERE ")
+		.append(" b.table_name IS NULL ");
+		
+		return sFactory.getCurrentSession().createSQLQuery(sb.toString()).list();
+	}
+
+	@Override
+	public List queryCreEntityEditTimeTab() {
+		StringBuffer sb = new StringBuffer();
+		sb.append(" SELECT  ")
+		.append("  concat(\"create table \", a.tablename,\"( `id`  bigint(20) NOT NULL AUTO_INCREMENT, ")
+		.append(" `ABP0001`  varchar(32) Not NULL , '\", a.c_code,  \"")
+		.append(AttributeParter.getLeafEditTimeName("")+"'")
+		.append(" datetime ,PRIMARY KEY (`id`))\") ")
+		.append(" FROM  ")
+		.append(" (SELECT concat('t_',c_code,'_m') tablename, c_code  FROM  t_sc_onelevel_item    WHERE  c_data_type='10') a  ")
+		.append("  LEFT JOIN (SELECT table_name FROM information_schema.tables t  WHERE   ")
+		.append("  t.table_schema = '"+DataBaseName+"') b ON a.tablename = b.table_name   ")
+		.append(" WHERE ")
 		.append(" b.table_name IS NULL ");
 		
 		return sFactory.getCurrentSession().createSQLQuery(sb.toString()).list();
