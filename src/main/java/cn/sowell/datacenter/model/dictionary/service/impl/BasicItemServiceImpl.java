@@ -151,7 +151,14 @@ public class BasicItemServiceImpl implements BasicItemService {
             
         } else if (String.valueOf(ValueType.RECORD.getIndex()).equals(basicItem.getOneLevelItem().getDataType())) {
         	BasicItem lableObj = basicItemDao.getLableObj(basicItem.getCode());
-        	basicItemDao.delete(lableObj);
+        	if (lableObj != null) {
+        		basicItemDao.delete(lableObj);
+        	}
+        	//删除实体编辑时间属性
+        	BasicItem bt = basicItemDao.get(BasicItem.class, AttributeParter.getLeafEditTimeName(basicItem.getCode()));
+        	if (bt != null) {
+        		basicItemDao.delete(bt);
+        	}
         }
 		
 		basicItemDao.delete(basicItem);
