@@ -620,8 +620,8 @@ public class BasicItemDaoImpl implements BasicItemDao {
 		StringBuffer sb = new StringBuffer();
 		sb.append(" SELECT  ")
 		.append("  concat(\"create table \", a.tablename,\"( `id`  bigint(20) NOT NULL AUTO_INCREMENT, ")
-		.append(" `ABP0001`  varchar(32) Not NULL , '\", a.c_code,  \"")
-		.append(AttributeParter.getLeafEditTimeName("")+"'")
+		.append(" `ABP0001`  varchar(32) Not NULL , \", a.c_code,  \"")
+		.append(AttributeParter.getLeafEditTimeName(""))
 		.append(" datetime ,PRIMARY KEY (`id`))\") ")
 		.append(" FROM  ")
 		.append(" (SELECT concat('t_',c_code,'_m') tablename, c_code  FROM  t_sc_onelevel_item    WHERE  c_data_type='10') a  ")
