@@ -493,7 +493,7 @@ public class BasicItemServiceImpl implements BasicItemService {
 		
 		btItem.setCode(AttributeParter.getLeafEditTimeName(obj.getCode()));
 		btItem.getOneLevelItem().setCode(AttributeParter.getLeafEditTimeName(obj.getCode()));
-		btItem.setCnName(AttributeParter.getLeafEditTimeCNName(obj.getCnName()));
+		btItem.setCnName(AttributeParter.getLeafEditTimeCNName(""));
 		btItem.getOneLevelItem().setDataType(String.valueOf(ValueType.DATETIME.getIndex()));
 		btItem.getOneLevelItem().setDataRange(ValueType.DATETIME.getName());
 		btItem.getOneLevelItem().setTableName("t_" + obj.getCode() + "_m");
