@@ -175,8 +175,17 @@ public class BasicItemNodeController {
 				 if (compareOpt) {
 					 inline.setState("200");
 				 } else {
-					 inline.setState("400");
-					 inline.setMsg("父节点opt不能比孩子opt小");	
+					 if (NodeType.MULTIATTRIBUTE.equals(NodeType.getNodeType(basicItemNode.getType()))) {
+						 if (NodeOpsType.READ.equals(curOps)) {
+							 inline.setState("400");
+							 inline.setMsg("父节点opt不能比孩子opt小");
+						 }
+						 
+					 } else {
+					 
+						 inline.setState("400");
+						 inline.setMsg("父节点opt不能比孩子opt小");
+					 }
 				 }
 			 } else {//--没有孩子
 				 if (inline.getState() !="400") {
@@ -692,7 +701,7 @@ public class BasicItemNodeController {
 				}
 			}
 			
-			return AjaxPageResponse.CLOSE_AND_REFRESH_PAGE("操作失败", "basicItemNode_list");
+			return AjaxPageResponse.CLOSE_AND_REFRESH_PAGE("操作成功！", "basicItemNode_list");
 		}catch (Exception e) {
 			logger.error("操作失败！", e);
 			return AjaxPageResponse.FAILD("操作失败！");
