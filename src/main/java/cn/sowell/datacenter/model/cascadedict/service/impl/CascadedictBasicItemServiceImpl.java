@@ -73,8 +73,7 @@ public class CascadedictBasicItemServiceImpl implements CascadedictBasicItemServ
 		basicItem.setUpdateTime(df.format(new Date()));
 		CascadedictBasicItem one = dictionaryBasicItemDao.get(CascadedictBasicItem.class, basicItem.getParentId());
 		basicItem.setCasPid(one.getCasPid()+"."+one.getId());
-		if (basicItem.getId() == null) {
-			
+		if (basicItem.getId() == null || "".equals(String.valueOf(basicItem.getId()))) {
 			CascadedictCodeGenerator cc = new CascadedictCodeGenerator();
 			dictionaryBasicItemDao.insert(cc);
 			basicItem.setId(cc.getId());
