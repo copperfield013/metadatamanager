@@ -16,7 +16,6 @@ import javax.annotation.Resource;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.exception.GenericJDBCException;
-import org.junit.Ignore;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -433,7 +432,7 @@ public class BasicItemNodeController {
 		return mv;
 	}
 	
-	@Ignore
+	//@Ignore
 	@ResponseBody
     @RequestMapping(value = "/getChildNode")
 	public String getChildNode(Integer nodeId) {
@@ -676,6 +675,7 @@ public class BasicItemNodeController {
 				}
 			}
 			
+			
 			//生成多值属性及其孩子节点
 			Iterator moreIter = moreList.iterator();
 			while (moreIter.hasNext()) {
@@ -706,12 +706,21 @@ public class BasicItemNodeController {
 	 */
 	private void createAttribute(BasicItemNode parrentBtn, BasicItem childBt) throws NumberFormatException {
 		String dataType = childBt.getOneLevelItem().getDataType();
+		
+		ValueType valueType = ValueType.getValueType(Integer.parseInt(dataType));
+
+		Collection<ValueType> canTransType = ValueTypeMapping.getCanTransType(valueType);
+		ValueType next = ValueType.STRING;
+		if (!canTransType.isEmpty()) {
+			 next = canTransType.iterator().next();
+		}
+		
 		//级联属性
-		if(ValueType.CASCADETYPE.equals(ValueType.getValueType(Integer.parseInt(dataType)))) {
-			BasicItemNode casAttr = createBasicItemNode(NodeType.CASATTRIBUTE.getCode(), childBt.getCnName(), ValueType.STRING.getName(), null, NodeOpsType.WRITE.getIndex()+"", parrentBtn.getId(), childBt);
+		if(ValueType.CASCADETYPE.equals(valueType)) {
+			BasicItemNode casAttr = createBasicItemNode(NodeType.CASATTRIBUTE.getCode(), childBt.getCnName(), next.getName(), null, NodeOpsType.WRITE.getIndex()+"", parrentBtn.getId(), childBt);
 			basicItemNodeService.saveOrUpdate(casAttr);
 		} else {//普通属性
-			BasicItemNode attr = createBasicItemNode(NodeType.ATTRIBUTE.getCode(), childBt.getCnName(), ValueType.STRING.getName(), null, NodeOpsType.WRITE.getIndex()+"", parrentBtn.getId(), childBt);
+			BasicItemNode attr = createBasicItemNode(NodeType.ATTRIBUTE.getCode(), childBt.getCnName(), next.getName(), null, NodeOpsType.WRITE.getIndex()+"", parrentBtn.getId(), childBt);
 			basicItemNodeService.saveOrUpdate(attr);
 		}
 	}
