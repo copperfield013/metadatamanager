@@ -146,7 +146,7 @@ public class BasicItemNodeServiceImpl implements BasicItemNodeService {
 			
 			Integer order = current.getOrder();//父亲的排序值
 			for (int i = 0; i < childList.size(); i++) {
-				order = order + 100;
+				order = order + 50;
 				BasicItemNode basicItemNode = childList.get(i);
 				basicItemNode.setOrder(order);
 				basicItemNodeDao.update(basicItemNode);
