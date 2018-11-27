@@ -9,18 +9,12 @@ import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-
 import com.abc.mapping.node.NodeOpsType;
 import com.abc.mapping.node.NodeType;
-import com.alibaba.fastjson.JSONObject;
 
-import cn.sowell.datacenter.entityResolver.config.DBModuleConfigMediator;
 import cn.sowell.datacenter.entityResolver.config.ModuleConfigureMediator;
-import cn.sowell.datacenter.entityResolver.config.abst.Module;
 import cn.sowell.datacenter.model.dictionary.service.BasicItemService;
-import cn.sowell.datacenter.model.dictionary.service.DictionaryBasicItemService;
 import cn.sowell.datacenter.model.dictionary.service.RecordRelationTypeService;
-import cn.sowell.datacenter.model.node.pojo.BasicItemNode;
 import cn.sowell.datacenter.model.node.service.BasicItemNodeService;
 
 @ContextConfiguration(locations = "classpath*:spring-config/spring-junit.xml")
@@ -32,8 +26,6 @@ public class TestBasicItemDao {
 	RecordRelationTypeService rrt;
 	@Resource
 	SessionFactory sFactory;
-	@Resource
-	DictionaryBasicItemService dictBitemServices;
 	@Resource
 	BasicItemNodeService basicItemNodeService;
 	@Resource

@@ -7,14 +7,13 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
-import java.util.UUID;
 
 public class FileManager {
     
 	/**
 	 * 
-	 * @param path ÎÄ¼ş¼ĞÂ·¾¶
-	 * @param fileName   ÎÄ¼şÃû³Æ
+	 * @param path æ–‡ä»¶å¤¹è·¯å¾„
+	 * @param fileName   æ–‡ä»¶åç§°
 	 * @return
 	 * @throws IOException
 	 */
@@ -32,15 +31,15 @@ public class FileManager {
     }
     
     /**
-     * ÏòÎÄ¼şÖĞĞ´ÈëÄÚÈİ
-     * @param file ÎÄ¼şÂ·¾¶ÓëÃû³Æ
-     * @param newstr  Ğ´ÈëµÄÄÚÈİ
+     * å‘æ–‡ä»¶ä¸­å†™å…¥å†…å®¹
+     * @param file æ–‡ä»¶è·¯å¾„ä¸åç§°
+     * @param newstr  å†™å…¥çš„å†…å®¹
      * @return
      * @throws IOException
      */
     public static boolean writeFileContent(File file,String newstr) throws IOException{
         Boolean bool = false;
-        String filein = newstr+"\r\n";//ĞÂĞ´ÈëµÄĞĞ£¬»»ĞĞ
+        String filein = newstr+"\r\n";//æ–°å†™å…¥çš„è¡Œï¼Œæ¢è¡Œ
         String temp  = "";
         
         FileInputStream fis = null;
@@ -49,17 +48,17 @@ public class FileManager {
         FileOutputStream fos  = null;
         PrintWriter pw = null;
         try {
-            //½«ÎÄ¼ş¶ÁÈëÊäÈëÁ÷
+            //å°†æ–‡ä»¶è¯»å…¥è¾“å…¥æµ
             fis = new FileInputStream(file);
             isr = new InputStreamReader(fis);
             br = new BufferedReader(isr);
             
             StringBuffer buffer = new StringBuffer();
             
-            //ÎÄ¼şÔ­ÓĞÄÚÈİ
+            //æ–‡ä»¶åŸæœ‰å†…å®¹
             for(int i=0;(temp =br.readLine())!=null;i++){
                 buffer.append(temp);
-                // ĞĞÓëĞĞÖ®¼äµÄ·Ö¸ô·û Ïàµ±ÓÚ¡°\n¡±
+                // è¡Œä¸è¡Œä¹‹é—´çš„åˆ†éš”ç¬¦ ç›¸å½“äºâ€œ\nâ€
                 buffer = buffer.append(System.getProperty("line.separator"));
             }
             buffer.append(filein);

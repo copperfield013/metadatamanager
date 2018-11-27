@@ -62,12 +62,6 @@
 		    <version>1.8.6.RELEASE</version>
 		</dependency>
 		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>4.12</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
 			<groupId>org.apache.activemq</groupId>
 			<artifactId>activemq-core</artifactId>
 			<version>5.7.0</version>
@@ -254,7 +248,7 @@
 		</repository>
 	</repositories>
 	<build>
-		<finalName>datacenter</finalName>
+		<finalName>metadatamanager</finalName>
 		<plugins>
 			<!-- 指定jdk -->
 			<plugin>
