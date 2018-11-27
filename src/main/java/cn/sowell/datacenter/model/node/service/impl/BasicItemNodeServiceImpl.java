@@ -8,11 +8,10 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
 import org.springframework.stereotype.Service;
-
-import com.abc.mapping.node.NodeOpsType;
-import com.abc.mapping.node.NodeType;
 
 import cn.sowell.copframe.dto.page.PageInfo;
 import cn.sowell.datacenter.model.node.criteria.BasicItemNodeCriteria;
@@ -20,6 +19,9 @@ import cn.sowell.datacenter.model.node.dao.BasicItemNodeDao;
 import cn.sowell.datacenter.model.node.pojo.BasicItemNode;
 import cn.sowell.datacenter.model.node.service.BasicItemNodeService;
 import cn.sowell.datacenter.utils.FileManager;
+
+import com.abc.mapping.node.NodeOpsType;
+import com.abc.mapping.node.NodeType;
 
 @Service
 public class BasicItemNodeServiceImpl implements BasicItemNodeService {
@@ -107,9 +109,18 @@ public class BasicItemNodeServiceImpl implements BasicItemNodeService {
 	
 	@Override
 	public void nodeSort(BasicItemNode current, String beforeId, String afterId) {
+		
+		BasicItemNode paNode = basicItemNodeDao.get(BasicItemNode.class, current.getParentId());
+		
 			//第一个孩子， 没有前驱， 没有后继
 		if (beforeId.isEmpty()&& afterId.isEmpty()) {//没有前驱， 没有后继, 父亲的第一个孩子
+			Integer order = paNode.getOrder();
+			
+			if (order == null || "".equals(order)) {
 				current.setOrder(100);
+			} else {
+				current.setOrder(order+100);
+			}
 		} else if (beforeId.isEmpty()&& !afterId.isEmpty()) {//没有前驱， 但是有后继
 			BasicItemNode afterNode = basicItemNodeDao.get(BasicItemNode.class, Integer.parseInt(afterId));
 			Integer order = afterNode.getOrder() +100;
@@ -126,6 +137,22 @@ public class BasicItemNodeServiceImpl implements BasicItemNodeService {
 		}
 		
 		basicItemNodeDao.update(current);
+		
+		//当前对象排序完成， 如果是属性组， 则属性组的孩子， order值为属性的order一次增加100
+		Integer type = current.getType();
+		if (NodeType.ATTRGROUP.getCode() == type) {
+			//获取属性组的孩子， 进行重新排序
+			List<BasicItemNode> childList = basicItemNodeDao.getChildByParent(current.getId());
+			
+			Integer order = current.getOrder();//父亲的排序值
+			for (int i = 0; i < childList.size(); i++) {
+				order = order + 100;
+				BasicItemNode basicItemNode = childList.get(i);
+				basicItemNode.setOrder(order);
+				basicItemNodeDao.update(basicItemNode);
+			}
+		}
+		
 	}
 
 	@Override
