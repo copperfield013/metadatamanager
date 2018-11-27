@@ -13,7 +13,6 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.hibernate.annotations.GenericGenerator;
-import org.junit.Ignore;
 
 import io.swagger.annotations.ApiModelProperty;
 
