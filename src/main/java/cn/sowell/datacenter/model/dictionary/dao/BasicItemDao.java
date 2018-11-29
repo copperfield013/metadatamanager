@@ -72,6 +72,11 @@ public interface BasicItemDao {
 	List queryCreTab();
 	
 	/**
+	 * -- 查询需要创建的枚举类型多选表
+	 */
+	List queryEnumMuliCreTab();
+	
+	/**
 	 * -- 要新增的字段  
 	 * @return
 	 */

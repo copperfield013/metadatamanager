@@ -452,33 +452,10 @@ public class BasicItemServiceImpl implements BasicItemService {
 		if (String.valueOf(ValueType.ENUMTYPE_MULTI.getIndex()).equals(dataType)) {
 			if ("add".equals(flag)) {
 				List<BasicItem> attrList = createAttr(obj, AttributeParter.getLeafEditTimeCNName(obj.getCnName()), AttributeParter.getLeafKeyCNName(obj.getCnName()));//枚举类型多选，生成伴生属性
-				List<String> sqlStr = new ArrayList<String>();
-				Iterator<BasicItem> iterator = attrList.iterator();
-				while (iterator.hasNext()) {
-					BasicItem bt = iterator.next();
-					String btcode = bt.getCode();
-					if (btcode.contains(AttributeParter.getLeafEditTimeName(""))) {
-						sqlStr.add(btcode +" datetime , ");
-					} else if (btcode.contains(AttributeParter.getLeafKeyName(""))){
-						sqlStr.add(btcode +" VARCHAR ( " + bt.getOneLevelItem().getDataRange() + ") , ");
-					}
-				}
-				
-				String parentCode = obj.getParent();
-				String code = obj.getCode();
-				StringBuffer sb = new StringBuffer();
-				sb.append("CREATE TABLE ")
-				.append("t_")
-				.append(parentCode + "_" + code)
-				.append(" ( `id` BIGINT ( 20 ) NOT NULL AUTO_INCREMENT,")
-				.append(" `ABP0001` VARCHAR ( 32 ) DEFAULT NULL, ")
-				.append(AttributeParter.getLabelValueName(code) + " VARCHAR ( 32 ) DEFAULT NULL,")
-				.append(sqlStr.get(0))
-				.append(sqlStr.get(1))
-				.append(" PRIMARY KEY ( `id` ) )");
-				
-				basicItemDao.excuteBySql(sb.toString());
 			} 
+			
+			obj.getOneLevelItem().setTableName("t_" + obj.getParent()+ "_" + obj.getCode());
+			basicItemDao.update(obj);
 		}	
 		
 	}
@@ -729,6 +706,17 @@ public class BasicItemServiceImpl implements BasicItemService {
 					} finally {
 						openSession.close();
 					}
+					continue;
+				}
+			}
+			
+			//创建枚举类型多选表
+		 List queryEnumMuliCreTab = basicItemDao.queryEnumMuliCreTab();
+			for (Object object : queryEnumMuliCreTab) {
+				try {
+					basicItemDao.excuteBySql(object.toString());
+				} catch (Exception e) {
+					e.printStackTrace();
 					continue;
 				}
 			}

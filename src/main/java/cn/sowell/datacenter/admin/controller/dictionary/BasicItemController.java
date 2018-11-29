@@ -210,7 +210,9 @@ public class BasicItemController {
 				// 到这儿来是普通属性  和多值属性下的普通属性
 				//它们的区别是父亲不同， 所以先求父亲    默认前端传来的都是父亲的code， 
 				BasicItem bItemPanrent = basicItemService.getBasicItem(basicItem.getParent());
-				if (String.valueOf(ValueType.REPEAT.getIndex()).equals(bItemPanrent.getOneLevelItem().getDataType())) {//多值属性下的普通属性
+				
+				//多值属性下的普通属性
+				if (String.valueOf(ValueType.REPEAT.getIndex()).equals(bItemPanrent.getOneLevelItem().getDataType())) {
 					basicItem.setParent(bItemPanrent.getParent() + "_" +bItemPanrent.getCode());
 					oneLevelItem.setTableName(bItemPanrent.getOneLevelItem().getTableName());
 					oneLevelItem.setGroupName(bItemPanrent.getCode());

@@ -213,6 +213,7 @@ public class BasicItemDaoImpl implements BasicItemDao {
 			.append("t_sc_onelevel_item ")
 			.append("WHERE ")
 			.append(" c_data_type!='"+ValueType.LABLETYPE.getIndex()+"' and ")
+			.append(" c_data_type!='"+ValueType.ENUMTYPE_MULTI.getIndex()+"' and ")
 			.append("c_table_name IS NOT NULL ")
 			.append(" GROUP BY c_table_name) a ")
 			.append("LEFT JOIN ")
@@ -630,6 +631,24 @@ public class BasicItemDaoImpl implements BasicItemDao {
 		.append("  t.table_schema = '"+DataBaseName+"') b ON a.tablename = b.table_name   ")
 		.append(" WHERE ")
 		.append(" b.table_name IS NULL ");
+		
+		return sFactory.getCurrentSession().createSQLQuery(sb.toString()).list();
+	}
+
+	@Override
+	public List queryEnumMuliCreTab() {
+		StringBuffer sb = new StringBuffer();
+		
+		sb.append("SELECT ")
+		.append(" concat( \"create table \", a.tablename, \"( `id`  bigint(20) NOT NULL AUTO_INCREMENT, `ABP0001`  varchar(32) Not NULL ,\",")
+		.append(" a.c_code,\"_V  varchar(32) DEFAULT NULL ,\",")
+		.append(" a.c_code,\"_ED datetime ,\",")
+		.append(" a.c_code,\"_P  varchar(32) , \",")
+		.append(" \"PRIMARY KEY (`id`))\" ) ")
+		.append(" FROM")
+		.append(" ( SELECT c_table_name tablename, c_code FROM t_sc_onelevel_item WHERE c_data_type = '1401' ) a")
+		.append(" LEFT JOIN ( SELECT table_name FROM information_schema.TABLES t WHERE t.table_schema = '"+DataBaseName+"' ) b ON a.tablename = b.table_name ")
+		.append(" WHERE	b.table_name IS NULL");
 		
 		return sFactory.getCurrentSession().createSQLQuery(sb.toString()).list();
 	}
