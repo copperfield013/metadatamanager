@@ -472,7 +472,7 @@ public class BasicItemServiceImpl implements BasicItemService {
 				.append(parentCode + "_" + code)
 				.append(" ( `id` BIGINT ( 20 ) NOT NULL AUTO_INCREMENT,")
 				.append(" `ABP0001` VARCHAR ( 32 ) DEFAULT NULL, ")
-				.append(code + " VARCHAR ( 32 ) DEFAULT NULL,")
+				.append(AttributeParter.getLabelValueName(code) + " VARCHAR ( 32 ) DEFAULT NULL,")
 				.append(sqlStr.get(0))
 				.append(sqlStr.get(1))
 				.append(" PRIMARY KEY ( `id` ) )");
