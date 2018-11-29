@@ -3,8 +3,13 @@
 <div id="cascadedictBasicItem-list">
 	<nav>
 		<form class="form-inline" action="admin/cascadedict/cascadedictBasicItem/list">
+			<input type="hidden" class="form-control" name="parentId" value="${criteria.parentId }" />
 			<div class="form-group">
-				<input type="hidden" class="form-control" name="parentId" value="${criteria.parentId }" />
+				<label for="name">编号</label>
+				<input type="number" class="form-control" name="id" value="${criteria.id }" />
+			</div>
+			<div class="form-group">
+				
 				<label for="name">名称</label>
 				<input type="text" class="form-control" name="name" value="${criteria.name }" />
 			</div>

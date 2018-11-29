@@ -34,6 +34,11 @@ public class CascadedictBasicItemDaoImpl implements CascadedictBasicItemDao {
 		String hql = "from CascadedictBasicItem b WHERE 1=1 and b.id != 0";
 		DeferedParamQuery dQuery = new DeferedParamQuery(hql);
 		
+		if(criteria.getId() != null){
+			dQuery.appendCondition(" and b.id =:id")
+					.setParam("id", criteria.getId());
+		}
+		
 		if(TextUtils.hasText(criteria.getName())){
 			dQuery.appendCondition(" and b.name like :name")
 					.setParam("name", "%" + criteria.getName() + "%");
