@@ -20,13 +20,13 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
          }
          
          //英文名
-         if (notNull($enName.val())) {
+         /*if (notNull($enName.val())) {
         	 $enName.siblings("#req").remove();
         	 $enName.after(" <span id=\"req\" style=\"color: red;\">必填项</span>");
         	 return false;
          } else {
         	 $enName.siblings("#req").remove();
-         }
+         }*/
          
          //数据长度
          if (notNull($dataRange.val())) {
