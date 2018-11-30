@@ -556,6 +556,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
     	}else {    		
     		$form.find("#cn_dataRange").show();
     		 $form.find("#dataRange").show();
+    		 $form.find("#dataRange").val('32');
     		if ("1" == $this.val()) {//数字型
     			$form.find("#dataRange").val('11');
     		} else if ("15" == $this.val()) {//数字型小数
