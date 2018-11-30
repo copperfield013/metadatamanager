@@ -47,7 +47,7 @@
 						<input type="text" name="cnName" id="cnName"/>
 					</div>
 					<div>
-						<span class="opera_entity_label">英文名称<span style="color: red;">*</span></span>
+						<span class="opera_entity_label">英文名称</span>
 						<input type="text" name="enName" id="enName"/><br>
 					</div>	
 					<div>
