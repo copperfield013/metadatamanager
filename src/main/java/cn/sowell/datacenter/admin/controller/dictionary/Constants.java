@@ -27,6 +27,7 @@ public interface Constants {
 			
 			put(String.valueOf(ValueType.STRING_PREENUM.getIndex()), ValueType.STRING_PREENUM.getCName());
 			put(String.valueOf(ValueType.ENUMTYPE_MULTI.getIndex()), ValueType.ENUMTYPE_MULTI.getCName());
+			put(String.valueOf(ValueType.PASSWORD.getIndex()), ValueType.PASSWORD.getCName());
 		}
 	};
 	
