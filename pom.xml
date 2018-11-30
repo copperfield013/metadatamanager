@@ -11,7 +11,7 @@
 	<properties>
 		<version.kie>6.5.0.Final</version.kie>
 		<version.cpfweb>0.2.11</version.cpfweb>
-		<version.abcutil>0.0.22</version.abcutil> 
+		<version.abcutil>0.0.23</version.abcutil> 
 		 <version.jackson>2.4.4</version.jackson>
 		 <cxf.version>3.2.2</cxf.version>
 	</properties>
@@ -60,12 +60,6 @@
 		    <groupId>org.springframework.data</groupId>
 		    <artifactId>spring-data-redis</artifactId>
 		    <version>1.8.6.RELEASE</version>
-		</dependency>
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>4.12</version>
-			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.activemq</groupId>
@@ -254,7 +248,7 @@
 		</repository>
 	</repositories>
 	<build>
-		<finalName>datacenter</finalName>
+		<finalName>metadatamanager</finalName>
 		<plugins>
 			<!-- 指定jdk -->
 			<plugin>
@@ -263,6 +257,7 @@
 				<configuration>
 					<source>1.8</source>
 					<target>1.8</target>
+					<encoding>UTF-8</encoding>
 				</configuration>
 			</plugin> 
 		</plugins>
