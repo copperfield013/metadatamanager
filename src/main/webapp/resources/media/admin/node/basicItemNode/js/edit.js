@@ -615,27 +615,27 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
             "<input type='text' disabled class='edit-input text' value='"+name+"'>" +
             "<select disabled class='abc-attr'>"            
             for(var i=0; i<commList.length; i++) {  
+            	
+            	if ("5" == commList[i][2]) {
+					dataTypeList=dataTypeSTRINGList;
+				} else if ("6"== commList[i][2]) {
+					dataTypeList=dataTypeDATEList;
+				}else if ("7"== commList[i][2]) {
+					dataTypeList=dataTypeTIMEList;
+				}else if ("1"== commList[i][2]) {
+					dataTypeList=dataTypeINTList;
+				}else if ("15"== commList[i][2]) {
+					dataTypeList=dataTypeDOUBLEList;
+				}else if ("11"== commList[i][2]) {
+					dataTypeList=dataTypeREFERENCEList;
+				}else if ("8"== commList[i][2]) {
+					dataTypeList=dataTypeFILEList;
+				}else if ("14"== commList[i][2]) {
+					dataTypeList=dataTypeENUMList;
+				}
+            	
             	if(commList[i][0] == abcattrCode) {
             		attrHtml += "<option item-data-type='"+commList[i][2]+"' data-id='"+commList[i][0]+"' value='"+commList[i][1]+"' selected>"+commList[i][1]+"</option>";
-            	
-    				if ("5" == commList[i][2]) {
-    					dataTypeList=dataTypeSTRINGList;
-    				} else if ("6"== commList[i][2]) {
-    					dataTypeList=dataTypeDATEList;
-    				}else if ("7"== commList[i][2]) {
-    					dataTypeList=dataTypeTIMEList;
-    				}else if ("1"== commList[i][2]) {
-    					dataTypeList=dataTypeINTList;
-    				}else if ("15"== commList[i][2]) {
-    					dataTypeList=dataTypeDOUBLEList;
-    				}else if ("11"== commList[i][2]) {
-    					dataTypeList=dataTypeREFERENCEList;
-    				}else if ("8"== commList[i][2]) {
-    					dataTypeList=dataTypeFILEList;
-    				}else if ("14"== commList[i][2]) {
-    					dataTypeList=dataTypeENUMList;
-    				}
-            	
             	}else {
             		attrHtml += "<option item-data-type='"+commList[i][2]+"' data-id='"+commList[i][0]+"' value='"+commList[i][1]+"'>"+commList[i][1]+"</option>";
             	}
@@ -690,29 +690,30 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
             "<div class='label-bar cascade-attr   al-save'  data-type='7'  data-order='"+order+"' data-id='"+id+"'>" +
             "<input type='text' disabled class='edit-input text' value='"+name+"'>" +
             "<select disabled class='abc-attr'>"  
-            for(var i=0; i<moreCascaseAttrList.length; i++) {    
+            for(var i=0; i<moreCascaseAttrList.length; i++) {  
+            	
+            	if ("5" == moreCascaseAttrList[i][2]) {
+					dataTypeList=dataTypeSTRINGList;
+				} else if ("6"== moreCascaseAttrList[i][2]) {
+					dataTypeList=dataTypeDATEList;
+				}else if ("7"== moreCascaseAttrList[i][2]) {
+					dataTypeList=dataTypeTIMEList;
+				}else if ("1"== moreCascaseAttrList[i][2]) {
+					dataTypeList=dataTypeINTList;
+				}else if ("15"== moreCascaseAttrList[i][2]) {
+					dataTypeList=dataTypeDOUBLEList;
+				}else if ("11"== moreCascaseAttrList[i][2]) {
+					dataTypeList=dataTypeREFERENCEList;
+				}else if ("8"== moreCascaseAttrList[i][2]) {
+					dataTypeList=dataTypeFILEList;
+				}else if ("14"== moreCascaseAttrList[i][2]) {
+					dataTypeList=dataTypeENUMList;
+				}else if ("17"== moreCascaseAttrList[i][2]) {
+					dataTypeList=dataTypeCASCADETYPEList;
+				}
+            	
             	if(moreCascaseAttrList[i][0] == abcattrCode) {
             		attrHtml += "<option item-data-type='"+moreCascaseAttrList[i][2]+"' data-id='"+moreCascaseAttrList[i][0]+"' value='"+moreCascaseAttrList[i][1]+"' selected>"+moreCascaseAttrList[i][1]+"</option>";
-    				if ("5" == moreCascaseAttrList[i][2]) {
-    					dataTypeList=dataTypeSTRINGList;
-    				} else if ("6"== moreCascaseAttrList[i][2]) {
-    					dataTypeList=dataTypeDATEList;
-    				}else if ("7"== moreCascaseAttrList[i][2]) {
-    					dataTypeList=dataTypeTIMEList;
-    				}else if ("1"== moreCascaseAttrList[i][2]) {
-    					dataTypeList=dataTypeINTList;
-    				}else if ("15"== moreCascaseAttrList[i][2]) {
-    					dataTypeList=dataTypeDOUBLEList;
-    				}else if ("11"== moreCascaseAttrList[i][2]) {
-    					dataTypeList=dataTypeREFERENCEList;
-    				}else if ("8"== moreCascaseAttrList[i][2]) {
-    					dataTypeList=dataTypeFILEList;
-    				}else if ("14"== moreCascaseAttrList[i][2]) {
-    					dataTypeList=dataTypeENUMList;
-    				}else if ("17"== moreCascaseAttrList[i][2]) {
-    					dataTypeList=dataTypeCASCADETYPEList;
-    				}
-            	
             	}else {
             		attrHtml += "<option item-data-type='"+moreCascaseAttrList[i][2]+"' data-id='"+moreCascaseAttrList[i][0]+"' value='"+moreCascaseAttrList[i][1]+"'>"+moreCascaseAttrList[i][1]+"</option>";
             	}
@@ -769,27 +770,26 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
             "<input type='text' disabled class='edit-input text' value='"+name+"'>" +
             "<select disabled class='abc-attr'>"            
             for(var i=0; i<commList.length; i++) {  
+            	if ("5" == commList[i][2]) {
+					dataTypeList=dataTypeSTRINGList;
+				} else if ("6"== commList[i][2]) {
+					dataTypeList=dataTypeDATEList;
+				}else if ("7"== commList[i][2]) {
+					dataTypeList=dataTypeTIMEList;
+				}else if ("1"== commList[i][2]) {
+					dataTypeList=dataTypeINTList;
+				}else if ("15"== commList[i][2]) {
+					dataTypeList=dataTypeDOUBLEList;
+				}else if ("11"== commList[i][2]) {
+					dataTypeList=dataTypeREFERENCEList;
+				}else if ("8"== commList[i][2]) {
+					dataTypeList=dataTypeFILEList;
+				}else if ("14"== commList[i][2]) {
+					dataTypeList=dataTypeENUMList;
+				}
+            	
             	if(commList[i][0] == abcattrCode) {
             		attrHtml += "<option item-data-type='"+commList[i][2]+"' data-id='"+commList[i][0]+"' value='"+commList[i][1]+"' selected>"+commList[i][1]+"</option>";
-            	
-    				if ("5" == commList[i][2]) {
-    					dataTypeList=dataTypeSTRINGList;
-    				} else if ("6"== commList[i][2]) {
-    					dataTypeList=dataTypeDATEList;
-    				}else if ("7"== commList[i][2]) {
-    					dataTypeList=dataTypeTIMEList;
-    				}else if ("1"== commList[i][2]) {
-    					dataTypeList=dataTypeINTList;
-    				}else if ("15"== commList[i][2]) {
-    					dataTypeList=dataTypeDOUBLEList;
-    				}else if ("11"== commList[i][2]) {
-    					dataTypeList=dataTypeREFERENCEList;
-    				}else if ("8"== commList[i][2]) {
-    					dataTypeList=dataTypeFILEList;
-    				}else if ("14"== commList[i][2]) {
-    					dataTypeList=dataTypeENUMList;
-    				}
-            	
             	}else {
             		attrHtml += "<option item-data-type='"+commList[i][2]+"' data-id='"+commList[i][0]+"' value='"+commList[i][1]+"'>"+commList[i][1]+"</option>";
             	}
@@ -855,26 +855,27 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
             "<input type='text' disabled class='edit-input text' value='"+name+"'>" +
             "<select disabled class='abc-attr'>"  
             for(var i=0; i<repeatChildList.length; i++) {    
+            	
+            	if ("5" == repeatChildList[i].oneLevelItem.dataType) {
+					dataTypeList=dataTypeSTRINGList;
+				} else if ("6"== repeatChildList[i].oneLevelItem.dataType) {
+					dataTypeList=dataTypeDATEList;
+				}else if ("7"== repeatChildList[i].oneLevelItem.dataType) {
+					dataTypeList=dataTypeTIMEList;
+				}else if ("1"== repeatChildList[i].oneLevelItem.dataType) {
+					dataTypeList=dataTypeINTList;
+				}else if ("15"== repeatChildList[i].oneLevelItem.dataType) {
+					dataTypeList=dataTypeDOUBLEList;
+				}else if ("11"== repeatChildList[i].oneLevelItem.dataType) {
+					dataTypeList=dataTypeREFERENCEList;
+				}else if ("8"== repeatChildList[i].oneLevelItem.dataType) {
+					dataTypeList=dataTypeFILEList;
+				}else if ("14"== repeatChildList[i].oneLevelItem.dataType) {
+					dataTypeList=dataTypeENUMList;
+				}
+            	
             	if(repeatChildList[i].cnName == abcattr) {
             		attrHtml += "<option item-data-type='"+repeatChildList[i].oneLevelItem.dataType+"' data-id='"+repeatChildList[i].code+"' value='"+repeatChildList[i].cnName+"' selected>"+repeatChildList[i].cnName+"</option>";
-    				if ("5" == repeatChildList[i].oneLevelItem.dataType) {
-    					dataTypeList=dataTypeSTRINGList;
-    				} else if ("6"== repeatChildList[i].oneLevelItem.dataType) {
-    					dataTypeList=dataTypeDATEList;
-    				}else if ("7"== repeatChildList[i].oneLevelItem.dataType) {
-    					dataTypeList=dataTypeTIMEList;
-    				}else if ("1"== repeatChildList[i].oneLevelItem.dataType) {
-    					dataTypeList=dataTypeINTList;
-    				}else if ("15"== repeatChildList[i].oneLevelItem.dataType) {
-    					dataTypeList=dataTypeDOUBLEList;
-    				}else if ("11"== repeatChildList[i].oneLevelItem.dataType) {
-    					dataTypeList=dataTypeREFERENCEList;
-    				}else if ("8"== repeatChildList[i].oneLevelItem.dataType) {
-    					dataTypeList=dataTypeFILEList;
-    				}else if ("14"== repeatChildList[i].oneLevelItem.dataType) {
-    					dataTypeList=dataTypeENUMList;
-    				}
-            	
             	}else {
             		attrHtml += "<option item-data-type='"+repeatChildList[i].oneLevelItem.dataType+"' data-id='"+repeatChildList[i].code+"' value='"+repeatChildList[i].cnName+"'>"+repeatChildList[i].cnName+"</option>";
             	}
@@ -3142,6 +3143,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
     	var $dataType = $(this).siblings(".data-type.select2-offscreen");
     	var itemDataType = $(this).find("option:selected").attr("item-data-type");
     	
+    	
     	if ($dataType.hasClass("attr-type")) {
     		Ajax.ajax('admin/node/basicItemNode/getDataType', {
                 dataType:itemDataType
@@ -3150,14 +3152,16 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
                  var dataTypeList = data.dataType;
                  var attrHtml="";
                  for(var i=0; i<dataTypeList.length; i++) {
-                     if(dataTypeList[i][0] === "STRING") {
+                     if(i == 0) {
                          attrHtml += "<option value='"+dataTypeList[i][0]+"' selected>"+dataTypeList[i][1]+"</option>";  
+                         
                      }else {
                          attrHtml += "<option value='"+dataTypeList[i][0]+"'>"+dataTypeList[i][1]+"</option>"; 
                      }                           
                  };
                  $dataType.children().remove();
                  $dataType.append(attrHtml); 
+                 $dataType.css({"width":"15%","marginLeft":"16px"}).select2();
             })
     	}
     	
