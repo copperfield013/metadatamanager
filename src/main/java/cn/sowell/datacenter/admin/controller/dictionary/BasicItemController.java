@@ -173,6 +173,7 @@ public class BasicItemController {
 	public ResponseEntity doAdd(@ApiParam(name="BasicItem", value="传入json格式", required=true)BasicItem basicItem, OneLevelItem oneLevelItem, Integer cascadedict){
 			String dType = oneLevelItem.getDataType();
 			String comm = null;
+			oneLevelItem.setDictParentId(0);
 			
 			if ("5".equals(dType)) {
 				oneLevelItem.setDictParentId(0);
