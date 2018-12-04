@@ -74,7 +74,7 @@ public class RecordRelationTypeDaoImpl implements RecordRelationTypeDao {
 	@Override
 	public List<RecordRelationType> getEntityRelaByBitemId(String recordType) {
 		String sql = "SELECT t1.type_code, t1.name,t3.c_cn_name as left_record_type,"
-				+ "  t4.c_cn_name as right_record_type, t2.name as reverse_code, t1.using_state "
+				+ "  t4.c_cn_name as right_record_type, t2.name as reverse_code, t1.using_state, t1.relation_type "
 				+ " FROM t_sc_record_relation_type t1"
 				+ " LEFT JOIN t_sc_record_relation_type t2"
 				+ " ON t1.reverse_code=t2.type_code"
@@ -100,6 +100,21 @@ public class RecordRelationTypeDaoImpl implements RecordRelationTypeDao {
 		sFactory.getCurrentSession().save(btNg);
 		Object[] basicItemFix = basicItemService.getBasicItemFix();
 		return btNg.getRelaCode(entityCode, (String)basicItemFix[3]);
+	}
+
+	@Override
+	public List<RecordRelationType> getRelaByType(String leftRecordType, String relationType) {
+		StringBuffer sb = new StringBuffer();		
+		sb.append(" SELECT 	t1.* FROM ")
+		.append(" t_sc_record_relation_type t1")
+		.append(" WHERE")
+		.append(" t1.left_record_type =:leftRecordType AND t1.relation_type=:relationType");
+		List list = sFactory.getCurrentSession().createSQLQuery(sb.toString())
+				.addEntity(RecordRelationType.class)
+				.setParameter("leftRecordType", leftRecordType)
+				.setParameter("relationType", relationType)
+				.list();
+		return list;
 	}
 
 }

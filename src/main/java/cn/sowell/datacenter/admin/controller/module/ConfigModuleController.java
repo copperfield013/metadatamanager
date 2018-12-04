@@ -110,9 +110,9 @@ public class ConfigModuleController {
         @ApiResponse(code = 401, message = "添加失败") })
     @RequestMapping(value = "/do_add",
         method = RequestMethod.POST)
-	public ResponseEntity<AjaxPageResponse> doAdd(String moduleName, String moduleTitle, String mappingName, String codeName, String titleName){
+	public ResponseEntity<AjaxPageResponse> doAdd(String moduleName, String moduleTitle, Long mappingId, String codeName, String titleName){
 		try {
-			CreateModuleParam param = new CreateModuleParam(moduleTitle, mappingName);
+			CreateModuleParam param = new CreateModuleParam(moduleTitle, mappingId);
 			param.setModuleName(moduleName);
 			param.setCodeName(codeName);
 			param.setTitleName(titleName);
@@ -160,22 +160,6 @@ public class ConfigModuleController {
 		}
 	}
 	
-/*	@ResponseBody
-	@ApiOperation(value = "刷新", nickname = "refresh", notes = "刷新",response = AjaxPageResponse.class, tags={ "configModule", })
-    @ApiResponses(value = { 
-        @ApiResponse(code = 200, message = "操作成功", response = AjaxPageResponse.class),
-        @ApiResponse(code = 401, message = "操作失败") })
-    @RequestMapping(value = "/refresh",
-        method = RequestMethod.POST)
-	public ResponseEntity<AjaxPageResponse> refresh(String name){
-		try {
-			basicItemNodeService.refresh(name);
-			return new ResponseEntity<AjaxPageResponse>(AjaxPageResponse.REFRESH_LOCAL("刷新成功"), HttpStatus.OK);
-		} catch (Exception e) {
-			return new ResponseEntity<AjaxPageResponse>(AjaxPageResponse.FAILD("刷新失败"), HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-	}*/
-	
 	@ResponseBody
 	 @ApiOperation(value = "跳转到编辑页面", nickname = "edit", notes = "跳转到编辑页面", response = ModelAndView.class, tags={ "configModule", })
     @ApiResponses(value = { 
@@ -186,11 +170,12 @@ public class ConfigModuleController {
 	public ModelAndView edit(String name){
 		Module module = dBModuleConfigMediator.getModule(name);
 		
-		BasicItemNode abc = basicItemNodeService.getAbc(module.getMappingName());
+		BasicItemNode abc = basicItemNodeService.getAbc(module.getMappingId());
 		List<BasicItemNode> childNode = basicItemNodeService.getAttribute(String.valueOf(abc.getId()));
 		ModelAndView mv = new ModelAndView();
 		mv.addObject("module", module);
 		mv.addObject("childNode", childNode);
+		mv.addObject("abc", abc);
 		mv.setViewName(AdminConstants.JSP_MODULE + "/configModule/edit.jsp");
 		return mv;
 	}

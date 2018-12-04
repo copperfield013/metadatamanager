@@ -1,6 +1,7 @@
 package cn.sowell.datacenter.admin.controller.dictionary;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -23,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.abc.util.RelationType;
 import com.alibaba.fastjson.JSONObject;
 
 import cn.sowell.copframe.dto.ajax.AjaxPageResponse;
@@ -54,7 +56,10 @@ public class RecordRelationTypeController {
 	
 	@ResponseBody
 	@RequestMapping("/doAdd")
-	public AjaxPageResponse doAdd(String leftRecordType,String rightRecordType, String leftName, String rightName, String symmetry){
+	public String doAdd(String leftRecordType,String rightRecordType, String leftName, String rightName,String leftRelationType,String rightRelationType, String symmetry){
+		Map<String, Object> map = new HashMap<String, Object>();
+		JSONObject jobj = new JSONObject(map);
+		
 		RecordRelationType rightObj = new RecordRelationType();
 		RecordRelationType leftObj = new RecordRelationType();
 		
@@ -63,38 +68,36 @@ public class RecordRelationTypeController {
 		
 		if ("symmetry".equals(symmetry)) {//添加对称关系
 			leftObj.setRightRecordType(leftRecordType);
+			leftObj.setRelationType(leftRelationType);
 		} else {
 			leftObj.setRightRecordType(rightRecordType);
-			
+			leftObj.setRelationType(leftRelationType);
 			//生成右关系
 			rightObj.setName(rightName);
 			rightObj.setLeftRecordType(rightRecordType);
 			rightObj.setRightRecordType(leftRecordType);
+			rightObj.setRelationType(rightRelationType);
 		}
 		
-			for(int i=0; i<10; i++) {
-				try {
-					recordRelationTypeService.saveRelation(leftObj, rightObj, symmetry);
-					AjaxPageResponse response = new AjaxPageResponse();
-					response.setNotice("操作成功");
-					response.setNoticeType(NoticeType.SUC);
-					return response;
-				} catch (DataIntegrityViolationException e) {
-					if (i <9) {
-						continue;
-					} else {
-						return AjaxPageResponse.FAILD("主键重复或者是关系名重复, 请重新添加");
-					}
-				} catch (Exception e) {
-					logger.error("操作失败", e);
-					if (e.getMessage().contains("t_sc_basic_item_fix")) {
-               		 return AjaxPageResponse.FAILD("t_sc_basic_item_fix：没有可用数据");
-					}
-					return AjaxPageResponse.FAILD("操作失败");
+			try {
+				recordRelationTypeService.saveRelation(leftObj, rightObj, symmetry);
+				map.put("code", 200);
+				map.put("msg", "操作成功");
+				return jobj.toString();
+			} catch (DataIntegrityViolationException e) {
+				map.put("code", 400);
+				map.put("msg", "主键重复或者是关系名重复, 请重新添加");
+				return jobj.toString();
+			} catch (Exception e) {
+				logger.error("操作失败", e);
+				map.put("code", 400);
+				if (e.getMessage().contains("t_sc_basic_item_fix")) {
+					map.put("msg", "t_sc_basic_item_fix：没有可用数据");
+					return jobj.toString();
 				}
+				map.put("msg", "操作失败");
+				return jobj.toString();
 			}
-		
-		return null;
 	}
 
 	@ResponseBody
@@ -158,12 +161,13 @@ public class RecordRelationTypeController {
 	 */
 	@ResponseBody
 	@RequestMapping("/do_edit")
-	public String edit(String name, String typeCode){
+	public String edit(String name, String typeCode, String relationType){
 		Map<String, Object> map = new HashMap<String, Object>();
 		JSONObject jobj = new JSONObject(map);
 		try {
 			RecordRelationType recordRelationType = recordRelationTypeService.getRecordRelationType(typeCode);
 			recordRelationType.setName(name);
+			recordRelationType.setRelationType(relationType);
 			recordRelationTypeService.update(recordRelationType);
 			map.put("recordRelationType", recordRelationType);
 			map.put("code", 200);
@@ -176,5 +180,49 @@ public class RecordRelationTypeController {
 		}
 	}
 	
+	 //这里获取关系类型
+    @ResponseBody
+	@RequestMapping("/getRelationType")
+	public String getRelationType(){
+		Map<String, Object> map = new HashMap<String, Object>();
+		JSONObject jobj = new JSONObject(map);
+		try {
+			Map<String, Object> reTypeMap = new HashMap<String, Object>();
+			reTypeMap.put(String.valueOf(RelationType.MANY.getIndex()), RelationType.MANY.getCName());
+			reTypeMap.put(String.valueOf(RelationType.ONE.getIndex()), RelationType.ONE.getCName());
+			map.put("reTypeMap", reTypeMap);
+			map.put("code", 200);
+			map.put("msg", "操作成功");
+			return jobj.toString();
+		} catch (Exception e) {
+			logger.error("操作失败", e);
+			map.put("code", 400);
+			map.put("msg", "操作失败");
+			return jobj.toString();
+		}
+	}
+    
+    
+    //这里获取本实体下特定类型的关系
+    @ResponseBody
+	@RequestMapping("/getRelation")
+	public String getRelation(String leftRecordType){
+		Map<String, Object> map = new HashMap<String, Object>();
+		JSONObject jobj = new JSONObject(map);
+		try {
+			String relationType = String.valueOf(RelationType.ONE.getIndex());
+			
+			List<RecordRelationType> relationList = recordRelationTypeService.getRelaByType(leftRecordType, relationType);
+			map.put("relationList", relationList);
+			map.put("code", 200);
+			map.put("msg", "操作成功");
+			return jobj.toString();
+		} catch (Exception e) {
+			logger.error("操作失败", e);
+			map.put("code", 400);
+			map.put("msg", "操作失败");
+			return jobj.toString();
+		}
+	}
 	
 }

@@ -7,6 +7,8 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
 
+import com.abc.util.RelationType;
+
 @Entity
 @Table(name = "t_sc_record_relation_type")
 public class RecordRelationType {
@@ -30,6 +32,9 @@ public class RecordRelationType {
 	
 	@Column(name="using_state")
 	private Integer usingState;
+	
+	@Column(name="relation_type")
+	private String relationType;
 
 	public String getTypeCode() {
 		return typeCode;
@@ -83,6 +88,14 @@ public class RecordRelationType {
 	 */
 	public void setUsingState(Integer usingState) {
 		this.usingState = usingState;
+	}
+
+	public String getRelationType() {
+		return RelationType.getRelationType(Integer.parseInt(relationType)).getCName();
+	}
+
+	public void setRelationType(String relationType) {
+		this.relationType = relationType;
 	}
 	
 }
