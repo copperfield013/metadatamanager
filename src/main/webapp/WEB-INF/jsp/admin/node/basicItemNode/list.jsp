@@ -18,8 +18,9 @@
 			<thead>
 				<tr>
 					<th>序号</th>
-					<th>name</th>
-					<th>abcattr</th>
+					<th>配置文件编号</th>
+					<th>配置文件名称</th>
+					<th>实体名称</th>
 					<th>操作</th>
 				</tr>
 			</thead>
@@ -27,6 +28,7 @@
 				<c:forEach items="${list }" var="item" varStatus="i">
 					<tr>
 						<td>${i.index + 1 }</td>
+						<td>${item.id }</td>
 						<td>${item.name }</td>
 						<td>${item.basicItem.cnName }</td>
 						<td>

@@ -127,7 +127,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 	}
 	
     /**
-     * 跟实体添加页面弹出方法
+     * 根实体添加页面弹出方法
      * @param {当前点击元素,dom对象} el 
      */
     function pop(el) {
@@ -155,6 +155,10 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
                 "<i class='icon icon-card-more-attr'></i>" +
                 "<span class='text'>添加多值属性</span>" +
                 "</li>"+
+                "<li class='card-list add-rattr-attr'>" +
+                "<i class='icon icon-card-attr'></i>" +
+                "<span class='text'>添加关系属性</span>" +
+                "</li>" +
                 "<li class='card-list add-relative'>" +
                 "<i class='icon icon-card-relative'></i>" +
                 "<span class='text'>添加关系</span>" +
@@ -207,6 +211,10 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
                 "<li class='card-list add-cascade-attr'>" +
                 "<i class='icon icon-card-attr'></i>" +
                 "<span class='text'>添加级联属性</span>" +
+                "</li>" +
+                "<li class='card-list add-rattr-attr'>" +
+                "<i class='icon icon-card-attr'></i>" +
+                "<span class='text'>添加关系属性</span>" +
                 "</li>" +
                 "</ul>";
         }
@@ -1916,7 +1924,9 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
         	addCascadeAttr(el);//添加级联属性方法
         } else if ($(this).hasClass("add-more-cascade-attr")) {
         	addMoreCascadeAttr(el);//添加多值级联属性方法
-        }       
+        } else if ($(this).hasClass("add-rattr-attr")) {
+        	addRattr(el);//添加关系属性
+        }     
         removePop();
         $(el).removeClass("active");
     });

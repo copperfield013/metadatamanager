@@ -22,7 +22,7 @@
 						
 						<input type="hidden" name="moduleName" value="${module.name }">
 						<input type="hidden" name="moduleTitle" value="${module.title }">
-						<input type="hidden" name="mappingName" value="${module.mappingName }">
+						<input type="hidden" name="mappingId" value="${module.mappingId }">
 						
 						<label class="col-lg-2 control-label" for="moduleName">模块标识</label>
 						<div class="col-lg-5">
@@ -31,9 +31,9 @@
 					</div>
 					
 					<div class="form-group">
-						<label class="col-lg-2 control-label" for="mappingName">配置名称<font color="red">*</font></label>
+						<label class="col-lg-2 control-label" for="mappingId">配置名称<font color="red">*</font></label>
 						<div class="col-lg-5">
-							${module.mappingName }
+							${abc.name }
 						</div>
 					</div>
 					<div class="form-group">
@@ -80,27 +80,5 @@
 	    	 $(".ser-list", $page).css({"width":"30%"}).select2();
 	    })
 	    
-	    $(".page-body", $page).on("change", "#mappingName", function() {
-	    	var $this = $(this);
-	    	var options=$("#mappingName option:selected"); //获取选中的项
-	    	var parentId = options.attr("data-id");
-	    	
-	    	 Ajax.ajax('admin/module/configModule/childNodeList', {
-	    		 parentId:parentId
-	    	 }, function(data) {
-	    		 var child = data.childNode;
-	    		 var str = "<option selected=\"selected\" value=\"\">唯一编码</option>";
-	    		 var str1 = "<option selected=\"selected\" value=\"\"></option>";
-	    		 for (var p in child) { //遍历json数组时，这么写p为索引，0,1
-                     str = str + "<option value=\"" + child[p].name + "\">" + child[p].name + "</option>";
-                     str1 = str1 + "<option value=\"" + child[p].name + "\">" + child[p].name + "</option>"; 
-                 }
-	    		 
-	    		 $("#codeName").empty().append(str);
-	    		 $("#titleName").empty().append(str1);
-	    		 $("#codeName").options.selectedIndex = 0; //回到初始状态
-	    		 $("#titleName").options.selectedIndex = 0; //回到初始状态
-	    	 }) 
-	    });
 	});
 </script>

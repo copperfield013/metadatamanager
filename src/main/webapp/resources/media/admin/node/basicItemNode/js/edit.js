@@ -94,6 +94,16 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 	    	nodePosTypeCASATTRIBUTE = data;
 	    	$CPF.closeLoading();
 	    }, {async: true})
+	    
+	     //CASATTRIBUTE
+	    Ajax.ajax('admin/node/basicItemNode/getNodeOpsType', {
+	    	opsCode:8
+	    }, function(data){		    	
+	    	var data = data.nodeOpsType;
+	    	nodePosTypeRATTRIBUTE = data;
+	    	$CPF.closeLoading();
+	    }, {async: true})
+	    
 	}	
 	
 	function getDataType() {
@@ -207,6 +217,12 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 					repeatId: entityId
 				}, function(data) {	
 					var moreCascaseAttrList = data.moreCascaseAttr;
+					
+					//获取对一的关系
+					Ajax.ajax('admin/dictionary/recordRelationType/getRelation', {
+						leftRecordType: entityId,
+					}, function(data) {			
+						var relationList = data.relationList;
 				
 		//获取关系、多值、分组 的孩子
 		Ajax.ajax('admin/node/basicItemNode/getChildNode', {
@@ -297,7 +313,20 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 						 }else {
 							 initCascadeAttr(abcattr,abcattrCode,dataType, id, name, opt, order, parent, groupCascaseAttrList);
 						 }
-				 }	
+				 }	else if(data[i].type == 8) {	
+					 var abcattrCode = data[i].abcattrCode;
+                     var basicItemCode = data[i].basicItemCode;
+						if (basicItemCode == undefined) {
+							abcattrCode = "";
+						} else {
+						  abcattrCode = data[i].basicItemCode;
+						}
+						
+					 initRattr(abcattrCode,dataType, id, name, opt, order, parent, commList, subdomain, relationList);
+				 }
+				 
+				 
+				 
 				 if(data.length === 0 && isRelative === true) {					 
 					 addRelativeChildren(bar);					
 				 }else if(data.length === 1 && isRelative === true) {
@@ -306,6 +335,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 			 }				 
 			 $CPF.closeLoading();
 	    }, {async: false});	 
+		})
 		})
 		})
 		})
@@ -834,6 +864,97 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 		        drag($(".dragEdit-wrap").length);
 		 // }, {async: false})
     }
+    
+    
+    //关系属性初始化方法
+    function initRattr(abcattrCode,dataType, id, name, opt, order, parent, commList, subdomain, relationList) {  
+    	var dataTypeList = dataTypeSTRINGList;
+			var attrHtml = "<li class='add-attr clear-fix'>"
+				+"<div class='icon-label attr'>";
+            if(abcattrCode=="") {
+            	attrHtml=attrHtml+"<i class='icon icon-error-cross'></i>";
+            }
+            attrHtml=attrHtml+"<i class='icon icon-attr'></i>" +
+            "<span class='text'>关系属性</span>" +
+            "</div>" +
+            "<div class='label-bar rattr  al-save'  data-type='8' data-order='"+order+"' data-id='"+id+"'>" +
+            "<input type='text' disabled class='edit-input text' value='"+name+"'>" +
+            "<select disabled class='abc-attr relationCode' title='<对一>关系'>";    
+            for(var i=0; i<relationList.length; i++) {   
+            	if (relationList[i].name==subdomain) {
+            		attrHtml += "<option data-id='"+relationList[i].typeCode+"' data-rightId='"+relationList[i].rightRecordType+"' value='"+relationList[i].name+"' selected>"+relationList[i].name+"</option>";
+            	} else {
+            		attrHtml += "<option data-id='"+relationList[i].typeCode+"' data-rightId='"+relationList[i].rightRecordType+"' value='"+relationList[i].name+"'>"+relationList[i].name+"</option>";
+            	}
+            }
+            attrHtml += "</select>";
+            
+            attrHtml += "<select disabled class='abc-attr rattrType'>"            
+            for(var i=0; i<commList.length; i++) {  
+            	if ("5" == commList[i][2]) {
+					dataTypeList=dataTypeSTRINGList;
+				} else if ("6"== commList[i][2]) {
+					dataTypeList=dataTypeDATEList;
+				}else if ("7"== commList[i][2]) {
+					dataTypeList=dataTypeTIMEList;
+				}else if ("1"== commList[i][2]) {
+					dataTypeList=dataTypeINTList;
+				}else if ("15"== commList[i][2]) {
+					dataTypeList=dataTypeDOUBLEList;
+				}else if ("11"== commList[i][2]) {
+					dataTypeList=dataTypeREFERENCEList;
+				}else if ("8"== commList[i][2]) {
+					dataTypeList=dataTypeFILEList;
+				}else if ("14"== commList[i][2]) {
+					dataTypeList=dataTypeENUMList;
+				}
+            	
+            	if(commList[i][0] == abcattrCode) {
+            		attrHtml += "<option item-data-type='"+commList[i][2]+"' data-id='"+commList[i][0]+"' value='"+commList[i][1]+"' selected>"+commList[i][1]+"</option>";
+            	}else {
+            		attrHtml += "<option item-data-type='"+commList[i][2]+"' data-id='"+commList[i][0]+"' value='"+commList[i][1]+"'>"+commList[i][1]+"</option>";
+            	}
+            	
+            }
+			attrHtml += "</select>";
+			attrHtml += "<select disabled class='data-type attr-type'>";      
+			//Ajax.ajax('admin/node/basicItemNode/getDataType', {
+			//	dataType:commList[0][2]
+			//}, function(data){		
+			//	var dataTypeList = data.dataType;  
+		    	for(var i=0; i<dataTypeList.length; i++) {
+		    		if(dataTypeList[i][0] == dataType) {
+		    			attrHtml += "<option value='"+dataTypeList[i][0]+"' selected>"+dataTypeList[i][1]+"</option>";
+		    		}else {
+		    			attrHtml += "<option value='"+dataTypeList[i][0]+"'>"+dataTypeList[i][1]+"</option>";
+		    		}
+	            	          
+	            };
+	            attrHtml += "</select>";
+				attrHtml += "<select disabled class='node-ops-type'>";		
+				var nodePosType=nodePosTypeATTRIBUTE;
+			    for(var i=0; i<nodePosType.length; i++) {
+			    	if(nodePosType[i] == opt) {
+			    		attrHtml += "<option value='"+nodePosType[i]+"' selected>"+nodePosType[i]+"</option>";
+			    	}else {
+			    		attrHtml += "<option value='"+nodePosType[i]+"'>"+nodePosType[i]+"</option>";
+			    	}
+		            	          
+		        };
+		        attrHtml += "</select>";
+		        attrHtml += "<div class='btn-wrap'>" +
+		        "<i class='icon icon-save'></i>" +
+		        "<i class='icon icon-trash-sm'></i>" +
+		        "<i class='icon-simulate-trashsm'></i>" +
+		        "</div>" +
+		        "</div>" +
+		        "</li>";		           		        
+		        var $html = $(attrHtml).prependTo($(parent));
+		        $html.find("select").css({"width":"13%","marginLeft":"16px"}).select2();
+		        
+		        drag($(".dragEdit-wrap").length);
+		 // }, {async: false})
+    }
 	
     //多值属性下的属性初始化方法
     function initAttrM(abcattr,abcattrCode,dataType,id,name,opt,order,parent,repeatChildList) {  
@@ -1150,6 +1271,10 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
                 "<i class='icon icon-card-more-attr'></i>" +
                 "<span class='text'>添加多值属性</span>" +
                 "</li>"+
+                "<li class='card-list add-rattr-attr'>" +
+                "<i class='icon icon-card-attr'></i>" +
+                "<span class='text'>添加关系属性</span>" +
+                "</li>" +
                 "<li class='card-list add-relative'>" +
                 "<i class='icon icon-card-relative'></i>" +
                 "<span class='text'>添加关系</span>" +
@@ -1202,6 +1327,10 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
                 "<li class='card-list add-cascade-attr'>" +
                 "<i class='icon icon-card-attr'></i>" +
                 "<span class='text'>添加级联属性</span>" +
+                "</li>" +
+                "<li class='card-list add-rattr-attr'>" +
+                "<i class='icon icon-card-attr'></i>" +
+                "<span class='text'>添加关系属性</span>" +
                 "</li>" +
                 "</ul>";
         }
@@ -1751,6 +1880,67 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
     };
     
     
+  //关系属性保存修改方法
+    function rAttrSave(el) {
+    	var $attrBar = $(el).closest(".label-bar");
+    	var type = $attrBar.attr("data-type");
+    	var dataType = $attrBar.children(".data-type").find("option:selected").val();
+    	var opt = $attrBar.children(".node-ops-type").find("option:selected").val();
+    	var name = $attrBar.children(".edit-input").val();    	
+    	var order = $attrBar.attr("data-order");
+    	var id = $attrBar.attr("data-id");
+    	var parentId = $attrBar.closest(".collapse-content").prev(".collapse-header")
+    						.attr("data-id"); 
+    	var subdomain = $attrBar.children(".relationCode").find("option:selected").val();
+    	var abcattrCode = $attrBar.children(".rattrType").find("option:selected").attr("data-id");
+    	
+    	switch (opt) {
+	        case "读":
+	            opt = 1;
+	            break;
+	        case "写":
+	            opt = 2;
+	            break;
+	        case "补":
+	            opt = 3;
+	            break;
+	        case "增":
+	            opt = 4;
+	            break;
+	        case "并":
+	            opt = 5;
+	            break;
+	        default:
+	            break;
+	    }
+    	$CPF.showLoading();
+    	Ajax.ajax('admin/node/basicItemNode/saveOrUpdate', {
+			 type: type,
+			 name: name,
+			 abcattrCode: abcattrCode,
+			 dataType: dataType,
+			 opt: opt,
+			 order: order,
+			 parentId: parentId,
+			 id: id,
+			 subdomain:subdomain
+		 }, function(data) {
+			 if(data.state == "400") {
+				 Dialog.notice(data.msg, "warning");
+				 $CPF.closeLoading();
+				 return;
+			 }
+			 var data = data.node;
+			 //设置当前节点order和id
+			 var order = data.order;
+			 var id = data.id;
+			 $attrBar.attr("data-order",order)
+			 	.attr("data-id", id);
+			 saveSuccess(el)
+			 $CPF.closeLoading();
+		});
+    };
+    
     //级联属性保存修改方法
     function cascadeAttrSave(el) {
     	var $attrBar = $(el).closest(".label-bar");
@@ -1899,7 +2089,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 		        "</li>";
 		        
 		        var $html = $(attrHtml).prependTo($content);
-		        $html.find("select").css({"width":"15%","marginLeft":"16px"}).select2();
+		        $html.find("select").css({"width":"13%","marginLeft":"16px"}).select2();
 		        addUnfold(el);
 		        $CPF.closeLoading();			    		   
 		    })
@@ -2074,6 +2264,109 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 		    addUnfold(el);
 		    $CPF.closeLoading();			 		    		  
 	    });                                       
+    };
+    
+    /**
+     * 添加关系属性方法
+      */
+    function addRattr(el) {
+        var $content = $(el).closest(".collapse-header").siblings(".collapse-content");
+        var entityId = $(el).closest(".collapse-header").attr("data-abcattrcode");
+        if (entityId == undefined) {
+        	entityId = $(el).closest(".collapse-header").closest(".collapse-content").siblings(".collapse-header").attr("data-abcattrcode");
+        }
+        
+        if($(el).closest(".collapse-header").hasClass("attr-abc-title")) {
+        	entityId = $(el).closest(".attr-relative")
+        		.find(".attr-relative-title")
+        		.find(".label-bar")
+        		.find(".abc-attr ")
+        		.find("option:selected").attr("data-id");
+        }
+        $CPF.showLoading();
+		Ajax.ajax('admin/dictionary/recordRelationType/getRelation', {
+			leftRecordType: entityId,
+		}, function(data) {			
+			var relationList = data.relationList;
+			if (data.length == 0) {
+                Dialog.notice("请在模型中添加<对一>的关系", "warning");
+                $CPF.closeLoading();    
+                return;
+	          } 
+			
+			if (data.code == 400) {
+				Dialog.notice("操作失败！刷新后重试", "warning");
+				$CPF.closeLoading();		
+				return;
+			}
+			
+			var attrHtml = "<li class='add-attr clear-fix'>" +
+            "<div class='icon-label attr' data-type='8' data-order='' data-id=''>" +
+            "<i class='icon icon-attr'></i>" +
+            "<span class='text'>关系属性</span>" +
+            "</div>" +
+            "<div class='label-bar rattr edit' data-type='8' data-order='' data-id=''>" +
+            "<input type='text' class='edit-input text' value='"+relationList[0].name+"'>" +
+            "<select class='abc-attr relationCode'>"            
+	            for(var i=0; i<relationList.length; i++) {            	
+	            	attrHtml += "<option data-id='"+relationList[i].typeCode+"' data-rightId='"+relationList[i].rightRecordType+"' value='"+relationList[i].name+"'>"+relationList[i].name+"</option>";                
+	            }
+			attrHtml += "</select>";
+			
+			var rightRecordType = relationList[0].rightRecordType;
+			
+		   Ajax.ajax('admin/node/basicItemNode/getComm', {
+			   entityId:rightRecordType
+		   }, function(data){		    	
+	            var data = data.comm;
+				if (data.length == 0) {
+	                Dialog.notice("请在模型中添加属性", "warning");
+	                $CPF.closeLoading();    
+	                return;
+		          } 
+				attrHtml +=  "<select class='abc-attr rattrType'>"            
+	            for(var i=0; i<data.length; i++) {
+	            	attrHtml += "<option item-data-type='"+data[i][2]+"' data-id='"+data[i][0]+"' value='"+data[i][1]+"'>"+data[i][1]+"</option>";                
+	            }
+				attrHtml += "</select>";
+				
+				attrHtml += "<select class='data-type attr-type'>";            
+				   Ajax.ajax('admin/node/basicItemNode/getDataType', {
+					   dataType:data[0][2]
+				   }, function(data){		
+					   
+				    	var dataTypeList = data.dataType;
+				    	for(var i=0; i<dataTypeList.length; i++) {
+				    		attrHtml += "<option value='"+dataTypeList[i][0]+"'>"+dataTypeList[i][1]+"</option>"; 
+			            };
+			            attrHtml += "</select>";
+				  
+				attrHtml += "<select class='node-ops-type'>";	
+				var nodePosType = nodePosTypeRATTRIBUTE;
+			    for(var i=0; i<nodePosType.length; i++) {
+			    	if(nodePosType[i] === "写") {
+			    		attrHtml += "<option value='"+nodePosType[i]+"' selected>"+nodePosType[i]+"</option>";  	
+			    	}else {
+			    		attrHtml += "<option value='"+nodePosType[i]+"'>"+nodePosType[i]+"</option>"; 
+			    	}
+		            	         
+		         };
+		         attrHtml += "</select>";
+		         attrHtml += "<div class='btn-wrap'>" +
+		         "<i class='icon icon-save'></i>" +
+		         "<i class='icon icon-trash-sm'></i>" +
+		         "<i class='icon-simulate-trashsm'></i>" +
+		         "</div>" +
+		         "</div>" +
+		         "</li>";
+		         var $html = $(attrHtml).prependTo($content);
+		         $html.find("select").css({"width":"13%","marginLeft":"16px"}).select2();		            
+		         addUnfold(el);
+		         $CPF.closeLoading();		
+				 });
+		    });
+			
+	    });		                      
     };
 
     /**
@@ -2952,6 +3245,8 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
         	addCascadeAttr(el);//添加级联属性方法
         } else if ($(this).hasClass("add-more-cascade-attr")) {
         	addMoreCascadeAttr(el);//添加多值级联属性方法
+        } else if ($(this).hasClass("add-rattr-attr")) {
+        	addRattr(el);//添加关系属性
         }   
         removePop();
         $(el).removeClass("active");
@@ -3063,6 +3358,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
         	entitySave(this);
         	return;
         }
+        
         if(labelBar.hasClass("tag")) {        	
         	tagSave(this);
         }else if(labelBar.hasClass("attr")) {
@@ -3075,8 +3371,10 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
         	relativeSave(this);
         }else if(labelBar.hasClass("abc")) {
         	abcSave(this);
-        }else if(labelBar.hasClass("cascade-attr")) {
+        } else if(labelBar.hasClass("cascade-attr")) {
         	cascadeAttrSave(this);
+        } else if(labelBar.hasClass("rattr")) {
+        	rAttrSave(this);
         }  
 
     });
@@ -3139,31 +3437,57 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
     	var _options = $(this).find("option");
     	$input.val(_value);
     	
-    	//修改dataType的值
-    	var $dataType = $(this).siblings(".data-type.select2-offscreen");
-    	var itemDataType = $(this).find("option:selected").attr("item-data-type");
+    	//修改关系属性对应实体的值
+    	var $rattr = $(this).siblings(".rattrType.select2-offscreen");
+    	var rightEntityId = $(this).find("option:selected").attr("data-rightid");
     	
-    	
-    	if ($dataType.hasClass("attr-type")) {
-    		Ajax.ajax('admin/node/basicItemNode/getDataType', {
-                dataType:itemDataType
-            }, function(data){     
-            	
-                 var dataTypeList = data.dataType;
-                 var attrHtml="";
-                 for(var i=0; i<dataTypeList.length; i++) {
-                     if(i == 0) {
-                         attrHtml += "<option value='"+dataTypeList[i][0]+"' selected>"+dataTypeList[i][1]+"</option>";  
-                         
-                     }else {
-                         attrHtml += "<option value='"+dataTypeList[i][0]+"'>"+dataTypeList[i][1]+"</option>"; 
-                     }                           
-                 };
-                 $dataType.children().remove();
-                 $dataType.append(attrHtml); 
-                 $dataType.css({"width":"15%","marginLeft":"16px"}).select2();
-            })
+    	if ($rattr.hasClass("rattrType")) {
+    	 Ajax.ajax('admin/node/basicItemNode/getComm', {
+			   entityId:rightEntityId
+		   }, function(data){		    	
+	            var data = data.comm;
+	            var rattrHtml="";
+				if (data.length == 0) {
+	                Dialog.notice("请在模型中添加属性", "warning");
+	                $CPF.closeLoading();    
+	                return;
+		          } 
+	            for(var i=0; i<data.length; i++) {
+	            	rattrHtml += "<option item-data-type='"+data[i][2]+"' data-id='"+data[i][0]+"' value='"+data[i][1]+"'>"+data[i][1]+"</option>";                
+	            }
+	            
+	            $rattr.children().remove();
+	            $rattr.append(rattrHtml); 
+	            $rattr.css({"width":"15%","marginLeft":"16px"}).select2();
+		   });
+    	} else {
+    		
+    		//修改dataType的值
+        	var $dataType = $(this).siblings(".data-type.select2-offscreen");
+        	var itemDataType = $(this).find("option:selected").attr("item-data-type");
+        	
+        	if ($dataType.hasClass("attr-type")) {
+        		Ajax.ajax('admin/node/basicItemNode/getDataType', {
+                    dataType:itemDataType
+                }, function(data){     
+                     var dataTypeList = data.dataType;
+                     var attrHtml="";
+                     for(var i=0; i<dataTypeList.length; i++) {
+                         if(i == 0) {
+                             attrHtml += "<option value='"+dataTypeList[i][0]+"' selected>"+dataTypeList[i][1]+"</option>";  
+                         }else {
+                             attrHtml += "<option value='"+dataTypeList[i][0]+"'>"+dataTypeList[i][1]+"</option>"; 
+                         }                           
+                     };
+                     $dataType.children().remove();
+                     $dataType.append(attrHtml); 
+                     $dataType.css({"width":"13%","marginLeft":"16px"}).select2();
+                });
+        	}
+    		
     	}
+    	 
+    	
     	
     	/*var isOption = false;
     	var isDefault = false;    	

@@ -290,6 +290,24 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
 	  Ajax.ajax('admin/dictionary/recordRelationType/edit', {
 		  typeCode:typeCode
 	  }, function(data) {
+		  
+		  var strl = "";
+		  Ajax.ajax('admin/dictionary/recordRelationType/getRelationType', '', function(data2) {
+          	var reTypeMap = data2.reTypeMap;
+              for (var h in reTypeMap) { //遍历json数组时，这么写p为索引，0,1
+             	 
+             	 if (reTypeMap[h] == data.recordRelationType.relationType) {
+             		strl = strl + "<option selected value=\"" + h + "\">" + reTypeMap[h] + "</option>"; 
+             	 } else {
+             		strl = strl + "<option value=\"" + h + "\">" + reTypeMap[h] + "</option>"; 
+             	 }
+             	 
+              }
+         	 	
+              $(".opera_relation_edit").children("#entity_relation_form_edit").find("#relationType").html("");
+              $(".opera_relation_edit").children("#entity_relation_form_edit").find("#relationType").css("width","30%").select2().append(strl).trigger("change");
+          });
+		  
 		  $(".opera_relation_edit").children("#entity_relation_form_edit").find("#name").val(data.recordRelationType.name);
 		  $(".opera_relation_edit").children("#entity_relation_form_edit").find("#typeCode").val(data.recordRelationType.typeCode);
 		  $(".opera_relation_edit").show();
@@ -308,22 +326,21 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
 	  var $form =  $ore.children("#entity_relation_form_edit");
 	  var name =  $form.find("#name").val();
 	  var typeCode = $form.find("#typeCode").val();
-	   
+	  var relationType = $form.find("#relationType").val();
+	  
 	   Ajax.ajax('admin/dictionary/recordRelationType/do_edit', {
 			  typeCode:typeCode,
-			  name:name
+			  name:name,
+			  relationType,relationType
 		  }, function(data) {
 			  if (data.code == 200) {
 				  var recordRelationType = data.recordRelationType;
-				  
 				  relaAttr(recordRelationType.leftRecordType);
 			  } else {
 				  Dialog.notice(msg, "error");
 			  }
 			  
 			  $ore.hide();
-			  /*$(".opera_relation_edit").children("#entity_relation_form_edit").find("#name").val(data.recordRelationType.name);
-			  $(".opera_relation_edit").show();*/
 		  });
    });
    
@@ -1330,13 +1347,29 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
             for (var p in entity) { //遍历json数组时，这么写p为索引，0,1
                 str = str + "<option value=\"" + entity[p].code + "\">" + entity[p].cnName + "</option>"; 
             }
+            var strl = "";
+            Ajax.ajax('admin/dictionary/recordRelationType/getRelationType', '', function(data2) {
+            	var reTypeMap = data2.reTypeMap;
+                for (var h in reTypeMap) { //遍历json数组时，这么写p为索引，0,1
+               	 strl = strl + "<option value=\"" + h + "\">" + reTypeMap[h] + "</option>"; 
+                }
+                $(".opera_relation").find("#entity_relation_opera_form").find("#leftRelationType").html("");
+           	 	$(".opera_relation").find("#entity_relation_opera_form").find("#leftRelationType").css("width","30%").select2().append(strl).trigger("change");
+           	 	
+           	 	$(".opera_relation").find("#entity_relation_opera_form").find("#rightRelationType").html("");
+        	 	$(".opera_relation").find("#entity_relation_opera_form").find("#rightRelationType").css("width","30%").select2().append(strl).trigger("change");
+            });
+            
             $(".opera_relation").find("#entity_relation_opera_form").find("#rightRecordType").html("");
             $(".opera_relation").find("#entity_relation_opera_form").find("#rightRecordType").css("width","30%").select2().append(str).trigger("change");            
             $("#add_relation_mes").html("");
             $("#add_relation_mes").html("添加关系");
             $(".opera_relation").find("form").find("input").val("");
             $(".opera_relation").show();
+            
+            $CPF.closeLoading();
         });
+        
         
     });
     // 点击取消  取消添加关系
@@ -1624,6 +1657,8 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
         var rightRecordType = $form.find("#rightRecordType").val();
         var leftRecordType = $form.find("#leftRecordType").val();
         var symmetry = $form.find("#symmetry").val();
+        var leftRelationType =  $form.find("#leftRelationType").val();
+        var rightRelationType =  $form.find("#rightRelationType").val();
         
         if (checkRela($form)) {
         	 $CPF.showLoading();
@@ -1633,10 +1668,18 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
                  rightRecordType: rightRecordType,
                  leftRecordType: leftRecordType,
                  symmetry:symmetry,
+                 leftRelationType,leftRelationType,
+                 rightRelationType,rightRelationType
              }, function(data) {
-             	$(".opera_relation").hide();
-                 $(this).closest('.entity_relation').find(".entity_attr").not(".entity_attr_img").remove();
-                 relaAttr(entityId);
+            	 
+            	 if (data.code == 200) {
+            		 $(".opera_relation").hide();
+                     $(this).closest('.entity_relation').find(".entity_attr").not(".entity_attr_img").remove();
+                     relaAttr(entityId);
+                     Dialog.notice(data.msg, "success");
+            	 } else {
+            		 Dialog.notice(data.msg, "error");
+            	 }
                  $CPF.closeLoading();
              });
         }
@@ -2538,7 +2581,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
                 var index =  typeCode.indexOf("R");
                var parentId = typeCode.substring(0, index);
             	
-               str = str + "<div title=\"typeCode:"+entityRelation[i].typeCode+", 名称:"+entityRelation[i].name+", 左实体:"+entityRelation[i].leftRecordType+", 右实体:"+entityRelation[i].rightRecordType+" , 逆向关系："+entityRelation[i].reverseCode+"\" class=\"entity_attr ";
+               str = str + "<div title=\"typeCode:"+entityRelation[i].typeCode+", 名称:"+entityRelation[i].name+", 左实体:"+entityRelation[i].leftRecordType+", <"+entityRelation[i].relationType+">, 右实体:"+entityRelation[i].rightRecordType+" , 逆向关系："+entityRelation[i].reverseCode+"\" class=\"entity_attr ";
            	
            	if (entityRelation[i].usingState == 2) {
            		str = str + "stale";
@@ -2788,7 +2831,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
                 var index =  typeCode.indexOf("R");
                var parentId = typeCode.substring(0, index);
             	
-            	str = str + "<div title=\"typeCode:"+entityRelation[i].typeCode+", 名称:"+entityRelation[i].name+", 左实体:"+entityRelation[i].leftRecordType+", 右实体:"+entityRelation[i].rightRecordType+" , 逆向关系："+entityRelation[i].reverseCode+"\" class=\"entity_attr ";
+            	str = str + "<div title=\"typeCode:"+entityRelation[i].typeCode+", 名称:"+entityRelation[i].name+", 左实体:"+entityRelation[i].leftRecordType+", <"+entityRelation[i].relationType+">  右实体:"+entityRelation[i].rightRecordType+" , 逆向关系："+entityRelation[i].reverseCode+"\" class=\"entity_attr ";
             	
             	if (entityRelation[i].usingState == 2) {
             		str = str + "stale";

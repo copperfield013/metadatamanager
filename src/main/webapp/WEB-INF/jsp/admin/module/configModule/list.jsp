@@ -28,7 +28,7 @@
 						<td>${i.index + 1 }</td>
 						<td>${item.name }</td>
 						<td>${item.title }</td>
-						<td>${item.mappingName }</td>
+						<td>${item.mappingId }</td>
 						<td>
 						
 							<a class="tab" href="admin/module/configModule/edit?name=${item.name }" title="编辑" target="configModule_edit" >编辑</a>

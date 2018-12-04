@@ -167,14 +167,25 @@
 				        </div>
 				          <input type="hidden" name="typeCode" id="typeCode" />
 				          <input type="hidden" name="reverseCode" id="reverseCode" />
-				        <div>
+				        <div class="col-xs-4 opera_entity_label">
 				            <span class="opera_entity_label">关系名称<span style="color: red;">*</span></span>
 				            <input type="text" name="leftName" id="leftName" />
+				        </div>
+				         <div  class="select-wrap">
+				            <span class="opera_entity_label">关系类型<span style="color: red;">*</span></span>
+				           	<select id="leftRelationType" name="leftRelationType" style="width:30%">
+				            </select>
 				        </div>
 				        <div id="rela_ni_name">
 				            <span class="opera_entity_label">逆向关系名称<span style="color: red;">*</span></span>
 				            <input type="text" name="rightName" id="rightName" />
 				        </div>
+				         <div  class="select-wrap">
+				            <span class="opera_entity_label">逆向关系类型<span style="color: red;">*</span></span>
+				           	<select id="rightRelationType" name="rightRelationType" style="width:30%">
+				            </select>
+				        </div>
+				       
 				    </form>
 				    <div class="opera_entity_btn">
 				        <span class="entity-btn-cancel" id="relation_but_cancel">取消</span>
@@ -190,6 +201,11 @@
 				        <div>
 				            <span class="opera_entity_label">关系名称<span style="color: red;">*</span></span>
 				            <input type="text" name="name" id="name" />
+				        </div>
+				         <div  class="select-wrap">
+				            <span class="opera_entity_label">关系类型<span style="color: red;">*</span></span>
+				           	<select id="relationType" name="relationType" style="width:30%">
+				            </select>
 				        </div>
 				    </form>
 				    <div class="opera_entity_btn">

@@ -27,9 +27,9 @@
 					<div class="form-group">
 						<label class="col-lg-2 control-label" for="mappingName">配置名称<font color="red">*</font></label>
 						<div class="col-lg-5">
-							<select data-bv-notempty="true" data-bv-notempty-message="配置名称必填"  style="width: 30%;" id="mappingName" class="ser-list" name="mappingName">
+							<select data-bv-notempty="true" data-bv-notempty-message="配置名称必填"  style="width: 30%;" id="mappingId" class="ser-list" name="mappingId">
 								<c:forEach items="${abcList }" var="item">
-									<option value="${item.name }" data-id="${item.id }">${item.name }</option>
+									<option value="${item.id }" data-id="${item.id }">${item.name }</option>
 								</c:forEach>
 							</select>
 						</div>
@@ -79,9 +79,9 @@
 	    })
 	    
 	    
-	    $(".page-body", $page).on("change", "#mappingName", function() {
+	    $(".page-body", $page).on("change", "#mappingId", function() {
 	    	var $this = $(this);
-	    	var options=$("#mappingName option:selected"); //获取选中的项
+	    	var options=$("#mappingId option:selected"); //获取选中的项
 	    	var parentId = options.attr("data-id");
 	    	
 	    	 Ajax.ajax('admin/module/configModule/childNodeList', {
