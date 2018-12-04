@@ -210,9 +210,9 @@ public class BasicItemNodeDaoImpl implements BasicItemNodeDao {
 	}
 
 	@Override
-	public BasicItemNode getAbc(String name) {
-		String sql = "SELECT * FROM t_sc_basic_item_node WHERE name=:name AND type=1 AND parent_id is null";
-		return (BasicItemNode) sFactory.getCurrentSession().createSQLQuery(sql).addEntity(BasicItemNode.class).setParameter("name", name).uniqueResult();
+	public BasicItemNode getAbc(Long id) {
+		String sql = "SELECT * FROM t_sc_basic_item_node WHERE id=:id AND type=1 AND parent_id is null";
+		return (BasicItemNode) sFactory.getCurrentSession().createSQLQuery(sql).addEntity(BasicItemNode.class).setParameter("id", id).uniqueResult();
 	}
 
 	@Override

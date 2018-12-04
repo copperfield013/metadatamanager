@@ -86,11 +86,11 @@ public interface BasicItemNodeService {
 	List<BasicItemNode> getAttribute(String abcId);
 	
 	/**
-	 * 根据abc的名称 获取abc对象
+	 * 根据abc的id 获取abc对象
 	 * @param name
 	 * @return
 	 */
-	BasicItemNode getAbc(String name);
+	BasicItemNode getAbc(Long id);
 
 	/**
 	 * 判断关系下只有一个标签和一个实体

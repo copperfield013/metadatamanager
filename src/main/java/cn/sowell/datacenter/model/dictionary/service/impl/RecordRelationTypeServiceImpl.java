@@ -7,6 +7,8 @@ import javax.annotation.Resource;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
+import com.abc.util.RelationType;
+
 import cn.sowell.copframe.dto.page.PageInfo;
 import cn.sowell.datacenter.admin.controller.dictionary.Constants;
 import cn.sowell.datacenter.model.dictionary.criteria.RecordRelationTypeCriteria;
@@ -62,7 +64,6 @@ public class RecordRelationTypeServiceImpl implements RecordRelationTypeService 
 				String recordRelaCode = dictionaryParentItemDao.getRecordRelaCode(lefRrecordType.getLeftRecordType());
 				lefRrecordType.setTypeCode(recordRelaCode);
 				lefRrecordType.setReverseCode(recordRelaCode);
-				
 				lefRrecordType.setUsingState(Constants.USING_STATE_MAP.get("using"));
 				dictionaryParentItemDao.insert(lefRrecordType);
 			} else {//添加不对称关系
@@ -122,6 +123,11 @@ public class RecordRelationTypeServiceImpl implements RecordRelationTypeService 
 			dictionaryParentItemDao.update(leftRlea);
 			dictionaryParentItemDao.update(rightRlea);
 		}
+	}
+
+	@Override
+	public List<RecordRelationType> getRelaByType(String leftRecordType, String relationType) {
+		return dictionaryParentItemDao.getRelaByType(leftRecordType, relationType);
 	}
 
 }

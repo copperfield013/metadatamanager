@@ -24,6 +24,13 @@ public interface RecordRelationTypeService {
 	List<RecordRelationType> getEntityRelaByBitemId(String recordType);
 	
 	/**
+	 * 根据左实体id， 和关系类型， 求出本实体中特定关系类型的关系
+	 * @param recordType
+	 * @return
+	 */
+	List<RecordRelationType> getRelaByType(String leftRecordType, String relationType);
+	
+	/**
 	 * 创建一个RecordRelationType对象
 	 * @param RecordRelationType
 	 */

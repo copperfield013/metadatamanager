@@ -195,8 +195,8 @@ public class BasicItemNodeServiceImpl implements BasicItemNodeService {
 	}
 
 	@Override
-	public BasicItemNode getAbc(String name) {
-		return basicItemNodeDao.getAbc(name);
+	public BasicItemNode getAbc(Long id) {
+		return basicItemNodeDao.getAbc(id);
 	}
 
 	
@@ -283,6 +283,9 @@ public class BasicItemNodeServiceImpl implements BasicItemNodeService {
 			break;
 		case CASATTRIBUTE:
 			createcaseAttr(basicItemNode, file,prefix, nodeType);
+			break;
+		case RATTRIBUTE:
+			createRattribute(basicItemNode, file, prefix, nodeType);
 			break;
 		case NONO:
 			break;
@@ -377,6 +380,17 @@ public class BasicItemNodeServiceImpl implements BasicItemNodeService {
 	 */
 	private void createAttribute(BasicItemNodeCriteria basicItemNode, File file, String prefix, NodeType nodeType) throws IOException {
 		String str = prefix + "<"+nodeType.getName()+" name=\""+basicItemNode.getName()+"\" abcattr=\""+basicItemNode.getBasicItemCnName()+"\"  datatype=\""+basicItemNode.getDataType()+"\" ops=\""+basicItemNode.getOpt()+"\" />";
+		FileManager.writeFileContent(file, str);
+	}
+	
+	/**
+	 * 生成关系属性
+	 * @param basicItemNode
+	 * @param file
+	 * @throws IOException 
+	 */
+	private void createRattribute(BasicItemNodeCriteria basicItemNode, File file, String prefix, NodeType nodeType) throws IOException {
+		String str = prefix + "<"+nodeType.getName()+" name=\""+basicItemNode.getName()+"\" subdomain=\""+basicItemNode.getSubdomain()+"\" abcattr=\""+basicItemNode.getBasicItemCnName()+"\"  datatype=\""+basicItemNode.getDataType()+"\" ops=\""+basicItemNode.getOpt()+"\" />";
 		FileManager.writeFileContent(file, str);
 	}
 
