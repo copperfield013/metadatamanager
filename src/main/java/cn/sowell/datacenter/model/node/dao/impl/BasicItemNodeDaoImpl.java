@@ -85,7 +85,7 @@ public class BasicItemNodeDaoImpl implements BasicItemNodeDao {
 
 	@Override
 	public List<BasicItemNodeCriteria> getChildByPid(Integer parentId) {
-		String sql = "SELECT a.id,a.type, a.name, a.abcattr_code abcattrCode, "
+		String sql = "SELECT a.id,a.type, a.name, a.abcattr_code abcattrCode, a.rel_abcnode_id relAbcnodeId, "
 				+ " a.data_type dataType, a.subdomain, a.opt, a.c_order 'order',"
 				+ " a.parent_id parentId,   b.c_code basicItemCode, b.c_cn_name basicItemCnName "
 				+ " FROM `t_sc_basic_item_node` a "
@@ -104,6 +104,7 @@ public class BasicItemNodeDaoImpl implements BasicItemNodeDao {
 				 .addScalar("parentId", StandardBasicTypes.INTEGER)
 				 .addScalar("basicItemCode", StandardBasicTypes.STRING)
 				 .addScalar("basicItemCnName", StandardBasicTypes.STRING)
+				 .addScalar("relAbcnodeId", StandardBasicTypes.INTEGER)
 				.setParameter("parentId", parentId)
 				.setResultTransformer(Transformers.aliasToBean(BasicItemNodeCriteria.class))
 				.list();

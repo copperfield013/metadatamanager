@@ -10,6 +10,7 @@ import cn.sowell.datacenter.model.dictionary.pojo.BasicItem;
 import cn.sowell.datacenter.model.dictionary.pojo.CascadeAttr;
 import cn.sowell.datacenter.model.dictionary.pojo.OneLevelItem;
 import cn.sowell.datacenter.model.dictionary.pojo.Towlevelattr;
+import cn.sowell.datacenter.model.node.pojo.BasicItemNode;
 
 public interface BasicItemService {
 

@@ -64,6 +64,9 @@ public class BasicItemNode {
 	@Column(name = "parent_id")
 	private Integer parentId;
 	
+	@Column(name = "rel_abcnode_id")
+	private Integer relAbcnodeId;
+	
 	 @Fetch(value=FetchMode.SELECT)
 	 @NotFound(action=NotFoundAction.IGNORE)
 	 @OneToOne(fetch = FetchType.EAGER,cascade = {CascadeType.REFRESH})
@@ -147,4 +150,13 @@ public class BasicItemNode {
 	public void setBasicItem(BasicItem basicItem) {
 		this.basicItem = basicItem;
 	}
+
+	public Integer getRelAbcnodeId() {
+		return relAbcnodeId;
+	}
+
+	public void setRelAbcnodeId(Integer relAbcnodeId) {
+		this.relAbcnodeId = relAbcnodeId;
+	}
+	
 }

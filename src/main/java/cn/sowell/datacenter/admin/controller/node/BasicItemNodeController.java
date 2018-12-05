@@ -149,15 +149,18 @@ public class BasicItemNodeController {
 				 
 				 //多值属性下的孩子过滤掉
 				 if (!NodeType.MULTIATTRIBUTE.equals(NodeType.getNodeType(parentNode.getType()))) {
-					 NodeOpsType curOps = NodeOpsType.getNodeOpsType(Integer.parseInt(basicItemNode.getOpt()));
-					 NodeOpsType parentOps = NodeOpsType.getNodeOpsType(parentNode.getOpt());
-					 boolean include = parentOps.include(curOps);
-					 if (include) {//修改后的权限最大是父亲
-						 inline.setState("200");
-					 } else {
-						 inline.setState("400");
-						 inline.setMsg("节点ops权限应该小于等于父节点权限");	
+					 if(basicItemNode.getOpt() != null) {
+						 NodeOpsType curOps = NodeOpsType.getNodeOpsType(Integer.parseInt(basicItemNode.getOpt()));
+						 NodeOpsType parentOps = NodeOpsType.getNodeOpsType(parentNode.getOpt());
+						 boolean include = parentOps.include(curOps);
+						 if (include) {//修改后的权限最大是父亲
+							 inline.setState("200");
+						 } else {
+							 inline.setState("400");
+							 inline.setMsg("节点ops权限应该小于等于父节点权限");	
+						 } 
 					 }
+					
 				 }
 				 
 				 
@@ -625,6 +628,30 @@ public class BasicItemNodeController {
 		}
 	}
     
+    
+    /**
+     * 获取所有配置文件
+     * @param entityId  实体id
+     * @return
+     */
+    @ResponseBody
+	@RequestMapping("/getAllAbcNode")
+	public String getAllAbcNode(){
+		Map<String, Object> map = new HashMap<String, Object>();
+		JSONObject jobj = new JSONObject(map);
+		try {
+			List<BasicItemNode> allAbc = basicItemNodeService.getAllAbc();
+			map.put("code", 200);
+			map.put("msg", "操作成功！");
+			map.put("allAbc", allAbc);
+			return jobj.toString();
+		} catch (Exception e) {
+			logger.error("添加失败", e);
+			map.put("code", 400);
+			map.put("msg", "操作失败！");
+			return jobj.toString();
+		}
+	}
     
     /**
      * 复制配置文件

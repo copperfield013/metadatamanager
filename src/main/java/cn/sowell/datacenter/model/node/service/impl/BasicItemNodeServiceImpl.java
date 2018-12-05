@@ -255,6 +255,20 @@ public class BasicItemNodeServiceImpl implements BasicItemNodeService {
 	}
 	
 	/**
+	 * 创建RABC
+	 * @param file
+	 * @param bn
+	 * @throws IOException
+	 */
+	private void createRabcnode(File file, BasicItemNodeCriteria bn, String prefix, NodeType nodeType) throws IOException {
+		String str = "";
+		str = prefix + "<"+nodeType.getName()+" name=\""+bn.getName()+"\" relAbcnodeId=\""+bn.getRelAbcnodeId()+"\">"+"\r\n";
+		FileManager.writeFileContent(file, str);
+		String endStr = prefix + "</"+nodeType.getName()+">";
+		FileManager.writeFileContent(file, endStr);
+	}
+	
+	/**
 	 * 根据本身type, 进行分流操作
 	 * @param basicItemNode
 	 * @throws IOException 
@@ -286,6 +300,9 @@ public class BasicItemNodeServiceImpl implements BasicItemNodeService {
 			break;
 		case RATTRIBUTE:
 			createRattribute(basicItemNode, file, prefix, nodeType);
+			break;
+		case RABCNODE:
+			createRabcnode(file, basicItemNode, prefix, nodeType);
 			break;
 		case NONO:
 			break;
