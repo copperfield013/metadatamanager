@@ -123,6 +123,14 @@ body {
 #operateEdit .label-bar.attr {
     margin-left: 98px;
 }
+
+#operateEdit .icon-label.rattr {
+    background-color: #aeaeae;
+    width: 98px;
+}
+#operateEdit .label-bar.rattr {
+    margin-left: 98px;
+}
 #operateEdit .icon-label.tag {
     background-color: #f2b15d;
     width: 98px;
@@ -136,6 +144,14 @@ body {
     width: 98px;
 }
 #operateEdit .label-bar.abc {
+    margin-left: 98px;
+}
+
+#operateEdit .icon-label.rabc {
+    background-color: #6cc076;
+    width: 98px;
+}
+#operateEdit .label-bar.rabc {
     margin-left: 98px;
 }
 #operateEdit .icon-label.attr-group {

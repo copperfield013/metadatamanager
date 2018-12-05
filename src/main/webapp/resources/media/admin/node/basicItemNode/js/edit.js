@@ -25,16 +25,6 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
         	$(el).siblings(".icon-arrow-sm").trigger("click");
         } 
 	} 	
-	function saveSuccess(el) {
-		 $(el).closest(".label-bar").removeClass("edit");
-		 $(el).closest(".entity-title").removeClass("edit");
-	     $(el).closest(".entity-edit-wrap").removeClass("edit");
-	     $(el).closest(".label-bar").find(".edit-input").attr("disabled", "true");
-	     $(el).closest(".entity-title").find(".edit-input").attr("disabled", "true");
-	     $(el).closest(".label-bar").find("select").attr("disabled", "true");
-	     $(el).closest(".entity-title").find("select").attr("disabled", "true");
-	     $(el).closest(".label-bar").addClass("al-save");
-	}
 	
 	function getNodeOpsType() {
 		$CPF.showLoading();
@@ -240,6 +230,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 				 var name = data[i].name;
 				 var opt = data[i].opt;
 				 var order = data[i].order;		
+				
 				 if(data[i].type == 1) {
 					 var abcattr;
 					 var abcattrCode = data[i].abcattrCode;
@@ -323,15 +314,20 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 						}
 						
 					 initRattr(abcattrCode,dataType, id, name, opt, order, parent, commList, subdomain, relationList);
+				 }else if(data[i].type == 9) {	
+					 var relAbcnodeId = data[i].relAbcnodeId;
+					 initRabc(id, name, order, parent, relAbcnodeId);
 				 }
 				 
-				 
-				 
-				 if(data.length === 0 && isRelative === true) {					 
+				/* if(data.length === 0 && isRelative === true) {					 
 					 addRelativeChildren(bar);					
 				 }else if(data.length === 1 && isRelative === true) {
 					 addRelativeOneC(bar);					
-				 }				 
+				 }	*/	
+				 
+				 if(data.length !=3 && isRelative === true) {					 
+					 addRelativeChildren(bar);					
+				 }
 			 }				 
 			 $CPF.closeLoading();
 	    }, {async: false});	 
@@ -350,17 +346,20 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 		 var chLength = $(".entity-ch-wrap", $page).length;
 		 var nest = "no-repeat";
 		 var entityId;
-	        if($(el).closest(".collapse-header").hasClass("entity-title")){
+	        if($(bar).closest(".collapse-header").hasClass("entity-title")){
 	        	entityId = $(".entity_attr", $page).attr("data-code");
 	        }else {
-	        	entityId = $(el).closest(".collapse-header").find(".label-bar")
+	        	entityId = $(bar).closest(".collapse-header").find(".label-bar")
 	        					.find(".entity-only-title").attr("data-abcattrcode");
 	        }
 		 if(chLength >= 2) {
 			 nest = "repeat"
 		 }
+		 
+		 Ajax.ajax('admin/node/basicItemNode/getAllAbcNode', '', function(data1) {
+	            var allAbc = data1.allAbc;
 		 //展现出关系下的标签和abc HTML			 
-		 var html = "<li class='add-tag clear-fix'>" +
+		 var tagHtml = "<li class='add-tag clear-fix'>" +
            "<div class='icon-label tag'>" +
            "<i class='icon icon-tag'></i>" +
            "<span class='text'>标签</span>" +
@@ -373,25 +372,52 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
            "</ul>" +
            "</div>" +
            "<span class='icon icon-toright ban'></span>"
-           html += "<select disabled class='node-ops-type'>";	
+           tagHtml += "<select disabled class='node-ops-type'>";	
 		 	var nodePosType=nodePosTypeLABEL;
 		    for(var i=0; i<nodePosType.length; i++) {
 		    	if(nodePosType[i] === "写") {
-		    		html += "<option value='"+nodePosType[i]+"' selected>"+nodePosType[i]+"</option>";  	
+		    		tagHtml += "<option value='"+nodePosType[i]+"' selected>"+nodePosType[i]+"</option>";  	
 		    	}else {
-		    		html += "<option value='"+nodePosType[i]+"'>"+nodePosType[i]+"</option>"; 
+		    		tagHtml += "<option value='"+nodePosType[i]+"'>"+nodePosType[i]+"</option>"; 
 		    	}
 	            	         
 	         };
-	         html += "</select>";
-	         html += "<div class='btn-wrap'>" +
+	         tagHtml += "</select>";
+	         tagHtml += "<div class='btn-wrap'>" +
            "<i class='icon tag icon-save'></i>" +
            "<i class='icon tag icon-add-tag-relative'></i>" +
            "<i class='icon-simulate-trashsm'></i>" +
            "</div>" +
            "</div>" +
-           "</li>" +
-           "<li class='entity-ch-wrap "+nest+"'>" +
+           "</li>";
+	         
+	         var rabcHtml ="<li class='entity-ch-wrap rabc'>" +
+	            "<div class='attr-abc-title collapse-header' data-abcattrcode='"+abcattrCode+"'  data-order='' data-id=''>" +
+	            "<div class='icon-label rabc'>" +
+	            "<i class='icon icon-abc'></i><span class='text'>RABC</span>" +
+	            "</div>" +
+	            "<div class='label-bar rabc edit'>";
+	            
+		            rabcHtml += "<input class='edit-input text' value='"+allAbc[0].name+"'>"+
+		            "<select class='relAbcnodeId'>";
+		            
+				    for(var i=0; i<allAbc.length; i++) {
+				    	rabcHtml += "<option value='"+allAbc[i].id+"'>"+allAbc[i].name+"</option>"; 
+			         };
+			         rabcHtml += "</select>";
+	            /*});*/
+		         rabcHtml += "<div class='btn-wrap'>" +
+	            "<i class='icon icon-save'></i>" +
+	            /*"<i class='icon icon-add-abc group'></i>" +	            
+	            "<i class='icon icon-arrow-sm'></i>" +*/
+	            "</div>" +
+	            "</div>" +
+	            "</div>" +
+	            "<ul class='drag-wrap-repeat dragEdit-wrap collapse-content collapse-content-active' id='dragEdit-"+dragWrapLen+"'>" +
+	            "</ul>" +
+	            "</li>";
+	         
+           var abcHtml = "<li class='entity-ch-wrap "+nest+" abc'>" +
            "<div class='attr-abc-title collapse-header' data-order='' data-id=''>" +
            "<div class='icon-label abc'>" +
            "<i class='icon icon-abc'></i><span class='text'>ABC</span>" +
@@ -399,18 +425,18 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
            "<div class='label-bar abc edit'>" +
            "<input class='edit-input text' value='"+abcattr+"'>"+
            "<span class='entity-only-title' data-abcattrcode='"+abcattrCode+"' data-abcattr='"+abcattr+"'>"+abcattr+"</span>";
-           html += "<select diabled class='node-ops-type'>";
+           abcHtml += "<select diabled class='node-ops-type'>";
            var nodePosType= nodePosTypeABC;
 		    for(var i=0; i<nodePosType.length; i++) {
 		    	if(nodePosType[i] === "写") {
-		    		html += "<option value='"+nodePosType[i]+"' selected>"+nodePosType[i]+"</option>";  	
+		    		abcHtml += "<option value='"+nodePosType[i]+"' selected>"+nodePosType[i]+"</option>";  	
 		    	}else {
-		    		html += "<option value='"+nodePosType[i]+"'>"+nodePosType[i]+"</option>"; 
+		    		abcHtml += "<option value='"+nodePosType[i]+"'>"+nodePosType[i]+"</option>"; 
 		    	}
 	            	         
 	         };
-	         html += "</select>";
-	         html += "<div class='btn-wrap'>" +
+	         abcHtml += "</select>";
+	         abcHtml += "<div class='btn-wrap'>" +
            "<i class='icon icon-save'></i>" +
            "<i class='icon icon-add-abc group'></i>" +	            
            "<i class='icon icon-arrow-sm active'></i>" +
@@ -419,11 +445,29 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
            "</div>" +
            "<ul class='drag-wrap-repeat need-ajax dragEdit-wrap collapse-content collapse-content-inactive' id='dragEdit-"+dragWrapLen+"'>" +
            "</ul>" +
-           "</li>"	      
+           "</li>";
+	         
            var $content = $(bar).closest(".collapse-header").next(".collapse-content");
-           var $html = $(html).appendTo($content);
-		   $html.find("select").css({"width":"15%","marginLeft":"16px"}).select2();
+           
+           if(!$content.children("li").hasClass("add-tag")) {
+      		 var $thtml = $(tagHtml).appendTo($content);
+      		 $($thtml.find("select")).css({"width":"13%","marginLeft":"2px"}).select2();
+      	 	}
+      	 
+           if(!$content.children("li").hasClass("rabc")) {
+				 var $rhtml = $(rabcHtml).appendTo($content);
+				 $($rhtml.find("select")).css({"width":"13%","marginLeft":"60px"}).select2();
+			}
+			
+			if(!$content.children("li").hasClass("abc")) {
+				var $ahtml = $(abcHtml).appendTo($content);   
+				 $($ahtml.find("select")).css({"width":"13%","marginLeft":"60px"}).select2();
+			 }
+			
+			 saveSuccess(e);
+			 $CPF.closeLoading();
 		   drag($(".dragEdit-wrap").length);
+		 });
 	};
 	
 	function addRelativeOneC(bar) {
@@ -438,8 +482,9 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 			 nest = "repeat"
 		 }
 		 var isTag = $content.children("li").hasClass("add-tag");
+		 
 		 if(isTag){ //单纯添加abc
-			 html = "<li class='entity-ch-wrap "+nest+"'>" +
+			 html = "<li class='entity-ch-wrap "+nest+" abc'>" +
 	          "<div class='attr-abc-title collapse-header' data-order='' data-id=''>" +
 	          "<div class='icon-label abc'>" +
 	          "<i class='icon icon-abc'></i><span class='text'>ABC</span>" +
@@ -594,7 +639,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 		 if(chLength >= 2) {
 			 nest = "repeat"
 		 }
-    	var abcHtml = "<li class='entity-ch-wrap "+nest+"'>" +
+    	var abcHtml = "<li class='entity-ch-wrap "+nest+" abc'>" +
 			        "<div class='attr-abc-title collapse-header'data-abcattrCode='"+abcattrCode+"'  data-order='"+order+"' data-id='"+id+"'>"
     				+"<div class='icon-label abc'>";
 					if(abcattrCode=="") {
@@ -628,6 +673,52 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 			        "</li>"		    
 	    var $html = $(abcHtml).appendTo($(parent));	    
 	    $html.find("select").css({"width":"15%","marginLeft":"60px"}).select2();
+    }
+    
+    
+    //rabc初始化方法
+    function  initRabc(id, name, order, parent,relAbcnodeId) {
+    	var dragWrapLen = $(".dragEdit-wrap", $page).length + 1 ;
+    	/*var chLength = $(".entity-ch-wrap", $page).length;*/
+		/* var nest = "no-repeat";
+		 if(chLength >= 2) {
+			 nest = "repeat"
+		 }*/
+    	var abcHtml = "<li class='entity-ch-wrap rabc'>" +
+        "<div class='attr-abc-title collapse-header' data-order='"+order+"' data-id='"+id+"'>" +
+        "<div class='icon-label rabc'>" +
+        "<i class='icon icon-abc'></i><span class='text'>RABC</span>" +
+        "</div>" +
+        "<div class='label-bar rabc al-save'>";
+         
+        Ajax.ajax('admin/node/basicItemNode/getAllAbcNode', '', function(data1) {
+        var allAbc = data1.allAbc;
+        
+        abcHtml += "<input class='edit-input text' value='"+name+"'>"+
+        "<select disabled class='relAbcnodeId'>";
+        
+	    for(var i=0; i<allAbc.length; i++) {
+	    	if (allAbc[i].id == relAbcnodeId) {
+	    		abcHtml += "<option value='"+allAbc[i].id+"' selected>"+allAbc[i].name+"</option>"; 
+	    	} else {
+	    		abcHtml += "<option value='"+allAbc[i].id+"'>"+allAbc[i].name+"</option>"; 
+	    	}
+         };
+         abcHtml += "</select>";
+         
+         abcHtml += "<div class='btn-wrap'>" +
+        "<i class='icon icon-save'></i>" +
+       /* "<i class='icon icon-add-abc group'></i>" +	            
+        "<i class='icon icon-arrow-sm'></i>" +*/
+        "</div>" +
+        "</div>" +
+        "</div>" +
+        "<ul class='drag-wrap-repeat dragEdit-wrap collapse-content collapse-content-active' id='dragEdit-"+dragWrapLen+"'>" +
+        "</ul>" +
+        "</li>"	    
+	    var $html = $(abcHtml).appendTo($(parent));	    
+	    $html.find("select").css({"width":"15%","marginLeft":"60px"}).select2();
+        })
     }
     
   //普通级联属性初始化方法
@@ -1047,7 +1138,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
     
     
     //标签初始化方法
-    function initTag(subdomain,abcattrCode, id,name,opt,order,parent,isRelative) {      	
+    function initTag(subdomain,abcattrCode, id,name,opt,order,parent,isRelative) {  
     	subdomain = subdomain.split(",");    	
     	var tagHtml = "<li class='add-tag clear-fix'>" +
 	        "<div class='icon-label tag'>" +
@@ -2774,8 +2865,8 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
     };
     
     //关系保存修改方法
-    function relativeSave(el) {    	
-    	var $relativeBar = $(el).closest(".label-bar");
+    function relativeSave(e) {   
+    	var $relativeBar = $(e).closest(".label-bar");
     	var type = 5;
     	var dataType = "STRING";
     	var opt = $relativeBar.children(".node-ops-type").find("option:selected").val();
@@ -2835,9 +2926,12 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 			 if(chLength >= 2) {
 				 nest = "repeat"
 			 }
-			 console.log();
+			 
+			 Ajax.ajax('admin/node/basicItemNode/getAllAbcNode', '', function(data1) {
+		            var allAbc = data1.allAbc;
+			 
 			 //展现出关系下的标签和abc HTML			 
-			 var html = "<li class='add-tag clear-fix'>" +
+			 var tagHtml = "<li class='add-tag clear-fix'>" +
 	            "<div class='icon-label tag'>" +
 	            "<i class='icon icon-tag'></i>" +
 	            "<span class='text'>标签</span>" +
@@ -2850,25 +2944,53 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 	            "</ul>" +
 	            "</div>" +
 	            "<span class='icon icon-toright ban'></span>"
-	            html += "<select class='node-ops-type'>";	
+	            tagHtml += "<select class='node-ops-type'>";	
 			 	var nodePosType = nodePosTypeLABEL;
 			    for(var i=0; i<nodePosType.length; i++) {
 			    	if(nodePosType[i] === "写") {
-			    		html += "<option value='"+nodePosType[i]+"' selected>"+nodePosType[i]+"</option>";  	
+			    		tagHtml += "<option value='"+nodePosType[i]+"' selected>"+nodePosType[i]+"</option>";  	
 			    	}else {
-			    		html += "<option value='"+nodePosType[i]+"'>"+nodePosType[i]+"</option>"; 
+			    		tagHtml += "<option value='"+nodePosType[i]+"'>"+nodePosType[i]+"</option>"; 
 			    	}
 		            	         
 		         };
-		         html += "</select>";
-		         html += "<div class='btn-wrap'>" +
+		         tagHtml += "</select>";
+		         tagHtml += "<div class='btn-wrap'>" +
 	            "<i class='icon tag icon-save'></i>" +
 	            "<i class='icon tag icon-add-tag-relative'></i>" +
 	            "<i class='icon-simulate-trashsm'></i>" +
 	            "</div>" +
 	            "</div>" +
-	            "</li>" +
-	            "<li class='entity-ch-wrap "+nest+"'>" +
+	            "</li>";
+	           //----------------------------------------------------
+		         var rabcHtml ="<li class='entity-ch-wrap rabc'>" +
+	            "<div class='attr-abc-title collapse-header' data-abcattrcode='"+data.basicItem.code+"'  data-order='' data-id=''>" +
+	            "<div class='icon-label rabc'>" +
+	            "<i class='icon icon-abc'></i><span class='text'>RABC</span>" +
+	            "</div>" +
+	            "<div class='label-bar rabc edit'>";
+	            
+		            rabcHtml += "<input class='edit-input text' value='"+allAbc[0].name+"'>"+
+		            "<select class='relAbcnodeId'>";
+		            
+				    for(var i=0; i<allAbc.length; i++) {
+				    	rabcHtml += "<option value='"+allAbc[i].id+"'>"+allAbc[i].name+"</option>"; 
+			         };
+			         rabcHtml += "</select>";
+	            /*});*/
+		         rabcHtml += "<div class='btn-wrap'>" +
+	            "<i class='icon icon-save'></i>" +
+	            /*"<i class='icon icon-add-abc group'></i>" +	            
+	            "<i class='icon icon-arrow-sm'></i>" +*/
+	            "</div>" +
+	            "</div>" +
+	            "</div>" +
+	            "<ul class='drag-wrap-repeat dragEdit-wrap collapse-content collapse-content-active' data-abcattrcode='"+data.basicItem.code+"' id='dragEdit-"+dragWrapLen+"'>" +
+	            "</ul>" +
+	            "</li>";
+	            
+	            //---------------------------------------------------
+	            var abcHtml = "<li class='entity-ch-wrap "+nest+" abc'>" +
 	            "<div class='attr-abc-title collapse-header' data-abcattrcode='"+data.basicItem.code+"'  data-order='' data-id=''>" +
 	            "<div class='icon-label abc'>" +
 	            "<i class='icon icon-abc'></i><span class='text'>ABC</span>" +
@@ -2876,18 +2998,18 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 	            "<div class='label-bar abc edit'>" +
 	            "<input class='edit-input text' value='"+abcattr+"'>"+
 	            "<span class='entity-only-title' data-abcattrcode='"+data.basicItem.code+"' data-abcattr='"+abcattr+"'>"+abcattr+"</span>";
-	            html += "<select class='node-ops-type'>";	
+	            abcHtml += "<select class='node-ops-type'>";	
 	            var nodePosType = nodePosTypeLABEL;
 			    for(var i=0; i<nodePosType.length; i++) {
 			    	if(nodePosType[i] === "写") {
-			    		html += "<option value='"+nodePosType[i]+"' selected>"+nodePosType[i]+"</option>";  	
+			    		abcHtml += "<option value='"+nodePosType[i]+"' selected>"+nodePosType[i]+"</option>";  	
 			    	}else {
-			    		html += "<option value='"+nodePosType[i]+"'>"+nodePosType[i]+"</option>"; 
+			    		abcHtml += "<option value='"+nodePosType[i]+"'>"+nodePosType[i]+"</option>"; 
 			    	}
 		            	         
 		         };
-		         html += "</select>";
-		         html += "<div class='btn-wrap'>" +
+		         abcHtml += "</select>";
+		         abcHtml += "<div class='btn-wrap'>" +
 	            "<i class='icon icon-save'></i>" +
 	            "<i class='icon icon-add-abc group'></i>" +	            
 	            "<i class='icon icon-arrow-sm'></i>" +
@@ -2896,26 +3018,30 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 	            "</div>" +
 	            "<ul class='drag-wrap-repeat dragEdit-wrap collapse-content collapse-content-active' data-abcattrcode='"+data.basicItem.code+"' id='dragEdit-"+dragWrapLen+"'>" +
 	            "</ul>" +
-	            "</li>"	
-	         var $content = $relativeBar.parent(".collapse-header").next(".collapse-content");				 
-			 if($relativeBar.hasClass("al-save")){				 
-				 if($content.hasClass("collapse-content-inactive")){				  
-					  $relativeBar.find(".icon-arrow-sm").trigger("click");					  
-					  if($content.children().length == 0) {						  
-						  var $html = $(html).appendTo($content);						  
-						  $($html.find("select")[0]).css({"width":"7%","marginLeft":"2px"}).select2();
-				          $($html.find("select")[1]).css({"width":"15%","marginLeft":"60px"}).select2();
-					  }
-				  }
-			 }else {				 
-				 var $html = $(html).appendTo($content);				 
-				 $($html.find("select")[0]).css({"width":"7%","marginLeft":"2px"}).select2();
-		         $($html.find("select")[1]).css({"width":"15%","marginLeft":"60px"}).select2();
-			 }			 	         
+	            "</li>";	
+		         
+		         var $content = $relativeBar.parent(".collapse-header").next(".collapse-content");	
+		         
+	        	 if(!$content.children("li").hasClass("add-tag")) {
+	        		 var $thtml = $(tagHtml).appendTo($content);
+	        		 $($thtml.find("select")).css({"width":"13%","marginLeft":"2px"}).select2();
+	        	 }
+	        	 if(!$content.children("li").hasClass("rabc")) {
+					 var $rhtml = $(rabcHtml).appendTo($content);
+					 $($rhtml.find("select")).css({"width":"13%","marginLeft":"60px"}).select2();
+				}
+	        	 
+				if(!$content.children("li").hasClass("abc")) {
+					var $ahtml = $(abcHtml).appendTo($content);   
+					 $($ahtml.find("select")).css({"width":"13%","marginLeft":"60px"}).select2();
+				 }
+				
+	         saveSuccess(e);
+			 $CPF.closeLoading();
 			  drag($(".dragEdit-wrap").length);
-			  saveSuccess(el)
-			  $CPF.closeLoading();
+	       });
 		});
+		 
     };
     
     //abc属性保存修改方法
@@ -2962,6 +3088,47 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 			 order: order,
 			 parentId: parentId,
 			 id: id
+		 }, function(data) {
+			 if(data.state == "400") {
+				 Dialog.notice(data.msg, "warning");
+				 $CPF.closeLoading();
+				 return;
+			 }
+			 var data = data.node;
+			 //设置当前节点order和id
+			 var order = data.order;
+			 var id = data.id;
+			 $abcBar.closest(".collapse-header")
+			 	.attr("data-order",order)
+			 	.attr("data-id", id);
+			 saveSuccess(el)
+			 $CPF.closeLoading();
+		});
+    };
+    
+    
+  //abc属性保存修改方法
+    function rAbcSave(el) {
+    	var $abcBar = $(el).closest(".label-bar");
+    	var type = 9;
+    	var name = $abcBar.children(".edit-input").val();    	
+    	var order = $abcBar.closest(".collapse-header").attr("data-order");
+    	var id = $abcBar.closest(".collapse-header").attr("data-id");
+    	var parentId = $abcBar.closest(".collapse-content").prev(".collapse-header")
+    						.attr("data-id"); 
+    	var relAbcnodeId = $abcBar.children(".relAbcnodeId").find("option:selected").val();
+    	var opt = "1";
+    	var dataType = "STRING";
+    	$CPF.showLoading();
+    	Ajax.ajax('admin/node/basicItemNode/saveOrUpdate', {
+			 type: type,
+			 name: name,
+			 order: order,
+			 parentId: parentId,
+			 id: id,
+			 relAbcnodeId:relAbcnodeId,
+			 opt:opt,
+			 dataType:dataType
 		 }, function(data) {
 			 if(data.state == "400") {
 				 Dialog.notice(data.msg, "warning");
@@ -3339,12 +3506,19 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
     	}else {
     		$(this).find(".edit-input").removeAttr("disabled");
     		$(this).find(".node-ops-type").removeAttr("disabled");
+    		
+    		//弹出关系的孩子
+    		 var $content = $(this).parent(".collapse-header").next(".collapse-content");	
+	         if($content.hasClass("collapse-content-inactive")){	
+	        	 $(this).find(".icon-arrow-sm").trigger("click");	
+			 }
     	}    	
         $(this).addClass("edit");
+        
     })
     
     //双击编辑
-    $("#operateEdit").on("dblclick", ".entity-title", function(){    	
+    $("#operateEdit").on("dblclick", ".entity-title", function(){ 
     	$(this).find(".edit-input").removeAttr("disabled");
     	$(this).find("select").removeAttr("disabled");
         $(this).addClass("edit");
@@ -3368,13 +3542,15 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
         }else if(labelBar.hasClass("attr-group")) {
         	attrGroupSave(this);
         }else if(labelBar.hasClass("attr-relative")) {
-        	relativeSave(this);
+			 relativeSave(this);
         }else if(labelBar.hasClass("abc")) {
         	abcSave(this);
         } else if(labelBar.hasClass("cascade-attr")) {
         	cascadeAttrSave(this);
         } else if(labelBar.hasClass("rattr")) {
         	rAttrSave(this);
+        } else if(labelBar.hasClass("rabc")) {
+        	rAbcSave(this);
         }  
 
     });
@@ -3505,4 +3681,14 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
     	}    	    	    	*/
     })
     
+    function saveSuccess(el) {
+		 $(el).closest(".label-bar").removeClass("edit");
+		 $(el).closest(".entity-title").removeClass("edit");
+	     $(el).closest(".entity-edit-wrap").removeClass("edit");
+	     $(el).closest(".label-bar").find(".edit-input").attr("disabled", "true");
+	     $(el).closest(".entity-title").find(".edit-input").attr("disabled", "true");
+	     $(el).closest(".label-bar").find("select").attr("disabled", "true");
+	     $(el).closest(".entity-title").find("select").attr("disabled", "true");
+	     $(el).closest(".label-bar").addClass("al-save");
+	}
 })
