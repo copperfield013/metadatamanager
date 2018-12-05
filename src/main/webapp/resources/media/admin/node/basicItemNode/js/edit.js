@@ -177,6 +177,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 	
     //获取孩子的方法   entityId: 此为实体id
 	function getChild(nodeId, isRelative, bar, entityId) {
+		
 		$CPF.showLoading();
 		//获取当前实体下， 所有的多值属性本省
 		var repeatList;
@@ -223,7 +224,9 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 			 var isAttrM = $(".collapse-header[data-id='"+nodeId+"']", $page).hasClass("more-attr-title");
 			 var parent = $(".collapse-header[data-id='"+nodeId+"']", $page).next(".collapse-content")[0];	
 			 $(parent).removeClass("need-ajax");	
-			 for(var i=0; i<data.length; i++) {		
+			 for(var i=0; i<data.length; i++) {
+				 
+				 
 				 var subdomain = data[i].subdomain;
 				 var dataType = data[i].dataType;
 				 var id = data[i].id;
@@ -232,6 +235,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 				 var order = data[i].order;		
 				
 				 if(data[i].type == 1) {
+					 
 					 var abcattr;
 					 var abcattrCode = data[i].abcattrCode;
                      var basicItemCode = data[i].basicItemCode;
@@ -464,95 +468,12 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 				 $($ahtml.find("select")).css({"width":"13%","marginLeft":"60px"}).select2();
 			 }
 			
-			 saveSuccess(e);
+			 saveSuccess(bar);
 			 $CPF.closeLoading();
 		   drag($(".dragEdit-wrap").length);
 		 });
 	};
 	
-	function addRelativeOneC(bar) {
-		 var dragWrapLen = $(".dragEdit-wrap").length + 1 ;
-		 var abcattr = $(bar).find("select.abc-attr").children("option:selected").attr("value");
-		 var abcattrCode = $(bar).find("select.abc-attr").children("option:selected").attr("data-id");
-		 var chLength = $(".entity-ch-wrap", $page).length;
-		 var nest = "no-repeat";
-		 var $content = $(bar).closest(".collapse-header").next(".collapse-content");
-		 var html ="";
-		 if(chLength >= 2) {
-			 nest = "repeat"
-		 }
-		 var isTag = $content.children("li").hasClass("add-tag");
-		 
-		 if(isTag){ //单纯添加abc
-			 html = "<li class='entity-ch-wrap "+nest+" abc'>" +
-	          "<div class='attr-abc-title collapse-header' data-order='' data-id=''>" +
-	          "<div class='icon-label abc'>" +
-	          "<i class='icon icon-abc'></i><span class='text'>ABC</span>" +
-	          "</div>" +
-	          "<div class='label-bar abc edit'>" +
-	          "<input class='edit-input text' value='"+abcattr+"'>"+
-	          "<span class='entity-only-title' data-abcattrcode='"+abcattrCode+"' data-abcattr='"+abcattr+"'>"+abcattr+"</span>";
-	          html += "<select class='node-ops-type'>";		
-	          var nodePosType = nodePosTypeABC;
-			    for(var i=0; i<nodePosType.length; i++) {
-			    	if(nodePosType[i] === "写") {
-			    		html += "<option value='"+nodePosType[i]+"' selected>"+nodePosType[i]+"</option>";  	
-			    	}else {
-			    		html += "<option value='"+nodePosType[i]+"'>"+nodePosType[i]+"</option>"; 
-			    	}
-		            	         
-		         };
-		      html += "</select>";
-	          html +="<div class='btn-wrap'>" +
-	          "<i class='icon icon-save'></i>" +
-	          "<i class='icon icon-add-abc group'></i>" +	            
-	          "<i class='icon icon-arrow-sm active'></i>" +
-	          "</div>" +
-	          "</div>" +
-	          "</div>" +
-	          "<ul class='drag-wrap-repeat need-ajax dragEdit-wrap collapse-content collapse-content-inactive' id='dragEdit-"+dragWrapLen+"'>" +
-	          "</ul>" +
-	          "</li>";				 
-	          var $html = $(html).appendTo($content);
-	          $($html.find("select")[1]).css({"width":"15%","marginLeft":"60px"}).select2();
-		 }else {  //单纯添加tag			 
-			 html = "<li class='add-tag clear-fix'>" +
-	          "<div class='icon-label tag'>" +
-	          "<i class='icon icon-tag'></i>" +
-	          "<span class='text'>标签</span>" +
-	          "</div>" +
-	          "<div class='label-bar tag edit' data-order='' data-id=''>" +
-	          "<input type='text' class='edit-input text' value='标签名称'>" +
-	          "<span class='icon icon-toleft'></span>" +
-	          "<div class='tag-content'>" +
-	          "<ul class='clear-fix'>" +
-	          "</ul>" +
-	          "</div>" +
-	          "<span class='icon icon-toright ban'></span>";
-	          html += "<select class='node-ops-type'>";	
-	          var nodePosType=nodePosTypeLABEL;
-			  for(var i=0; i<nodePosType.length; i++) {
-			    if(nodePosType[i] === "写") {
-			    	html += "<option value='"+nodePosType[i]+"' selected>"+nodePosType[i]+"</option>";  	
-			    }else {
-			    	html += "<option value='"+nodePosType[i]+"'>"+nodePosType[i]+"</option>"; 
-			    }
-		            	         
-		      };
-		      html += "</select>";
-		      html += "<div class='btn-wrap'>" +
-	          "<i class='icon tag icon-save'></i>" +
-	          "<i class='icon tag icon-add-tag-relative'></i>" +
-	          "<i class='icon-simulate-trashsm'></i>" +
-	          "</div>" +
-	          "</div>" +
-	          "</li>" 
-			 var $html = $(html).prependTo($content);			  
-	         $($html.find("select")[0]).css({"width":"7%","marginLeft":"2px"}).select2();	          
-		 }		 					                            
-		 $html.find("select").css({"width":"15%","marginLeft":"16px"}).select2();
-		 drag($(".dragEdit-wrap").length);
-	};
     
 	function addEntityOPT() {
 		var $select = $("#operateEdit .entity-title").find(".node-ops-type");	
@@ -952,7 +873,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 		        var $html = $(attrHtml).prependTo($(parent));
 		        $html.find("select").css({"width":"15%","marginLeft":"16px"}).select2();
 		        
-		        drag($(".dragEdit-wrap").length);
+		       // drag($(".dragEdit-wrap").length);
 		 // }, {async: false})
     }
     
@@ -1043,7 +964,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 		        var $html = $(attrHtml).prependTo($(parent));
 		        $html.find("select").css({"width":"13%","marginLeft":"16px"}).select2();
 		        
-		        drag($(".dragEdit-wrap").length);
+		       // drag($(".dragEdit-wrap").length);
 		 // }, {async: false})
     }
 	
@@ -3322,6 +3243,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
                 .removeClass("collapse-content-inactive")
                 .addClass("collapse-content-active");
         }        
+        
        if(needAjax) {
         	getChild(nodeId, isRelative, bar, entityId);
         }
