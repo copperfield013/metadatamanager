@@ -174,7 +174,6 @@ public class BasicItemController {
 	public ResponseEntity doAdd(@ApiParam(name="BasicItem", value="传入json格式", required=true)BasicItem basicItem, OneLevelItem oneLevelItem, Integer cascadedict){
 			String dType = oneLevelItem.getDataType();
 			String comm = null;
-			oneLevelItem.setDictParentId(0);
 			
 			if ("5".equals(dType)) {
 				oneLevelItem.setDictParentId(0);
@@ -198,7 +197,9 @@ public class BasicItemController {
 				oneLevelItem.setDictParentId(0);
 			} else if ("11".equals(dType)) {
 				oneLevelItem.setDictParentId(0);
-			}
+			} else if ("21".equals(dType)) {
+				oneLevelItem.setDictParentId(0);
+			} 
 			oneLevelItem.setDataType(String.valueOf(dType));
 			//记录类型
 			if (String.valueOf(ValueType.RECORD.getIndex()).equals(oneLevelItem.getDataType())) {
