@@ -401,7 +401,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 	            "<div class='icon-label rabc'>" +
 	            "<i class='icon icon-abc'></i><span class='text'>RABC</span>" +
 	            "</div>" +
-	            "<div class='label-bar rabc edit'>";
+	            "<div class='label-bar rabc edit' data-id=''>";
 	            
 		            rabcHtml += "<input class='edit-input text' value='"+allAbc[0].name+"'>"+
 		            "<select class='relAbcnodeId'>";
@@ -612,7 +612,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
         "<div class='icon-label rabc'>" +
         "<i class='icon icon-abc'></i><span class='text'>RABC</span>" +
         "</div>" +
-        "<div class='label-bar rabc al-save'>";
+        "<div class='label-bar rabc al-save' data-id='"+id+"'>";
          
         Ajax.ajax('admin/node/basicItemNode/getAllAbcNode', '', function(data1) {
         var allAbc = data1.allAbc;
@@ -631,7 +631,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
          
          abcHtml += "<div class='btn-wrap'>" +
         "<i class='icon icon-save'></i>" +
-        /*"<i class='icon icon-trash-sm'></i>" +*/
+        "<i class='icon icon-trash-sm'></i>" +
        /* "<i class='icon icon-add-abc group'></i>" +	            
         "<i class='icon icon-arrow-sm'></i>" +*/
         "</div>" +
@@ -2036,6 +2036,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
     function rabcDelete(el) {  
     	var $attrBar = $(el).closest(".label-bar");    	
     	var id = $attrBar.attr("data-id");
+    	
     	var isDelChil = false;
     	var callback = function() {
     		$attrBar.parent().remove();    		
@@ -2907,7 +2908,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 	            "<div class='icon-label rabc'>" +
 	            "<i class='icon icon-abc'></i><span class='text'>RABC</span>" +
 	            "</div>" +
-	            "<div class='label-bar rabc edit'>";
+	            "<div class='label-bar rabc edit' data-id=''>";
 	            
 		            rabcHtml += "<input class='edit-input text' value='"+allAbc[0].name+"'>"+
 		            "<select class='relAbcnodeId'>";
@@ -3122,6 +3123,22 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
     
     //属性删除方法
     function attrDelete(el) {    	
+    	var $attrBar = $(el).closest(".label-bar");    	
+    	var id = $attrBar.attr("data-id");
+    	var isDelChil = false;
+    	var callback = function() {
+    		$attrBar.parent(".add-attr").remove();    		
+    	};    	
+    	if($attrBar.hasClass("al-save")) {
+    		deleteAjax(id, isDelChil, callback);
+    	}else {
+    		callback();
+    		removePop();
+    	}    
+    }
+    
+    //关系属性删除方法
+    function rAttrDelete(el) {    	
     	var $attrBar = $(el).closest(".label-bar");    	
     	var id = $attrBar.attr("data-id");
     	var isDelChil = false;
@@ -3522,7 +3539,9 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
         	cascadeAttrDelete(el);
         }else if (labelBar.hasClass("rabc")) {
         	rabcDelete(el);
-        }
+        }else if (labelBar.hasClass("rattr")) {
+        	rAttrDelete(el);
+        }  
     })
     
     //删除-仅组
