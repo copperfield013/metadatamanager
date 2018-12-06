@@ -329,10 +329,11 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 					 addRelativeOneC(bar);					
 				 }	*/	
 				 
-				 if(data.length !=3 && isRelative === true) {					 
-					 addRelativeChildren(bar);					
-				 }
 			 }				 
+			 if(data.length !=3 && isRelative === true) {	
+				 addRelativeChildren(bar);					
+			 }
+			 
 			 $CPF.closeLoading();
 	    }, {async: false});	 
 		})
@@ -343,7 +344,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 	})
 }
 	
-	function addRelativeChildren(bar) {		
+	function addRelativeChildren(bar) {	
 		 var dragWrapLen = $(".dragEdit-wrap").length + 1 ;
 		 var abcattr = $(bar).find("select.abc-attr").children("option:selected").attr("value");
 		 var abcattrCode = $(bar).find("select.abc-attr").children("option:selected").attr("data-id");
@@ -412,8 +413,9 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 	            /*});*/
 		         rabcHtml += "<div class='btn-wrap'>" +
 	            "<i class='icon icon-save'></i>" +
-	            /*"<i class='icon icon-add-abc group'></i>" +	            
-	            "<i class='icon icon-arrow-sm'></i>" +*/
+	            "<i class='icon icon-trash-sm'></i>" +
+	            /*"<i class='icon icon-add-abc group'></i>" +	          
+	            "<i class='icon icon-arrow-sm'></i>" + */ 
 	            "</div>" +
 	            "</div>" +
 	            "</div>" +
@@ -455,7 +457,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
            
            if(!$content.children("li").hasClass("add-tag")) {
       		 var $thtml = $(tagHtml).appendTo($content);
-      		 $($thtml.find("select")).css({"width":"13%","marginLeft":"2px"}).select2();
+      		 $($thtml.find("select")).css({"width":"7%","marginLeft":"2px"}).select2();
       	 	}
       	 
            if(!$content.children("li").hasClass("rabc")) {
@@ -629,6 +631,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
          
          abcHtml += "<div class='btn-wrap'>" +
         "<i class='icon icon-save'></i>" +
+        /*"<i class='icon icon-trash-sm'></i>" +*/
        /* "<i class='icon icon-add-abc group'></i>" +	            
         "<i class='icon icon-arrow-sm'></i>" +*/
         "</div>" +
@@ -2029,6 +2032,21 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
     	}    	
     }
     
+    //rabc属性删除方法
+    function rabcDelete(el) {  
+    	var $attrBar = $(el).closest(".label-bar");    	
+    	var id = $attrBar.attr("data-id");
+    	var isDelChil = false;
+    	var callback = function() {
+    		$attrBar.parent().remove();    		
+    	}; 
+    	if($attrBar.hasClass("al-save")) {
+    		deleteAjax(id, isDelChil, callback);
+    	}else {
+    		callback();
+    		removePop();
+    	}    	
+    }
     
     /**
      * 添加属性方法
@@ -2901,8 +2919,9 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 	            /*});*/
 		         rabcHtml += "<div class='btn-wrap'>" +
 	            "<i class='icon icon-save'></i>" +
-	            /*"<i class='icon icon-add-abc group'></i>" +	            
-	            "<i class='icon icon-arrow-sm'></i>" +*/
+	            "<i class='icon icon-trash-sm'></i>" +
+	            /*"<i class='icon icon-add-abc group'></i>" +	          
+	             "<i class='icon icon-arrow-sm'></i>" + */ 
 	            "</div>" +
 	            "</div>" +
 	            "</div>" +
@@ -2945,7 +2964,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 		         
 	        	 if(!$content.children("li").hasClass("add-tag")) {
 	        		 var $thtml = $(tagHtml).appendTo($content);
-	        		 $($thtml.find("select")).css({"width":"13%","marginLeft":"2px"}).select2();
+	        		 $($thtml.find("select")).css({"width":"7%","marginLeft":"2px"}).select2();
 	        	 }
 	        	 if(!$content.children("li").hasClass("rabc")) {
 					 var $rhtml = $(rabcHtml).appendTo($content);
@@ -3501,6 +3520,8 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
         	tagDelete(el);
         } else if (labelBar.hasClass("cascade-attr")) {
         	cascadeAttrDelete(el);
+        }else if (labelBar.hasClass("rabc")) {
+        	rabcDelete(el);
         }
     })
     
