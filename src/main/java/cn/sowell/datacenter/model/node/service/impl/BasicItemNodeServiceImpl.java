@@ -96,6 +96,8 @@ public class BasicItemNodeServiceImpl implements BasicItemNodeService {
 			case ABC:
 			case ATTRIBUTE:
 			case LABEL:
+			case RABCNODE:
+			case RATTRIBUTE:
 			case MULTIATTRIBUTE:
 			case CASATTRIBUTE:
 			case RELATION:
