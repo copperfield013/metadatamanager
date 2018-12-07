@@ -39,9 +39,9 @@
 						<div class="col-lg-5">
 							<select style="width: 30%;" id="codeName" class="ser-list" name="codeName">
 								<option selected="selected" value="">唯一编码</option>
-								<c:forEach items="${childNode }" var="item">
+								<%-- <c:forEach items="${childNode }" var="item">
 									<option value="${item.name }">${item.name }</option>
-								</c:forEach>
+								</c:forEach> --%>
 							</select>
 						</div>
 					</div>

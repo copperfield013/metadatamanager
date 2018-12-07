@@ -13,15 +13,13 @@
 				<form class="bv-form form-horizontal validate-form" action="admin/module/configModule/do_edit">
 					<div class="form-group">
 						<label class="col-lg-2 control-label" for="moduleTitle">模块名称<font color="red">*</font></label>
-						
-						<div class="col-lg-7">
-							${module.title }
+						<div class="col-lg-5">
+							<input type="text" data-bv-notempty="true" data-bv-notempty-message="模块名称必填" value="${module.title }" class="form-control" id="moduleTitle" name="moduleTitle" />
 						</div>
 					</div>
 					<div class="form-group">
 						
 						<input type="hidden" name="moduleName" value="${module.name }">
-						<input type="hidden" name="moduleTitle" value="${module.title }">
 						<input type="hidden" name="mappingId" value="${module.mappingId }">
 						
 						<label class="col-lg-2 control-label" for="moduleName">模块标识</label>
@@ -41,9 +39,9 @@
 						<div class="col-lg-5">
 							<select style="width: 30%;" id="codeName" class="ser-list" name="codeName">
 								<option selected="selected" value="">唯一编码</option>
-								<c:forEach items="${childNode }" var="item">
+								<%-- <c:forEach items="${childNode }" var="item">
 									<option value="${item.name }" ${item.name eq module.codeName ? 'selected="selected"' : '' }>${item.name }</option>
-								</c:forEach>
+								</c:forEach> --%>
 							</select>
 						</div>
 					</div>

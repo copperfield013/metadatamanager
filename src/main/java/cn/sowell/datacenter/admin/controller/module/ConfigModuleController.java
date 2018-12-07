@@ -189,7 +189,8 @@ public class ConfigModuleController {
         method = RequestMethod.POST)
 	public ResponseEntity<AjaxPageResponse> do_edit(String moduleName, String moduleTitle, String mappingName, String codeName, String titleName){
 		try {
-			dBModuleConfigMediator.updateModulePropertyName(moduleName, codeName, titleName);
+			//dBModuleConfigMediator.updateModulePropertyName(moduleName, codeName, titleName);
+			dBModuleConfigMediator.updateModule(moduleName, moduleTitle, codeName, titleName);
 		return new ResponseEntity<AjaxPageResponse>(AjaxPageResponse.CLOSE_AND_REFRESH_PAGE("编辑成功", "configModule_list"), HttpStatus.OK);
 	} catch (Exception e) {
 		return new ResponseEntity<AjaxPageResponse>(AjaxPageResponse.FAILD("编辑失败"), HttpStatus.INTERNAL_SERVER_ERROR);
