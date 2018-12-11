@@ -206,12 +206,10 @@ public class RecordRelationTypeController {
     //这里获取本实体下特定类型的关系
     @ResponseBody
 	@RequestMapping("/getRelation")
-	public String getRelation(String leftRecordType){
+	public String getRelation(String leftRecordType, String relationType){
 		Map<String, Object> map = new HashMap<String, Object>();
 		JSONObject jobj = new JSONObject(map);
 		try {
-			String relationType = String.valueOf(RelationType.ONE.getIndex());
-			
 			List<RecordRelationType> relationList = recordRelationTypeService.getRelaByType(leftRecordType, relationType);
 			map.put("relationList", relationList);
 			map.put("code", 200);

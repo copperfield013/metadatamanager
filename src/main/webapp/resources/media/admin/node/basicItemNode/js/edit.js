@@ -5,12 +5,33 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 	var entityId = $(".entity-title", $page).attr("data-abcattrCode");	//根节点对应的实体code: abcattrCode
 	var $select = $("#operateEdit .entity-title").find(".node-ops-type");	
 	$select.css({"width":"12%","font-size":"18px","marginLeft":"20px","margin-top": "-12px"}).select2();
+	
     $(function(){
 	    $CPF.showLoading();
 	    getNodeOpsType();
 	    getDataType();
 	    drag($(".dragEdit-wrap", $page).length);       
 	    getChild(nodeId, false, null, entityId);  //直接执行
+	    
+		 //这里加载filters
+		Ajax.ajax('admin/node/binFilterBody/getFilters', {
+			nodeId: nodeId
+		}, function(data) {			
+			if (data.code == "400") {
+				 Dialog.notice("filters加载失败", "error");
+				 $CPF.closeLoading();
+			} else{
+				
+				if (data.binFilter != undefined) {
+					initFilters(nodeId,entityId, data.binFilter, data.binFilterBody);
+					$CPF.closeLoading();
+				}
+			}
+			
+			$CPF.closeLoading();
+		});
+	    
+	    
 	    $(".label-bar", $page).addClass("al-save");
 	    $CPF.closeLoading();
 	   /* addEntityOPT();*/
@@ -91,6 +112,15 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 	    }, function(data){		    	
 	    	var data = data.nodeOpsType;
 	    	nodePosTypeRATTRIBUTE = data;
+	    	$CPF.closeLoading();
+	    }, {async: true})
+	    
+	     //FILTERS
+	    Ajax.ajax('admin/node/binFilterBody/getFiltersOpt', {
+	    	opsCode:10
+	    }, function(data){		    	
+	    	var data = data.optMap;
+	    	optFILTERS = data;
 	    	$CPF.closeLoading();
 	    }, {async: true})
 	    
@@ -212,6 +242,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 					//获取对一的关系
 					Ajax.ajax('admin/dictionary/recordRelationType/getRelation', {
 						leftRecordType: entityId,
+						relationType:6
 					}, function(data) {			
 						var relationList = data.relationList;
 				
@@ -323,12 +354,6 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 					 initRabc(id, name, order, parent, relAbcnodeId);
 				 }
 				 
-				/* if(data.length === 0 && isRelative === true) {					 
-					 addRelativeChildren(bar);					
-				 }else if(data.length === 1 && isRelative === true) {
-					 addRelativeOneC(bar);					
-				 }	*/	
-				 
 			 }				 
 			 if(data.length !=3 && isRelative === true) {	
 				 addRelativeChildren(bar);					
@@ -341,8 +366,223 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 		})
 		})
 		})
+		
 	})
 }
+	
+	
+	function getFiltersChild(nodeId, enID, bar) {
+		$CPF.showLoading();
+		Ajax.ajax('admin/node/binFilterBody/getFiltersChild', {
+			parentId: nodeId
+		}, function(data) {			
+			 if(data.code == "400") {
+		            Dialog.notice(data.msg, "error");
+		            return true;
+		       }
+			 
+			 var parent = $(".collapse-header[data-id='" + nodeId + "']", $page).next(".collapse-content")[0];
+			 $(parent).removeClass("need-ajax");
+			 var filterBodyList = data.filterBodyChild;
+			 if (data.code==200 && filterBodyList.length>0) {
+				 for(var i=0; i<filterBodyList.length; i++) {
+					 var dataType = filterBodyList[i].dataType;
+					 
+					 if (dataType == 11) {
+						 initFilterGroup(filterBodyList[i],nodeId, enID,parent);
+					 } else if (dataType == 12) {
+						 initFilter(filterBodyList[i],nodeId, enID,parent);
+					 }else if (dataType == 13) {
+						 initRFilter(filterBodyList[i],nodeId, enID,parent);
+					 }
+				 }
+				} else if (data.code==200 && filterBodyList.length==0) {
+					Dialog.notice("当前没有孩子！", "warning");
+				} else {
+					Dialog.notice("孩子数据加载错误！", "error");
+				}
+			 
+			 $CPF.closeLoading();
+		});
+		
+	}
+	
+	
+	function initFilterGroup(filterBodyList,nodeId, enID, parent) {
+		
+	        var dragWrapLen = $(".dragEdit-wrap").length + 1 ;
+	        $CPF.showLoading();
+	            var relativeHtml = "<li class='attr-relative'>" +
+	            "<div class='attr-relative-title collapse-header' entityId='"+enID+"' data-order='' data-id='"+filterBodyList.id+"'>" +
+	            "<div class='icon-label attr-relative'>" +
+	            "<i class='icon icon-attr-relative'></i><span class='text'>Group</span>" +
+	            "</div>" +
+	            "<div class='label-bar filterGroup al-save'>" +
+	            "<input type='text' class='edit-input text' value='"+filterBodyList.name+"'>";
+	            relativeHtml += "<select disabled  class='node-ops-type'>";	
+	            var nodePosType = optFILTERS;
+	            for(var key in nodePosType) {
+			    	if(filterBodyList.opt == key) {
+			    		relativeHtml += "<option value='"+key+"' selected>"+nodePosType[key]+"</option>";  	
+			    	}else {
+			    		relativeHtml += "<option value='"+key+"'>"+nodePosType[key]+"</option>"; 
+			    	}
+		         }
+		        relativeHtml += "</select>";
+		        relativeHtml += "<div class='btn-wrap'>" +
+	            "<i class='icon icon-save'></i>" +  
+	            "<i class='icon icon-add-filter group'></i>" +
+	            "<i class='icon icon-trash-sm'></i>" +
+	            "<i class='icon icon-arrow-sm active'></i>" +
+	            "</div>" +
+	            "</div>" +
+	            "</div>" +            
+	            "<ul class='attr-relative-drag-wrap dragEdit-wrap collapse-content collapse-content-inactive need-ajax' id='dragEdit-"+dragWrapLen+"'>" +
+	            "</ul>" +
+	            "</li>";         		    
+			    var $html = $(relativeHtml).prependTo($(parent));
+	           $html.find("select").css({"width":"15%","marginLeft":"16px"}).select2();
+	}
+	function initFilter(filterBodyList,nodeId, enID, parent) {
+		
+        var dragWrapLen = $(".dragEdit-wrap").length + 1 ;
+        $CPF.showLoading();
+            var relativeHtml = "<li class='attr-relative'>" +
+            "<div class='attr-relative-title collapse-header' entityId='"+enID+"' data-order='' data-id='"+filterBodyList.id+"'>" +
+            "<div class='icon-label attr-relative'>" +
+            "<i class='icon icon-attr-relative'></i><span class='text'>filter</span>" +
+            "</div>" +
+            "<div class='label-bar filter al-save'>" +
+            "<input type='text' class='edit-input filterName text' value='"+filterBodyList.name+"'>";
+            
+            relativeHtml += "<select disabled class='abcattrCodeData'>";	
+            //getCriteriaSymbol
+    	    Ajax.ajax('admin/node/basicItemNode/getComm', {
+    	    	entityId:entityId
+    	    }, function(data){		
+    	    	var data = data.comm;
+		    for(var key in data) {
+		    	if (data[key][0] == filterBodyList.abcattrCode) {
+		    		relativeHtml += "<option value='"+data[key][0]+"' selected>"+data[key][1]+"</option>"; 
+		    	} else {
+		    		relativeHtml += "<option value='"+data[key][0]+"'>"+data[key][1]+"</option>"; 
+		    	}
+	         }
+	        relativeHtml += "</select>";
+            
+            relativeHtml += "<select disabled class='node-Symbol-type'>";	
+            //getCriteriaSymbol
+    	    Ajax.ajax('admin/node/binFilterBody/getCriteriaSymbol', {
+    	    	dataType:12
+    	    }, function(data){		
+    	    	var nodeSymbolType = data.symbolMap;
+		    for(var key in nodeSymbolType) {
+		    	if (key == filterBodyList.filterType) {
+		    		relativeHtml += "<option value='"+key+"' selected>"+nodeSymbolType[key]+"</option>"; 
+		    	} else {
+		    		relativeHtml += "<option value='"+key+"'>"+nodeSymbolType[key]+"</option>"; 
+		    	}
+	         }
+	        relativeHtml += "</select>"+
+	        "<input type='text' class='edit-input valueStr text' value='value'>";
+            
+            relativeHtml += "<select disabled class='node-ops-type'>";	
+            var nodePosType = optFILTERS;
+		    for(var key in nodePosType) {
+		    	if(filterBodyList.opt == key) {
+		    		relativeHtml += "<option value='"+key+"' selected>"+nodePosType[key]+"</option>";  	
+		    	}else {
+		    		relativeHtml += "<option value='"+key+"'>"+nodePosType[key]+"</option>"; 
+		    	}
+	         }
+	        relativeHtml += "</select>";
+	        relativeHtml += "<div class='btn-wrap'>" +
+            "<i class='icon icon-save'></i>" +  
+            /*"<i class='icon icon-add-filter group'></i>" +*/
+            "<i class='icon icon-trash-sm'></i>" +
+           /* "<i class='icon icon-arrow-sm active'></i>" +*/
+            "</div>" +
+            "</div>" +
+            "</div>" +            
+            "<ul class='attr-relative-drag-wrap dragEdit-wrap collapse-content collapse-content-inactive need-ajax' id='dragEdit-"+dragWrapLen+"'>" +
+            "</ul>" +
+            "</li>";         		    
+		    var $html = $(relativeHtml).prependTo($(parent));
+            $html.find("select").css({"width":"13%","marginLeft":"16px"}).select2();
+            $html.find("select.node-ops-type").css({"width":"8%","marginLeft":"16px"}).select2();
+            
+    	    })
+    	    })
+	}
+	function initRFilter(filterBodyList,nodeId, enID, parent) {
+        var entityId = enID;
+        var dragWrapLen = $(".dragEdit-wrap").length + 1 ;
+        $CPF.showLoading();
+        
+        Ajax.ajax('admin/dictionary/recordRelationType/getRelation', {
+			leftRecordType: entityId,
+			relationType:''
+		}, function(data) {			
+			var relationList = data.relationList;
+        Ajax.ajax('admin/node/binFilterBody/getCriteriaSymbol', {
+	    	dataType:13
+	    }, function(data){	
+	    	
+            var relativeHtml = "<li class='attr-relative'>" +
+            "<div class='attr-relative-title collapse-header' entityId='' data-order='' data-id='"+filterBodyList.id+"'>" +
+            "<div class='icon-label attr-relative'>" +
+            "<i class='icon icon-attr-relative'></i><span class='text'>rFilter</span>" +
+            "</div>" +
+            "<div class='label-bar rFilter al-save'>" +
+            "<input type='text' class='edit-input text' value='"+filterBodyList.name+"'>";
+            
+            relativeHtml += "<select disabled class='relationData'>";	
+		    for(var key in relationList) {
+		    	if (relationList[key].typeCode == filterBodyList.subdomain) {
+		    		relativeHtml += "<option selected rightRecordType='"+relationList[key].rightRecordType+"' value='"+relationList[key].typeCode+"'>"+relationList[key].name+"</option>";
+		    	} else {
+		    		relativeHtml += "<option rightRecordType='"+relationList[key].rightRecordType+"' value='"+relationList[key].typeCode+"'>"+relationList[key].name+"</option>";
+		    	}
+	         }
+	         relativeHtml += "</select>";
+            
+            relativeHtml += "<select disabled class='node-Symbol-type'>";	
+    	    	var nodeSymbolType = data.symbolMap;
+		    for(var key in nodeSymbolType) {
+		    	if (key == filterBodyList.filterType) {
+		    		relativeHtml += "<option value='"+key+"' selected>"+nodeSymbolType[key]+"</option>"; 
+		    	} else {
+		    		relativeHtml += "<option value='"+key+"'>"+nodeSymbolType[key]+"</option>"; 
+		    	}
+	         };
+	         relativeHtml += "</select>";
+
+	         relativeHtml += "<select disabled class='node-ops-type'>";	
+            var nodePosType = optFILTERS;
+            for(var key in nodePosType) {
+		    	if(filterBodyList.opt == key) {
+		    		relativeHtml += "<option value='"+key+"' selected>"+nodePosType[key]+"</option>";  	
+		    	}else {
+		    		relativeHtml += "<option value='"+key+"'>"+nodePosType[key]+"</option>"; 
+		    	}
+	         }
+	         relativeHtml += "</select>";
+	         relativeHtml += "<div class='btn-wrap'>" +
+            "<i class='icon icon-save'></i>" +  
+            "<i class='icon icon-add-filterGroup group'></i>" +
+            "<i class='icon icon-trash-sm'></i>" +
+            "<i class='icon icon-arrow-sm active'></i>" +
+            "</div>" +
+            "</div>" +
+            "</div>" +            
+            "<ul class='attr-relative-drag-wrap dragEdit-wrap collapse-content collapse-content-inactive need-ajax' id='dragEdit-"+dragWrapLen+"'>" +
+            "</ul>" +
+            "</li>";         		    
+		    var $html = $(relativeHtml).prependTo($(parent));
+            $html.find("select").css({"width":"15%","marginLeft":"16px"}).select2();
+    	    })
+		 })
+	}
 	
 	function addRelativeChildren(bar) {	
 		 var dragWrapLen = $(".dragEdit-wrap").length + 1 ;
@@ -1240,12 +1480,49 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
             "</div>" +
             "</div>" +
             "</div>" +            
-            "<ul class='need-ajax attr-relative-drag-wrap dragEdit-wrap collapse-content collapse-content-inactive' id='dragEdit-"+dragWrapLen+"'>" +
+            "<ul class='need-ajax attr-relative-drag-wrap dragEdit-wrap collapse-content collapse-content-inactive ' id='dragEdit-"+dragWrapLen+"'>" +
             "</ul>" +
             "</li>";         		    
 		    var $html = $(relativeHtml).prependTo($(parent));
             $html.find("select").css({"width":"15%","marginLeft":"16px"}).select2();
 		    drag($(".dragEdit-wrap").length);		    			                                    
+    }
+    
+    function initFilters(nodeId,entityId, binFilter, binFilterBody) {
+    	 var parent = $(".collapse-header[data-id='" + nodeId + "']", $page).next(".collapse-content")[0];
+         var dragWrapLen = $(".dragEdit-wrap").length + 1 ;
+         $CPF.showLoading();
+             var relativeHtml = "<li class='attr-relative'>" +
+             "<div class='attr-relative-title collapse-header' entityId='"+entityId+"' data-order='' data-id='"+binFilterBody.id+"'>" +
+             "<div class='icon-label attr-relative'>" +
+             "<i class='icon icon-attr-relative'></i><span class='text'>filters</span>" +
+             "</div>" +
+             "<div class='label-bar filters al-save'>" +
+             "<input type='text' class='edit-input text' value='"+binFilterBody.name+"'>";
+             relativeHtml += "<select disabled class='node-ops-type'>";	
+             var nodePosType = optFILTERS;
+             for(var key in nodePosType) {
+ 		    	if(binFilterBody.opt == key) {
+ 		    		relativeHtml += "<option value='"+key+"' selected>"+nodePosType[key]+"</option>";  	
+ 		    	}else {
+ 		    		relativeHtml += "<option value='"+key+"'>"+nodePosType[key]+"</option>"; 
+ 		    	}
+ 	         }
+ 	        relativeHtml += "</select>";
+ 	        relativeHtml += "<div class='btn-wrap'>" +
+             "<i class='icon icon-save'></i>" +  
+             "<i class='icon icon-add-filterGroup group'></i>" +
+             "<i class='icon icon-trash-sm'></i>" +
+             "<i class='icon icon-arrow-sm active'></i>" +
+             "</div>" +
+             "</div>" +
+             "</div>" +            
+             "<ul class='attr-relative-drag-wrap dragEdit-wrap collapse-content collapse-content-inactive need-ajax' id='dragEdit-"+dragWrapLen+"'>" +
+             "</ul>" +
+             "</li>";         		    
+ 		    var $html = $(relativeHtml).prependTo($(parent));
+ 		    $html.find("select").css({"width":"15%","marginLeft":"16px"}).select2();
+ 		    $CPF.closeLoading();
     }
 	/**
      * 获取实体信息方法 示例     
@@ -1293,6 +1570,10 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
                 "<li class='card-list add-relative'>" +
                 "<i class='icon icon-card-relative'></i>" +
                 "<span class='text'>添加关系</span>" +
+                "</li>" +
+                "<li class='card-list add-filters'>" +
+                "<i class='icon icon-card-relative'></i>" +
+                "<span class='text'>添加过滤条件</span>" +
                 "</li>" +
                 "</ul>";
         
@@ -1363,6 +1644,62 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
             "left": left
         });
     };
+    
+    /**
+     * filterGroup 页面弹出方法
+    */
+    function popFilterGroup(el) {
+    	
+        var html = "<ul class='card'>";
+            html += "<li class='card-list add-filterGroup'>" +
+                "<i class='icon icon-card-attr'></i>" +
+                "<span class='text'>添加filterGroup</span>" +
+                "</li>" +
+                "</ul>";
+        var wrap = $("#operateEdit");
+        var offsetx = $(el).offset().left;
+        var offsety = $(el).offset().top;
+        var wrapOffsetx = wrap.offset().left;
+        var wrapOffsety = wrap.offset().top;
+        var top = offsety - wrapOffsety + 30;
+        var left = offsetx - wrapOffsetx - 90;
+        var popHtml = $(html).appendTo(wrap);
+        popHtml.css({
+            "top": top,
+            "left": left
+        });
+    };
+    
+    
+    /**
+     * filter 页面弹出方法
+    */
+    function popFilter(el) {
+    	
+        var html = "<ul class='card'>";
+            html += "<li class='card-list add-filter'>" +
+                "<i class='icon icon-card-attr'></i>" +
+                "<span class='text'>添加filter</span>" +
+                "</li>" +
+                "<li class='card-list add-rFilter'>" +
+                "<i class='icon icon-card-attr'></i>" +
+                "<span class='text'>添加rfilter</span>" +
+                "</li>" +
+                "</ul>";
+        var wrap = $("#operateEdit");
+        var offsetx = $(el).offset().left;
+        var offsety = $(el).offset().top;
+        var wrapOffsetx = wrap.offset().left;
+        var wrapOffsety = wrap.offset().top;
+        var top = offsety - wrapOffsety + 30;
+        var left = offsetx - wrapOffsetx - 90;
+        var popHtml = $(html).appendTo(wrap);
+        popHtml.css({
+            "top": top,
+            "left": left
+        });
+    };
+    
 
     /**
      * 添加标签页面弹出方法
@@ -2457,8 +2794,233 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 		    drag($(".dragEdit-wrap").length);
 		    $CPF.closeLoading();			    
 	    });                                 
-    };    
+    }; 
+    
+    /**
+     * 添加过滤条件
+      */
+    function addFilters(el) {
+        var $content = $(el).closest(".collapse-header").siblings(".collapse-content");
+        
+        var entityId;
+        if($(el).closest(".collapse-header").hasClass("entity-title")){
+        	entityId = $(el).closest(".collapse-header").attr("data-abcattrcode");
+        }else {
+        	entityId = $(el).closest(".collapse-header").find(".label-bar")
+        					.find(".entity-only-title").attr("data-abcattrcode");
+        }
+        
+        var dragWrapLen = $(".dragEdit-wrap").length + 1 ;
+        $CPF.showLoading();
+            var relativeHtml = "<li class='attr-relative'>" +
+            "<div class='attr-relative-title collapse-header' entityId='"+entityId+"' data-order='' data-id=''>" +
+            "<div class='icon-label attr-relative'>" +
+            "<i class='icon icon-attr-relative'></i><span class='text'>filters</span>" +
+            "</div>" +
+            "<div class='label-bar filters edit'>" +
+            "<input type='text' class='edit-input text' value='filters名称'>";
+            relativeHtml += "<select class='node-ops-type'>";	
+            var nodePosType = optFILTERS;
+            for(var key in nodePosType) {
+ 		    	relativeHtml += "<option value='"+key+"'>"+nodePosType[key]+"</option>"; 
+ 	         }
+	        relativeHtml += "</select>";
+	        relativeHtml += "<div class='btn-wrap'>" +
+            "<i class='icon icon-save'></i>" +  
+            "<i class='icon icon-add-filterGroup group'></i>" +
+            "<i class='icon icon-trash-sm'></i>" +
+            "<i class='icon icon-arrow-sm'></i>" +
+            "</div>" +
+            "</div>" +
+            "</div>" +            
+            "<ul class='attr-relative-drag-wrap dragEdit-wrap collapse-content collapse-content-active' id='dragEdit-"+dragWrapLen+"'>" +
+            "</ul>" +
+            "</li>";         		    
+		    var $html = $(relativeHtml).prependTo($content);
+		    $html.find("select").css({"width":"15%","marginLeft":"16px"}).select2();
+            addUnfold(el);
+		    drag($(".dragEdit-wrap").length);
+		    $CPF.closeLoading();			    
+    }; 
+    
+    
+    /**
+     * 添加过滤条件 filterGroup
+      */
+    function addFilterGroup(el) {
+        var $content = $(el).closest(".collapse-header").siblings(".collapse-content");
+        
+       var entityId = $(el).closest(".collapse-header").attr("entityId");
+        
+        var dragWrapLen = $(".dragEdit-wrap").length + 1 ;
+        $CPF.showLoading();
+            var relativeHtml = "<li class='attr-relative'>" +
+            "<div class='attr-relative-title collapse-header' entityId='"+entityId+"' data-order='' data-id=''>" +
+            "<div class='icon-label attr-relative'>" +
+            "<i class='icon icon-attr-relative'></i><span class='text'>Group</span>" +
+            "</div>" +
+            "<div class='label-bar filterGroup edit'>" +
+            "<input type='text' class='edit-input text' value='filterGroup名称'>";
+            relativeHtml += "<select class='node-ops-type'>";	
+            var nodePosType = optFILTERS;
+            for(var key in nodePosType) {
+ 		    	relativeHtml += "<option value='"+key+"'>"+nodePosType[key]+"</option>"; 
+ 	         }
+	        relativeHtml += "</select>";
+	        relativeHtml += "<div class='btn-wrap'>" +
+            "<i class='icon icon-save'></i>" +  
+            "<i class='icon icon-add-filter group'></i>" +
+            "<i class='icon icon-trash-sm'></i>" +
+            "<i class='icon icon-arrow-sm'></i>" +
+            "</div>" +
+            "</div>" +
+            "</div>" +            
+            "<ul class='attr-relative-drag-wrap dragEdit-wrap collapse-content collapse-content-active' id='dragEdit-"+dragWrapLen+"'>" +
+            "</ul>" +
+            "</li>";         		    
+		    var $html = $(relativeHtml).prependTo($content);
+           $html.find("select").css({"width":"15%","marginLeft":"16px"}).select2();
+            addUnfold(el);
+		    drag($(".dragEdit-wrap").length);
+		    $CPF.closeLoading();			    
+    }; 
+    
+    
+    /**
+     * 添加过滤条件 filter
+      */
+    function addFilter(el) {
+        var $content = $(el).closest(".collapse-header").siblings(".collapse-content");
+        
+        var entityId = $(el).closest(".collapse-header").attr("entityId");
+        
+        var dragWrapLen = $(".dragEdit-wrap").length + 1 ;
+        $CPF.showLoading();
+            var relativeHtml = "<li class='attr-relative'>" +
+            "<div class='attr-relative-title collapse-header' entityId='"+entityId+"' data-order='' data-id=''>" +
+            "<div class='icon-label attr-relative'>" +
+            "<i class='icon icon-attr-relative'></i><span class='text'>filter</span>" +
+            "</div>" +
+            "<div class='label-bar filter edit'>" +
+            "<input type='text' class='edit-input filterName text' value='filter名称'>";
+            
+            relativeHtml += "<select class='abcattrCodeData'>";	
+            //getCriteriaSymbol
+    	    Ajax.ajax('admin/node/basicItemNode/getComm', {
+    	    	entityId:entityId
+    	    }, function(data){		
+    	    	var data = data.comm;
+		    for(var key in data) {
+		    	relativeHtml += "<option value='"+data[key][0]+"'>"+data[key][1]+"</option>"; 
+	         };
+	        relativeHtml += "</select>";
+            
+            relativeHtml += "<select class='node-Symbol-type'>";	
+            //getCriteriaSymbol
+    	    Ajax.ajax('admin/node/binFilterBody/getCriteriaSymbol', {
+    	    	dataType:12
+    	    }, function(data){		
+    	    	var nodeSymbolType = data.symbolMap;
+		    for(var key in nodeSymbolType) {
+		    	relativeHtml += "<option value='"+key+"'>"+nodeSymbolType[key]+"</option>"; 
+	         };
+	        relativeHtml += "</select>"+
+	        "<input type='text' class='edit-input valueStr text' value='value'>";
+            
+            relativeHtml += "<select class='node-ops-type'>";	
+            var nodePosType = optFILTERS;
+            for(var key in nodePosType) {
+ 		    	relativeHtml += "<option value='"+key+"'>"+nodePosType[key]+"</option>"; 
+ 	         }
+	        relativeHtml += "</select>";
+	        relativeHtml += "<div class='btn-wrap'>" +
+            "<i class='icon icon-save'></i>" +  
+            /*"<i class='icon icon-add-filter group'></i>" +*/
+            "<i class='icon icon-trash-sm'></i>" +
+           /* "<i class='icon icon-arrow-sm'></i>" +*/
+            "</div>" +
+            "</div>" +
+            "</div>" +            
+            "<ul class='attr-relative-drag-wrap dragEdit-wrap collapse-content collapse-content-active' id='dragEdit-"+dragWrapLen+"'>" +
+            "</ul>" +
+            "</li>";         		    
+		    var $html = $(relativeHtml).prependTo($content);
+            $html.find("select").css({"width":"13%","marginLeft":"16px"}).select2();
+            $html.find("select.node-ops-type").css({"width":"8%","marginLeft":"16px"}).select2();
+            
+            addUnfold(el);
+		    drag($(".dragEdit-wrap").length);
+		    $CPF.closeLoading();	
+    	    })
+    	    })
+    }; 
+    
+    
+    /**
+     * 添加过滤条件 rFilter
+      */
+    function addrFilter(el) {
+        var $content = $(el).closest(".collapse-header").siblings(".collapse-content");
+        var entityId = $(el).closest(".collapse-header").attr("entityId");
+        var dragWrapLen = $(".dragEdit-wrap").length + 1 ;
+        $CPF.showLoading();
+        
+        Ajax.ajax('admin/dictionary/recordRelationType/getRelation', {
+			leftRecordType: entityId,
+			relationType:''
+		}, function(data) {			
+			var relationList = data.relationList;
+        Ajax.ajax('admin/node/binFilterBody/getCriteriaSymbol', {
+	    	dataType:13
+	    }, function(data){	
+	    	
+            var relativeHtml = "<li class='attr-relative'>" +
+            "<div class='attr-relative-title collapse-header' entityId='' data-order='' data-id=''>" +
+            "<div class='icon-label attr-relative'>" +
+            "<i class='icon icon-attr-relative'></i><span class='text'>rFilter</span>" +
+            "</div>" +
+            "<div class='label-bar rFilter edit'>" +
+            "<input type='text' class='edit-input text' value='rFilter名称'>";
+            
+            relativeHtml += "<select class='relationData'>";	
+		    for(var key in relationList) {
+		    	relativeHtml += "<option rightRecordType='"+relationList[key].rightRecordType+"' value='"+relationList[key].typeCode+"'>"+relationList[key].name+"</option>"; 
+	         };
+	         relativeHtml += "</select>";
+            
+            relativeHtml += "<select class='node-Symbol-type'>";	
+    	    	
+    	    	var nodeSymbolType = data.symbolMap;
+		    for(var key in nodeSymbolType) {
+		    	relativeHtml += "<option value='"+key+"'>"+nodeSymbolType[key]+"</option>"; 
+	         };
+	         relativeHtml += "</select>";
 
+	         relativeHtml += "<select class='node-ops-type'>";	
+            var nodePosType = optFILTERS;
+            for(var key in nodePosType) {
+ 		    	relativeHtml += "<option value='"+key+"'>"+nodePosType[key]+"</option>"; 
+ 	         }
+	         relativeHtml += "</select>";
+	         relativeHtml += "<div class='btn-wrap'>" +
+            "<i class='icon icon-save'></i>" +  
+            "<i class='icon icon-add-filterGroup group'></i>" +
+            "<i class='icon icon-trash-sm'></i>" +
+            "<i class='icon icon-arrow-sm'></i>" +
+            "</div>" +
+            "</div>" +
+            "</div>" +            
+            "<ul class='attr-relative-drag-wrap dragEdit-wrap collapse-content collapse-content-active' id='dragEdit-"+dragWrapLen+"'>" +
+            "</ul>" +
+            "</li>";         		    
+		    var $html = $(relativeHtml).prependTo($content);
+            $html.find("select").css({"width":"15%","marginLeft":"16px"}).select2();
+            addUnfold(el);
+		    drag($(".dragEdit-wrap").length);
+		    $CPF.closeLoading();	
+    	    })
+		 })
+    }; 
     //提醒有未保存的节点
     function judgeSave() {    	
         var editBar = $("#operateEdit").find(".label-bar.edit");
@@ -3048,7 +3610,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
     };
     
     
-  //abc属性保存修改方法
+    //abc属性保存修改方法
     function rAbcSave(el) {
     	var $abcBar = $(el).closest(".label-bar");
     	var type = 9;
@@ -3088,6 +3650,167 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 		});
     };
     
+  //filters  保存修改方法
+    function filtersSave(el) {
+    	var $abcBar = $(el).closest(".label-bar");
+    	var name = $abcBar.children(".edit-input").val();    	
+    	var id = $abcBar.closest(".collapse-header").attr("data-id");
+    	var parentId = $abcBar.closest(".collapse-content").prev(".collapse-header")
+    						.attr("data-id"); 
+    	var opt = $abcBar.children(".node-ops-type").find("option:selected").val();
+    	
+    	$CPF.showLoading();
+    	Ajax.ajax('admin/node/binFilterBody/saveOrUpdate', {
+			 name: name,
+			 parentId: parentId,
+			 id: id,
+			 isFilters: true,
+			 dataType: 10,
+			 opt:opt
+		 }, function(data) {
+			if(data.code == "400") {
+				 Dialog.notice(data.msg, "warning");
+				 $CPF.closeLoading();
+				 return;
+			 }
+			
+			if (data.binFilter!= undefined) {
+				var data = data.binFilterBody;
+				 //设置当前节点order和id
+				 var order = data.order;
+				 var id = data.id;
+				 $abcBar.closest(".collapse-header")
+				 	.attr("data-order",order)
+				 	.attr("data-id", id);
+			}
+			 
+			 saveSuccess(el)
+			 $CPF.closeLoading();
+		});
+    };
+    
+  //filterGroup  保存修改方法
+    function filterGroupSave(el) {
+    	var $abcBar = $(el).closest(".label-bar");
+    	var name = $abcBar.children(".edit-input").val();    	
+    	var id = $abcBar.closest(".collapse-header").attr("data-id");
+    	var parentId = $abcBar.closest(".collapse-content").prev(".collapse-header")
+    						.attr("data-id"); 
+    	var opt = $abcBar.children(".node-ops-type").find("option:selected").val();
+    	$CPF.showLoading();
+    	Ajax.ajax('admin/node/binFilterBody/saveOrUpdate', {
+			 name: name,
+			 parentId: parentId,
+			 id: id,
+			 isFilters: false,
+			 dataType: 11,
+			 opt:opt
+		 }, function(data) {
+			if(data.code == "400") {
+				 Dialog.notice(data.msg, "warning");
+				 $CPF.closeLoading();
+				 return;
+			 }
+			
+				var data = data.binFilterBody;
+				 //设置当前节点order和id
+				 var order = data.order;
+				 var id = data.id;
+				 $abcBar.closest(".collapse-header")
+				 	.attr("data-order",order)
+				 	.attr("data-id", id);
+			 
+			 saveSuccess(el)
+			 $CPF.closeLoading();
+		});
+    };
+    
+  //filterSave  保存修改方法
+    function filterSave(el) {
+    	var $abcBar = $(el).closest(".label-bar");
+    	var name = $abcBar.children(".filterName").val();    	
+    	var id = $abcBar.closest(".collapse-header").attr("data-id");
+    	var parentId = $abcBar.closest(".collapse-content").prev(".collapse-header")
+    						.attr("data-id"); 
+    	var opt = $abcBar.children(".node-ops-type").find("option:selected").val();
+    	var filterType = $abcBar.children(".node-Symbol-type").find("option:selected").val();
+    	var valueStr = $abcBar.children(".valueStr").val();  
+    	
+    	var abcattrCode = $abcBar.children(".abcattrCodeData").find("option:selected").val();
+    	
+    	$CPF.showLoading();
+    	Ajax.ajax('admin/node/binFilterBody/saveOrUpdate', {
+			 name: name,
+			 parentId: parentId,
+			 id: id,
+			 isFilters: false,
+			 dataType: 12,
+			 opt:opt,
+			 filterType: filterType,
+			 value:valueStr,
+			 abcattrCode:abcattrCode
+		 }, function(data) {
+			if(data.code == "400") {
+				 Dialog.notice(data.msg, "warning");
+				 $CPF.closeLoading();
+				 return;
+			 }
+			
+				var data = data.binFilterBody;
+				 //设置当前节点order和id
+				 var order = data.order;
+				 var id = data.id;
+				 $abcBar.closest(".collapse-header")
+				 	.attr("data-order",order)
+				 	.attr("data-id", id);
+			 
+			 saveSuccess(el)
+			 $CPF.closeLoading();
+		});
+    };
+    
+  //rFilterSave  保存修改方法
+    function rFilterSave(el) {
+    	var $abcBar = $(el).closest(".label-bar");
+    	var name = $abcBar.children(".edit-input").val();    	
+    	var id = $abcBar.closest(".collapse-header").attr("data-id");
+    	var parentId = $abcBar.closest(".collapse-content").prev(".collapse-header")
+    						.attr("data-id"); 
+    	var opt = $abcBar.children(".node-ops-type").find("option:selected").val();
+    	var filterType = $abcBar.children(".node-Symbol-type").find("option:selected").val();
+    	
+    	var relationData = $abcBar.children(".relationData").find("option:selected").val();
+    	var rightRecordType = $abcBar.children(".relationData").find("option:selected").attr("rightRecordType");
+    	$CPF.showLoading();
+    	Ajax.ajax('admin/node/binFilterBody/saveOrUpdate', {
+			 name: name,
+			 parentId: parentId,
+			 id: id,
+			 isFilters: false,
+			 dataType: 13,
+			 opt:opt,
+			 filterType: filterType,
+			 subdomain:relationData
+		 }, function(data) {
+			if(data.code == "400") {
+				 Dialog.notice(data.msg, "warning");
+				 $CPF.closeLoading();
+				 return;
+			 }
+				var data = data.binFilterBody;
+				 //设置当前节点order和id
+				 var order = data.order;
+				 var id = data.id;
+				 $abcBar.closest(".collapse-header")
+				 	.attr("data-order",order)
+				 	.attr("data-id", id)
+				 	.attr("entityid", rightRecordType);
+			 
+			 saveSuccess(el)
+			 $CPF.closeLoading();
+		});
+    };
+    
     //删除的请求方法
     function deleteAjax(id, boolean, callback) {
     	$CPF.showLoading();
@@ -3095,6 +3818,25 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 			 id: id,
 			 isDelChil: boolean
 		 }, function(data) {				 
+			 callback();
+			 removePop();
+			 $CPF.closeLoading();
+		});
+    };
+    
+    //删除Filters的请求方法
+    function deleteAjaxFilters(id, callback) {
+    	$CPF.showLoading();
+    	Ajax.ajax('admin/node/binFilterBody/doDelete', {			
+			 id: id
+		 }, function(data) {
+			 
+			 if(data.code == "400") {
+				 Dialog.notice(data.msg, "error");
+				 $CPF.closeLoading();
+				 return;
+			 }
+			 
 			 callback();
 			 removePop();
 			 $CPF.closeLoading();
@@ -3219,7 +3961,23 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
     		callback();
     		removePop();
     	}  
-    };   
+    }; 
+    
+  //filters删除方法
+    function filtersDelete(el) {
+    	var $relativeBar = $(el).closest(".label-bar");
+    	var id = $relativeBar.closest(".collapse-header").attr("data-id");
+    	
+    	var callback = function() {
+    		$relativeBar.closest("li.attr-relative").remove();    		
+    	};
+    	if($relativeBar.hasClass("al-save")){
+    		deleteAjaxFilters(id, callback);	
+    	}else {
+    		callback();
+    		removePop();
+    	}  
+    };
     
     //tag删除
     function tagDelete(el) {
@@ -3281,6 +4039,16 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
         }        
         
        if(needAjax) {
+    	   var filters =  $(this).closest(".label-bar").hasClass("filters");
+    	   var filterGroup =  $(this).closest(".label-bar").hasClass("filterGroup");
+    	   var rFilter =  $(this).closest(".label-bar").hasClass("rFilter");
+     	  if (filters || filterGroup || rFilter) {//这里是加载Filters的孩子
+     		 var nodeId = $(this).closest(".label-bar").closest(".collapse-header").attr("data-id");
+     		 var enID = $(this).closest(".label-bar").closest(".collapse-header").attr("entityId");
+     		 getFiltersChild(nodeId, enID, bar);
+     		  return;
+     	  }
+    	   
         	getChild(nodeId, isRelative, bar, entityId);
         }
     })
@@ -3326,6 +4094,32 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
         popRelativeTag(this);
         $(this).addClass("active");
     });
+    
+    //filterGroup 事件绑定
+    $("#operateEdit").on("click", ".icon-add-filterGroup", function (e) {
+       
+    	e.stopPropagation();
+        var hasSave = judgeSave();
+        if(hasSave){
+            return;
+        }
+        removePop();
+        popFilterGroup(this);
+        $(this).addClass("active")
+    });
+    
+  //filter 事件绑定
+    $("#operateEdit").on("click", ".icon-add-filter", function (e) {
+       
+    	e.stopPropagation();
+        var hasSave = judgeSave();
+        if(hasSave){
+            return;
+        }
+        removePop();
+        popFilter(this);
+        $(this).addClass("active")
+    });
 
 
     //删除属性事件绑定
@@ -3351,6 +4145,10 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
             var el = $("#operateEdit").find(".icon-add-sm.active")[0];
         } else if ($("#operateEdit").find(".icon-add-abc.active").length > 0) {
             var el = $("#operateEdit").find(".icon-add-abc.active")[0];
+        }else if ($("#operateEdit").find(".icon-add-filterGroup.active").length > 0) {
+            var el = $("#operateEdit").find(".icon-add-filterGroup.active")[0];
+        }else if ($("#operateEdit").find(".icon-add-filter.active").length > 0) {
+            var el = $("#operateEdit").find(".icon-add-filter.active")[0];
         }
         if ($(this).hasClass("add-tag")) {
             addTag(el);
@@ -3372,7 +4170,20 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
         	addMoreCascadeAttr(el);//添加多值级联属性方法
         } else if ($(this).hasClass("add-rattr-attr")) {
         	addRattr(el);//添加关系属性
-        }   
+        } else if ($(this).hasClass("add-filters")) {
+        	 var filtersBar = $("#operateEdit").find(".label-bar.filters");
+        	 if(filtersBar.length > 0) {
+                 Dialog.notice("只能添加一个filters", "warning");
+                 return true;
+             }
+        	addFilters(el);
+        } else if ($(this).hasClass("add-filterGroup")) {
+        	addFilterGroup(el);
+        } else if ($(this).hasClass("add-filter")) {
+        	addFilter(el);
+        } else if ($(this).hasClass("add-rFilter")) {
+        	addrFilter(el);
+        } 
         removePop();
         $(el).removeClass("active");
     });
@@ -3509,7 +4320,15 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
         	rAttrSave(this);
         } else if(labelBar.hasClass("rabc")) {
         	rAbcSave(this);
-        }  
+        } else if(labelBar.hasClass("filters")) {
+        	filtersSave(this);
+        } else if(labelBar.hasClass("filterGroup")) {
+        	filterGroupSave(this);
+        }else if(labelBar.hasClass("rFilter")) {
+        	rFilterSave(this);
+        } else if(labelBar.hasClass("filter")) {
+        	filterSave(this);
+        }
 
     });
     
@@ -3541,7 +4360,15 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
         	rabcDelete(el);
         }else if (labelBar.hasClass("rattr")) {
         	rAttrDelete(el);
-        }  
+        }else if (labelBar.hasClass("filters")) {
+        	filtersDelete(el);
+        } else if (labelBar.hasClass("filterGroup")) {
+        	filtersDelete(el);
+        } else if (labelBar.hasClass("rFilter")) {
+        	filtersDelete(el);
+        } else if (labelBar.hasClass("filter")) {
+        	filtersDelete(el);
+        } 
     })
     
     //删除-仅组

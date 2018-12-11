@@ -249,7 +249,9 @@ body {
 }
 #operateEdit .icon-add-sm:hover,
 #operateEdit .tag.icon-add-tag:hover,
-#operateEdit .icon-add-abc:hover {
+#operateEdit .icon-add-abc:hover,
+#operateEdit .icon-add-filterGroup:hover,
+#operateEdit .icon-add-filter:hover {
 	background-image: url("../images/add-sm-hover.png");
 }
 #operateEdit .icon-add-tag,
@@ -263,6 +265,17 @@ body {
 	margin: 0;
 }
 #operateEdit .icon-add-abc {    
+    width: 14px;
+    height: 14px;
+    background-image: url("../images/add-sm.png"); 
+}
+#operateEdit .icon-add-filterGroup {    
+    width: 14px;
+    height: 14px;
+    background-image: url("../images/add-sm.png"); 
+}
+
+#operateEdit .icon-add-filter {    
     width: 14px;
     height: 14px;
     background-image: url("../images/add-sm.png"); 
@@ -378,7 +391,9 @@ body {
     display: none;
 } 
 #operateEdit .icon-add-sm.group,
-#operateEdit .icon-add-abc.group {
+#operateEdit .icon-add-abc.group,
+ #operateEdit .icon-add-filterGroup.group,
+ #operateEdit .icon-add-filter.group{
 	margin-right: 40px;
 }
 #operateEdit .edit .icon.icon-trash-sm, 
@@ -393,6 +408,14 @@ body {
 	margin-left: 0;
 }
 
+#operateEdit .edit .icon-add-filterGroup.group {
+	margin-right: 40px;
+	margin-left: 0;
+}
+#operateEdit .edit .icon-add-filter.group {
+	margin-right: 40px;
+	margin-left: 0;
+}
 #operateEdit .card {
     width: 184px;        
     color: #363636;

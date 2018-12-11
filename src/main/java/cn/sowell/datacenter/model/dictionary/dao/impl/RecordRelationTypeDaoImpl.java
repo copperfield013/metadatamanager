@@ -6,6 +6,7 @@ import java.util.List;
 import javax.annotation.Resource;
 
 import org.hibernate.Query;
+import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Repository;
@@ -108,12 +109,20 @@ public class RecordRelationTypeDaoImpl implements RecordRelationTypeDao {
 		sb.append(" SELECT 	t1.* FROM ")
 		.append(" t_sc_record_relation_type t1")
 		.append(" WHERE")
-		.append(" t1.left_record_type =:leftRecordType AND t1.relation_type=:relationType");
-		List list = sFactory.getCurrentSession().createSQLQuery(sb.toString())
-				.addEntity(RecordRelationType.class)
-				.setParameter("leftRecordType", leftRecordType)
-				.setParameter("relationType", relationType)
-				.list();
+		.append(" t1.left_record_type =:leftRecordType ");
+
+		if (!relationType.isEmpty() || !"".equals(relationType)) {
+			sb.append(" AND t1.relation_type=:relationType");
+		}
+		
+		SQLQuery sqlQuery = sFactory.getCurrentSession().createSQLQuery(sb.toString());
+		sqlQuery.addEntity(RecordRelationType.class);
+		sqlQuery.setParameter("leftRecordType", leftRecordType);
+		if (!relationType.isEmpty() || !"".equals(relationType)) {
+			sqlQuery.setParameter("relationType", relationType);
+		}
+				
+		List list = sqlQuery.list();
 		return list;
 	}
 
