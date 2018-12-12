@@ -786,12 +786,12 @@ body {
 #operateEdit .attr-group-drag-wrap,
 #operateEdit .more-attr-drag-wrap,
 #operateEdit .attr-relative-drag-wrap {
-    padding-left: 40px;
+    padding-left: 15px;
 }
 #operateEdit .repeat .attr-group-drag-wrap,
 #operateEdit .repeat .more-attr-drag-wrap,
 #operateEdit .repeat .attr-relative-drag-wrap {
-    padding-left: 40px;
+    padding-left: 15px;
 }
 #operateEdit .drag-wrap-repeat-more  .attr-group-drag-wrap,
 #operateEdit .drag-wrap-repeat-more  .more-attr-drag-wrap,
