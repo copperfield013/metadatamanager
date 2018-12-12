@@ -11,26 +11,8 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 	    getNodeOpsType();
 	    getDataType();
 	    drag($(".dragEdit-wrap", $page).length);       
-	    getChild(nodeId, false, null, entityId);  //直接执行
-	    
-		 //这里加载filters
-		Ajax.ajax('admin/node/binFilterBody/getFilters', {
-			nodeId: nodeId
-		}, function(data) {			
-			if (data.code == "400") {
-				 Dialog.notice("filters加载失败", "error");
-				 $CPF.closeLoading();
-			} else{
-				
-				if (data.binFilter != undefined) {
-					initFilters(nodeId,entityId, data.binFilter, data.binFilterBody);
-					$CPF.closeLoading();
-				}
-			}
-			
-			$CPF.closeLoading();
-		});
-	    
+	    var source = "sourceEntity";
+	    getChild(nodeId, false, null, entityId, source);  //直接执行
 	    
 	    $(".label-bar", $page).addClass("al-save");
 	    $CPF.closeLoading();
@@ -44,7 +26,11 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
         	$(el).siblings(".icon-arrow-sm").trigger("click");
         }else if($(el).hasClass("icon-add-abc") && $(el).siblings(".icon-arrow-sm").hasClass("active")){
         	$(el).siblings(".icon-arrow-sm").trigger("click");
-        } 
+        } else if($(el).hasClass("icon-add-filterGroup") && $(el).siblings(".icon-arrow-sm").hasClass("active")){
+        	$(el).siblings(".icon-arrow-sm").trigger("click");
+        } else if($(el).hasClass("icon-add-filter") && $(el).siblings(".icon-arrow-sm").hasClass("active")){
+        	$(el).siblings(".icon-arrow-sm").trigger("click");
+        }
 	} 	
 	
 	function getNodeOpsType() {
@@ -206,7 +192,26 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
   	 });  
 	
     //获取孩子的方法   entityId: 此为实体id
-	function getChild(nodeId, isRelative, bar, entityId) {
+	function getChild(nodeId, isRelative, bar, entityId, source) {
+		
+		
+		 //这里加载filters
+		Ajax.ajax('admin/node/binFilterBody/getFilters', {
+			nodeId: nodeId
+		}, function(data) {			
+			if (data.code == "400") {
+				 Dialog.notice("filters加载失败", "error");
+				 $CPF.closeLoading();
+			} else{
+				
+				if (data.binFilter != undefined) {
+					initFilters(nodeId,entityId, data.binFilter, data.binFilterBody, source);
+					$CPF.closeLoading();
+				}
+			}
+			
+			$CPF.closeLoading();
+		});
 		
 		$CPF.showLoading();
 		//获取当前实体下， 所有的多值属性本省
@@ -382,6 +387,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 		       }
 			 
 			 var parent = $(".collapse-header[data-id='" + nodeId + "']", $page).next(".collapse-content")[0];
+			 var source = $(bar).closest(".collapse-header").attr("source");
 			 $(parent).removeClass("need-ajax");
 			 var filterBodyList = data.filterBodyChild;
 			 if (data.code==200 && filterBodyList.length>0) {
@@ -389,11 +395,11 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 					 var dataType = filterBodyList[i].dataType;
 					 
 					 if (dataType == 11) {
-						 initFilterGroup(filterBodyList[i],nodeId, enID,parent);
+						 initFilterGroup(filterBodyList[i],nodeId, enID,parent, source);
 					 } else if (dataType == 12) {
-						 initFilter(filterBodyList[i],nodeId, enID,parent);
+						 initFilter(filterBodyList[i],nodeId, enID,parent,  source);
 					 }else if (dataType == 13) {
-						 initRFilter(filterBodyList[i],nodeId, enID,parent);
+						 initRFilter(filterBodyList[i],nodeId, enID,parent, source);
 					 }
 				 }
 				} else if (data.code==200 && filterBodyList.length==0) {
@@ -408,12 +414,12 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 	}
 	
 	
-	function initFilterGroup(filterBodyList,nodeId, enID, parent) {
+	function initFilterGroup(filterBodyList,nodeId, enID, parent, source) {
 		
 	        var dragWrapLen = $(".dragEdit-wrap").length + 1 ;
 	        $CPF.showLoading();
 	            var relativeHtml = "<li class='attr-relative'>" +
-	            "<div class='attr-relative-title collapse-header' entityId='"+enID+"' data-order='' data-id='"+filterBodyList.id+"'>" +
+	            "<div class='attr-relative-title collapse-header' source='"+source+"'  entityId='"+enID+"' data-order='' data-id='"+filterBodyList.id+"'>" +
 	            "<div class='icon-label attr-relative'>" +
 	            "<i class='icon icon-attr-relative'></i><span class='text'>Group</span>" +
 	            "</div>" +
@@ -443,12 +449,11 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 			    var $html = $(relativeHtml).prependTo($(parent));
 	           $html.find("select").css({"width":"15%","marginLeft":"16px"}).select2();
 	}
-	function initFilter(filterBodyList,nodeId, enID, parent) {
-		
+	function initFilter(filterBodyList,nodeId, enID, parent, source) {
         var dragWrapLen = $(".dragEdit-wrap").length + 1 ;
         $CPF.showLoading();
             var relativeHtml = "<li class='attr-relative'>" +
-            "<div class='attr-relative-title collapse-header' entityId='"+enID+"' data-order='' data-id='"+filterBodyList.id+"'>" +
+            "<div class='attr-relative-title collapse-header' source='"+source+"' entityId='"+enID+"' data-order='' data-id='"+filterBodyList.id+"'>" +
             "<div class='icon-label attr-relative'>" +
             "<i class='icon icon-attr-relative'></i><span class='text'>filter</span>" +
             "</div>" +
@@ -456,18 +461,32 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
             "<input type='text' class='edit-input filterName text' value='"+filterBodyList.name+"'>";
             
             relativeHtml += "<select disabled class='abcattrCodeData'>";	
-            //getCriteriaSymbol
-    	    Ajax.ajax('admin/node/basicItemNode/getComm', {
-    	    	entityId:entityId
+         
+            Ajax.ajax('admin/node/basicItemNode/getComm', {
+    	    	entityId:enID
     	    }, function(data){		
-    	    	var data = data.comm;
-		    for(var key in data) {
-		    	if (data[key][0] == filterBodyList.abcattrCode) {
-		    		relativeHtml += "<option value='"+data[key][0]+"' selected>"+data[key][1]+"</option>"; 
-		    	} else {
-		    		relativeHtml += "<option value='"+data[key][0]+"'>"+data[key][1]+"</option>"; 
-		    	}
-	         }
+    	    	var entityData = data.comm;
+    	    	 Ajax.ajax('admin/node/basicItemNode/getRepeatChild', {
+    	    		 repeatId:enID
+    	    	    }, function(data){		
+    	    	    	var repeatData = data.repeatChild;
+    	    	if (source == "moreAttr") {
+    	    		 for(var key in repeatData) {
+    	    			 if (filterBodyList.abcattrCode == repeatData[key].code) {
+    	    				 relativeHtml += "<option selected value='"+repeatData[key].code+"'>"+repeatData[key].cnName+"</option>";
+    	    			 } else {
+    	    				 relativeHtml += "<option value='"+repeatData[key].code+"'>"+repeatData[key].cnName+"</option>";
+    	    			 }
+    	 	         }
+    	    	} else {
+    	    		 for(var key in entityData) {
+    	    			 if (filterBodyList.abcattrCode == entityData[key].code) {
+    	    				 relativeHtml += "<option selected value='"+entityData[key][0]+"'>"+entityData[key][1]+"</option>"; 
+    	    			 } else {
+    	    				 relativeHtml += "<option value='"+entityData[key][0]+"'>"+entityData[key][1]+"</option>"; 
+    	    			 }
+    	    		 }
+    	    	}
 	        relativeHtml += "</select>";
             
             relativeHtml += "<select disabled class='node-Symbol-type'>";	
@@ -484,7 +503,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 		    	}
 	         }
 	        relativeHtml += "</select>"+
-	        "<input type='text' class='edit-input valueStr text' value='value'>";
+	        "<input type='text' class='edit-input valueStr text' value='"+filterBodyList.value+"'>";
             
             relativeHtml += "<select disabled class='node-ops-type'>";	
             var nodePosType = optFILTERS;
@@ -512,9 +531,10 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
             $html.find("select.node-ops-type").css({"width":"8%","marginLeft":"16px"}).select2();
             
     	    })
+    	     })
     	    })
 	}
-	function initRFilter(filterBodyList,nodeId, enID, parent) {
+	function initRFilter(filterBodyList,nodeId, enID, parent, source) {
         var entityId = enID;
         var dragWrapLen = $(".dragEdit-wrap").length + 1 ;
         $CPF.showLoading();
@@ -529,7 +549,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 	    }, function(data){	
 	    	
             var relativeHtml = "<li class='attr-relative'>" +
-            "<div class='attr-relative-title collapse-header' entityId='' data-order='' data-id='"+filterBodyList.id+"'>" +
+            "<div class='attr-relative-title collapse-header' source='"+source+"' entityId='' data-order='' data-id='"+filterBodyList.id+"'>" +
             "<div class='icon-label attr-relative'>" +
             "<i class='icon icon-attr-relative'></i><span class='text'>rFilter</span>" +
             "</div>" +
@@ -1488,12 +1508,12 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 		    drag($(".dragEdit-wrap").length);		    			                                    
     }
     
-    function initFilters(nodeId,entityId, binFilter, binFilterBody) {
+    function initFilters(nodeId,entityId, binFilter, binFilterBody, source) {
     	 var parent = $(".collapse-header[data-id='" + nodeId + "']", $page).next(".collapse-content")[0];
          var dragWrapLen = $(".dragEdit-wrap").length + 1 ;
          $CPF.showLoading();
              var relativeHtml = "<li class='attr-relative'>" +
-             "<div class='attr-relative-title collapse-header' entityId='"+entityId+"' data-order='' data-id='"+binFilterBody.id+"'>" +
+             "<div class='attr-relative-title collapse-header' source='"+source+"' entityId='"+entityId+"' data-order='' data-id='"+binFilterBody.id+"'>" +
              "<div class='icon-label attr-relative'>" +
              "<i class='icon icon-attr-relative'></i><span class='text'>filters</span>" +
              "</div>" +
@@ -1571,7 +1591,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
                 "<i class='icon icon-card-relative'></i>" +
                 "<span class='text'>添加关系</span>" +
                 "</li>" +
-                "<li class='card-list add-filters'>" +
+                "<li class='card-list add-filters' source='sourceEntity'>" +
                 "<i class='icon icon-card-relative'></i>" +
                 "<span class='text'>添加过滤条件</span>" +
                 "</li>" +
@@ -1609,6 +1629,10 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
                 "<li class='card-list add-more-cascade-attr'>" +
                 "<i class='icon icon-card-attr'></i>" +
                 "<span class='text'>添加级联属性</span>" +
+                "</li>" +
+                "<li class='card-list add-filters' source='moreAttr'>" +
+                "<i class='icon icon-card-relative'></i>" +
+                "<span class='text'>添加过滤条件</span>" +
                 "</li>" +
                 "</ul>";
         } else {
@@ -1676,16 +1700,21 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
     */
     function popFilter(el) {
     	
+    	var source = $(el).closest(".collapse-header").attr("source");
+    	
         var html = "<ul class='card'>";
             html += "<li class='card-list add-filter'>" +
                 "<i class='icon icon-card-attr'></i>" +
                 "<span class='text'>添加filter</span>" +
-                "</li>" +
-                "<li class='card-list add-rFilter'>" +
+                "</li>";
+            
+            if (source != "moreAttr") {
+            	html +="<li class='card-list add-rFilter'>" +
                 "<i class='icon icon-card-attr'></i>" +
                 "<span class='text'>添加rfilter</span>" +
-                "</li>" +
-                "</ul>";
+                "</li>";
+            }
+               html += "</ul>";
         var wrap = $("#operateEdit");
         var offsetx = $(el).offset().left;
         var offsety = $(el).offset().top;
@@ -2799,11 +2828,13 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
     /**
      * 添加过滤条件
       */
-    function addFilters(el) {
+    function addFilters(el, source) {
         var $content = $(el).closest(".collapse-header").siblings(".collapse-content");
         
         var entityId;
         if($(el).closest(".collapse-header").hasClass("entity-title")){
+        	entityId = $(el).closest(".collapse-header").attr("data-abcattrcode");
+        }else if ($(el).closest(".collapse-header").hasClass("more-attr-title")) {
         	entityId = $(el).closest(".collapse-header").attr("data-abcattrcode");
         }else {
         	entityId = $(el).closest(".collapse-header").find(".label-bar")
@@ -2813,7 +2844,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
         var dragWrapLen = $(".dragEdit-wrap").length + 1 ;
         $CPF.showLoading();
             var relativeHtml = "<li class='attr-relative'>" +
-            "<div class='attr-relative-title collapse-header' entityId='"+entityId+"' data-order='' data-id=''>" +
+            "<div class='attr-relative-title collapse-header' source='"+source+"' entityId='"+entityId+"' data-order='' data-id=''>" +
             "<div class='icon-label attr-relative'>" +
             "<i class='icon icon-attr-relative'></i><span class='text'>filters</span>" +
             "</div>" +
@@ -2851,11 +2882,12 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
         var $content = $(el).closest(".collapse-header").siblings(".collapse-content");
         
        var entityId = $(el).closest(".collapse-header").attr("entityId");
+       var source = $(el).closest(".collapse-header").attr("source");
         
         var dragWrapLen = $(".dragEdit-wrap").length + 1 ;
         $CPF.showLoading();
             var relativeHtml = "<li class='attr-relative'>" +
-            "<div class='attr-relative-title collapse-header' entityId='"+entityId+"' data-order='' data-id=''>" +
+            "<div class='attr-relative-title collapse-header' source='"+source+"' entityId='"+entityId+"' data-order='' data-id=''>" +
             "<div class='icon-label attr-relative'>" +
             "<i class='icon icon-attr-relative'></i><span class='text'>Group</span>" +
             "</div>" +
@@ -2893,11 +2925,12 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
         var $content = $(el).closest(".collapse-header").siblings(".collapse-content");
         
         var entityId = $(el).closest(".collapse-header").attr("entityId");
+        var source = $(el).closest(".collapse-header").attr("source");
         
         var dragWrapLen = $(".dragEdit-wrap").length + 1 ;
         $CPF.showLoading();
             var relativeHtml = "<li class='attr-relative'>" +
-            "<div class='attr-relative-title collapse-header' entityId='"+entityId+"' data-order='' data-id=''>" +
+            "<div class='attr-relative-title collapse-header' source='"+source+"' entityId='"+entityId+"' data-order='' data-id=''>" +
             "<div class='icon-label attr-relative'>" +
             "<i class='icon icon-attr-relative'></i><span class='text'>filter</span>" +
             "</div>" +
@@ -2909,10 +2942,21 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
     	    Ajax.ajax('admin/node/basicItemNode/getComm', {
     	    	entityId:entityId
     	    }, function(data){		
-    	    	var data = data.comm;
-		    for(var key in data) {
-		    	relativeHtml += "<option value='"+data[key][0]+"'>"+data[key][1]+"</option>"; 
-	         };
+    	    	var entityData = data.comm;
+    	    	 Ajax.ajax('admin/node/basicItemNode/getRepeatChild', {
+    	    		 repeatId:entityId
+    	    	    }, function(data){		
+    	    	    	var repeatData = data.repeatChild;
+    	    	if (source == "moreAttr") {
+    	    		 for(var key in repeatData) {
+    	 		    	relativeHtml += "<option value='"+repeatData[key].code+"'>"+repeatData[key].cnName+"</option>"; 
+    	 	         };
+    	    	} else {
+    	    		 for(var key in entityData) {
+    	 		    	relativeHtml += "<option value='"+entityData[key][0]+"'>"+entityData[key][1]+"</option>"; 
+    	 	         };
+    	    	}
+		   
 	        relativeHtml += "</select>";
             
             relativeHtml += "<select class='node-Symbol-type'>";	
@@ -2953,6 +2997,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 		    $CPF.closeLoading();	
     	    })
     	    })
+    	    })
     }; 
     
     
@@ -2962,6 +3007,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
     function addrFilter(el) {
         var $content = $(el).closest(".collapse-header").siblings(".collapse-content");
         var entityId = $(el).closest(".collapse-header").attr("entityId");
+        var source = $(el).closest(".collapse-header").attr("source");
         var dragWrapLen = $(".dragEdit-wrap").length + 1 ;
         $CPF.showLoading();
         
@@ -2975,7 +3021,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 	    }, function(data){	
 	    	
             var relativeHtml = "<li class='attr-relative'>" +
-            "<div class='attr-relative-title collapse-header' entityId='' data-order='' data-id=''>" +
+            "<div class='attr-relative-title collapse-header' source='"+source+"' entityId='' data-order='' data-id=''>" +
             "<div class='icon-label attr-relative'>" +
             "<i class='icon icon-attr-relative'></i><span class='text'>rFilter</span>" +
             "</div>" +
@@ -4048,8 +4094,8 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
      		 getFiltersChild(nodeId, enID, bar);
      		  return;
      	  }
-    	   
-        	getChild(nodeId, isRelative, bar, entityId);
+    	   	var source = "moreAttr";
+        	getChild(nodeId, isRelative, bar, entityId, source);
         }
     })
 
@@ -4171,12 +4217,14 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
         } else if ($(this).hasClass("add-rattr-attr")) {
         	addRattr(el);//添加关系属性
         } else if ($(this).hasClass("add-filters")) {
-        	 var filtersBar = $("#operateEdit").find(".label-bar.filters");
+        	 var filtersBar = $(el).closest(".label-bar").closest(".collapse-header").parent().find(".label-bar.filters");
         	 if(filtersBar.length > 0) {
                  Dialog.notice("只能添加一个filters", "warning");
                  return true;
              }
-        	addFilters(el);
+        	 
+        	var source =  $(this).attr("source");
+        	addFilters(el, source);
         } else if ($(this).hasClass("add-filterGroup")) {
         	addFilterGroup(el);
         } else if ($(this).hasClass("add-filter")) {
