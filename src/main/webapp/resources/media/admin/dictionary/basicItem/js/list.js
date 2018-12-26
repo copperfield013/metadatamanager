@@ -1924,6 +1924,10 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
         var entityId = $this.closest('.entity_ul').attr("entityid");
         var ischecked = false;
         $this.closest(".entity_attr").addClass('pitch').siblings(".entity_attr").removeClass('pitch');
+        
+        //总控制
+        $form1.find("#dataType").attr("disabled", true);
+        
         Ajax.ajax('admin/dictionary/basicItem/getOne', {
             id: entityId
         }, function(jsonData) {  
@@ -1940,7 +1944,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
             $form1.find("#edit_dictParentId").val(jsonData.oneLevelItem.dictParentId);
             $form1.find("#dataType").html("");
             
-            $form1.find("#dataType").attr("disabled", false);
+           /* $form1.find("#dataType").attr("disabled", false);*/
             
             $form1.find("#needHistory").empty();
             var str="";
@@ -2163,6 +2167,10 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
     	var $newAdd = $this.closest('.new_add');
     	$this.closest(".entity_attr").addClass('pitch').siblings(".entity_attr").removeClass('pitch');
     	var $form1 = $newAdd.find('form');
+    	
+    	//总控制
+    	$form1.find("#dataType").attr("disabled", true);
+    	
         var entityId = $(this).closest('.entity_ul').attr("entityid");
         $form1.attr("entityId", entityId);
         var ischecked = false;
@@ -2400,12 +2408,12 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
 	            $form1.find("#dataType").append(str).css("width","30%").select2();	            
 	        }); 
     		
-    		 Ajax.ajax('admin/dictionary/basicItem/isTwoattr', {
+    		 /*Ajax.ajax('admin/dictionary/basicItem/isTwoattr', {
     	  			id:entityId
     	  		}, function(data) {  
     	  			
     	  			
-    	  		  if ("1401"==jsonData.oneLevelItem.dataType) {	 
+    	  			if ("1401"==jsonData.oneLevelItem.dataType) {	 
     	  			$form1.find("#dataType").attr("disabled", true);
     	  		  }
     	  			
@@ -2416,7 +2424,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
     	            	$form1.find("#dictParentId").attr("disabled", false);
     	            	$form1.find("#dataType").attr("disabled", false);
     	            }
-    		     });
+    		     });*/
     		
             $("#add_more_child_mes").html("");
             $("#add_more_child_mes").html("编辑属性");
