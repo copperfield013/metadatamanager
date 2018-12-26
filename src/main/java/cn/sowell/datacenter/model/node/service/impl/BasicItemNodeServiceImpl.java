@@ -17,7 +17,10 @@ import cn.sowell.copframe.dto.page.PageInfo;
 import cn.sowell.datacenter.model.node.criteria.BasicItemNodeCriteria;
 import cn.sowell.datacenter.model.node.dao.BasicItemNodeDao;
 import cn.sowell.datacenter.model.node.pojo.BasicItemNode;
+import cn.sowell.datacenter.model.node.pojo.BinFilter;
+import cn.sowell.datacenter.model.node.pojo.BinFilterBody;
 import cn.sowell.datacenter.model.node.service.BasicItemNodeService;
+import cn.sowell.datacenter.model.node.service.BinFilterBodyService;
 import cn.sowell.datacenter.utils.FileManager;
 
 import com.abc.mapping.node.NodeOpsType;
@@ -31,6 +34,9 @@ public class BasicItemNodeServiceImpl implements BasicItemNodeService {
 	
 	@Resource
 	SessionFactory sFactory;
+	
+	@Resource
+	BinFilterBodyService binFilterBodyService;
 	
 	@Override
 	public List<BasicItemNode> queryList(BasicItemNodeCriteria criteria, PageInfo pageInfo) {
@@ -227,15 +233,88 @@ public class BasicItemNodeServiceImpl implements BasicItemNodeService {
 				+ "	 class=\"\" xmlns=\"http://www.w3school.com.cn\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">";
 		FileManager.writeFileContent(file, head);
 		
+		
+		//ABC 配置文件
 		List<BasicItemNodeCriteria> btNodeList = basicItemNodeDao.getChildByPid(btn.getId());
 		for (BasicItemNodeCriteria basicItemNode : btNodeList) {
 			createChild(basicItemNode, file, prefix);
 		}
 		
+		//过滤条件filters
+		try {
+			BinFilter binFilter = binFilterBodyService.getBinFilterByNodeId(btn.getId());
+			BinFilterBody binFilterBody = null;
+			if (binFilter != null) {
+				binFilterBody = binFilterBodyService.getBinFilterBody(binFilter.getFiltersId());
+			
+				String startFilters =  "<"+NodeType.FILTERS.getName()+" name=\""+binFilterBody.getName()+"\" >";
+				FileManager.writeFileContent(file, startFilters);
+				List<BinFilterBody> filterBodyChild = binFilterBodyService.getFilterBodyChild(binFilterBody.getId());
+				
+				for (BinFilterBody body : filterBodyChild) {
+					createFiltersChild(body,file, prefix);
+				}
+				
+				String endFilters =  "</"+NodeType.FILTERS.getName()+">";
+				
+				//创建filters的孩子
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		
 		String endStr = "</"+NodeType.ABC.getName()+">";
 		FileManager.writeFileContent(file, endStr);
 	}
 	
+	
+	private void createFiltersChild(BinFilterBody binFilterBody,File file, String prefix) {
+		prefix += "   ";
+		NodeType nodeType = NodeType.getNodeType(binFilterBody.getDataType());
+		switch (nodeType) {
+		case FILTERGROUP://只可能是关系下的ABC了
+			//createFilterGroup(binFilterBody, file, prefix, nodeType);
+			break;
+		case FILTER:
+			createFilter(binFilterBody, file, prefix, nodeType);
+			break;
+		case RFILTER:
+			//createRFilter(binFilterBody, file, prefix, nodeType);
+			break;
+		case NONO:
+			break;
+		default:
+			break;
+		}
+		
+	}
+
+	private void createFilter(BinFilterBody binFilterBody, File file, String prefix, NodeType nodeType) {
+		
+		String str = "";
+		str = prefix + "<"+nodeType.getName()+" name=\""+binFilterBody.getName()+">"+"\r\n";
+		//FileManager.writeFileContent(file, str);
+		
+		String endStr = prefix + "</"+nodeType.getName()+">";
+		//FileManager.writeFileContent(file, endStr);
+		
+	}
+
+	private void createFilterGroup(BinFilterBody binFilterBody, File file, String prefix, NodeType nodeType) throws Exception {
+		String str = "";
+		str = prefix + "<"+nodeType.getName()+" name=\""+binFilterBody.getName()+">"+"\r\n";
+		FileManager.writeFileContent(file, str);
+		
+		List<BinFilterBody> filterBodyChild = binFilterBodyService.getFilterBodyChild(binFilterBody.getId());
+		for (BinFilterBody body : filterBodyChild) {
+			createFiltersChild(body, file, prefix);
+		}
+		
+		String endStr = prefix + "</"+nodeType.getName()+">";
+		FileManager.writeFileContent(file, endStr);
+	}
+
 	/**
 	 * 创建ABC
 	 * @param file
@@ -335,7 +414,12 @@ public class BasicItemNodeServiceImpl implements BasicItemNodeService {
 		
 		String str = prefix + "<"+nodeType.getName()+" name=\""+basicItemNode.getName()+"\" ops=\""+basicItemNode.getOpt()+"\"> ";
 		FileManager.writeFileContent(file, str);
+		//配置文件的filters
 		
+		
+		
+		
+		//配置文件孩子
 		List<BasicItemNodeCriteria> btNodeList = basicItemNodeDao.getChildByPid(basicItemNode.getId());
 		for (BasicItemNodeCriteria bn2 : btNodeList) {
 			createChild(bn2, file, prefix);
