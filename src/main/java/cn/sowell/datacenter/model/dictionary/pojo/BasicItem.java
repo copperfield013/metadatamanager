@@ -54,6 +54,9 @@ public class BasicItem {
 	  @Column(name="c_using_state")
 	  private Integer usingState;//状态-只增不删
 	 
+	  @Column(name="c_description")
+	  private String description;
+	 
 	 @OneToOne(fetch = FetchType.LAZY,cascade = {CascadeType.ALL})
 	 @JoinColumn(name = "c_code")
 	 protected OneLevelItem oneLevelItem = new OneLevelItem();
@@ -148,6 +151,14 @@ public class BasicItem {
 	 */
 	public void setOneLevelItem(OneLevelItem oneLevelItem) {
 		this.oneLevelItem = oneLevelItem;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
 }

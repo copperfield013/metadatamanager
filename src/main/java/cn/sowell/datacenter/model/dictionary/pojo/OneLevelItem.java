@@ -57,9 +57,6 @@ public class OneLevelItem {
 	  @Column(name="c_group_name")
 	  private String groupName;//分组字段
 	  
-	  @ApiModelProperty(value="描述", name="description")
-	  @Column(name="c_description")
-	  private String description;
 	  
 	  @ApiModelProperty(value="引用类型关联实体code", name="refType")
 	  @Column(name="c_ref_type")
@@ -160,14 +157,6 @@ public class OneLevelItem {
 
 
 	/**
-	 * @return the description
-	 */
-	public String getDescription() {
-		return description;
-	}
-
-
-	/**
 	 * @return the refType
 	 */
 	public String getRefType() {
@@ -238,22 +227,12 @@ public class OneLevelItem {
 		this.groupName = groupName;
 	}
 
-
-	/**
-	 * @param description the description to set
-	 */
-	public void setDescription(String description) {
-		this.description = description;
-	}
-
-
 	/**
 	 * @param refType the refType to set
 	 */
 	public void setRefType(String refType) {
 		this.refType = refType;
 	}
-
 
 	/**
 	 * @return the needHistory

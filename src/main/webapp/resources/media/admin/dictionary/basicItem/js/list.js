@@ -1910,7 +1910,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
             $form1.find("#code").attr("readonly", "readonly");
             $form1.find("#cnName").val(jsonData.cnName);
             $form1.find("#enName").val(jsonData.enName);
-            $form1.find("#description").val(jsonData.oneLevelItem.description);
+            $form1.find("#description").val(jsonData.description);
             $("#add_entity_mes").html("");
             $("#add_entity_mes").html("编辑实体信息");
             $(".opera_entity").show();
@@ -1933,7 +1933,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
             $form1.find("#code").val(jsonData.code);
             $form1.find("#code").attr("readonly", "readonly");
             $form1.find("#cnName").val(jsonData.cnName);
-            $form1.find("#description").val(jsonData.oneLevelItem.description);
+            $form1.find("#description").val(jsonData.description);
             $form1.find("#enName").val(jsonData.enName);
             $form1.find("#dataRange").val(jsonData.oneLevelItem.dataRange);
             $form1.find("#edit_dataType").val(jsonData.oneLevelItem.dataType);
@@ -2175,7 +2175,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
             $form1.find("#code").val(jsonData.code);
             $form1.find("#code").attr("readonly", "readonly");
             $form1.find("#cnName").val(jsonData.cnName);
-            $form1.find("#description").val(jsonData.oneLevelItem.description);
+            $form1.find("#description").val(jsonData.description);
             $form1.find("#enName").val(jsonData.enName);
             $form1.find("#dataRange").val(jsonData.oneLevelItem.dataRange);
             $form1.find("#edit_dataType").val(jsonData.oneLevelItem.dataType);
@@ -2432,7 +2432,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
         Ajax.ajax('admin/dictionary/basicItem/getOne', {
             id: groupId
         }, function(jsonData) {            
-            $form1.find("#description").val(jsonData.oneLevelItem.description);
+            $form1.find("#description").val(jsonData.description);
              $form1.find("#code").val(jsonData.code);
             $form1.find("#code").attr("readonly", "readonly");
             $form1.find("#cnName").val(jsonData.cnName);
@@ -2453,7 +2453,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
         }, function(jsonData) {            
             $form1.find("#code").val(jsonData.code);
             $form1.find("#code").attr("readonly", "readonly");
-            $form1.find("#description").val(jsonData.oneLevelItem.description);
+            $form1.find("#description").val(jsonData.description);
             $form1.find("#cnName").val(jsonData.cnName);
             $form1.find("#enName").val(jsonData.enName);
             $form1.find("#more_parent").val(jsonData.parent);

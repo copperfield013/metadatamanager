@@ -1144,6 +1144,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
     //关系属性初始化方法
     function initRattr(abcattrCode,dataType, id, name, opt, order, parent, commList, subdomain, relationList) {  
     	var dataTypeList = dataTypeSTRINGList;
+    	var rightRecordType;
 			var attrHtml = "<li class='add-attr clear-fix'>"
 				+"<div class='icon-label attr'>";
             if(abcattrCode=="") {
@@ -1157,14 +1158,13 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
             "<select disabled class='abc-attr relationCode' title='<对一>关系'>";    
             for(var i=0; i<relationList.length; i++) {   
             	if (relationList[i].name==subdomain) {
+            		rightRecordType=relationList[i].rightRecordType;
             		attrHtml += "<option data-id='"+relationList[i].typeCode+"' data-rightId='"+relationList[i].rightRecordType+"' value='"+relationList[i].name+"' selected>"+relationList[i].name+"</option>";
             	} else {
             		attrHtml += "<option data-id='"+relationList[i].typeCode+"' data-rightId='"+relationList[i].rightRecordType+"' value='"+relationList[i].name+"'>"+relationList[i].name+"</option>";
             	}
             }
             attrHtml += "</select>";
-            
-            attrHtml += "<select disabled class='abc-attr rattrType'>"            
             for(var i=0; i<commList.length; i++) {  
             	if ("5" == commList[i][2]) {
 					dataTypeList=dataTypeSTRINGList;
@@ -1183,15 +1183,26 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 				}else if ("14"== commList[i][2]) {
 					dataTypeList=dataTypeENUMList;
 				}
-            	
-            	if(commList[i][0] == abcattrCode) {
-            		attrHtml += "<option item-data-type='"+commList[i][2]+"' data-id='"+commList[i][0]+"' value='"+commList[i][1]+"' selected>"+commList[i][1]+"</option>";
-            	}else {
-            		attrHtml += "<option item-data-type='"+commList[i][2]+"' data-id='"+commList[i][0]+"' value='"+commList[i][1]+"'>"+commList[i][1]+"</option>";
-            	}
-            	
             }
-			attrHtml += "</select>";
+            attrHtml += "<select disabled class='abc-attr rattrType'>"; 
+			 Ajax.ajax('admin/node/basicItemNode/getComm', {
+				   entityId:rightRecordType
+			   }, function(data){		    	
+		            var data = data.comm;
+					if (data.length == 0) {
+		                Dialog.notice("请在模型中添加属性", "warning");
+		                $CPF.closeLoading();    
+		                return;
+			          } 
+		            for(var i=0; i<data.length; i++) {
+		            	if(data[i][0] == abcattrCode) {
+		            		attrHtml += "<option item-data-type='"+data[i][2]+"' data-id='"+data[i][0]+"' value='"+data[i][1]+"' selected>"+data[i][1]+"</option>";
+		            	}else {
+		            		attrHtml += "<option item-data-type='"+data[i][2]+"' data-id='"+data[i][0]+"' value='"+data[i][1]+"'>"+data[i][1]+"</option>";
+		            	}
+		            }
+					attrHtml += "</select>";
+			
 			attrHtml += "<select disabled class='data-type attr-type'>";      
 			//Ajax.ajax('admin/node/basicItemNode/getDataType', {
 			//	dataType:commList[0][2]
@@ -1229,6 +1240,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 		        
 		       // drag($(".dragEdit-wrap").length);
 		 // }, {async: false})
+		})
     }
 	
     //多值属性下的属性初始化方法
@@ -2683,9 +2695,10 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
         $CPF.showLoading();
 		Ajax.ajax('admin/dictionary/recordRelationType/getRelation', {
 			leftRecordType: entityId,
+			relationType: 6
 		}, function(data) {			
 			var relationList = data.relationList;
-			if (data.length == 0) {
+			if (relationList.length == 0) {
                 Dialog.notice("请在模型中添加<对一>的关系", "warning");
                 $CPF.closeLoading();    
                 return;

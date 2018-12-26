@@ -166,7 +166,7 @@ public class BasicItemNodeController {
 				 
 			 }
 			 //判断当前节点ops, 修改后的权限大于等于孩子，要想权限修改为小于孩子， 应该先把孩子的权限修改小
-			 List<BasicItemNodeCriteria> childNode =null;
+			/* List<BasicItemNodeCriteria> childNode =null;
 			 if (basicItemNode.getId() != null) {
 				 childNode = basicItemNodeService.getChildNode(basicItemNode.getId());
 			 }
@@ -194,7 +194,7 @@ public class BasicItemNodeController {
 				 if (inline.getState() !="400") {
 					 inline.setState("200");
 				 }
-			 }
+			 }*/
 			 
 			 
 			 
