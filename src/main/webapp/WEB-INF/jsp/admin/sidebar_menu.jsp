@@ -32,6 +32,13 @@
             </a>
         </li>
     </ul>
+     <ul class="submenu">
+        <li>
+            <a class="tab" href="admin/stat/state/list" target="state_list" title="建立关联">
+                <span class="menu-text">统计实体</span>
+            </a>
+        </li>
+    </ul>
 </li>
  <li>
     <a href="#" class="menu-dropdown">
@@ -47,6 +54,7 @@
         </li>
     </ul>
 </li>
+
 <li>
     <a href="#" class="menu-dropdown">
         <i class="menu-icon fa fa-bookmark"></i>
