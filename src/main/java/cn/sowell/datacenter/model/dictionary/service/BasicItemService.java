@@ -69,7 +69,7 @@ public interface BasicItemService {
 	 * @param cascadedict   生成实体，选择一个字典标签
 	 * @throws Exception
 	 */
-	void saveOrUpdate(BasicItem obj, String flag, String comm, Integer cascadedict)  throws Exception ;
+	 BasicItem saveOrUpdate(BasicItem obj, String flag, String comm, Integer cascadedict)  throws Exception ;
 
 	/**
 	 * 根据实体code， 分组code， 获取分组下的属性
@@ -178,4 +178,11 @@ public interface BasicItemService {
 	List getAllEntity();
 
 	void createLablea(String code);
+	
+	/**
+	 * 根据实体id， 获取统计实体下， 唯一的一个分组
+	 * @param parrentCode
+	 * @return
+	 */
+	BasicItem getGroup(String parrentCode);
 }

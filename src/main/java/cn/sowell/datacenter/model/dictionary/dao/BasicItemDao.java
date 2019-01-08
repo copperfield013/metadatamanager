@@ -249,4 +249,11 @@ public interface BasicItemDao {
 	 * @return
 	 */
 	public List queryCreLable();
+	
+	/**
+	 * 根据实体id， 获取统计实体下， 唯一的一个分组
+	 * @param parrentCode
+	 * @return
+	 */
+	BasicItem getGroup(String parrentCode);
 }

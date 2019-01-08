@@ -57,7 +57,6 @@ import springfox.documentation.annotations.ApiIgnore;
 @RequestMapping(AdminConstants.URI_DICTIONARY + "/basicItem")
 public class BasicItemController {
 	
-	
 	Logger logger = Logger.getLogger(BasicItemController.class);
 	@org.springframework.web.bind.annotation.InitBinder
 	public void InitBinder(ServletRequestDataBinder binder) {
@@ -172,71 +171,8 @@ public class BasicItemController {
     @RequestMapping(value = "/do_add",
         method = RequestMethod.POST)
 	public ResponseEntity doAdd(@ApiParam(name="BasicItem", value="传入json格式", required=true)BasicItem basicItem, OneLevelItem oneLevelItem, Integer cascadedict){
-			String dType = oneLevelItem.getDataType();
-			String comm = null;
-			
-			if ("5".equals(dType)) {
-				oneLevelItem.setDictParentId(0);
-			} else if ("1".equals(dType)) {
-				oneLevelItem.setDictParentId(0);
-			}else if ("15".equals(dType)) {
-				oneLevelItem.setDictParentId(0);
-			}else if ("6".equals(dType)) {
-				oneLevelItem.setDictParentId(0);
-			}else if ("7".equals(dType)) {
-				oneLevelItem.setDictParentId(0);
-			}else if ("10".equals(dType)) {
-				oneLevelItem.setNeedHistory(1);
-			}else if ("9".equals(dType)) {
-				oneLevelItem.setNeedHistory(1);
-				oneLevelItem.setDictParentId(0);
-			}else if ("16".equals(dType)) {
-				oneLevelItem.setNeedHistory(1);
-			} else if ("14".equals(dType)) {
-			} else if ("8".equals(dType)) {
-				oneLevelItem.setDictParentId(0);
-			} else if ("11".equals(dType)) {
-				oneLevelItem.setDictParentId(0);
-			} else if ("21".equals(dType)) {
-				oneLevelItem.setDictParentId(0);
-			} 
-			oneLevelItem.setDataType(String.valueOf(dType));
-			//记录类型
-			if (String.valueOf(ValueType.RECORD.getIndex()).equals(oneLevelItem.getDataType())) {
-				oneLevelItem.setDictParentId(0);
-				basicItem.setParent("");
-			} else if (String.valueOf(ValueType.GROUP.getIndex()).equals(oneLevelItem.getDataType())) {
-				oneLevelItem.setDictParentId(0);
-			} else if (String.valueOf(ValueType.REPEAT.getIndex()).equals(oneLevelItem.getDataType())) {
-				
-			} else {
-				// 到这儿来是普通属性  和多值属性下的普通属性
-				//它们的区别是父亲不同， 所以先求父亲    默认前端传来的都是父亲的code， 
-				BasicItem bItemPanrent = basicItemService.getBasicItem(basicItem.getParent());
-				
-				//多值属性下的普通属性
-				if (String.valueOf(ValueType.REPEAT.getIndex()).equals(bItemPanrent.getOneLevelItem().getDataType())) {
-					basicItem.setParent(bItemPanrent.getParent() + "_" +bItemPanrent.getCode());
-					oneLevelItem.setTableName(bItemPanrent.getOneLevelItem().getTableName());
-					oneLevelItem.setGroupName(bItemPanrent.getCode());
-				} else {//普通属性
-					oneLevelItem.setTableName("t_" + basicItem.getParent() + "_" + oneLevelItem.getGroupName());
-					comm = "comm";
-				}
-			}
-			basicItem.setUsingState(0);
-			
-			String flag = "";
-			if (basicItem.getCode()== null ||basicItem.getCode() == "" || basicItem.getCode().length()<1) {
-				flag = "add";
-			}
-			
-			basicItem.setOneLevelItem(oneLevelItem);
-			
-			//for(int i=0; i<10; i++) {
                 try {
-                	basicItemService.saveOrUpdate(basicItem, flag, comm, cascadedict);
-        			
+                	new BasicItemContext().saveBasicItem(basicItemService, basicItem, oneLevelItem, cascadedict);
         			if (String.valueOf(ValueType.RECORD.getIndex()).equals(basicItem.getOneLevelItem().getDataType())) {
         				return new ResponseEntity<AjaxPageResponse>(AjaxPageResponse.CLOSE_AND_REFRESH_PAGE("操作成功", "basicItem_list"), HttpStatus.OK);
         			} else {
@@ -246,21 +182,16 @@ public class BasicItemController {
         				return new ResponseEntity(basicItem, HttpStatus.OK);
         			}
                 } catch (DataIntegrityViolationException e) {
-                   /* if (i <9) {
-                        continue;
-                    } else {*/
                          return new ResponseEntity<AjaxPageResponse>(AjaxPageResponse.FAILD("主键重复或者名称重复, 请重新添加"), HttpStatus.OK);
-                  //  }
                 } catch (Exception e) {
                 	if (e.getMessage().contains("ids")) {
                 		return new ResponseEntity<AjaxPageResponse>(AjaxPageResponse.FAILD("t_sc_basic_item_fix：没有可用数据"), HttpStatus.OK);
                    	}
                     return new ResponseEntity<AjaxPageResponse>(AjaxPageResponse.FAILD("操作失败"), HttpStatus.OK);
                 }           
-                
-          //  }
-			//return null;
 	}
+	
+	
 	
 	@ResponseBody
 	@ApiOperation(value = "get节点信息", nickname = "getOne",response = BasicItem.class, notes = "获取单个节点信息", tags={ "entityManager", })
@@ -495,7 +426,6 @@ public class BasicItemController {
 				JSONObject json = new JSONObject(map);
 				return json.toString();
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			return null;
@@ -767,5 +697,28 @@ public class BasicItemController {
 				return jobj.toString();
 			}
 		}
+	    
+	    
+	    //根据实体code， 获取实体下所有的普通属性
+	    @ResponseBody
+		@RequestMapping("/getComm")
+		public String getComm(String entityId){
+			Map<String, Object> map = new HashMap<String, Object>();
+			JSONObject jobj = new JSONObject(map);
+			try {
+				List commList = basicItemService.getComm(entityId);
+				map.put("code", 200);
+				map.put("msg", "操作成功");
+				map.put("commList", commList);
+				return jobj.toString();
+			} catch (Exception e) {
+				logger.error("操作失败", e);
+				map.put("code", 400);
+				map.put("msg", "操作失败");
+				return jobj.toString();
+			}
+		}
+	    
+	    
 	    
 }

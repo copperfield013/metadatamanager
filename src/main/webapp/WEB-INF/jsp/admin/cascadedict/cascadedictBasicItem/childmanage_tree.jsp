@@ -2,7 +2,7 @@
 <%@ include file="/WEB-INF/jsp/common/base_empty.jsp"%>
 <link rel="stylesheet" href="media/admin/cascadedict/cascadedictBasicItem/css/treeview.css">
 <script src="media/admin/plugins/beyond/js/select2/select2.js"></script>
-<script src="media/admin/node/basicItemNode/js/Sortable.js"></script>
+<script src="media/admin/plugins/sortable/js/Sortable.js"></script>
 <script src="media/admin/cascadedict/cascadedictBasicItem/js/tree_view.js"></script>
 
 <div id="tree_view_panel">

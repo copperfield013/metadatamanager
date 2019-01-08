@@ -595,7 +595,7 @@ public class BasicItemDaoImpl implements BasicItemDao {
 	public List getAllEntity() {
 		String sql = "SELECT a.c_code, a.c_cn_name FROM t_sc_basic_item a "
 				+ "LEFT JOIN t_sc_onelevel_item b "
-				+ "ON a.c_code=b.c_code WHERE b.c_data_type=10";
+				+ "ON a.c_code=b.c_code WHERE b.c_data_type=10 and a.c_using_state=1";
 		return sFactory.getCurrentSession().createSQLQuery(sql).list();
 	}
 
@@ -653,6 +653,14 @@ public class BasicItemDaoImpl implements BasicItemDao {
 		.append(" WHERE	b.table_name IS NULL");
 		
 		return sFactory.getCurrentSession().createSQLQuery(sb.toString()).list();
+	}
+
+	@Override
+	public BasicItem getGroup(String parrentCode) {
+		String sql = " SELECT a.* FROM t_sc_basic_item a" + 
+				" inner join t_sc_onelevel_item b on a.c_code=b.c_code" + 
+				" WHERE c_parent=:parrentCode AND b.c_data_type='16'";
+		return (BasicItem) sFactory.getCurrentSession().createSQLQuery(sql).addEntity(BasicItem.class).setParameter("parrentCode", parrentCode).uniqueResult();
 	}
 
 

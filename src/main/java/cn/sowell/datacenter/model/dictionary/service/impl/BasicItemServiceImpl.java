@@ -307,7 +307,7 @@ public class BasicItemServiceImpl implements BasicItemService {
 	}
 
 	@Override
-	public void saveOrUpdate(BasicItem obj, String flag, String comm, Integer cascadedict) throws Exception {
+	public BasicItem saveOrUpdate(BasicItem obj, String flag, String comm, Integer cascadedict) throws Exception {
 		//生成code 规则：实体code IBTE0001 开始  其他code规则 IBT00001开始
 		if ("add".equals(flag)) {
 			String dataType = obj.getOneLevelItem().getDataType();
@@ -459,6 +459,7 @@ public class BasicItemServiceImpl implements BasicItemService {
 			basicItemDao.update(obj);
 		}	
 		
+		return obj;
 	}
 
 	/**
@@ -1027,6 +1028,11 @@ public class BasicItemServiceImpl implements BasicItemService {
 	public List getAllEntity() {
 		
 		return basicItemDao.getAllEntity();
+	}
+
+	@Override
+	public BasicItem getGroup(String parrentCode) {
+		return basicItemDao.getGroup(parrentCode);
 	}
 
 }

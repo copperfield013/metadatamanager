@@ -29,6 +29,8 @@ import cn.sowell.datacenter.admin.controller.AdminConstants;
 import cn.sowell.datacenter.model.node.pojo.BinFilter;
 import cn.sowell.datacenter.model.node.pojo.BinFilterBody;
 import cn.sowell.datacenter.model.node.service.BinFilterBodyService;
+import cn.sowell.datacenter.model.stat.pojo.StatFilter;
+import cn.sowell.datacenter.model.stat.service.StatFilterService;
 import cn.sowell.datacenter.utils.NodeTypeMappingOps;
 
 @Controller
@@ -47,10 +49,12 @@ public class BinFilterBodyController {
 	@Resource
 	BinFilterBodyService binFilterBodyService;
 	
+	@Resource
+	StatFilterService statFilterService;
 	
 	
 	/**
-	 * 根据节点id获取节点的filters
+	 * 根据配置文件节点id获取节点的filters
 	 * @param id
 	 * @return
 	 */
@@ -80,6 +84,37 @@ public class BinFilterBodyController {
 	}
 	
 	
+	/**
+	 * 根据统计实体节点id获取节点的filters
+	 * @param id
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping("/getStatFilters")
+	public String getFilters(String bieCode){
+		Map<String, Object> map = new HashMap<String, Object>();
+		JSONObject jobj = new JSONObject(map);
+		try {
+			StatFilter statFilter = statFilterService.getOneByBieCode(bieCode);
+			BinFilterBody binFilterBody = null;
+			if (statFilter != null) {
+				binFilterBody = binFilterBodyService.getBinFilterBody(statFilter.getFiltersId());
+			}
+			
+			map.put("statFilter", statFilter);
+			map.put("binFilterBody", binFilterBody);
+			map.put("code", 200);
+			map.put("msg", "操作成功！");
+			return jobj.toJSONString();
+		}catch (Exception e) {
+			logger.debug(e);
+			map.put("code", 400);
+			map.put("msg", "操作失败！");
+			return jobj.toJSONString();
+		}
+	}
+	
+	
 	
 	/**
 	 * 
@@ -92,7 +127,7 @@ public class BinFilterBodyController {
 	 */
 	@ResponseBody
 	@RequestMapping("/saveOrUpdate")
-	public String saveOrUpdate(BinFilterBody criteria, boolean isFilters){
+	public String saveOrUpdate(BinFilterBody criteria, boolean isFilters, boolean isStat, String bieCode){
 		Map<String, Object> map = new HashMap<String, Object>();
 		JSONObject jobj = new JSONObject(map);
 		try {
@@ -111,9 +146,20 @@ public class BinFilterBodyController {
 				binFilterBodyService.insert(criteria);
 				
 				if (isFilters) {//是filters
-					binFilter = new BinFilter(criteria.getId(), parentId);
-					binFilterBodyService.insert(binFilter);
+					if (isStat) {
+						//这里添加统计实体的权限
+						StatFilter sf = new StatFilter();
+						sf.setFiltersId(criteria.getId());
+						sf.setBieCode(bieCode);
+						statFilterService.insert(sf);
+					} else {
+						binFilter = new BinFilter(criteria.getId(), parentId);
+						binFilterBodyService.insert(binFilter);
+					}
 				} 
+				
+				
+				
 			} else { //更新
 				binFilterBodyService.update(criteria);
 			}

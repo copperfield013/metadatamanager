@@ -47,4 +47,5 @@ public interface BinFilterBodyService {
 	
 	
 	void copyNode(Integer nodeId) throws Exception;
+
 }
