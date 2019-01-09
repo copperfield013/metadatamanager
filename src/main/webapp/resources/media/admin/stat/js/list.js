@@ -2590,25 +2590,39 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
         	if (jsonData.code == 200) {
         		var statDfList = jsonData.statDfList;
         		//移除指定孩子之外的
-        		$(".properOperate").find(".comm_list").children(".newadd").remove();
+        		$(".properOperate").find(".comm_list").children().not(".add_comm").remove();
         		
-        		var dimensionStr = "";
-    			var factStr = "";
         		for (var key in statDfList) {
+        			
         			var statDf = statDfList[key];
         			//按照类型构建维度和事实
-        			if (statDf[1] == 1) {
-        				dimensionStr = "<div statDfId='"+statDf[0]+"'  title=\"code:"+statDf[7]+", 中文名称:"+statDf[3]+",  英文名称:"+statDf[4]+",数据类型："+statDf[8]+", 数据长度："+statDf[9]+", 字典序："+ statDf[12] +"  \" class=\"entity_attr newadd\">" + statDf[3] 
-        				dimensionStr = dimensionStr +"<ul entityid='"+statDf[7]+"' parentid='"+statDf[5]+"' status='"+statDf[6]+"' class=\"entity_ul\" statDfId='"+statDf[0]+"'>" + "<li><a href=\"javascript:void(0)\" class=\"edit_common\"><i class=\"icon edit-entity\"></i>编辑属性</a></li>"+ "<li><a href=\"javascript:void(0)\" class=\"common_change_status\"><i class=\"icon stale-entity\"></i>过期实体</a></li>"
-        				dimensionStr = dimensionStr+"<li><a href=\"javascript:void(0)\" patentId='' class=\"delete_attr\"><i class=\"icon edit-entity\"></i>删除属性</a></li>" 
-        				dimensionStr = dimensionStr + "</ul><i class=\"icon status\"></i>" +"</div>";
-        				$(".common_proper").find(".comm_list").children(".add_comm").before(dimensionStr);
+        			var temporary  = "";
+        			
+        			var usingStat = "newadd";
+        			if (statDf[6] == 0) {
+        				usingStat = "newadd";
+        			} else if (statDf[6] == 2) {
+        				usingStat = "stale";
+        			}else if (statDf[6] == -1) {
+        				usingStat = "inerror";
+        			}else if (statDf[6] == 1) {
+        				usingStat = "inuse";
+        			}
+        			
+        			var cnNameStr = statDf[3];
+                	if (statDf[8] == '17') {
+                		cnNameStr = "<font color='red'>CM </font>" + cnNameStr;
+                	}
+                	
+                	temporary = "<div class=\"entity_attr "+usingStat+"\" statDfId='"+statDf[0]+"'  title=\"code:"+statDf[7]+", 中文名称:"+statDf[3]+",  英文名称:"+statDf[4]+",数据类型："+statDf[8]+", 数据长度："+statDf[9]+", 字典序："+ statDf[12] +"  \" >" + cnNameStr
+                	temporary = temporary +"<ul entityid='"+statDf[7]+"' parentid='"+statDf[5]+"' status='"+statDf[6]+"' class=\"entity_ul\" statDfId='"+statDf[0]+"'>" + "<li><a href=\"javascript:void(0)\" class=\"edit_common\"><i class=\"icon edit-entity\"></i>编辑属性</a></li>"+ "<li><a href=\"javascript:void(0)\" class=\"common_change_status\"><i class=\"icon stale-entity\"></i>过期实体</a></li>"
+                	temporary = temporary+"<li><a href=\"javascript:void(0)\" patentId='' class=\"delete_attr\"><i class=\"icon edit-entity\"></i>删除属性</a></li>" 
+                	temporary = temporary + "</ul><i class=\"icon status\"></i>" +"</div>";
+                	
+                	if (statDf[1] == 1) {
+                			$(".common_proper").find(".comm_list").children(".add_comm").before(temporary);
         			} else {
-        				factStr = "<div statDfId='"+statDf[0]+"' title=\"code:"+statDf[7]+", 中文名称:"+statDf[3]+",  英文名称:"+statDf[4]+",数据类型："+statDf[8]+", 数据长度："+statDf[9]+", 字典序："+ statDf[12] +"  \" class=\"entity_attr newadd\">" + statDf[3] 
-        				factStr = factStr +"<ul entityid='"+statDf[7]+"' parentid='"+statDf[5]+"' status='"+statDf[6]+"' class=\"entity_ul\" statDfId='"+statDf[0]+"'>" + "<li><a href=\"javascript:void(0)\" class=\"edit_common\"><i class=\"icon edit-entity\"></i>编辑属性</a></li>"+ "<li><a href=\"javascript:void(0)\" class=\"common_change_status\"><i class=\"icon stale-entity\"></i>过期实体</a></li>"
-        				factStr = factStr+"<li><a href=\"javascript:void(0)\" patentId='' class=\"delete_attr\"><i class=\"icon edit-entity\"></i>删除属性</a></li>" 
-        				factStr = factStr + "</ul><i class=\"icon status\"></i>" +"</div>";
-        				$(".more_proper").find(".comm_list").children(".add_comm").before(factStr);
+        					$(".more_proper").find(".comm_list").children(".add_comm").before(temporary);
         			}
         		}
         	} else {
