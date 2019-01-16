@@ -45,6 +45,7 @@ import cn.sowell.datacenter.model.dictionary.pojo.TowlevelattrMultiattrMapping;
 import cn.sowell.datacenter.model.dictionary.service.BasicItemService;
 import cn.sowell.datacenter.model.dictionary.service.TowlevelattrMultiattrMappingService;
 import cn.sowell.datacenter.model.dictionary.service.TowlevelattrService;
+import cn.sowell.datacenter.utils.Message;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -283,7 +284,7 @@ public class BasicItemController {
 	}
 	
 	//删除实体， 属性
-	@ResponseBody
+	/*@ResponseBody
 	@ApiOperation(value = "删除", nickname = "delete", notes = "删除节点", response = AjaxPageResponse.class, tags={ "entityManager", })
 	@ApiResponses(value = { 
     @ApiResponse(code = 200, message = "操作成功", response = AjaxPageResponse.class),
@@ -336,7 +337,37 @@ public class BasicItemController {
 			} catch (Exception e) {
 				 return new ResponseEntity<AjaxPageResponse>(AjaxPageResponse.FAILD("删除失败"), HttpStatus.INTERNAL_SERVER_ERROR);
 			}
-		}
+		}*/
+	
+	
+	//删除实体， 属性
+		@ResponseBody
+		@RequestMapping(value="/delete", method=RequestMethod.POST)
+			public AjaxPageResponse delete(String id){
+				try {
+					AjaxPageResponse response = new AjaxPageResponse();
+						
+						BasicItem basicItem = basicItemService.getBasicItem(id);
+						
+						//检查数据
+						Message message = basicItemService.check(basicItem.getCode());
+						 
+						if (!message.getNoticeType().equals(NoticeType.SUC)) {
+							return AjaxPageResponse.FAILD(message.getMessage());
+						}
+						basicItemService.delete(basicItem);
+						if (String.valueOf(ValueType.RECORD.getIndex()).equals(basicItem.getOneLevelItem().getDataType())) {
+							return AjaxPageResponse.CLOSE_AND_REFRESH_PAGE("删除成功", "basicItem_list");
+						} else {
+							response.setNotice("删除成功");
+							response.setNoticeType(NoticeType.SUC);
+							return response;
+						}
+				} catch (Exception e) {
+					 return AjaxPageResponse.FAILD("删除失败");
+				}
+			}
+	
 	
 	@ResponseBody
 	@ApiOperation(value = "getDataByPid", nickname = "getDataByPid", notes = "点击添加二级属性的时候， 获取对应的多值属性中的普通属性和枚举属性", response = InlineResponse2005.class, tags={ "entityManager", })

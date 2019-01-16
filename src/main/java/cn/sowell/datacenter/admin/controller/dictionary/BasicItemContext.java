@@ -1,7 +1,5 @@
 package cn.sowell.datacenter.admin.controller.dictionary;
 
-import javax.annotation.Resource;
-
 import com.abc.util.ValueType;
 
 import cn.sowell.datacenter.model.dictionary.pojo.BasicItem;

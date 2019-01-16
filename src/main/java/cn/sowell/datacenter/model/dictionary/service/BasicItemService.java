@@ -4,6 +4,7 @@ import java.math.BigInteger;
 import java.util.List;
 import java.util.Map;
 
+import cn.sowell.copframe.dto.ajax.AjaxPageResponse;
 import cn.sowell.datacenter.model.cascadedict.pojo.CascadedictBasicItem;
 import cn.sowell.datacenter.model.dictionary.criteria.BasicItemCriteria;
 import cn.sowell.datacenter.model.dictionary.pojo.BasicItem;
@@ -11,6 +12,7 @@ import cn.sowell.datacenter.model.dictionary.pojo.CascadeAttr;
 import cn.sowell.datacenter.model.dictionary.pojo.OneLevelItem;
 import cn.sowell.datacenter.model.dictionary.pojo.Towlevelattr;
 import cn.sowell.datacenter.model.node.pojo.BasicItemNode;
+import cn.sowell.datacenter.utils.Message;
 
 public interface BasicItemService {
 
@@ -185,4 +187,14 @@ public interface BasicItemService {
 	 * @return
 	 */
 	BasicItem getGroup(String parrentCode);
+	
+	
+	/**
+	 * 操作实体前的检查操作
+	 * @param code 
+	 * @return
+	 * @throws Exception
+	 */
+	Message check(String code) throws Exception;
+	
 }

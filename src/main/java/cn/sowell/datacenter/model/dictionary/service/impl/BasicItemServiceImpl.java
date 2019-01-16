@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import com.abc.util.AttributeParter;
 import com.abc.util.ValueType;
 
+import cn.sowell.copframe.dto.ajax.NoticeType;
 import cn.sowell.datacenter.model.cascadedict.pojo.CascadedictBasicItem;
 import cn.sowell.datacenter.model.cascadedict.service.CascadedictBasicItemService;
 import cn.sowell.datacenter.model.dictionary.criteria.BasicItemCriteria;
@@ -31,8 +32,7 @@ import cn.sowell.datacenter.model.dictionary.service.BasicItemService;
 import cn.sowell.datacenter.model.dictionary.service.RecordRelationTypeService;
 import cn.sowell.datacenter.model.dictionary.service.TowlevelattrMultiattrMappingService;
 import cn.sowell.datacenter.model.dictionary.service.TowlevelattrService;
-import cn.sowell.datacenter.model.node.pojo.BasicItemNode;
-import cn.sowell.datacenter.model.node.pojo.BasicItemNodeGenerator;
+import cn.sowell.datacenter.utils.Message;
 
 @Service
 public class BasicItemServiceImpl implements BasicItemService {
@@ -1035,4 +1035,43 @@ public class BasicItemServiceImpl implements BasicItemService {
 		return basicItemDao.getGroup(parrentCode);
 	}
 
+	@Override
+	public Message check(String code) throws Exception {
+		
+			Message message = new Message();
+			message.setNoticeType(NoticeType.SUC);
+			message.setMessage("检查数据成功");
+			
+			BasicItem bt = this.getBasicItem(code);
+			
+			if (bt!=null && bt.getParent() != null && bt.getParent().contains("_")) {//包含下划线就说明它父亲是重复类型
+				//判断重复类型有没有二级属性
+				TowlevelattrMultiattrMapping oneByRelaMulAttr = tmms.getOneByRelaMulAttr(bt.getOneLevelItem().getGroupName());
+				if (oneByRelaMulAttr != null) {
+					if (code.equals(oneByRelaMulAttr.getDictionaryAttr()) || code.equals(oneByRelaMulAttr.getValueAttr())) {
+						message.setNoticeType(NoticeType.WARNING);
+						message.setMessage("二级属性正在使用, 请先删除二级属性");
+						return message;
+					}
+				}
+				
+			}
+			
+			List<BasicItem> btList = null;
+			if (String.valueOf(ValueType.GROUP.getIndex()).equals(bt.getOneLevelItem().getDataType())) {
+				btList = this.getAttrByPidGroupName(bt.getParent(), bt.getCode(), "");
+			} else if (String.valueOf(ValueType.REPEAT.getIndex()).equals(bt.getOneLevelItem().getDataType())) {
+				btList = this.getDataByPId(bt.getParent() + "_" + bt.getCode(), "");
+			} else {
+				btList = this.getDataByPId(code, "");
+			}
+			 
+			if (!btList.isEmpty()) {
+				message.setMessage("请先删除孩子");
+				message.setNoticeType(NoticeType.WARNING);
+				return message;
+			} 
+		
+		return message;
+	}
 }

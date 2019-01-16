@@ -29,6 +29,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
 import cn.sowell.copframe.dto.ajax.AjaxPageResponse;
+import cn.sowell.copframe.dto.ajax.NoticeType;
 import cn.sowell.copframe.dto.page.PageInfo;
 import cn.sowell.datacenter.admin.controller.AdminConstants;
 import cn.sowell.datacenter.admin.controller.dictionary.BasicItemContext;
@@ -42,6 +43,7 @@ import cn.sowell.datacenter.model.dictionary.pojo.OneLevelItem;
 import cn.sowell.datacenter.model.dictionary.service.BasicItemService;
 import cn.sowell.datacenter.model.stat.pojo.StatE;
 import cn.sowell.datacenter.model.stat.service.StatEService;
+import cn.sowell.datacenter.utils.Message;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
@@ -145,6 +147,12 @@ public class StatEController {
 	@RequestMapping("/do_delete")
 	public AjaxPageResponse doDelte(String bieCode, String entityId){
 		try {
+			
+			//检查数据
+			Message message = basicItemService.check(entityId);
+			if (!message.getNoticeType().equals(NoticeType.SUC)) {
+				return AjaxPageResponse.FAILD(message.getMessage());
+			}
 			statEService.delete(bieCode, entityId);
 			return AjaxPageResponse.CLOSE_AND_REFRESH_PAGE("删除成功", "state_list");
 		}catch (Exception e) {
