@@ -2718,10 +2718,10 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
                 } else if(commonArr[i].usingState == '1'){
                 	str = str + "<i class=\"icon status inuse\"></div>";
                 }
-            
                 
                 $(".common_proper").append(str);
             }
+            
             var moreArr = jsonData.moreProper; //多值属性
             for (var i = 0; i < moreArr.length; i++) {
                 var str = "<div data-code-id=\""+moreArr[i].code+"\" class=\"new_add clear-fix\">" + 

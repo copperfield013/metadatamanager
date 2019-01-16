@@ -261,8 +261,6 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 			 var parent = $(".collapse-header[data-id='"+nodeId+"']", $page).next(".collapse-content")[0];	
 			 $(parent).removeClass("need-ajax");	
 			 for(var i=0; i<data.length; i++) {
-				 
-				 
 				 var subdomain = data[i].subdomain;
 				 var dataType = data[i].dataType;
 				 var id = data[i].id;

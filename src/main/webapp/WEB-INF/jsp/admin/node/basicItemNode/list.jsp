@@ -4,7 +4,7 @@
 	<nav>
 		<form class="form-inline" action="admin/node/basicItemNode/list">
 			<div class="form-group">
-				<label for="name">name</label>
+				<label for="name">配置文件名称</label>
 				<input type="text" class="form-control" name="name" value="${criteria.name }" />
 				<%-- <label for="name">abcattr</label>
 				<input type="text" class="form-control" name="abcattr" value="${criteria.abcattr }" /> --%>

@@ -7,7 +7,6 @@
 <!-- 引入树结构 start -->
 <link rel="stylesheet" href="media/admin/stat/statexpression/css/treeview.css">
 <script src="media/admin/plugins/sortable/js/Sortable.js"></script>
-<!-- <script src="media/admin/stat/statexpression/js/tree_view.js"></script> -->
 <!-- 引入树结构 end -->
 <script src="media/admin/stat/js/list.js"></script>
 <div id="statEntity-wrap">
