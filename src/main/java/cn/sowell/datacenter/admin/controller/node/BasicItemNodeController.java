@@ -203,7 +203,7 @@ public class BasicItemNodeController {
 				 inline.setMsg("关系下只能有一个标签和一个实体");
 			 } else if (check) {//重复了
 					inline.setState("400");
-					inline.setMsg("属性名不能相同");
+					inline.setMsg("属性名不能相同或该多值属性已存在");
 			} else if (inline.getState() == "400") {
 				
 			} else {
