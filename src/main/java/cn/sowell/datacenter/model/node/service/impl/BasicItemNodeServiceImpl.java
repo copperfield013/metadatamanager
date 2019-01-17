@@ -188,8 +188,15 @@ public class BasicItemNodeServiceImpl implements BasicItemNodeService {
 			BasicItemNode btItemNode = basicItemNodeDao.get(BasicItemNode.class, basicItemNode.getId());
 			nameList.remove(btItemNode.getName());
 		}
+		boolean contains = nameList.contains(basicItemNode.getName());
 		
-		return nameList.contains(basicItemNode.getName());
+		List<BasicItemNode> childByParent = basicItemNodeDao.getChildByParent(basicItemNode.getParentId(), basicItemNode.getBasicItem().getCode());
+		
+		if (!childByParent.isEmpty()) {
+			contains = true;
+		}
+		
+		return contains;
 	}
 
 	@Override

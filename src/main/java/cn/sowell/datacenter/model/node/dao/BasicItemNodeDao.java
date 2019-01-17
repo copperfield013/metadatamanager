@@ -61,6 +61,14 @@ public interface BasicItemNodeDao {
 	 */
 	public List<BasicItemNode> getChildByParent(Integer parentId);
 	
+	/**
+	 * 
+	 * @param parentId   父id
+	 * @param abcattrCode  实体的多指code， 
+	 * @return  获取已被选择的多值属性
+	 */
+	public List<BasicItemNode> getChildByParent(Integer parentId, String abcattrCode);
+	
 	public void executeSql(String sql);
 
 	/**

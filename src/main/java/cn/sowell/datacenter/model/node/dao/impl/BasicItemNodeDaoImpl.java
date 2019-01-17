@@ -123,6 +123,19 @@ public class BasicItemNodeDaoImpl implements BasicItemNodeDao {
 				.setParameter("parentId", parentId)
 				.list();
 	}
+	
+	@Override
+	public List<BasicItemNode> getChildByParent(Integer parentId, String abcattrCode) {
+		StringBuffer sb = new StringBuffer(100);
+		sb.append(" SELECT * FROM `t_sc_basic_item_node` ")
+		.append(" WHERE abcattr_code=:abcattrCode AND parent_id=:parentId");
+		
+		return sFactory.getCurrentSession().createSQLQuery(sb.toString())
+				.addEntity(BasicItemNode.class)
+				.setParameter("parentId", parentId)
+				.setParameter("abcattrCode", abcattrCode)
+				.list();
+	}
 
 	@Override
 	public void executeSql(String sql) {
