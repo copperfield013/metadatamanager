@@ -59,11 +59,7 @@ public class BasicItem {
 	 
 	 @OneToOne(fetch = FetchType.LAZY,cascade = {CascadeType.ALL})
 	 @JoinColumn(name = "c_code")
-	 protected OneLevelItem oneLevelItem = new OneLevelItem();
-	 
-	/* @OneToOne(cascade = {CascadeType.ALL})
-	 @JoinColumn(name = "c_code")
-	 private Towlevelattr towlevelattr = new Towlevelattr();*/
+	 protected OneLevelItem oneLevelItem = null;
 	 
 	 @Transient  
 	 List<BasicItem> childList = null;

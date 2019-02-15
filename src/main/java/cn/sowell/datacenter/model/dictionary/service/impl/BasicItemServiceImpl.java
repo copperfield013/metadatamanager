@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
+import java.util.stream.Stream;
 
 import javax.annotation.Resource;
 
@@ -18,6 +20,10 @@ import com.abc.util.AttributeParter;
 import com.abc.util.ValueType;
 
 import cn.sowell.copframe.dto.ajax.NoticeType;
+import cn.sowell.datacenter.admin.controller.dictionary.strategy.BasicItemDelContext;
+import cn.sowell.datacenter.admin.controller.dictionary.strategy.BytesDelStrategy;
+import cn.sowell.datacenter.admin.controller.dictionary.strategy.RecordDelStrategy;
+import cn.sowell.datacenter.admin.controller.dictionary.strategy.RepeatDelStrategy;
 import cn.sowell.datacenter.model.cascadedict.pojo.CascadedictBasicItem;
 import cn.sowell.datacenter.model.cascadedict.service.CascadedictBasicItemService;
 import cn.sowell.datacenter.model.dictionary.criteria.BasicItemCriteria;
@@ -65,7 +71,10 @@ public class BasicItemServiceImpl implements BasicItemService {
 
 	@Override
 	public BasicItem getBasicItem(String id) {
-		return basicItemDao.get(BasicItem.class, id);
+		BasicItem basicItem = basicItemDao.get(BasicItem.class, id);
+		OneLevelItem oneLevelItem = basicItemDao.get(OneLevelItem.class, id);
+		basicItem.setOneLevelItem(oneLevelItem);
+		return basicItem;
 	}
 	
 	public Map<String, List> getAttrByPid(String parentId) {
@@ -74,12 +83,14 @@ public class BasicItemServiceImpl implements BasicItemService {
 		//按分组存放普通属性 
 		List attrList = new ArrayList(); 
 		//根据parentId获取下面所有的孩子   包括普通属性和多值属性
-		List<BasicItem> chilAll = basicItemDao.getDataByPId(parentId, "");
+		List<BasicItem> chilAll = basicItemDao.getDataByPId(parentId, ValueType.REPEAT.getIndex()+"");
+		List<BasicItem> chilAll2 = basicItemDao.getDataByPId(parentId, ValueType.GROUP.getIndex() + "");
+		chilAll.addAll(chilAll2);
 		
-		Iterator<BasicItem> iterator = chilAll.iterator();
-		while (iterator.hasNext()) {
-			BasicItem bt = iterator.next();
-			
+		//Iterator<BasicItem> iterator = chilAll.iterator();
+		//while (iterator.hasNext()) {
+		for (int i=0; i<chilAll.size(); i++) {
+			BasicItem bt = chilAll.get(i);
 			OneLevelItem oneLevelItem = bt.getOneLevelItem();
 			if (oneLevelItem != null) {
 				if (String.valueOf(ValueType.REPEAT.getIndex()).equals(oneLevelItem.getDataType())) {
@@ -93,7 +104,7 @@ public class BasicItemServiceImpl implements BasicItemService {
 					}
 					
 					moreList.add(bt);
-					List<BasicItem> childList = basicItemDao.getDataByPId(bt.getParent() + "_"+ bt.getCode(), "");
+					List<BasicItem> childList = basicItemDao.getDataByPId(bt.getParent() + "_"+ bt.getCode(), null);
 					bt.setChildList(childList);
 				} else if (String.valueOf(ValueType.GROUP.getIndex()).equals(oneLevelItem.getDataType())) {//分组数据
 					attrList.add(bt);
@@ -121,48 +132,8 @@ public class BasicItemServiceImpl implements BasicItemService {
 
 	@Override
 	public void delete(BasicItem basicItem) throws Exception {
-		//这里删除重复类型伴生属性和枚举类型多选伴生属性
-		if (String.valueOf(ValueType.REPEAT.getIndex()).equals(basicItem.getOneLevelItem().getDataType()) || String.valueOf(ValueType.ENUMTYPE_MULTI.getIndex()).equals(basicItem.getOneLevelItem().getDataType())) {
-			BasicItem btp = basicItemDao.get(BasicItem.class,  AttributeParter.getLeafKeyName(basicItem.getCode()));
-			BasicItem btEd = basicItemDao.get(BasicItem.class,  AttributeParter.getLeafEditTimeName(basicItem.getCode()));
-			
-			if (btp != null) {
-				basicItemDao.delete(btp);
-			} 
-			if (btEd != null) {
-				basicItemDao.delete(btEd);
-			}
-		} else if (String.valueOf(ValueType.BYTES.getIndex()).equals(basicItem.getOneLevelItem().getDataType())) {//删除文件型伴生类
-            BasicItem btKey =basicItemDao.get(BasicItem.class, AttributeParter.getFileKeyName(basicItem.getCode()));
-            BasicItem btSuffix = basicItemDao.get(BasicItem.class, AttributeParter.getFileSuffixName(basicItem.getCode()));
-            BasicItem btKBSize = basicItemDao.get(BasicItem.class, AttributeParter.getFileKBSizeName(basicItem.getCode()));
-            BasicItem btName = basicItemDao.get(BasicItem.class, AttributeParter.getFileNameName(basicItem.getCode()));
-            if (btKey != null) {
-                 basicItemDao.delete(btKey);
-            }
-            if (btSuffix != null) {
-                basicItemDao.delete(btSuffix);                      
-            }
-            if (btKBSize != null) {
-                basicItemDao.delete(btKBSize);
-            }
-            if (btName != null) {
-                basicItemDao.delete(btName);
-            }
-            
-        } else if (String.valueOf(ValueType.RECORD.getIndex()).equals(basicItem.getOneLevelItem().getDataType())) {
-        	BasicItem lableObj = basicItemDao.getLableObj(basicItem.getCode());
-        	if (lableObj != null) {
-        		basicItemDao.delete(lableObj);
-        	}
-        	//删除实体编辑时间属性
-        	BasicItem bt = basicItemDao.get(BasicItem.class, AttributeParter.getLeafEditTimeName(basicItem.getCode()));
-        	if (bt != null) {
-        		basicItemDao.delete(bt);
-        	}
-        }
-		
-		basicItemDao.delete(basicItem);
+		BasicItemDelContext btDelContext = new BasicItemDelContext(basicItemDao);
+		btDelContext.delBItem(basicItem);
 	}
 	
 	public void saveUsingStatus(BasicItem basicItem, String statusStr) throws Exception {
@@ -173,7 +144,7 @@ public class BasicItemServiceImpl implements BasicItemService {
 				if (tableList.isEmpty()) {
 					status = 0;
 					savePastDue(basicItem, status);//全部标记为新增
-				} else {//如果查到表， 只把当前实体标记为再用并把每个表对应的分组活重复类型标记为再用
+				} else {//如果查到表， 只把当前实体标记为再用并把每个表对应的分组和重复类型标记为再用
 					Object[] basicItemFix = basicItemDao.getBasicItemFix();
 					String ibt = (String) basicItemFix[2];
 					status = 1;
@@ -184,7 +155,7 @@ public class BasicItemServiceImpl implements BasicItemService {
 						String next = (String)iterator.next();
 						String[] str = next.split("_");
 						if (str[2].startsWith(ibt.toLowerCase())) {
-							BasicItem item = basicItemDao.get(BasicItem.class, str[2]);
+							BasicItem item = this.getBasicItem(str[2]);
 							status = 1;
 							pastDue(item, status);
 						}
@@ -245,10 +216,6 @@ public class BasicItemServiceImpl implements BasicItemService {
 				}
 				
 			}
-			
-			
-			
-			
 		} else {//过期就是全部过期
 			status = 2;
 			savePastDue(basicItem, status);//全部过期
@@ -265,7 +232,7 @@ public class BasicItemServiceImpl implements BasicItemService {
 		pastDue(basicItem, status);
 		//记录类型
 		if (String.valueOf(ValueType.RECORD.getIndex()).equals(basicItem.getOneLevelItem().getDataType())) {
-			List<BasicItem> basicItemList = basicItemDao.getDataByPId(basicItem.getCode(), "");
+			List<BasicItem> basicItemList = basicItemDao.getDataByPId(basicItem.getCode(), null);
 			for(BasicItem bItem : basicItemList) {
 				pastDue(bItem, status);
 				OneLevelItem oneLevelItem = bItem.getOneLevelItem();
@@ -286,9 +253,14 @@ public class BasicItemServiceImpl implements BasicItemService {
 	 * @param basicItem
 	 */
 	private void pastDue(BasicItem basicItem, Integer status) {
-		if (basicItem != null) {
-			basicItem.setUsingState(status);
-			basicItemDao.update(basicItem);
+		try {
+			if (basicItem != null) {
+				basicItem.setUsingState(status);
+				basicItemDao.update(basicItem);
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 	
@@ -298,7 +270,7 @@ public class BasicItemServiceImpl implements BasicItemService {
 	 */
 	private void repeatPastDue(BasicItem basicItem, Integer status) {
 		if (basicItem != null) {
-			List<BasicItem> basicItemList = basicItemDao.getDataByPId(basicItem.getParent() + "_"+ basicItem.getCode(), "");
+			List<BasicItem> basicItemList = basicItemDao.getDataByPId(basicItem.getParent() + "_"+ basicItem.getCode(), null);
 			for(BasicItem bItem : basicItemList) {
 				pastDue(bItem, status);
 			}
@@ -332,12 +304,12 @@ public class BasicItemServiceImpl implements BasicItemService {
 					fileAssociatProper(obj);//生成文件伴生属性
 				} 
 			} else {//如果是编辑， 
-				BasicItem basicItem = basicItemDao.get(BasicItem.class, obj.getCode());
+				BasicItem basicItem = this.getBasicItem(obj.getCode());
 				if (String.valueOf(ValueType.BYTES.getIndex()).equals(basicItem.getOneLevelItem().getDataType())) {//之前是文件型
-					BasicItem btKey =basicItemDao.get(BasicItem.class, AttributeParter.getFileKeyName(obj.getCode()));
-					BasicItem btSuffix = basicItemDao.get(BasicItem.class, AttributeParter.getFileSuffixName(obj.getCode()));
-					BasicItem btKBSize = basicItemDao.get(BasicItem.class, AttributeParter.getFileKBSizeName(obj.getCode()));
-				    BasicItem btName = basicItemDao.get(BasicItem.class, AttributeParter.getFileNameName(obj.getCode()));
+					BasicItem btKey =this.getBasicItem(AttributeParter.getFileKeyName(obj.getCode()));
+					BasicItem btSuffix = this.getBasicItem(AttributeParter.getFileSuffixName(obj.getCode()));
+					BasicItem btKBSize = this.getBasicItem(AttributeParter.getFileKBSizeName(obj.getCode()));
+				    BasicItem btName = this.getBasicItem(AttributeParter.getFileNameName(obj.getCode()));
 					    
 					if (!String.valueOf(ValueType.BYTES.getIndex()).equals(obj.getOneLevelItem().getDataType())) {
 						if (btKey != null) {
@@ -415,7 +387,6 @@ public class BasicItemServiceImpl implements BasicItemService {
 			
 			
 		if ("add".equals(flag)) {
-			
 			//这里生成abcde010_ED这个属性， 
 			BasicItem btItem = createRecordEditeTime(obj);
 			
@@ -469,47 +440,55 @@ public class BasicItemServiceImpl implements BasicItemService {
 	 */
 	private BasicItem createRecordEditeTime(BasicItem obj) {
 		BasicItem btItem = new BasicItem();//实体编辑时间
+		OneLevelItem oneLevelItem = new OneLevelItem();
+		btItem.setOneLevelItem(oneLevelItem);
 		
 		btItem.setCode(AttributeParter.getLeafEditTimeName(obj.getCode()));
-		btItem.getOneLevelItem().setCode(AttributeParter.getLeafEditTimeName(obj.getCode()));
+		oneLevelItem.setCode(AttributeParter.getLeafEditTimeName(obj.getCode()));
 		btItem.setCnName("编辑时间");
-		btItem.getOneLevelItem().setDataType(String.valueOf(ValueType.DATETIME.getIndex()));
-		btItem.getOneLevelItem().setDataRange(ValueType.DATETIME.getName());
-		btItem.getOneLevelItem().setTableName("t_" + obj.getCode() + "_m");
+		oneLevelItem.setDataType(String.valueOf(ValueType.DATETIME.getIndex()));
+		oneLevelItem.setDataRange(ValueType.DATETIME.getName());
+		oneLevelItem.setTableName("t_" + obj.getCode() + "_m");
 		btItem.setParent(obj.getCode());
 		btItem.setUsingState(0);
-		btItem.getOneLevelItem().setDictParentId(0);
-		btItem.getOneLevelItem().setNeedHistory(obj.getOneLevelItem().getNeedHistory());
+		oneLevelItem.setDictParentId(0);
+		oneLevelItem.setNeedHistory(obj.getOneLevelItem().getNeedHistory());
 		return btItem;
 	}
 
 	//重复类型和枚举类型多选生成伴生属性
 	private List<BasicItem> createAttr(BasicItem obj, String EditTimeCnName, String keyCnName) {
 		BasicItem childOne = new BasicItem();//多值属性编辑时间
+		OneLevelItem oneLevelItem = new OneLevelItem();
+		childOne.setOneLevelItem(oneLevelItem);
+		
+		
 		childOne.setCode(AttributeParter.getLeafEditTimeName(obj.getCode()));
 		   childOne.getOneLevelItem().setCode(AttributeParter.getLeafEditTimeName(obj.getCode()));
 		childOne.setCnName(EditTimeCnName);
-		childOne.getOneLevelItem().setDataType(String.valueOf(ValueType.DATETIME.getIndex()));
-		childOne.getOneLevelItem().setDataRange(ValueType.DATETIME.getName());
-		childOne.getOneLevelItem().setTableName(obj.getOneLevelItem().getTableName());
+		oneLevelItem.setDataType(String.valueOf(ValueType.DATETIME.getIndex()));
+		oneLevelItem.setDataRange(ValueType.DATETIME.getName());
+		oneLevelItem.setTableName(obj.getOneLevelItem().getTableName());
 		childOne.setParent(obj.getParent()+ "_" + obj.getCode());
 		childOne.setUsingState(0);
-		childOne.getOneLevelItem().setDictParentId(0);
-		childOne.getOneLevelItem().setGroupName(obj.getCode());
-		childOne.getOneLevelItem().setNeedHistory(obj.getOneLevelItem().getNeedHistory());
+		oneLevelItem.setDictParentId(0);
+		oneLevelItem.setGroupName(obj.getCode());
+		oneLevelItem.setNeedHistory(obj.getOneLevelItem().getNeedHistory());
 		
 	BasicItem childTwo = new BasicItem();//多值属性唯一编码
+	OneLevelItem twoItem = new OneLevelItem();
+	childTwo.setOneLevelItem(twoItem);
 		childTwo.setCode(AttributeParter.getLeafKeyName(obj.getCode()));
 		     childTwo.getOneLevelItem().setCode(AttributeParter.getLeafKeyName(obj.getCode()));
 		childTwo.setCnName(keyCnName);
-		childTwo.getOneLevelItem().setDataType(String.valueOf(ValueType.STRING.getIndex()));
-		childTwo.getOneLevelItem().setDataRange("32");
-		childTwo.getOneLevelItem().setTableName(obj.getOneLevelItem().getTableName());
+		twoItem.setDataType(String.valueOf(ValueType.STRING.getIndex()));
+		twoItem.setDataRange("32");
+		twoItem.setTableName(obj.getOneLevelItem().getTableName());
 		childTwo.setParent(obj.getParent()+ "_" + obj.getCode());
 		childTwo.setUsingState(0);
-		childTwo.getOneLevelItem().setGroupName(obj.getCode());
-		childTwo.getOneLevelItem().setDictParentId(0);
-		childTwo.getOneLevelItem().setNeedHistory(obj.getOneLevelItem().getNeedHistory());
+		twoItem.setGroupName(obj.getCode());
+		twoItem.setDictParentId(0);
+		twoItem.setNeedHistory(obj.getOneLevelItem().getNeedHistory());
 	basicItemDao.insert(childOne);
 	basicItemDao.insert(childTwo);
 	
@@ -527,37 +506,20 @@ public class BasicItemServiceImpl implements BasicItemService {
 	private BasicItem createLable(BasicItem obj, Integer cascadedict) {
 		String attrCode = basicItemDao.getAttrCode();
 		BasicItem bt = new BasicItem();
+		OneLevelItem twoItem = new OneLevelItem();
+		bt.setOneLevelItem(twoItem);
+		
 		bt.setCode(attrCode);
 		bt.setCnName("标签");
 		bt.setParent(obj.getCode());
 		bt.setUsingState(1);
-		bt.getOneLevelItem().setCode(attrCode);
-		bt.getOneLevelItem().setDataType(String.valueOf(ValueType.LABLETYPE.getIndex()));
-		bt.getOneLevelItem().setDictParentId(cascadedict);
-		bt.getOneLevelItem().setNeedHistory(1);
-		bt.getOneLevelItem().setTableName("t_" + obj.getCode() + "_" + attrCode);
+		twoItem.setCode(attrCode);
+		twoItem.setDataType(String.valueOf(ValueType.LABLETYPE.getIndex()));
+		twoItem.setDictParentId(cascadedict);
+		twoItem.setNeedHistory(1);
+		twoItem.setTableName("t_" + obj.getCode() + "_" + attrCode);
 		return bt;
 	}
-	
-	/**
-	 * @param code
-	 * @param cascadedict
-	 * @return
-	 */
-/*	private BasicItem createLable(String code, Integer cascadedict) {
-		String attrCode = basicItemDao.getAttrCode();
-		BasicItem bt = new BasicItem();
-		bt.setCode(attrCode);
-		bt.setCnName("标签");
-		//bt.setParent(code.getCode());
-		bt.setParent(code);
-		bt.setUsingState(1);
-		bt.getOneLevelItem().setCode(attrCode);
-		bt.getOneLevelItem().setDataType(String.valueOf(ValueType.LABLETYPE.getIndex()));
-		bt.getOneLevelItem().setDictParentId(cascadedict);
-		bt.getOneLevelItem().setNeedHistory(1);
-		return bt;
-	}*/
 	
 	@Override
 	public void createLablea(String code) {
@@ -571,6 +533,10 @@ public class BasicItemServiceImpl implements BasicItemService {
 	 */
 	public void fileAssociatProper(BasicItem obj) {
 		BasicItem btKey = new BasicItem();
+		OneLevelItem twoItem = new OneLevelItem();
+		btKey.setOneLevelItem(twoItem);
+		
+		
 		btKey.setCode(AttributeParter.getFileKeyName(obj.getCode()));
 		btKey.getOneLevelItem().setCode(AttributeParter.getFileKeyName(obj.getCode()));
 		btKey.setCnName(AttributeParter.getFileKeyCNName(obj.getCnName()));
@@ -585,6 +551,9 @@ public class BasicItemServiceImpl implements BasicItemService {
 		btKey.getOneLevelItem().setNeedHistory(obj.getOneLevelItem().getNeedHistory());
 		
 		BasicItem btSuffix = new BasicItem();
+		OneLevelItem btSuffixItem = new OneLevelItem();
+		btSuffix.setOneLevelItem(btSuffixItem);
+		
 		btSuffix.setCode(AttributeParter.getFileSuffixName(obj.getCode()));
 		btSuffix.getOneLevelItem().setCode(AttributeParter.getFileSuffixName(obj.getCode()));
 		btSuffix.setCnName(AttributeParter.getFileSuffixCNName(obj.getCnName()));
@@ -599,6 +568,9 @@ public class BasicItemServiceImpl implements BasicItemService {
 		btSuffix.getOneLevelItem().setNeedHistory(obj.getOneLevelItem().getNeedHistory());
 		
 		BasicItem btKBSize = new BasicItem();
+		OneLevelItem btKBSizeItem = new OneLevelItem();
+		btKBSize.setOneLevelItem(btKBSizeItem);
+		
 		btKBSize.setCode(AttributeParter.getFileKBSizeName(obj.getCode()));
 		btKBSize.getOneLevelItem().setCode(AttributeParter.getFileKBSizeName(obj.getCode()));
 		btKBSize.setCnName(AttributeParter.getFileKBSizeCNName(obj.getCnName()));
@@ -613,6 +585,9 @@ public class BasicItemServiceImpl implements BasicItemService {
 		btKBSize.getOneLevelItem().setNeedHistory(obj.getOneLevelItem().getNeedHistory());
 		
 		BasicItem btName = new BasicItem();
+		OneLevelItem btNameItem = new OneLevelItem();
+		btName.setOneLevelItem(btNameItem);
+		
 		btName.setCode(AttributeParter.getFileNameName(obj.getCode()));
 		btName.getOneLevelItem().setCode(AttributeParter.getFileNameName(obj.getCode()));
 		btName.setCnName(AttributeParter.getFileNameCNName(obj.getCnName()));
@@ -959,6 +934,9 @@ public class BasicItemServiceImpl implements BasicItemService {
 		BasicItem parent = basicItemDao.get(BasicItem.class, code);
 		
 		BasicItem bt = new BasicItem();
+		OneLevelItem oneLevelItem = new OneLevelItem();
+		bt.setOneLevelItem(oneLevelItem);
+		
 		String attrCode = basicItemDao.getAttrCode();
 		bt.setCode(attrCode);
 		bt.getOneLevelItem().setCode(attrCode);

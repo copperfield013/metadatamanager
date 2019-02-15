@@ -190,9 +190,12 @@ public class BasicItemNodeServiceImpl implements BasicItemNodeService {
 		}
 		boolean contains = nameList.contains(basicItemNode.getName());
 		
-		List<BasicItemNode> childByParent = basicItemNodeDao.getChildByParent(basicItemNode.getParentId(), basicItemNode.getBasicItem().getCode());
+		List<BasicItemNode> childByParent = null;
+		if (NodeType.MULTIATTRIBUTE.getCode() == basicItemNode.getType()) {
+			basicItemNodeDao.getChildByParent(basicItemNode.getParentId(), basicItemNode.getBasicItem().getCode());
+		}
 		
-		if (!childByParent.isEmpty()) {
+		if (childByParent !=null) {
 			contains = true;
 		}
 		

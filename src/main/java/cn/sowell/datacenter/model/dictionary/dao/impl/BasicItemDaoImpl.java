@@ -3,20 +3,25 @@ package cn.sowell.datacenter.model.dictionary.dao.impl;
 import java.math.BigInteger;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Resource;
 
 import org.hibernate.HibernateException;
+import org.hibernate.Query;
 import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
 import org.hibernate.jdbc.Work;
 import org.springframework.stereotype.Repository;
 
 import com.abc.util.AttributeParter;
 import com.abc.util.ValueType;
 
+import cn.sowell.copframe.dao.deferedQuery.ColumnMapResultTransformer;
+import cn.sowell.copframe.dao.deferedQuery.SimpleMapWrapper;
 import cn.sowell.copframe.utils.TextUtils;
 import cn.sowell.datacenter.model.dictionary.criteria.BasicItemCriteria;
 import cn.sowell.datacenter.model.dictionary.dao.BasicItemDao;
@@ -92,12 +97,19 @@ public class BasicItemDaoImpl implements BasicItemDao {
 	
 	@Override
 	public void delete(Object pojo) {
-		sFactory.getCurrentSession().delete(pojo);
+		BasicItem bt = (BasicItem)pojo;
+		sFactory.getCurrentSession().delete(bt);
+		if(bt.getOneLevelItem() != null) {
+			sFactory.getCurrentSession().delete(bt.getOneLevelItem());
+		}
 	}
 
 	@Override
 	public List<BasicItem> getDataByPId(String parent, String dataType) {
-		String sql = "SELECT * FROM t_sc_basic_item t left join t_sc_onelevel_item o ON t.c_code = o.c_code "
+		
+		List<BasicItem> btList = new ArrayList<BasicItem>();
+		
+		String sql = "SELECT t.c_cn_name, t.c_en_name,t.c_parent, t.c_using_state, t.c_description, o.* FROM t_sc_basic_item t left join t_sc_onelevel_item o ON t.c_code = o.c_code "
 				+ "WHERE t.c_parent=:parent "
 				+ "AND t.c_code not like '%_P' "
 				+ "AND t.c_code not like '%_ED' "
@@ -110,8 +122,42 @@ public class BasicItemDaoImpl implements BasicItemDao {
 				}
 				sql+= " ORDER BY  "
 				+ "CAST((reverse( - ( - reverse( substring_index( t.c_code, '_', 1 ) ) ) )) as SIGNED) ASC";
-		List<BasicItem> list = sFactory.getCurrentSession().createSQLQuery(sql).addEntity(BasicItem.class).setParameter("parent", parent).list();
-		return list;
+		 Query query = sFactory.getCurrentSession().createSQLQuery(sql)
+				.setParameter("parent", parent);
+		 query.setResultTransformer(new ColumnMapResultTransformer<byte[]>() {
+				private static final long serialVersionUID = -392302880551548725L;
+				
+				@Override
+				protected byte[] build(SimpleMapWrapper mapWrapper) {
+					BasicItem bt = new BasicItem();
+					bt.setCode(mapWrapper.getString("c_code"));
+					bt.setCnName(mapWrapper.getString("c_cn_name"));
+					bt.setEnName(mapWrapper.getString("c_en_name"));
+					bt.setParent(mapWrapper.getString("c_parent"));
+					bt.setUsingState(Integer.valueOf(mapWrapper.getString("c_using_state")));
+					bt.setDescription(mapWrapper.getString("c_description"));
+					
+					OneLevelItem ot = new OneLevelItem();
+					ot.setCode(mapWrapper.getString("c_code"));
+					ot.setDataType(mapWrapper.getString("c_data_type"));
+					ot.setDataRange(mapWrapper.getString("c_data_range"));
+					ot.setDataTypeCode(mapWrapper.getString("c_data_type_code"));
+					ot.setDataForm(mapWrapper.getString("c_data_form"));
+					ot.setDictParentId(Integer.valueOf(mapWrapper.getString("c_dict_parent_id")));
+					ot.setDictionaryIndex(mapWrapper.getString("c_dictionary_index"));
+					ot.setTableName(mapWrapper.getString("c_table_name"));
+					ot.setTableNameDescription(mapWrapper.getString("c_table_name_description"));
+					ot.setGroupName(mapWrapper.getString("c_group_name"));
+					ot.setRefType(mapWrapper.getString("c_ref_type"));
+					ot.setNeedHistory(Integer.valueOf(mapWrapper.getString("c_need_history")));
+					
+					bt.setOneLevelItem(ot);
+					btList.add(bt);
+					return null;
+				}
+			});
+		 query.list();
+		return btList;
 	}
 	
 	@Override
@@ -123,8 +169,11 @@ public class BasicItemDaoImpl implements BasicItemDao {
 
 	@Override
 	public List getAttrByPidGroupName(String parent, String groupName, String dataType) {
+		
+		List<BasicItem> btList = new ArrayList<BasicItem>();
+		
 		StringBuffer sb = new StringBuffer();
-		sb.append(" SELECT * FROM t_sc_basic_item t ")
+		sb.append(" SELECT t.c_cn_name, t.c_en_name,t.c_parent, t.c_using_state, t.c_description, o.*  FROM t_sc_basic_item t ")
 		.append(" INNER JOIN t_sc_onelevel_item o ON t.c_code = o.c_code  ")
 		.append(" WHERE ")
 		.append(" 	t.c_parent =:parent  ")
@@ -142,13 +191,47 @@ public class BasicItemDaoImpl implements BasicItemDao {
 		
 		String sql = sb.toString();
 		try {
-			List<BasicItem> list = sFactory.getCurrentSession()
+			 Query query = sFactory.getCurrentSession()
 					.createSQLQuery(sql)
-					.addEntity(BasicItem.class)
 					.setParameter("parent", parent)
-					.setParameter("groupName", groupName)
-					.list();
-			return list;
+					.setParameter("groupName", groupName);
+			
+			query.setResultTransformer(new ColumnMapResultTransformer<byte[]>() {
+				private static final long serialVersionUID = -392302880551548725L;
+				
+				@Override
+				protected byte[] build(SimpleMapWrapper mapWrapper) {
+					BasicItem bt = new BasicItem();
+					bt.setCode(mapWrapper.getString("c_code"));
+					bt.setCnName(mapWrapper.getString("c_cn_name"));
+					bt.setEnName(mapWrapper.getString("c_en_name"));
+					bt.setParent(mapWrapper.getString("c_parent"));
+					bt.setUsingState(Integer.valueOf(mapWrapper.getString("c_using_state")));
+					bt.setDescription(mapWrapper.getString("c_description"));
+					
+					OneLevelItem ot = new OneLevelItem();
+					ot.setCode(mapWrapper.getString("c_code"));
+					ot.setDataType(mapWrapper.getString("c_data_type"));
+					ot.setDataRange(mapWrapper.getString("c_data_range"));
+					ot.setDataTypeCode(mapWrapper.getString("c_data_type_code"));
+					ot.setDataForm(mapWrapper.getString("c_data_form"));
+					ot.setDictParentId(Integer.valueOf(mapWrapper.getString("c_dict_parent_id")));
+					ot.setDictionaryIndex(mapWrapper.getString("c_dictionary_index"));
+					ot.setTableName(mapWrapper.getString("c_table_name"));
+					ot.setTableNameDescription(mapWrapper.getString("c_table_name_description"));
+					ot.setGroupName(mapWrapper.getString("c_group_name"));
+					ot.setRefType(mapWrapper.getString("c_ref_type"));
+					ot.setNeedHistory(Integer.valueOf(mapWrapper.getString("c_need_history")));
+					
+					bt.setOneLevelItem(ot);
+					btList.add(bt);
+					return null;
+				}
+			});
+			
+			
+			query.list();
+			return btList;
 		} catch (HibernateException e) {
 			e.printStackTrace();
 		}
@@ -165,9 +248,7 @@ public class BasicItemDaoImpl implements BasicItemDao {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-			
 		}
-		
 	}
 	
 	//实体code  生成规则
@@ -580,15 +661,53 @@ public class BasicItemDaoImpl implements BasicItemDao {
 
 	@Override
 	public BasicItem getLableObj(String code) throws Exception {
-		String sql = "SELECT * FROM t_sc_basic_item  a "
+		
+		List<BasicItem> btList = new ArrayList<BasicItem>();
+		String sql = "SELECT a.c_cn_name, a.c_en_name,a.c_parent, a.c_using_state, a.c_description, b.*  FROM t_sc_basic_item  a "
 				+ "inner join t_sc_onelevel_item  b "
 				+ "on a.c_code=b.c_code "
 				+ "WHERE c_parent=:code "
 				+ "AND b.c_data_type=:dataType";
-		return (BasicItem) sFactory.getCurrentSession().createSQLQuery(sql)
-				.addEntity(BasicItem.class)
+		  Query query = sFactory.getCurrentSession().createSQLQuery(sql)
 				.setParameter("code", code)
-				.setParameter("dataType", ValueType.LABLETYPE.getIndex()).uniqueResult();
+				.setParameter("dataType", ValueType.LABLETYPE.getIndex());
+		  
+		  query.setResultTransformer(new ColumnMapResultTransformer<byte[]>() {
+				private static final long serialVersionUID = -392302880551548725L;
+				
+				@Override
+				protected byte[] build(SimpleMapWrapper mapWrapper) {
+					BasicItem bt = new BasicItem();
+					bt.setCode(mapWrapper.getString("c_code"));
+					bt.setCnName(mapWrapper.getString("c_cn_name"));
+					bt.setEnName(mapWrapper.getString("c_en_name"));
+					bt.setParent(mapWrapper.getString("c_parent"));
+					bt.setUsingState(Integer.valueOf(mapWrapper.getString("c_using_state")));
+					bt.setDescription(mapWrapper.getString("c_description"));
+					
+					OneLevelItem ot = new OneLevelItem();
+					ot.setCode(mapWrapper.getString("c_code"));
+					ot.setDataType(mapWrapper.getString("c_data_type"));
+					ot.setDataRange(mapWrapper.getString("c_data_range"));
+					ot.setDataTypeCode(mapWrapper.getString("c_data_type_code"));
+					ot.setDataForm(mapWrapper.getString("c_data_form"));
+					ot.setDictParentId(Integer.valueOf(mapWrapper.getString("c_dict_parent_id")));
+					ot.setDictionaryIndex(mapWrapper.getString("c_dictionary_index"));
+					ot.setTableName(mapWrapper.getString("c_table_name"));
+					ot.setTableNameDescription(mapWrapper.getString("c_table_name_description"));
+					ot.setGroupName(mapWrapper.getString("c_group_name"));
+					ot.setRefType(mapWrapper.getString("c_ref_type"));
+					ot.setNeedHistory(Integer.valueOf(mapWrapper.getString("c_need_history")));
+					
+					bt.setOneLevelItem(ot);
+					btList.add(bt);
+					return null;
+				}
+			});
+		  
+		  query.uniqueResult();
+		  
+		  return btList.get(0);
 	}
 
 	@Override

@@ -35,12 +35,16 @@ public class StatEServiceImpl implements StatEService {
 		
 		//默认生成一个分组
 		BasicItem group = new BasicItem();
+		
+		OneLevelItem btItem = new OneLevelItem();
+		group.setOneLevelItem(btItem);
+		
 		group.setCnName("基本信息");
 		group.setParent(saveBasicItem.getCode());
 		group.setUsingState(1);
-		group.getOneLevelItem().setDataType("16");
-		group.getOneLevelItem().setDictParentId(0);
-		group.getOneLevelItem().setNeedHistory(1);
+		btItem.setDataType("16");
+		btItem.setDictParentId(0);
+		btItem.setNeedHistory(1);
 		
 		 new BasicItemContext().saveBasicItem(basicItemService, group, group.getOneLevelItem(), null);
 		
