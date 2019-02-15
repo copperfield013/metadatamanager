@@ -305,9 +305,11 @@ public class BasicItemNodeController {
 		try {
 			BasicItemCriteria criteria = new BasicItemCriteria();
 			criteria.setParent(entityId);
-			criteria.getOneLevelItem().setDataType(String.valueOf(ValueType.REPEAT.getIndex()));
+			OneLevelItem oneLevelItem = new OneLevelItem();
+			oneLevelItem.setDataType(String.valueOf(ValueType.REPEAT.getIndex()));
 			criteria.setUsingState(1);
-
+			criteria.setOneLevelItem(oneLevelItem);
+			
 			List<BasicItem> list = basicItemService.queryList(criteria, "");
 			InlineResponse2002 inline = new InlineResponse2002();
 			inline.repeat(list);
@@ -412,6 +414,8 @@ public class BasicItemNodeController {
         method = RequestMethod.POST)
 	public ModelAndView operate() {
 		BasicItemCriteria criteria = new BasicItemCriteria();
+		OneLevelItem oneLevelItem = new OneLevelItem();
+		criteria.setOneLevelItem(oneLevelItem);
 		criteria.getOneLevelItem().setDataType(String.valueOf(ValueType.RECORD.getIndex()));
 		criteria.setUsingState(1);
 		List<BasicItem> list = basicItemService.queryList(criteria, "");

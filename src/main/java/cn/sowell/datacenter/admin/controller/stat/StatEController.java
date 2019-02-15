@@ -80,7 +80,7 @@ public class StatEController {
 			e.printStackTrace();
 		}
 		return null;
-		
+	
 	}
 	
 	@ResponseBody

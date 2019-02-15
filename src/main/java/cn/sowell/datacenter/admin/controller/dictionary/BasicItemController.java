@@ -88,7 +88,10 @@ public class BasicItemController {
 	public ModelAndView list(){
 		try {
 			BasicItemCriteria criteria = new BasicItemCriteria();
-			criteria.getOneLevelItem().setDataType(String.valueOf(ValueType.RECORD.getIndex()));
+			OneLevelItem oneLevelItem = new OneLevelItem();
+			oneLevelItem.setDataType(String.valueOf(ValueType.RECORD.getIndex()));
+			criteria.setOneLevelItem(oneLevelItem);
+			
 			List<BasicItem> list = basicItemService.queryList(criteria, "");
 			ModelAndView mv = new ModelAndView();
 			mv.addObject("list", list);
@@ -112,7 +115,10 @@ public class BasicItemController {
 	public ResponseEntity<BasicItems> entityList(){
 		try {
 			BasicItemCriteria criteria = new BasicItemCriteria();
-			criteria.getOneLevelItem().setDataType(String.valueOf(ValueType.RECORD.getIndex()));
+			OneLevelItem oneLevelItem = new OneLevelItem();
+			oneLevelItem.setDataType(String.valueOf(ValueType.RECORD.getIndex()));
+			criteria.setOneLevelItem(oneLevelItem);
+			
 			List<BasicItem> list = basicItemService.queryList(criteria, "");
 			BasicItems bts = new BasicItems();
 			bts.entity(list);
@@ -133,7 +139,9 @@ public class BasicItemController {
 		public ResponseEntity<BasicItems> referenceTypeEntityList(){
 			try {
 				BasicItemCriteria criteria = new BasicItemCriteria();
-				criteria.getOneLevelItem().setDataType(String.valueOf(ValueType.RECORD.getIndex()));
+				OneLevelItem oneLevelItem = new OneLevelItem();
+				oneLevelItem.setDataType(String.valueOf(ValueType.RECORD.getIndex()));
+				criteria.setOneLevelItem(oneLevelItem);
 				criteria.setUsingState(1);
 				List<BasicItem> list = basicItemService.queryList(criteria, "");
 				BasicItems bts = new BasicItems();
@@ -282,63 +290,6 @@ public class BasicItemController {
 		 return new ResponseEntity<AjaxPageResponse>(AjaxPageResponse.FAILD("操作失败"), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
-	
-	//删除实体， 属性
-	/*@ResponseBody
-	@ApiOperation(value = "删除", nickname = "delete", notes = "删除节点", response = AjaxPageResponse.class, tags={ "entityManager", })
-	@ApiResponses(value = { 
-    @ApiResponse(code = 200, message = "操作成功", response = AjaxPageResponse.class),
-    @ApiResponse(code = 404, message = "操作失败") })
-	@RequestMapping(value="/delete", method=RequestMethod.POST)
-		public ResponseEntity<AjaxPageResponse> delete(String id){
-			try {
-				AjaxPageResponse response = new AjaxPageResponse();
-				BasicItem bt = basicItemService.getBasicItem(id);
-				
-				if (bt!=null && bt.getParent() != null && bt.getParent().contains("_")) {//包含下划线就说明它父亲是重复类型
-					//判断重复类型有没有二级属性
-					TowlevelattrMultiattrMapping oneByRelaMulAttr = tmms.getOneByRelaMulAttr(bt.getOneLevelItem().getGroupName());
-					if (oneByRelaMulAttr != null) {
-						if (id.equals(oneByRelaMulAttr.getDictionaryAttr()) || id.equals(oneByRelaMulAttr.getValueAttr())) {
-							response.setNotice("二级属性正在使用, 请先删除二级属性");
-							response.setNoticeType(NoticeType.INFO);
-							return new ResponseEntity<AjaxPageResponse>(response, HttpStatus.OK);
-						}
-					}
-					
-				}
-				
-				List<BasicItem> btList = null;
-				if (String.valueOf(ValueType.GROUP.getIndex()).equals(bt.getOneLevelItem().getDataType())) {
-					btList = basicItemService.getAttrByPidGroupName(bt.getParent(), bt.getCode(), "");
-				} else if (String.valueOf(ValueType.REPEAT.getIndex()).equals(bt.getOneLevelItem().getDataType())) {
-					btList = basicItemService.getDataByPId(bt.getParent() + "_" + bt.getCode(), "");
-				} else {
-					btList = basicItemService.getDataByPId(id, "");
-				}
-				 
-				if (!btList.isEmpty()) {
-					response.setNotice("请先删除孩子");
-					response.setNoticeType(NoticeType.INFO);
-					return new ResponseEntity<AjaxPageResponse>(response, HttpStatus.OK);
-				} else {
-					
-					BasicItem basicItem = basicItemService.getBasicItem(id);
-					basicItemService.delete(basicItem);
-					
-					if (String.valueOf(ValueType.RECORD.getIndex()).equals(basicItem.getOneLevelItem().getDataType())) {
-						return new ResponseEntity<AjaxPageResponse>(AjaxPageResponse.CLOSE_AND_REFRESH_PAGE("删除成功", "basicItem_list"), HttpStatus.OK);
-					} else {
-						response.setNotice("删除成功");
-						response.setNoticeType(NoticeType.SUC);
-						return new ResponseEntity<AjaxPageResponse>(response, HttpStatus.OK);
-					}
-				}
-			} catch (Exception e) {
-				 return new ResponseEntity<AjaxPageResponse>(AjaxPageResponse.FAILD("删除失败"), HttpStatus.INTERNAL_SERVER_ERROR);
-			}
-		}*/
-	
 	
 	//删除实体， 属性
 		@ResponseBody
