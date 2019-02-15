@@ -194,7 +194,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
     //获取孩子的方法   entityId: 此为实体id
 	function getChild(nodeId, isRelative, bar, entityId, source) {
 		
-		
+		debugger;
 		 //这里加载filters
 		Ajax.ajax('admin/node/binFilterBody/getFilters', {
 			nodeId: nodeId
@@ -4074,7 +4074,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
     	
     	var attr_relative = $(this).closest(".collapse-header").hasClass("attr-relative");
     	if (attr_relative) {
-    		entityId="";
+    		entityId = $(this).closest(".dragEdit-wrap").siblings(".entity-title").attr("data-abcattrCode");
     	}
     	
     	e.stopPropagation();
@@ -4094,7 +4094,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
                 .removeClass("collapse-content-inactive")
                 .addClass("collapse-content-active");
         }        
-        
+        debugger;
        if(needAjax) {
     	   var filters =  $(this).closest(".label-bar").hasClass("filters");
     	   var filterGroup =  $(this).closest(".label-bar").hasClass("filterGroup");
