@@ -422,11 +422,13 @@ public class BasicItemServiceImpl implements BasicItemService {
 		
 		//如果是枚举类型多选
 		if (String.valueOf(ValueType.ENUMTYPE_MULTI.getIndex()).equals(dataType)) {
+			
+			obj.getOneLevelItem().setTableName("t_" + obj.getParent()+ "_" + obj.getCode());
+			
 			if ("add".equals(flag)) {
 				List<BasicItem> attrList = createAttr(obj, AttributeParter.getLeafEditTimeCNName(obj.getCnName()), AttributeParter.getLeafKeyCNName(obj.getCnName()));//枚举类型多选，生成伴生属性
 			} 
 			
-			obj.getOneLevelItem().setTableName("t_" + obj.getParent()+ "_" + obj.getCode());
 			basicItemDao.update(obj);
 		}	
 		
@@ -489,6 +491,7 @@ public class BasicItemServiceImpl implements BasicItemService {
 		twoItem.setGroupName(obj.getCode());
 		twoItem.setDictParentId(0);
 		twoItem.setNeedHistory(obj.getOneLevelItem().getNeedHistory());
+		
 	basicItemDao.insert(childOne);
 	basicItemDao.insert(childTwo);
 	
@@ -787,7 +790,7 @@ public class BasicItemServiceImpl implements BasicItemService {
 			}
 		}	
 			
-		//创建关系表函数及关系表
+		//创建关系表函数
 		List queryCreRelaTabFun = basicItemDao.queryCreRelaTabFun();
 		for (Object object : queryCreRelaTabFun) {
 			try {
