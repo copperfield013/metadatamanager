@@ -194,7 +194,6 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
     //获取孩子的方法   entityId: 此为实体id
 	function getChild(nodeId, isRelative, bar, entityId, source) {
 		
-		debugger;
 		 //这里加载filters
 		Ajax.ajax('admin/node/binFilterBody/getFilters', {
 			nodeId: nodeId
