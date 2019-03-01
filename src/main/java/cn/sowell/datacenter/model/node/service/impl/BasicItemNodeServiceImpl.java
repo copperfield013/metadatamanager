@@ -257,7 +257,7 @@ public class BasicItemNodeServiceImpl implements BasicItemNodeService {
 			if (binFilter != null) {
 				binFilterBody = binFilterBodyService.getBinFilterBody(binFilter.getFiltersId());
 			
-				String startFilters =  "<"+NodeType.FILTERS.getName()+" name=\""+binFilterBody.getName()+"\" >";
+				String startFilters =  prefix + "<"+NodeType.FILTERS.getName()+" name=\""+binFilterBody.getName()+"\" >";
 				FileManager.writeFileContent(file, startFilters);
 				List<BinFilterBody> filterBodyChild = binFilterBodyService.getFilterBodyChild(binFilterBody.getId());
 				
@@ -265,9 +265,8 @@ public class BasicItemNodeServiceImpl implements BasicItemNodeService {
 					createFiltersChild(body,file, prefix);
 				}
 				
-				String endFilters =  "</"+NodeType.FILTERS.getName()+">";
-				
-				//创建filters的孩子
+				String endFilters =  prefix + "</"+NodeType.FILTERS.getName()+">";
+				FileManager.writeFileContent(file, endFilters);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -279,18 +278,18 @@ public class BasicItemNodeServiceImpl implements BasicItemNodeService {
 	}
 	
 	
-	private void createFiltersChild(BinFilterBody binFilterBody,File file, String prefix) {
+	private void createFiltersChild(BinFilterBody binFilterBody,File file, String prefix) throws Exception {
 		prefix += "   ";
 		NodeType nodeType = NodeType.getNodeType(binFilterBody.getDataType());
 		switch (nodeType) {
 		case FILTERGROUP://只可能是关系下的ABC了
-			//createFilterGroup(binFilterBody, file, prefix, nodeType);
+			createFilterGroup(binFilterBody, file, prefix, nodeType);
 			break;
 		case FILTER:
 			createFilter(binFilterBody, file, prefix, nodeType);
 			break;
 		case RFILTER:
-			//createRFilter(binFilterBody, file, prefix, nodeType);
+			createRFilter(binFilterBody, file, prefix, nodeType);
 			break;
 		case NONO:
 			break;
@@ -300,15 +299,29 @@ public class BasicItemNodeServiceImpl implements BasicItemNodeService {
 		
 	}
 
-	private void createFilter(BinFilterBody binFilterBody, File file, String prefix, NodeType nodeType) {
-		
+	private void createFilter(BinFilterBody binFilterBody, File file, String prefix, NodeType nodeType) throws IOException {
 		String str = "";
-		str = prefix + "<"+nodeType.getName()+" name=\""+binFilterBody.getName()+">"+"\r\n";
-		//FileManager.writeFileContent(file, str);
+		str = prefix + "<"+nodeType.getName()+" name=\""+binFilterBody.getName()+"\" abcattr_code=\""+binFilterBody.getAbcattrCode()+"\"  filter_type=\""+binFilterBody.getFilterType()+"\" value=\""+binFilterBody.getValue()+"\" opt=\""+binFilterBody.getOpt()+"\">"+"\r\n";
+		FileManager.writeFileContent(file, str);
 		
 		String endStr = prefix + "</"+nodeType.getName()+">";
-		//FileManager.writeFileContent(file, endStr);
+		FileManager.writeFileContent(file, endStr);
 		
+	}
+	
+	private void createRFilter(BinFilterBody binFilterBody, File file, String prefix, NodeType nodeType) throws Exception {
+		
+		String str = "";
+		str = prefix + "<"+nodeType.getName()+" name=\""+binFilterBody.getName()+"\" subdomain=\""+binFilterBody.getSubdomain()+"\" opt=\""+binFilterBody.getOpt()+"\">"+"\r\n";
+		FileManager.writeFileContent(file, str);
+		
+		List<BinFilterBody> filterBodyChild = binFilterBodyService.getFilterBodyChild(binFilterBody.getId());
+		for (BinFilterBody body : filterBodyChild) {
+			createFiltersChild(body, file, prefix);
+		}
+		
+		String endStr = prefix + "</"+nodeType.getName()+">";
+		FileManager.writeFileContent(file, endStr);
 	}
 
 	private void createFilterGroup(BinFilterBody binFilterBody, File file, String prefix, NodeType nodeType) throws Exception {
