@@ -326,7 +326,7 @@ public class BasicItemNodeServiceImpl implements BasicItemNodeService {
 
 	private void createFilterGroup(BinFilterBody binFilterBody, File file, String prefix, NodeType nodeType) throws Exception {
 		String str = "";
-		str = prefix + "<"+nodeType.getName()+" name=\""+binFilterBody.getName()+">"+"\r\n";
+		str = prefix + "<"+nodeType.getName()+" name=\""+binFilterBody.getName()+"\">"+"\r\n";
 		FileManager.writeFileContent(file, str);
 		
 		List<BinFilterBody> filterBodyChild = binFilterBodyService.getFilterBodyChild(binFilterBody.getId());
