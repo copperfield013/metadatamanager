@@ -37,6 +37,7 @@
 							<a class="tab" href="admin/node/basicItemNode/edit?nodeId=${item.id }" title="修改" target="basicItemNode_edit" >修改</a>
 							<a href="admin/node/basicItemNode/copyNode?nodeId=${item.id }" confirm="确认复制【${item.name }】？">复制</a>
 							<a href="admin/node/basicItemNode/do_delete?id=${item.id }&isDelChil=false" confirm="确认删除？">删除</a>
+							<a href="admin/module/configModule/do_add?moduleTitle=${item.name }&mappingId=${item.id }" confirm="确认生成？">生成模块</a>
 						</td>
 					</tr>
 				</c:forEach>

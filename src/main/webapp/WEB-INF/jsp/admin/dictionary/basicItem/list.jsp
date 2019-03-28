@@ -185,7 +185,6 @@
 				           	<select id="rightRelationType" name="rightRelationType" style="width:30%">
 				            </select>
 				        </div>
-				       
 				    </form>
 				    <div class="opera_entity_btn">
 				        <span class="entity-btn-cancel" id="relation_but_cancel">取消</span>

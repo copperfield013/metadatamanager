@@ -35,7 +35,7 @@ public class RecordRelationType {
 	
 	@Column(name="relation_type")
 	private String relationType;
-
+ 
 	public String getTypeCode() {
 		return typeCode;
 	}
@@ -97,5 +97,5 @@ public class RecordRelationType {
 	public void setRelationType(String relationType) {
 		this.relationType = relationType;
 	}
-	
+
 }
