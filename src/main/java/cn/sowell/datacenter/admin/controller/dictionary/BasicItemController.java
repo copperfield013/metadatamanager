@@ -181,6 +181,9 @@ public class BasicItemController {
         method = RequestMethod.POST)
 	public ResponseEntity doAdd(@ApiParam(name="BasicItem", value="传入json格式", required=true)BasicItem basicItem, OneLevelItem oneLevelItem, Integer cascadedict){
                 try {
+                	
+                	basicItem.setCnName(basicItem.getCnName().trim());
+                	
                 	new BasicItemContext().saveBasicItem(basicItemService, basicItem, oneLevelItem, cascadedict);
         			if (String.valueOf(ValueType.RECORD.getIndex()).equals(basicItem.getOneLevelItem().getDataType())) {
         				return new ResponseEntity<AjaxPageResponse>(AjaxPageResponse.CLOSE_AND_REFRESH_PAGE("操作成功", "basicItem_list"), HttpStatus.OK);

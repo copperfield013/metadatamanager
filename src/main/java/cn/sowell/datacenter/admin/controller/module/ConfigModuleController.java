@@ -108,10 +108,18 @@ public class ConfigModuleController {
     @ApiResponses(value = { 
         @ApiResponse(code = 200, message = "添加成功", response = AjaxPageResponse.class),
         @ApiResponse(code = 401, message = "添加失败") })
-    @RequestMapping(value = "/do_add",
-        method = RequestMethod.POST)
+    @RequestMapping(value = "/do_add")
 	public ResponseEntity<AjaxPageResponse> doAdd(String moduleName, String moduleTitle, Long mappingId, String codeName, String titleName){
 		try {
+				
+			if (codeName == null) {
+				codeName="";
+			}
+			
+			if (titleName == null) {
+				titleName="";
+			}
+			
 			CreateModuleParam param = new CreateModuleParam(moduleTitle, mappingId);
 			param.setModuleName(moduleName);
 			param.setCodeName(codeName);
