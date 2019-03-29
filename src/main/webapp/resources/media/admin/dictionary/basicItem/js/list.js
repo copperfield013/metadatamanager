@@ -290,22 +290,33 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
 	  Ajax.ajax('admin/dictionary/recordRelationType/edit', {
 		  typeCode:typeCode
 	  }, function(data) {
-		  
+		 
 		  var strl = "";
+		  var str2 = "";
 		  Ajax.ajax('admin/dictionary/recordRelationType/getRelationType', '', function(data2) {
           	var reTypeMap = data2.reTypeMap;
               for (var h in reTypeMap) { //遍历json数组时，这么写p为索引，0,1
-             	 
+            	  debugger;
              	 if (reTypeMap[h] == data.recordRelationType.relationType) {
              		strl = strl + "<option selected value=\"" + h + "\">" + reTypeMap[h] + "</option>"; 
              	 } else {
              		strl = strl + "<option value=\"" + h + "\">" + reTypeMap[h] + "</option>"; 
              	 }
-             	 
               }
+              
+              if ( 0 == data.recordRelationType.giant) {
+             		str2 = str2 + "<option selected value=\"0\">否</option>"; 
+             		str2 = str2 + "<option value=\"1\">是</option>"; 
+             	 } else {
+             		str2 = str2 + "<option value=\"0\">否</option>"; 
+             		str2 = str2 + "<option selected value=\"1\">是</option>"; 
+             	 }
          	 	
               $(".opera_relation_edit").children("#entity_relation_form_edit").find("#relationType").html("");
               $(".opera_relation_edit").children("#entity_relation_form_edit").find("#relationType").css("width","30%").select2().append(strl).trigger("change");
+              
+              $(".opera_relation_edit").children("#entity_relation_form_edit").find("#giant").html("");
+              $(".opera_relation_edit").children("#entity_relation_form_edit").find("#giant").css("width","30%").select2().append(str2).trigger("change");
           });
 		  
 		  $(".opera_relation_edit").children("#entity_relation_form_edit").find("#name").val(data.recordRelationType.name);
@@ -327,11 +338,13 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
 	  var name =  $form.find("#name").val();
 	  var typeCode = $form.find("#typeCode").val();
 	  var relationType = $form.find("#relationType").val();
+	  var giant = $form.find("#giant").val();
 	  
 	   Ajax.ajax('admin/dictionary/recordRelationType/do_edit', {
 			  typeCode:typeCode,
 			  name:name,
-			  relationType,relationType
+			  relationType,relationType,
+			  giant:giant
 		  }, function(data) {
 			  if (data.code == 200) {
 				  var recordRelationType = data.recordRelationType;
@@ -1660,6 +1673,9 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
         var leftRelationType =  $form.find("#leftRelationType").val();
         var rightRelationType =  $form.find("#rightRelationType").val();
         
+        var leftgiant =  $form.find("#leftgiant").val();
+        var rightgiant =  $form.find("#rightgiant").val();
+        
         if (checkRela($form)) {
         	 $CPF.showLoading();
              Ajax.ajax('admin/dictionary/recordRelationType/doAdd', {
@@ -1669,7 +1685,9 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
                  leftRecordType: leftRecordType,
                  symmetry:symmetry,
                  leftRelationType,leftRelationType,
-                 rightRelationType,rightRelationType
+                 rightRelationType,rightRelationType,
+                 leftgiant:leftgiant,
+                 rightgiant:rightgiant
              }, function(data) {
             	 
             	 if (data.code == 200) {

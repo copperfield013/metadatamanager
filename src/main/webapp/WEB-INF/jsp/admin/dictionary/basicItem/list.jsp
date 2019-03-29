@@ -160,11 +160,6 @@
 					       		 <span class="text">添加对称关系</span>
 					   		</label>
 						</div>
-				        <div class="select-wrap" id="rela_right">
-				            <span class="opera_entity_label">选择右实体<span style="color: red;">*</span></span>
-				            <select id="rightRecordType" name="rightRecordType" style="width:30%">
-				            </select>
-				        </div>
 				          <input type="hidden" name="typeCode" id="typeCode" />
 				          <input type="hidden" name="reverseCode" id="reverseCode" />
 				        <div class="col-xs-4 opera_entity_label">
@@ -176,6 +171,20 @@
 				           	<select id="leftRelationType" name="leftRelationType" style="width:30%">
 				            </select>
 				        </div>
+				        <div  class="select-wrap">
+				            <span class="opera_entity_label">是否巨型关系<span style="color: red;">*</span></span>
+				           	<select id="leftgiant" name="leftgiant" style="width:30%">
+				           		<option value="0" selected="selected">否</option>
+				           		<option value="1">是</option>
+				            </select>
+				        </div>
+				        
+				        
+				         <div class="select-wrap" id="rela_right">
+				            <span class="opera_entity_label">选择逆向实体<span style="color: red;">*</span></span>
+				            <select id="rightRecordType" name="rightRecordType" style="width:30%">
+				            </select>
+				        </div>
 				        <div id="rela_ni_name">
 				            <span class="opera_entity_label">逆向关系名称<span style="color: red;">*</span></span>
 				            <input type="text" name="rightName" id="rightName" />
@@ -183,6 +192,13 @@
 				         <div  class="select-wrap">
 				            <span class="opera_entity_label">逆向关系类型<span style="color: red;">*</span></span>
 				           	<select id="rightRelationType" name="rightRelationType" style="width:30%">
+				            </select>
+				        </div>
+				         <div  class="select-wrap">
+				            <span class="opera_entity_label">逆向是否巨型关系<span style="color: red;">*</span></span>
+				           	<select id="rightgiant" name="rightgiant" style="width:30%">
+				           		<option value="0" selected="selected">否</option>
+				           		<option value="1">是</option>
 				            </select>
 				        </div>
 				    </form>
@@ -204,6 +220,11 @@
 				         <div  class="select-wrap">
 				            <span class="opera_entity_label">关系类型<span style="color: red;">*</span></span>
 				           	<select id="relationType" name="relationType" style="width:30%">
+				            </select>
+				        </div>
+				         <div  class="select-wrap">
+				            <span class="opera_entity_label">是否巨型关系<span style="color: red;">*</span></span>
+				           	<select id="giant" name="giant" style="width:30%">
 				            </select>
 				        </div>
 				    </form>
