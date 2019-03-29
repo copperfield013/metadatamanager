@@ -75,7 +75,7 @@ public class RecordRelationTypeDaoImpl implements RecordRelationTypeDao {
 	@Override
 	public List<RecordRelationType> getEntityRelaByBitemId(String recordType) {
 		String sql = "SELECT t1.type_code, t1.name,t3.c_cn_name as left_record_type,"
-				+ "  t4.c_cn_name as right_record_type, t2.name as reverse_code, t1.using_state, t1.relation_type "
+				+ "  t4.c_cn_name as right_record_type, t2.name as reverse_code, t1.using_state, t1.relation_type, t1.giant "
 				+ " FROM t_sc_record_relation_type t1"
 				+ " LEFT JOIN t_sc_record_relation_type t2"
 				+ " ON t1.reverse_code=t2.type_code"

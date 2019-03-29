@@ -56,15 +56,16 @@ public class RecordRelationTypeController {
 	
 	@ResponseBody
 	@RequestMapping("/doAdd")
-	public String doAdd(String leftRecordType,String rightRecordType, String leftName, String rightName,String leftRelationType,String rightRelationType, String symmetry){
+	public String doAdd(String leftRecordType,String rightRecordType, String leftName, String rightName,String leftRelationType,String rightRelationType, Integer leftgiant, Integer rightgiant, String symmetry){
 		Map<String, Object> map = new HashMap<String, Object>();
 		JSONObject jobj = new JSONObject(map);
 		
-		RecordRelationType rightObj = new RecordRelationType();
 		RecordRelationType leftObj = new RecordRelationType();
+		RecordRelationType rightObj = new RecordRelationType();
 		
 		leftObj.setName(leftName);
 		leftObj.setLeftRecordType(leftRecordType);
+		leftObj.setGiant(leftgiant);
 		
 		if ("symmetry".equals(symmetry)) {//添加对称关系
 			leftObj.setRightRecordType(leftRecordType);
@@ -72,11 +73,13 @@ public class RecordRelationTypeController {
 		} else {
 			leftObj.setRightRecordType(rightRecordType);
 			leftObj.setRelationType(leftRelationType);
+			
 			//生成右关系
 			rightObj.setName(rightName);
 			rightObj.setLeftRecordType(rightRecordType);
 			rightObj.setRightRecordType(leftRecordType);
 			rightObj.setRelationType(rightRelationType);
+			rightObj.setGiant(rightgiant);
 		}
 		
 			try {
@@ -161,13 +164,14 @@ public class RecordRelationTypeController {
 	 */
 	@ResponseBody
 	@RequestMapping("/do_edit")
-	public String edit(String name, String typeCode, String relationType){
+	public String edit(String name, String typeCode, String relationType, Integer giant){
 		Map<String, Object> map = new HashMap<String, Object>();
 		JSONObject jobj = new JSONObject(map);
 		try {
 			RecordRelationType recordRelationType = recordRelationTypeService.getRecordRelationType(typeCode);
 			recordRelationType.setName(name);
 			recordRelationType.setRelationType(relationType);
+			recordRelationType.setGiant(giant);
 			recordRelationTypeService.update(recordRelationType);
 			map.put("recordRelationType", recordRelationType);
 			map.put("code", 200);

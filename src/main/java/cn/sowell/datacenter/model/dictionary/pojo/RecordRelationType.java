@@ -35,7 +35,10 @@ public class RecordRelationType {
 	
 	@Column(name="relation_type")
 	private String relationType;
- 
+	
+	@Column(name="giant")
+	private Integer giant; //  关系是巨型的
+	
 	public String getTypeCode() {
 		return typeCode;
 	}
@@ -96,6 +99,14 @@ public class RecordRelationType {
 
 	public void setRelationType(String relationType) {
 		this.relationType = relationType;
+	}
+
+	public Integer getGiant() {
+		return giant;
+	}
+
+	public void setGiant(Integer giant) {
+		this.giant = giant;
 	}
 
 }
