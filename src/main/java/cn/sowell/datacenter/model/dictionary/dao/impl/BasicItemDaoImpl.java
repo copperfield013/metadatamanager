@@ -26,9 +26,9 @@ import cn.sowell.copframe.utils.TextUtils;
 import cn.sowell.datacenter.model.dictionary.criteria.BasicItemCriteria;
 import cn.sowell.datacenter.model.dictionary.dao.BasicItemDao;
 import cn.sowell.datacenter.model.dictionary.pojo.BasicItem;
+import cn.sowell.datacenter.model.dictionary.pojo.BasicItemCodeGenerator;
 import cn.sowell.datacenter.model.dictionary.pojo.CascadeAttr;
 import cn.sowell.datacenter.model.dictionary.pojo.OneLevelItem;
-import cn.sowell.datacenter.model.node.pojo.BasicItemNodeGenerator;
 
 @Repository
 public class BasicItemDaoImpl implements BasicItemDao {
@@ -249,35 +249,6 @@ public class BasicItemDaoImpl implements BasicItemDao {
 				e.printStackTrace();
 			}
 		}
-	}
-	
-	//实体code  生成规则
-	public String getEntityCode() {
-		try {
-			BasicItemNodeGenerator btNg = new BasicItemNodeGenerator();
-			sFactory.getCurrentSession().save(btNg);
-			Object[] basicItemFix = getBasicItemFix();
-			return btNg.getEntityCode((String)basicItemFix[1]);
-		} catch (HibernateException e) {
-			e.printStackTrace();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
-	
-	//其他code， 生成规则
-	public String getAttrCode() {
-		try {
-			BasicItemNodeGenerator btNg = new BasicItemNodeGenerator();
-			sFactory.getCurrentSession().save(btNg);
-			Object[] basicItemFix = getBasicItemFix();
-			return btNg.getAttrCode((String)basicItemFix[2]);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return null;
-		
 	}
 	
 	@Override
@@ -566,18 +537,6 @@ public class BasicItemDaoImpl implements BasicItemDao {
 				+ "	AND o.c_data_type = '10' "
 				+ "	AND t.c_code IN ( SELECT right_record_type FROM t_sc_record_relation_type WHERE left_record_type =:leftRecordType )";
 		return  sFactory.getCurrentSession().createSQLQuery(sql).addEntity(BasicItem.class).setParameter("leftRecordType", leftRecordType).list();
-	}
-
-	@Override
-	public Object[] getBasicItemFix() throws Exception {
-		String sql = "SELECT id, recordtype, attribute, relation, using_state FROM `t_sc_basic_item_fix` WHERE using_state='1' ORDER BY id desc";
-		List list = sFactory.getCurrentSession().createSQLQuery(sql).list();
-		
-		if (list.isEmpty()) {
-			throw new Exception("t_sc_basic_item_fix不能没有数据");
-		}
-		
-		return (Object[]) list.get(0);
 	}
 
 	@Override

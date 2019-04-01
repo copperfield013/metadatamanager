@@ -19,9 +19,9 @@ import cn.sowell.copframe.utils.FormatUtils;
 import cn.sowell.copframe.utils.TextUtils;
 import cn.sowell.datacenter.model.dictionary.criteria.RecordRelationTypeCriteria;
 import cn.sowell.datacenter.model.dictionary.dao.RecordRelationTypeDao;
+import cn.sowell.datacenter.model.dictionary.pojo.BasicItemCodeGenerator;
 import cn.sowell.datacenter.model.dictionary.pojo.RecordRelationType;
 import cn.sowell.datacenter.model.dictionary.service.BasicItemService;
-import cn.sowell.datacenter.model.node.pojo.BasicItemNodeGenerator;
 
 @Repository
 public class RecordRelationTypeDaoImpl implements RecordRelationTypeDao {
@@ -91,14 +91,6 @@ public class RecordRelationTypeDaoImpl implements RecordRelationTypeDao {
 	public List<RecordRelationType> getEntityRelaByBitemId(String leftRecordType, String rightRecordType) {
 		String hql = "FROM RecordRelationType where rightRecordType =:rightRecordType AND leftRecordType=:leftRecordType AND usingState=1";
 		return sFactory.getCurrentSession().createQuery(hql).setParameter("leftRecordType", leftRecordType).setParameter("rightRecordType", rightRecordType).list();
-	}
-
-	@Override
-	public String getRecordRelaCode(String entityCode) throws Exception {
-		BasicItemNodeGenerator btNg = new BasicItemNodeGenerator();
-		sFactory.getCurrentSession().save(btNg);
-		Object[] basicItemFix = basicItemService.getBasicItemFix();
-		return btNg.getRelaCode(entityCode, (String)basicItemFix[3]);
 	}
 
 	@Override

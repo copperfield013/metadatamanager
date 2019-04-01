@@ -14,7 +14,7 @@ import cn.sowell.datacenter.model.cascadedict.pojo.CascadedictCodeGenerator;
 import cn.sowell.datacenter.model.cascadedict.pojo.CascadedictSubsection;
 import cn.sowell.datacenter.model.cascadedict.pojo.CascadedictSubsectionChild;
 import cn.sowell.datacenter.model.cascadedict.service.CascadedictSubsectionService;
-import cn.sowell.datacenter.model.node.pojo.BasicItemNodeGenerator;
+import cn.sowell.datacenter.model.dictionary.pojo.BasicItemCodeGenerator;
 
 @Service
 public class CascadedictSubsectionServiceImpl implements CascadedictSubsectionService {

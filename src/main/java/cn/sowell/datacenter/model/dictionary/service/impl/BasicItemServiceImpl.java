@@ -34,6 +34,7 @@ import cn.sowell.datacenter.model.dictionary.pojo.OneLevelItem;
 import cn.sowell.datacenter.model.dictionary.pojo.RecordRelationType;
 import cn.sowell.datacenter.model.dictionary.pojo.Towlevelattr;
 import cn.sowell.datacenter.model.dictionary.pojo.TowlevelattrMultiattrMapping;
+import cn.sowell.datacenter.model.dictionary.service.BasicItemCodeGeneratorService;
 import cn.sowell.datacenter.model.dictionary.service.BasicItemService;
 import cn.sowell.datacenter.model.dictionary.service.RecordRelationTypeService;
 import cn.sowell.datacenter.model.dictionary.service.TowlevelattrMultiattrMappingService;
@@ -54,6 +55,9 @@ public class BasicItemServiceImpl implements BasicItemService {
 	TowlevelattrService towlevelattrService;
 	@Resource
 	CascadedictBasicItemService cascadedictBasicItemService;
+	
+	@Resource
+	BasicItemCodeGeneratorService btCodeGenerService;
 	
 	@Resource
 	SessionFactory sFactory;
@@ -145,8 +149,7 @@ public class BasicItemServiceImpl implements BasicItemService {
 					status = 0;
 					savePastDue(basicItem, status);//全部标记为新增
 				} else {//如果查到表， 只把当前实体标记为再用并把每个表对应的分组和重复类型标记为再用
-					Object[] basicItemFix = basicItemDao.getBasicItemFix();
-					String ibt = (String) basicItemFix[2];
+					String ibt = btCodeGenerService.getBasicItemFix();
 					status = 1;
 					pastDue(basicItem, status);
 					//更改分组或重复类型
@@ -284,11 +287,11 @@ public class BasicItemServiceImpl implements BasicItemService {
 		if ("add".equals(flag)) {
 			String dataType = obj.getOneLevelItem().getDataType();
 			if (String.valueOf(ValueType.RECORD.getIndex()).equals(dataType)) {
-				String entityCode = basicItemDao.getEntityCode();
+				String entityCode = btCodeGenerService.getEntityCode();
 				obj.setCode(entityCode);
 				obj.getOneLevelItem().setCode(entityCode);
 			} else {
-				String attrCode = basicItemDao.getAttrCode();
+				String attrCode = btCodeGenerService.getAttrCode();
 				obj.setCode(attrCode);
 				obj.getOneLevelItem().setCode(attrCode);
 			}
@@ -505,9 +508,10 @@ public class BasicItemServiceImpl implements BasicItemService {
 	 * @param code
 	 * @param cascadedict
 	 * @return
+	 * @throws Exception 
 	 */
-	private BasicItem createLable(BasicItem obj, Integer cascadedict) {
-		String attrCode = basicItemDao.getAttrCode();
+	private BasicItem createLable(BasicItem obj, Integer cascadedict) throws Exception {
+		String attrCode = btCodeGenerService.getAttrCode();
 		BasicItem bt = new BasicItem();
 		OneLevelItem twoItem = new OneLevelItem();
 		bt.setOneLevelItem(twoItem);
@@ -881,14 +885,13 @@ public class BasicItemServiceImpl implements BasicItemService {
 	}
 
 	@Override
-	public void createTowLevel(Towlevelattr criteria, String name) {
+	public void createTowLevel(Towlevelattr criteria, String name) throws Exception {
 		
 		BasicItem bt = new BasicItem();
-		
 		bt.setUsingState(1);
 		bt.setCnName(name);
 		
-		String attrCode = basicItemDao.getAttrCode();
+		String attrCode = btCodeGenerService.getAttrCode();
 		criteria.setCode(attrCode);
 		bt.setCode(attrCode);
 		
@@ -922,11 +925,6 @@ public class BasicItemServiceImpl implements BasicItemService {
 	}
 
 	@Override
-	public Object[] getBasicItemFix() throws Exception {
-		return basicItemDao.getBasicItemFix();
-	}
-
-	@Override
 	public List getCascadeAttrChild(String code) {
 		return basicItemDao.getCascadeAttrChild(code);
 	}
@@ -940,7 +938,7 @@ public class BasicItemServiceImpl implements BasicItemService {
 		OneLevelItem oneLevelItem = new OneLevelItem();
 		bt.setOneLevelItem(oneLevelItem);
 		
-		String attrCode = basicItemDao.getAttrCode();
+		String attrCode = btCodeGenerService.getAttrCode();
 		bt.setCode(attrCode);
 		bt.getOneLevelItem().setCode(attrCode);
 		bt.setCnName(cnName);

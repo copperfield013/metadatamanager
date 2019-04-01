@@ -117,18 +117,6 @@ public interface BasicItemDao {
 	void excuteBySql(String sql);
 	
 	/**
-	 * 实体code  生成规则
-	 * @return
-	 */
-	public String getEntityCode();
-	
-	/**
-	 * 其他code， 生成规则
-	 * @return
-	 */
-	public String getAttrCode();
-	
-	/**
 	 * ##查询出当前实体生成的表，，
 	 *  如果为null, 证明没生成表， 则标记为新增， 否则， 修改实体为再用
 	 * @param entityCode
@@ -173,12 +161,6 @@ public interface BasicItemDao {
 	 */
 	public List<BasicItem> getEntityList(String leftRecordType);
 	
-	/**
-	 * 获取实体的前缀，属性的前缀， 关系的前缀
-	 * @return
-	 */
-	public Object[] getBasicItemFix() throws Exception;
-
 	/**
 	 * 获取级联属性的孩子
 	 * @param code

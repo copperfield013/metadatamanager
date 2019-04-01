@@ -12,8 +12,8 @@ import com.abc.util.ValueType;
 
 import cn.sowell.copframe.dto.page.PageInfo;
 import cn.sowell.datacenter.model.dictionary.pojo.BasicItem;
+import cn.sowell.datacenter.model.dictionary.pojo.BasicItemCodeGenerator;
 import cn.sowell.datacenter.model.node.dao.BinFilterBodyDao;
-import cn.sowell.datacenter.model.node.pojo.BasicItemNodeGenerator;
 import cn.sowell.datacenter.model.node.pojo.BinFilter;
 import cn.sowell.datacenter.model.node.pojo.BinFilterBody;
 import cn.sowell.datacenter.model.node.service.BinFilterBodyService;

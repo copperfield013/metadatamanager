@@ -12,7 +12,7 @@ import org.springframework.stereotype.Repository;
 import cn.sowell.datacenter.model.cascadedict.dao.CascadedictSubsectionDao;
 import cn.sowell.datacenter.model.cascadedict.pojo.CascadedictSubsection;
 import cn.sowell.datacenter.model.cascadedict.pojo.CascadedictSubsectionChild;
-import cn.sowell.datacenter.model.node.pojo.BasicItemNodeGenerator;
+import cn.sowell.datacenter.model.dictionary.pojo.BasicItemCodeGenerator;
 
 @Repository
 public class CascadedictSubsectionDaoImpl implements CascadedictSubsectionDao {

@@ -96,7 +96,7 @@ public interface BasicItemService {
 
 	List<CascadedictBasicItem> getDictCode(Long id) throws Exception;
 
-	void createTowLevel(Towlevelattr criteria, String name);
+	void createTowLevel(Towlevelattr criteria, String name) throws Exception;
 
 	/**
 	 * 根据name和实体id， 查询普通属性中是否有相同的名字， 有则返回数字大于0无则返回0
@@ -120,12 +120,6 @@ public interface BasicItemService {
 	 */
 	public List<BasicItem> getEntityList(String leftRecordType);
 	
-	/**
-	 * 获取实体的前缀，属性的前缀， 关系的前缀
-	 * @return
-	 */
-	public Object[] getBasicItemFix() throws Exception;
-
 	/**
 	 * 这里获取级联属性的孩子
 	 * @param code

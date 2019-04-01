@@ -1,8 +1,4 @@
-package cn.sowell.datacenter.model.node.pojo;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Properties;
+package cn.sowell.datacenter.model.dictionary.pojo;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -12,13 +8,16 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 /**
- * BasicItem 实体和属性规则生成
+ * BasicItem 实体和属性code   的规则生成
  * @author so-well
  *
  */
 @Entity
 @Table(name = "t_sc_basic_item_code_generator")
-public class BasicItemNodeGenerator {
+public class BasicItemCodeGenerator {
+	
+	private static final String RELATIONINFIX = "R"; // 关系中缀
+	private static final String ENTITYINFIX = "E";  // 实体中缀
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -37,7 +36,6 @@ public class BasicItemNodeGenerator {
 		return String.format("%03d", this.id); 
 	}
 	
-	
 	/**
 	 * 输入前缀，组合需要的code
 	 * @param prefix
@@ -53,16 +51,16 @@ public class BasicItemNodeGenerator {
 	 * @return
 	 */
 	public String getEntityCode(String prefix){
-		return prefix+getFormat();
+		return prefix+ ENTITYINFIX + this.getFormat();
 	}
 	
 	/**
-	 * 输入前缀，组合分组属性，多值，普通属性的code
+	 * 	输入前缀，组合分组属性，多值，普通属性的code
 	 * @param prefix
 	 * @return
 	 */
 	public String getAttrCode(String prefix) {
-		return prefix + getFormat();
+		return prefix + this.getFormat();
 	}
 	
 	/**
@@ -71,8 +69,8 @@ public class BasicItemNodeGenerator {
 	 * @param infix
 	 * @return
 	 */
-	public String getRelaCode(String entityCode, String  infix) {
-		return entityCode + infix +getFormat();
+	public String getRelaCode(String entityCode) {
+		return entityCode + RELATIONINFIX +getFormat();
 	}
 
 }
