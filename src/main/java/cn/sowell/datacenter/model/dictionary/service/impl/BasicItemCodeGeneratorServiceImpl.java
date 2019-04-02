@@ -1,10 +1,12 @@
 package cn.sowell.datacenter.model.dictionary.service.impl;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.annotation.Resource;
 
-import org.hibernate.HibernateException;
 import org.springframework.stereotype.Service;
-
+import com.abc.util.ValueType;
 import cn.sowell.datacenter.model.dictionary.dao.BasicItemCodeGeneratorDao;
 import cn.sowell.datacenter.model.dictionary.pojo.BasicItemCodeGenerator;
 import cn.sowell.datacenter.model.dictionary.service.BasicItemCodeGeneratorService;
@@ -13,22 +15,8 @@ import cn.sowell.datacenter.model.dictionary.service.BasicItemCodeGeneratorServi
 public class BasicItemCodeGeneratorServiceImpl implements BasicItemCodeGeneratorService {
 	@Resource
 	BasicItemCodeGeneratorDao  btCodeGenDao;
-
-	@Override
-	public String getEntityCode() throws Exception {
-		BasicItemCodeGenerator btNg = new BasicItemCodeGenerator();
-		btCodeGenDao.insert(btNg);
-		String basicItemFix = getBasicItemFix();
-		return btNg.getEntityCode(basicItemFix);
-	}
-
-	@Override
-	public String getAttrCode() throws Exception {
-		BasicItemCodeGenerator btNg = new BasicItemCodeGenerator();
-		btCodeGenDao.insert(btNg);
-		String basicItemFix = getBasicItemFix();
-		return btNg.getAttrCode(basicItemFix);
-	}
+	
+	private static Map<String, String> map = new HashMap<String, String>();
 
 	@Override
 	public String getRelaCode(String entityCode) throws Exception {
@@ -38,8 +26,42 @@ public class BasicItemCodeGeneratorServiceImpl implements BasicItemCodeGenerator
 	}
 
 	@Override
-	public String getBasicItemFix() throws Exception {
-		return btCodeGenDao.getBasicItemFix();
+	public String getBasicItemFix(ValueType dataType, String entityCode) throws Exception {
+		//获取前缀信息
+		String basicItemFix = null;
+		if (ValueType.RECORD.equals(dataType) && (entityCode == null || entityCode == "")) {
+			 basicItemFix = btCodeGenDao.getBasicItemFixByDB();
+		} else {
+			basicItemFix = map.get(entityCode);
+			if (basicItemFix == null || basicItemFix == "") {
+				int indexOf = entityCode.lastIndexOf(BasicItemCodeGenerator.ENTITYINFIX);
+				basicItemFix = entityCode.substring(0, indexOf);
+				map.put(entityCode, basicItemFix);
+			}
+		} 
+		return basicItemFix;
 	}
+
+	@Override
+	public String getBasicItemCode(ValueType dataType, String entityCode) throws Exception {
+		String basicItemCode = null;
+		BasicItemCodeGenerator btNg = new BasicItemCodeGenerator();
+		btCodeGenDao.insert(btNg);
+
+		String basicItemFix = getBasicItemFix(dataType, entityCode);
+		
+		switch (dataType) {
+		case RECORD:
+			basicItemCode =btNg.getEntityCode(basicItemFix);
+			map.put(basicItemCode, basicItemFix);
+			break;
+		default:
+			basicItemCode = btNg.getAttrCode(basicItemFix);
+			break;
+		}
+		return basicItemCode;
+	}
+
+	
 	
 }

@@ -13,7 +13,7 @@ import com.abc.util.ValueType;
 import io.swagger.annotations.ApiModelProperty;
 
 @Entity
-@Table(name = "t_sc_onelevel_item")
+@Table(name = "t_sc_bi_onelevel")
 public class OneLevelItem {
 	
 	 @ApiModelProperty(value="主键code", name="code")

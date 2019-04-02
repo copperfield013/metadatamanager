@@ -31,7 +31,7 @@ public class StatEDaoImpl implements StatEDao {
 		sb.append("  SELECT e.bie_code,	e.source_code,d.c_cn_name sourceName, b.*, o.c_data_type, o.c_dictionary_index, o.c_need_history")
 		.append(" FROM t_sc_stat_e e")
 		.append(" JOIN t_sc_basic_item b on b.c_code=e.bie_code ")
-		.append(" JOIN t_sc_onelevel_item o on b.c_code=o.c_code")
+		.append(" JOIN t_sc_bi_onelevel o on b.c_code=o.c_code")
 		.append(" JOIN t_sc_basic_item d on d.c_code=e.source_code");
 		return sFactory.getCurrentSession().createSQLQuery(sb.toString()).list();
 	}

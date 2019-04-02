@@ -52,7 +52,7 @@ public class StatDfDaoImpl implements StatDfDao {
 		sb.append(" SELECT d.id statDfId, d.type, d.bi_code,  b.c_cn_name, b.c_en_name, b.c_parent, b.c_using_state, o.*")
 		.append(" FROM `t_sc_basic_item` b ")
 		.append(" join t_sc_stat_df d on b.c_code=d.bi_code ")
-		.append("  join t_sc_onelevel_item o on  b.c_code=o.c_code")
+		.append("  join t_sc_bi_onelevel o on  b.c_code=o.c_code")
 		.append(" WHERE b.c_parent=:bieCode");
 		
 		return sFactory.getCurrentSession().createSQLQuery(sb.toString()).setParameter("bieCode", bieCode).list();

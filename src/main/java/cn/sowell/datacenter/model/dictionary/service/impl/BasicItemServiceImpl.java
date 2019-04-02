@@ -149,7 +149,7 @@ public class BasicItemServiceImpl implements BasicItemService {
 					status = 0;
 					savePastDue(basicItem, status);//全部标记为新增
 				} else {//如果查到表， 只把当前实体标记为再用并把每个表对应的分组和重复类型标记为再用
-					String ibt = btCodeGenerService.getBasicItemFix();
+					String ibt = btCodeGenerService.getBasicItemFix(ValueType.RECORD, basicItem.getCode());
 					status = 1;
 					pastDue(basicItem, status);
 					//更改分组或重复类型
@@ -285,16 +285,11 @@ public class BasicItemServiceImpl implements BasicItemService {
 	public BasicItem saveOrUpdate(BasicItem obj, String flag, String comm, Integer cascadedict) throws Exception {
 		//生成code 规则：实体code IBTE0001 开始  其他code规则 IBT00001开始
 		if ("add".equals(flag)) {
-			String dataType = obj.getOneLevelItem().getDataType();
-			if (String.valueOf(ValueType.RECORD.getIndex()).equals(dataType)) {
-				String entityCode = btCodeGenerService.getEntityCode();
-				obj.setCode(entityCode);
-				obj.getOneLevelItem().setCode(entityCode);
-			} else {
-				String attrCode = btCodeGenerService.getAttrCode();
-				obj.setCode(attrCode);
-				obj.getOneLevelItem().setCode(attrCode);
-			}
+			ValueType valueType = ValueType.getValueType(Integer.valueOf(obj.getOneLevelItem().getDataType()));
+			
+			String basicItemCode = btCodeGenerService.getBasicItemCode(valueType, getEntityCode(obj.getParent()));
+			obj.setCode(basicItemCode);
+			obj.getOneLevelItem().setCode(basicItemCode);
 		}
 		
 		if (String.valueOf(ValueType.REPEAT.getIndex()).equals(obj.getOneLevelItem().getDataType())) {
@@ -511,7 +506,7 @@ public class BasicItemServiceImpl implements BasicItemService {
 	 * @throws Exception 
 	 */
 	private BasicItem createLable(BasicItem obj, Integer cascadedict) throws Exception {
-		String attrCode = btCodeGenerService.getAttrCode();
+		String attrCode = btCodeGenerService.getBasicItemCode(ValueType.LABLETYPE, getEntityCode(obj.getCode()));
 		BasicItem bt = new BasicItem();
 		OneLevelItem twoItem = new OneLevelItem();
 		bt.setOneLevelItem(twoItem);
@@ -528,12 +523,6 @@ public class BasicItemServiceImpl implements BasicItemService {
 		return bt;
 	}
 	
-	@Override
-	public void createLablea(String code) {
-		//BasicItem createLable = createLable(code, 125);
-		//basicItemDao.insert(createLable);
-	}
-
 	/**
 	 * 生成文件的伴生属性
 	 * @param obj
@@ -621,8 +610,6 @@ public class BasicItemServiceImpl implements BasicItemService {
 
 	@Override
 	public void createTabCol() {
-		
-		
 		//查询需要创建的表
 		List queryCreTab = basicItemDao.queryCreTab();
 			Iterator iterator = queryCreTab.iterator();
@@ -886,20 +873,19 @@ public class BasicItemServiceImpl implements BasicItemService {
 
 	@Override
 	public void createTowLevel(Towlevelattr criteria, String name) throws Exception {
-		
 		BasicItem bt = new BasicItem();
 		bt.setUsingState(1);
 		bt.setCnName(name);
-		
-		String attrCode = btCodeGenerService.getAttrCode();
-		criteria.setCode(attrCode);
-		bt.setCode(attrCode);
 		
 		TowlevelattrMultiattrMapping towlevle = tmms.getOne(Long.parseLong(criteria.getMappingId()));
 		String related= towlevle.getRelatedMultiattribute();
 		BasicItem basicItem = basicItemDao.get(BasicItem.class, related);
 		bt.setParent(basicItem.getParent());
 		bt.setOneLevelItem(null);
+		String attrCode = btCodeGenerService.getBasicItemCode(ValueType.STRING, getEntityCode(basicItem.getParent())); 
+		criteria.setCode(attrCode);
+		bt.setCode(attrCode);
+		
 		basicItemDao.insert(bt);
 		towlevelattrService.create(criteria);
 	}
@@ -938,7 +924,7 @@ public class BasicItemServiceImpl implements BasicItemService {
 		OneLevelItem oneLevelItem = new OneLevelItem();
 		bt.setOneLevelItem(oneLevelItem);
 		
-		String attrCode = btCodeGenerService.getAttrCode();
+		String attrCode = btCodeGenerService.getBasicItemCode(ValueType.SUBCASTYPE, getEntityCode(parent.getCode()));
 		bt.setCode(attrCode);
 		bt.getOneLevelItem().setCode(attrCode);
 		bt.setCnName(cnName);
@@ -1052,5 +1038,11 @@ public class BasicItemServiceImpl implements BasicItemService {
 			} 
 		
 		return message;
+	}
+
+	@Override
+	public String getEntityCode(String parentEntityCode) {
+		String[] split = parentEntityCode.split("_");
+		return split[0];
 	}
 }

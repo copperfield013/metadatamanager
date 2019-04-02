@@ -1,6 +1,5 @@
 package cn.sowell.datacenter.model.dictionary.pojo;
 
-import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -10,7 +9,7 @@ import javax.persistence.Table;
 import org.hibernate.annotations.GenericGenerator;
 
 @Entity
-@Table(name = "t_sc_cascade_attr")
+@Table(name = "t_sc_bi_cascade_attr")
 public class CascadeAttr{
 
 

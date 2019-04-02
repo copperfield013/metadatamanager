@@ -22,12 +22,12 @@ public class BasicItemCodeGeneratorDaoImpl implements BasicItemCodeGeneratorDao 
 	}
 	
 	/**
-	 * 获取实体和属性前缀
+	 * 	从数据库加载获取实体和属性前缀
 	 * @return
 	 * @throws Exception
 	 */
 	@Override
-	public String getBasicItemFix() throws Exception {
+	public String getBasicItemFixByDB() throws Exception {
 		String sql = "SELECT prefix FROM `t_sc_basic_item_fix` WHERE using_state='1' ORDER BY id desc";
 		List list = sFactory.getCurrentSession().createSQLQuery(sql).list();
 		if (list.isEmpty()) {

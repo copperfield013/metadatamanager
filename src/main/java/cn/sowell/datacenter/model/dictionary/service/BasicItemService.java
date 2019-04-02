@@ -173,8 +173,6 @@ public interface BasicItemService {
 
 	List getAllEntity();
 
-	void createLablea(String code);
-	
 	/**
 	 * 根据实体id， 获取统计实体下， 唯一的一个分组
 	 * @param parrentCode
@@ -190,5 +188,11 @@ public interface BasicItemService {
 	 * @throws Exception
 	 */
 	Message check(String code) throws Exception;
+	
+	/**
+	 * 获取属性所对应的实体code， 例如： XFJDE001
+	 * @return
+	 */
+	String getEntityCode(String parentEntityCode);
 	
 }

@@ -11,10 +11,10 @@ public interface BasicItemCodeGeneratorDao {
 	
 	
 	/**
-	 * 获取实体和属性前缀
+	 * 	从数据库中加载，获取实体和属性前缀
 	 * @return
 	 * @throws Exception
 	 */
-	public String getBasicItemFix() throws Exception;
+	public String getBasicItemFixByDB() throws Exception;
 		
 }

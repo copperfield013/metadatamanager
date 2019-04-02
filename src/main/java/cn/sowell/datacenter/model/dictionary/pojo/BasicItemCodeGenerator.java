@@ -16,8 +16,8 @@ import javax.persistence.Table;
 @Table(name = "t_sc_basic_item_code_generator")
 public class BasicItemCodeGenerator {
 	
-	private static final String RELATIONINFIX = "R"; // 关系中缀
-	private static final String ENTITYINFIX = "E";  // 实体中缀
+	public static final String RELATIONINFIX = "R"; // 关系中缀
+	public static final String ENTITYINFIX = "E";  // 实体中缀
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
