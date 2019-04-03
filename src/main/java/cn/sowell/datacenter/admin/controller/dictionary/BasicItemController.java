@@ -31,6 +31,8 @@ import cn.sowell.copframe.dto.ajax.JsonArrayResponse;
 import cn.sowell.copframe.dto.ajax.NoticeType;
 import cn.sowell.datacenter.admin.controller.AdminConstants;
 import cn.sowell.datacenter.admin.controller.node.api.BasicItems;
+import cn.sowell.datacenter.admin.controller.node.api.InlineResponse2001;
+import cn.sowell.datacenter.admin.controller.node.api.InlineResponse2002;
 import cn.sowell.datacenter.admin.controller.node.api.InlineResponse2003;
 import cn.sowell.datacenter.admin.controller.node.api.InlineResponse2004;
 import cn.sowell.datacenter.admin.controller.node.api.InlineResponse2005;
@@ -61,7 +63,7 @@ public class BasicItemController {
 	Logger logger = Logger.getLogger(BasicItemController.class);
 	@org.springframework.web.bind.annotation.InitBinder
 	public void InitBinder(ServletRequestDataBinder binder) {
-		System.out.println("执行了InitBinder方法");
+		logger.debug("执行了InitBinder方法");
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 		dateFormat.setLenient(false);
 		binder.registerCustomEditor(Date.class, null, new CustomDateEditor(dateFormat, true));
@@ -295,32 +297,32 @@ public class BasicItemController {
 	}
 	
 	//删除实体， 属性
-		@ResponseBody
-		@RequestMapping(value="/delete", method=RequestMethod.POST)
-			public AjaxPageResponse delete(String id){
-				try {
-					AjaxPageResponse response = new AjaxPageResponse();
-						
-						BasicItem basicItem = basicItemService.getBasicItem(id);
-						
-						//检查数据
-						Message message = basicItemService.check(basicItem.getCode());
-						 
-						if (!message.getNoticeType().equals(NoticeType.SUC)) {
-							return AjaxPageResponse.FAILD(message.getMessage());
-						}
-						basicItemService.delete(basicItem);
-						if (String.valueOf(ValueType.RECORD.getIndex()).equals(basicItem.getOneLevelItem().getDataType())) {
-							return AjaxPageResponse.CLOSE_AND_REFRESH_PAGE("删除成功", "basicItem_list");
-						} else {
-							response.setNotice("删除成功");
-							response.setNoticeType(NoticeType.SUC);
-							return response;
-						}
-				} catch (Exception e) {
-					 return AjaxPageResponse.FAILD("删除失败");
-				}
+	@ResponseBody
+	@RequestMapping(value="/delete", method=RequestMethod.POST)
+		public AjaxPageResponse delete(String id){
+			try {
+				AjaxPageResponse response = new AjaxPageResponse();
+					
+					BasicItem basicItem = basicItemService.getBasicItem(id);
+					
+					//检查数据
+					Message message = basicItemService.check(basicItem.getCode());
+					 
+					if (!message.getNoticeType().equals(NoticeType.SUC)) {
+						return AjaxPageResponse.FAILD(message.getMessage());
+					}
+					basicItemService.delete(basicItem);
+					if (String.valueOf(ValueType.RECORD.getIndex()).equals(basicItem.getOneLevelItem().getDataType())) {
+						return AjaxPageResponse.CLOSE_AND_REFRESH_PAGE("删除成功", "basicItem_list");
+					} else {
+						response.setNotice("删除成功");
+						response.setNoticeType(NoticeType.SUC);
+						return response;
+					}
+			} catch (Exception e) {
+				 return AjaxPageResponse.FAILD("删除失败");
 			}
+		}
 	
 	
 	@ResponseBody
@@ -681,6 +683,59 @@ public class BasicItemController {
 				map.put("msg", "操作失败");
 				return jobj.toString();
 			}
+		}
+	    
+	    
+	    @ResponseBody
+		@ApiOperation(value = "根据实体id, 获取本实体下所有的多值属性本身", nickname = "getRepeat", notes = "根据实体id, 获取本实体下所有的多值属性本身", response = InlineResponse2002.class, tags={ "configurationFiles", })
+	    @ApiResponses(value = { 
+	        @ApiResponse(code = 200, message = "OK", response = InlineResponse2002.class),
+	        @ApiResponse(code = 401, message = "操作失败")})
+	    @RequestMapping(value = "/getRepeat",
+	        method = RequestMethod.POST)
+		public ResponseEntity<InlineResponse2002> getRepeat(String entityId) {
+			try {
+				BasicItemCriteria criteria = new BasicItemCriteria();
+				criteria.setParent(entityId);
+				OneLevelItem oneLevelItem = new OneLevelItem();
+				oneLevelItem.setDataType(String.valueOf(ValueType.REPEAT.getIndex()));
+				criteria.setUsingState(1);
+				criteria.setOneLevelItem(oneLevelItem);
+				
+				List<BasicItem> list = basicItemService.queryList(criteria, "");
+				InlineResponse2002 inline = new InlineResponse2002();
+				inline.repeat(list);
+				return new ResponseEntity<InlineResponse2002>(inline, HttpStatus.OK);
+	        } catch (Exception e) {                
+	            return new ResponseEntity<InlineResponse2002>(HttpStatus.INTERNAL_SERVER_ERROR);
+	        }
+		}
+
+		@ResponseBody
+		@ApiOperation(value = "根据多值属性本身的id,获取多值属性的孩子", nickname = "getRepeatChild", notes = "多值属性本身的id, 获取多值属性的孩子", response = InlineResponse2001.class, tags={ "configurationFiles", })
+	    @ApiResponses(value = { 
+	        @ApiResponse(code = 200, message = "OK", response = InlineResponse2001.class),
+	        @ApiResponse(code = 401, message = "操作失败") })
+	    @RequestMapping(value = "/getRepeatChild",
+	        method = RequestMethod.POST)
+		public ResponseEntity<InlineResponse2001> getRepeatChild(String repeatId) {
+	        try {
+	        	
+	        	List<BasicItem> list = null;
+	        	BasicItem repeat = basicItemService.getBasicItem(repeatId);
+	        	if (repeat != null) {
+	        		BasicItemCriteria criteria = new BasicItemCriteria();
+	        		criteria.setParent(repeat.getParent() + "_" + repeatId);
+	        		criteria.setUsingState(1);
+	        		list = basicItemService.queryList(criteria, String.valueOf(ValueType.CASCADETYPE.getIndex()));
+	        	}
+	    		
+	    		InlineResponse2001 inline = new InlineResponse2001();
+	    		inline.repeatChild(list);
+	            return new ResponseEntity<InlineResponse2001>(inline, HttpStatus.OK);
+	        } catch (Exception e) { 
+	            return new ResponseEntity<InlineResponse2001>(HttpStatus.INTERNAL_SERVER_ERROR);
+	        }
 		}
 	    
 	    

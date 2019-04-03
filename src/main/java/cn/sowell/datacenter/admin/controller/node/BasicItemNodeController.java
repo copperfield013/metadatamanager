@@ -294,7 +294,7 @@ public class BasicItemNodeController {
 	}
 
 	// ajax 根据实体id, 获取本实体下所有的多值属性本身
-	@ResponseBody
+	/*@ResponseBody
 	@ApiOperation(value = "根据实体id, 获取本实体下所有的多值属性本身", nickname = "getRepeat", notes = "根据实体id, 获取本实体下所有的多值属性本身", response = InlineResponse2002.class, tags={ "configurationFiles", })
     @ApiResponses(value = { 
         @ApiResponse(code = 200, message = "OK", response = InlineResponse2002.class),
@@ -344,11 +344,11 @@ public class BasicItemNodeController {
         } catch (Exception e) { 
             return new ResponseEntity<InlineResponse2001>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
-	}
+	}*/
 
 	// ajax 根据实体id， 获取当前实体下的所有普通属性，
 	// 还有当前实体下的所有二级属性
-	@ResponseBody
+	/*@ResponseBody
     @RequestMapping(value = "/getComm", method = RequestMethod.POST)
 	public String getComm(String entityId) {
 		Map<String, Object> map = new HashMap<String, Object>();
@@ -364,7 +364,7 @@ public class BasicItemNodeController {
 			map.put("msg", "加载失败！");
             return jobj.toJSONString();
         }
-	}
+	}*/
 	
 	// 获取lab关系名称, 关系下边的lab
 	@ResponseBody

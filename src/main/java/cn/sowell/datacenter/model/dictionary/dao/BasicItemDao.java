@@ -86,6 +86,7 @@ public interface BasicItemDao {
 	 * 创建索引表
 	 * @return
 	 */
+	@Deprecated
 	List queryCreateIndexTbl();
 	
 	/**

@@ -249,7 +249,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
      	   entityCode =  $(el).closest(".collapse-content").siblings(".collapse-header").closest(".collapse-content").siblings(".collapse-header").attr("data-abcattrcode");
         }
         $CPF.showLoading();
-		Ajax.ajax('admin/node/basicItemNode/getCommLab', {
+		Ajax.ajax('admin/dictionary/basicItem/getCommLab', {
 			entityCode:entityCode
 		}, function(data) {
 			console.log(data);
@@ -773,10 +773,10 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
             entityId = $(el).closest(".collapse-header").closest(".collapse-content").siblings(".collapse-header").attr("data-abcattrcode");
         }
         $CPF.showLoading();
-		Ajax.ajax('admin/node/basicItemNode/getComm?entityId', {
+		Ajax.ajax('admin/dictionary/basicItem/getComm?entityId', {
 			entityId: entityId
 		}, function(data) {			
-			var data = data.comm;
+			var data = data.commList;
 			 if (data.length == 0) {
                 Dialog.notice("请在模型中添加属性", "warning");
                 $CPF.closeLoading();    
@@ -844,7 +844,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 					.find("option:selected")
 					.attr("data-id");
         $CPF.showLoading();
-		Ajax.ajax('admin/node/basicItemNode/getRepeatChild?repeatId', {
+		Ajax.ajax('admin/dictionary/basicItem/getRepeatChild?repeatId', {
 			repeatId: repeatId
 		}, function(data) {			
 			var data = data.repeatChild;
@@ -953,7 +953,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
         var entityId = $(el).closest(".collapse-header").attr("data-abcattrcode");
         var dragWrapLen = $(".drag-wrap").length + 1 ;
         $CPF.showLoading();
-		Ajax.ajax('admin/node/basicItemNode/getRepeat?entityId', {
+		Ajax.ajax('admin/dictionary/basicItem/getRepeat?entityId', {
 			entityId: entityId
 		}, function(data) {			
 			var data = data.repeat;	

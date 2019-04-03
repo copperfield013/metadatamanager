@@ -488,6 +488,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
                 $CPF.closeLoading();
             });            
     	} else if("11" == $this.val()) {//如果是引用类型
+    		
     		 //如果是引用类型， 则显示下拉列表
 	    	$CPF.showLoading();
 	        $form.find("#dictParentId").remove();
@@ -499,19 +500,27 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
 	        $form.find("#s2id_refType").remove();
             //选中  则显示下拉列表       
             Ajax.ajax('admin/dictionary/basicItem/referenceTypeEntityList', '', function(data) {
-            	
                 var entityList = data.entity;
+                
+                debugger;
+                
                 var str = "<span id=\"refType_enum\">引用实体：</span><select id=\"refType\" name=\"refType\">";
             	for (var p in entityList) { //遍历json数组时，这么写p为索引，0,1
                     str = str + "<option value=\"" + entityList[p].code + "\">" + entityList[p].cnName + "</option>"; 
                 }
-                
                 str = str + "</select>";               
                 $form.find("#dataType").after(str);                
                 $form.find("#refType").css("width","30%").select2();
                 $form.find("#dataRange").val("32").hide();
                 $form.find("#cn_dataRange").hide();                 
                 $CPF.closeLoading();
+                
+                //获取第一个引用实体的code
+                var firstCode = entityList[0].code;
+                
+                
+                
+                
             });            
     		 
     	} else if ("17" == $this.val()) {//级联类型
@@ -852,7 +861,6 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
                 } else {
                 	 str = str + " <option value =\"" + key + "\">" + data[key] + "</option>";
                 }
-                
             }    
             
             $select.append(str).css("width","30%").select2();
@@ -888,7 +896,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
     	var  $form = $newAdd.find(".opera_more_child").find("#more_child_opera_form1");
     	
     	$form.find("#dictParentId").attr("disabled", false);
-    	 $form.find("#dataType").attr("disabled", false);
+    	$form.find("#dataType").attr("disabled", false);
     	$form.find("#dataType").html("");
     	
     	$form.find("#needHistory").hide();

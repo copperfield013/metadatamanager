@@ -215,19 +215,19 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 		$CPF.showLoading();
 		//获取当前实体下， 所有的多值属性本省
 		var repeatList;
-		Ajax.ajax('admin/node/basicItemNode/getRepeat', {
+		Ajax.ajax('admin/dictionary/basicItem/getRepeat', {
 			entityId: entityId
 		}, function(data) {			
 			repeatList = data.repeat;	
 		
 		//获取当前实体下，所有的普通属性和二级属性
-		Ajax.ajax('admin/node/basicItemNode/getComm?entityId', {
+		Ajax.ajax('admin/dictionary/basicItem/getComm?entityId', {
 			entityId: entityId
 		}, function(data) {	
-			var commList = data.comm;
+			var commList = data.commList;
 			
 			//获取所点击的多值属性对应的孩子
-			Ajax.ajax('admin/node/basicItemNode/getRepeatChild', {
+			Ajax.ajax('admin/dictionary/basicItem/getRepeatChild', {
 	    		repeatId: entityId
 			}, function(data) {			
 				var repeatChildList = data.repeatChild;	
@@ -459,11 +459,11 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
             
             relativeHtml += "<select disabled class='abcattrCodeData'>";	
          
-            Ajax.ajax('admin/node/basicItemNode/getComm', {
+            Ajax.ajax('admin/dictionary/basicItem/getComm', {
     	    	entityId:enID
     	    }, function(data){		
-    	    	var entityData = data.comm;
-    	    	 Ajax.ajax('admin/node/basicItemNode/getRepeatChild', {
+    	    	var entityData = data.commList;
+    	    	 Ajax.ajax('admin/dictionary/basicItem/getRepeatChild', {
     	    		 repeatId:enID
     	    	    }, function(data){		
     	    	    	var repeatData = data.repeatChild;
@@ -1171,10 +1171,10 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
             }
             attrHtml += "</select>";
             attrHtml += "<select disabled class='abc-attr rattrType'>"; 
-			 Ajax.ajax('admin/node/basicItemNode/getComm', {
+			 Ajax.ajax('admin/dictionary/basicItem/getComm', {
 				   entityId:rightRecordType
 			   }, function(data){		    	
-		            var data = data.comm;
+		            var data = data.commList;
 					if (data.length == 0) {
 		                Dialog.notice("请在模型中添加属性", "warning");
 		                $CPF.closeLoading();    
@@ -2453,10 +2453,10 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
         		.find("option:selected").attr("data-id");
         }
         $CPF.showLoading();
-		Ajax.ajax('admin/node/basicItemNode/getComm?entityId', {
+		Ajax.ajax('admin/dictionary/basicItem/getComm?entityId', {
 			entityId: entityId
 		}, function(data) {			
-			var data = data.comm;
+			var data = data.commList;
 			if (data.length == 0) {
                 Dialog.notice("请在模型中添加属性", "warning");
                 $CPF.closeLoading();    
@@ -2524,7 +2524,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
         			.find("option:selected")
         			.attr("data-id");
         $CPF.showLoading();
-		Ajax.ajax('admin/node/basicItemNode/getRepeatChild?repeatId', {
+		Ajax.ajax('admin/dictionary/basicItem/getRepeatChild?repeatId', {
 			repeatId: repeatId
 		}, function(data) {			
 			var data = data.repeatChild;
@@ -2631,7 +2631,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
         var entityId =$(el).closest(".collapse-header").attr("data-abcattrcode");               
         var dragWrapLen = $(".dragEdit-wrap").length + 1 ;
         $CPF.showLoading();
-		Ajax.ajax('admin/node/basicItemNode/getRepeat?entityId', {
+		Ajax.ajax('admin/dictionary/basicItem/getRepeat?entityId', {
 			entityId: entityId
 		}, function(data) {			
 			var data = data.repeat;		
@@ -2734,10 +2734,10 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 			
 			var rightRecordType = relationList[0].rightRecordType;
 			
-		   Ajax.ajax('admin/node/basicItemNode/getComm', {
+		   Ajax.ajax('admin/dictionary/basicItem/getComm', {
 			   entityId:rightRecordType
 		   }, function(data){		    	
-	            var data = data.comm;
+	            var data = data.commList;
 				if (data.length == 0) {
 	                Dialog.notice("请在模型中添加属性", "warning");
 	                $CPF.closeLoading();    
@@ -2961,11 +2961,11 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
             
             relativeHtml += "<select class='abcattrCodeData'>";	
             //getCriteriaSymbol
-    	    Ajax.ajax('admin/node/basicItemNode/getComm', {
+    	    Ajax.ajax('admin/dictionary/basicItem/getComm', {
     	    	entityId:entityId
     	    }, function(data){		
-    	    	var entityData = data.comm;
-    	    	 Ajax.ajax('admin/node/basicItemNode/getRepeatChild', {
+    	    	var entityData = data.commList;
+    	    	 Ajax.ajax('admin/dictionary/basicItem/getRepeatChild', {
     	    		 repeatId:entityId
     	    	    }, function(data){		
     	    	    	var repeatData = data.repeatChild;
@@ -4476,10 +4476,10 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
     	var rightEntityId = $(this).find("option:selected").attr("data-rightid");
     	
     	if ($rattr.hasClass("rattrType")) {
-    	 Ajax.ajax('admin/node/basicItemNode/getComm', {
+    	 Ajax.ajax('admin/dictionary/basicItem/getComm', {
 			   entityId:rightEntityId
 		   }, function(data){		    	
-	            var data = data.comm;
+	            var data = data.commList;
 	            var rattrHtml="";
 				if (data.length == 0) {
 	                Dialog.notice("请在模型中添加属性", "warning");

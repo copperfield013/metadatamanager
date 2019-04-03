@@ -814,7 +814,6 @@ public class BasicItemServiceImpl implements BasicItemService {
 			}
 		}
 		
-		
 		//创建标签表
 		List queryCreLable = basicItemDao.queryCreLable();
 		for (Object object : queryCreLable) {
