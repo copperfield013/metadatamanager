@@ -841,6 +841,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
     	var $newAdd = $this.closest(".new_add");
     	var $form = $newAdd.find(".opera_comm").find("#comm_opera_form1");
     	var $select =  $form.find("#dataType");
+    	$select.attr("disabled", false);
     	$this.siblings('.entity_attr').removeClass('pitch');
         $select.html("");
         Ajax.ajax('admin/dictionary/basicItem/getDataType', '', function(data) {
@@ -2029,6 +2030,8 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
     	            }
     	        });
             } else if ("11" == jsonData.oneLevelItem.dataType) {//如果是引用类型
+            	
+            	alert("222222222222");
             	
             	 $form1.find("#refType_enum").remove();
 	                $form1.find("#refType").remove();
