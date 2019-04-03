@@ -2031,8 +2031,6 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
     	        });
             } else if ("11" == jsonData.oneLevelItem.dataType) {//如果是引用类型
             	
-            	alert("222222222222");
-            	
             	 $form1.find("#refType_enum").remove();
 	                $form1.find("#refType").remove();
 	                $form1.find("#s2id_refType").remove(); 
