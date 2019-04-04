@@ -40,11 +40,13 @@ import cn.sowell.datacenter.model.cascadedict.pojo.CascadedictBasicItem;
 import cn.sowell.datacenter.model.cascadedict.service.CascadedictBasicItemService;
 import cn.sowell.datacenter.model.dictionary.criteria.BasicItemCriteria;
 import cn.sowell.datacenter.model.dictionary.pojo.BasicItem;
+import cn.sowell.datacenter.model.dictionary.pojo.BiRefAttr;
 import cn.sowell.datacenter.model.dictionary.pojo.CascadeAttr;
 import cn.sowell.datacenter.model.dictionary.pojo.OneLevelItem;
 import cn.sowell.datacenter.model.dictionary.pojo.Towlevelattr;
 import cn.sowell.datacenter.model.dictionary.pojo.TowlevelattrMultiattrMapping;
 import cn.sowell.datacenter.model.dictionary.service.BasicItemService;
+import cn.sowell.datacenter.model.dictionary.service.BiRefAttrService;
 import cn.sowell.datacenter.model.dictionary.service.TowlevelattrMultiattrMappingService;
 import cn.sowell.datacenter.model.dictionary.service.TowlevelattrService;
 import cn.sowell.datacenter.utils.Message;
@@ -80,6 +82,9 @@ public class BasicItemController {
 	
 	@Resource
 	CascadedictBasicItemService cascadedictBasicItemService;
+	
+	@Resource
+	BiRefAttrService biRefAttrService;
 	
 	@ApiOperation(value = "跳转到list页面获取实体信息", nickname = "list", notes = "跳转到list页面获取实体信息", response = ModelAndView.class, tags={ "entityManager", })
     @ApiResponses(value = { 
@@ -181,12 +186,12 @@ public class BasicItemController {
         @ApiResponse(code = 401, message = "操作失败") })
     @RequestMapping(value = "/do_add",
         method = RequestMethod.POST)
-	public ResponseEntity doAdd(@ApiParam(name="BasicItem", value="传入json格式", required=true)BasicItem basicItem, OneLevelItem oneLevelItem, Integer cascadedict){
+	public ResponseEntity doAdd(@ApiParam(name="BasicItem", value="传入json格式", required=true)BasicItem basicItem, OneLevelItem oneLevelItem, Integer cascadedict, BiRefAttr biRefAttr){
                 try {
                 	
                 	basicItem.setCnName(basicItem.getCnName().trim());
                 	
-                	new BasicItemContext().saveBasicItem(basicItemService, basicItem, oneLevelItem, cascadedict);
+                	new BasicItemContext().saveBasicItem(basicItemService, basicItem, oneLevelItem, cascadedict, biRefAttr);
         			if (String.valueOf(ValueType.RECORD.getIndex()).equals(basicItem.getOneLevelItem().getDataType())) {
         				return new ResponseEntity<AjaxPageResponse>(AjaxPageResponse.CLOSE_AND_REFRESH_PAGE("操作成功", "basicItem_list"), HttpStatus.OK);
         			} else {
@@ -759,6 +764,24 @@ public class BasicItemController {
 			}
 		}
 	    
-	    
+	    //根据引用属性的code， 获取引用属性的BiRefAttr
+	    @ResponseBody
+		@RequestMapping("/getBiRefAttr")
+		public String getBiRefAttr(String refTypeCode){
+			Map<String, Object> map = new HashMap<String, Object>();
+			JSONObject jobj = new JSONObject(map);
+			try {
+				  BiRefAttr biRefAttr = biRefAttrService.getOne(refTypeCode);
+				map.put("code", 200);
+				map.put("msg", "操作成功");
+				map.put("biRefAttr", biRefAttr);
+				return jobj.toString();
+			} catch (Exception e) {
+				logger.error("操作失败", e);
+				map.put("code", 400);
+				map.put("msg", "操作失败");
+				return jobj.toString();
+			}
+		}
 	    
 }

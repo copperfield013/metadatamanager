@@ -3,6 +3,7 @@ package cn.sowell.datacenter.model.stat.service;
 import java.util.List;
 
 import cn.sowell.datacenter.model.dictionary.pojo.BasicItem;
+import cn.sowell.datacenter.model.dictionary.pojo.BiRefAttr;
 import cn.sowell.datacenter.model.dictionary.pojo.OneLevelItem;
 import cn.sowell.datacenter.model.stat.pojo.StatDf;
 
@@ -25,7 +26,7 @@ public interface StatDfService {
 	 * 对象插入到数据表中
 	 * @param demo
 	 */
-	void saveOrUpdate(BasicItem basicItem, OneLevelItem oneLevelItem, Integer cascadedict,StatDf obj) throws Exception;
+	void saveOrUpdate(BasicItem basicItem, OneLevelItem oneLevelItem, Integer cascadedict,StatDf obj, BiRefAttr biRefAttr) throws Exception;
 
 	/**
 	 * 从数据库中查找对应的pojo对象

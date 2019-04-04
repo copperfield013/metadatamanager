@@ -21,6 +21,7 @@ import com.alibaba.fastjson.JSONObject;
 import cn.sowell.copframe.dto.ajax.AjaxPageResponse;
 import cn.sowell.datacenter.admin.controller.AdminConstants;
 import cn.sowell.datacenter.model.dictionary.pojo.BasicItem;
+import cn.sowell.datacenter.model.dictionary.pojo.BiRefAttr;
 import cn.sowell.datacenter.model.dictionary.pojo.OneLevelItem;
 import cn.sowell.datacenter.model.dictionary.service.BasicItemService;
 import cn.sowell.datacenter.model.stat.pojo.StatDf;
@@ -47,12 +48,12 @@ public class StatDfController {
 
 	@ResponseBody
 	@RequestMapping("/do_add")
-	public String doAdd(@ApiParam(name="BasicItem", value="传入json格式", required=true)BasicItem basicItem, OneLevelItem oneLevelItem, Integer cascadedict,StatDf creteria){
+	public String doAdd(@ApiParam(name="BasicItem", value="传入json格式", required=true)BasicItem basicItem, OneLevelItem oneLevelItem, Integer cascadedict,StatDf creteria, BiRefAttr biRefAttr){
 		Map<String, Object> map = new HashMap<String, Object>();
 		JSONObject jobj = new JSONObject(map);
 		try {
 			
-			statDfService.saveOrUpdate(basicItem, oneLevelItem, cascadedict, creteria);
+			statDfService.saveOrUpdate(basicItem, oneLevelItem, cascadedict, creteria, biRefAttr);
 			
 			map.put("statDf", creteria);
 			map.put("code", 200);

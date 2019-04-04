@@ -39,6 +39,7 @@ import cn.sowell.datacenter.model.cascadedict.pojo.CascadedictSubsection;
 import cn.sowell.datacenter.model.cascadedict.service.CascadedictBasicItemService;
 import cn.sowell.datacenter.model.cascadedict.service.CascadedictSubsectionService;
 import cn.sowell.datacenter.model.dictionary.pojo.BasicItem;
+import cn.sowell.datacenter.model.dictionary.pojo.BiRefAttr;
 import cn.sowell.datacenter.model.dictionary.pojo.OneLevelItem;
 import cn.sowell.datacenter.model.dictionary.service.BasicItemService;
 import cn.sowell.datacenter.model.stat.pojo.StatE;
@@ -130,9 +131,9 @@ public class StatEController {
 
 	@ResponseBody
 	@RequestMapping("/do_add")
-	public AjaxPageResponse doAdd(@ApiParam(name="BasicItem", value="传入json格式", required=true)BasicItem basicItem, OneLevelItem oneLevelItem, Integer cascadedict,StatE creteria){
+	public AjaxPageResponse doAdd(@ApiParam(name="BasicItem", value="传入json格式", required=true)BasicItem basicItem, OneLevelItem oneLevelItem, Integer cascadedict,StatE creteria, BiRefAttr biRefAttr){
 		try {
-			statEService.insert(basicItem, oneLevelItem, cascadedict,creteria);
+			statEService.insert(basicItem, oneLevelItem, cascadedict,creteria, biRefAttr);
 			return AjaxPageResponse.CLOSE_AND_REFRESH_PAGE("添加成功", "state_list");
 		} catch (DataIntegrityViolationException e) {
 			logger.error("该统计实体已存在", e);

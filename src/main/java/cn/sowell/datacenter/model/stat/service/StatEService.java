@@ -6,6 +6,7 @@ import cn.sowell.copframe.dto.page.PageInfo;
 import cn.sowell.datacenter.model.cascadedict.criteria.CascadedictBasicItemCriteria;
 import cn.sowell.datacenter.model.cascadedict.pojo.CascadedictBasicItem;
 import cn.sowell.datacenter.model.dictionary.pojo.BasicItem;
+import cn.sowell.datacenter.model.dictionary.pojo.BiRefAttr;
 import cn.sowell.datacenter.model.dictionary.pojo.OneLevelItem;
 import cn.sowell.datacenter.model.stat.pojo.StatDf;
 import cn.sowell.datacenter.model.stat.pojo.StatE;
@@ -23,7 +24,7 @@ public interface StatEService {
 	 * 对象插入到数据表中
 	 * @param demo
 	 */
-	void insert(BasicItem basicItem, OneLevelItem oneLevelItem, Integer cascadedict,StatE obj) throws Exception;
+	void insert(BasicItem basicItem, OneLevelItem oneLevelItem, Integer cascadedict,StatE obj, BiRefAttr biRefAttr) throws Exception;
 
 	/**
 	 * 从数据库中查找对应的pojo对象

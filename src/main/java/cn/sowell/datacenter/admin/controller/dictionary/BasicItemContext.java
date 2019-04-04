@@ -3,12 +3,13 @@ package cn.sowell.datacenter.admin.controller.dictionary;
 import com.abc.util.ValueType;
 
 import cn.sowell.datacenter.model.dictionary.pojo.BasicItem;
+import cn.sowell.datacenter.model.dictionary.pojo.BiRefAttr;
 import cn.sowell.datacenter.model.dictionary.pojo.OneLevelItem;
 import cn.sowell.datacenter.model.dictionary.service.BasicItemService;
 
 public class BasicItemContext {
 	
-	public BasicItem saveBasicItem(BasicItemService basicItemService,BasicItem basicItem, OneLevelItem oneLevelItem, Integer cascadedict) throws Exception {
+	public BasicItem saveBasicItem(BasicItemService basicItemService,BasicItem basicItem, OneLevelItem oneLevelItem, Integer cascadedict, BiRefAttr biRefAttr) throws Exception {
 		
 		String dType = oneLevelItem.getDataType();
 		String comm = null;
@@ -71,7 +72,7 @@ public class BasicItemContext {
 		
 		basicItem.setOneLevelItem(oneLevelItem);
 		
-        BasicItem saveOrUpdate = basicItemService.saveOrUpdate(basicItem, flag, comm, cascadedict);
+        BasicItem saveOrUpdate = basicItemService.saveOrUpdate(basicItem, flag, comm, cascadedict, biRefAttr);
         return saveOrUpdate;
 	}
 }

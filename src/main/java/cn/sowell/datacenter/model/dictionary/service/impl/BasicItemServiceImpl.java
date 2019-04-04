@@ -29,6 +29,7 @@ import cn.sowell.datacenter.model.cascadedict.service.CascadedictBasicItemServic
 import cn.sowell.datacenter.model.dictionary.criteria.BasicItemCriteria;
 import cn.sowell.datacenter.model.dictionary.dao.BasicItemDao;
 import cn.sowell.datacenter.model.dictionary.pojo.BasicItem;
+import cn.sowell.datacenter.model.dictionary.pojo.BiRefAttr;
 import cn.sowell.datacenter.model.dictionary.pojo.CascadeAttr;
 import cn.sowell.datacenter.model.dictionary.pojo.OneLevelItem;
 import cn.sowell.datacenter.model.dictionary.pojo.RecordRelationType;
@@ -36,6 +37,7 @@ import cn.sowell.datacenter.model.dictionary.pojo.Towlevelattr;
 import cn.sowell.datacenter.model.dictionary.pojo.TowlevelattrMultiattrMapping;
 import cn.sowell.datacenter.model.dictionary.service.BasicItemCodeGeneratorService;
 import cn.sowell.datacenter.model.dictionary.service.BasicItemService;
+import cn.sowell.datacenter.model.dictionary.service.BiRefAttrService;
 import cn.sowell.datacenter.model.dictionary.service.RecordRelationTypeService;
 import cn.sowell.datacenter.model.dictionary.service.TowlevelattrMultiattrMappingService;
 import cn.sowell.datacenter.model.dictionary.service.TowlevelattrService;
@@ -58,6 +60,9 @@ public class BasicItemServiceImpl implements BasicItemService {
 	
 	@Resource
 	BasicItemCodeGeneratorService btCodeGenerService;
+	
+	@Resource
+	BiRefAttrService biRefAttrService;
 	
 	@Resource
 	SessionFactory sFactory;
@@ -282,11 +287,11 @@ public class BasicItemServiceImpl implements BasicItemService {
 	}
 
 	@Override
-	public BasicItem saveOrUpdate(BasicItem obj, String flag, String comm, Integer cascadedict) throws Exception {
+	public BasicItem saveOrUpdate(BasicItem obj, String flag, String comm, Integer cascadedict, BiRefAttr biRefAttr) throws Exception {
 		//生成code 规则：实体code IBTE0001 开始  其他code规则 IBT00001开始
 		if ("add".equals(flag)) {
 			ValueType valueType = ValueType.getValueType(Integer.valueOf(obj.getOneLevelItem().getDataType()));
-			
+			//获取Code
 			String basicItemCode = btCodeGenerService.getBasicItemCode(valueType, getEntityCode(obj.getParent()));
 			obj.setCode(basicItemCode);
 			obj.getOneLevelItem().setCode(basicItemCode);
@@ -430,9 +435,17 @@ public class BasicItemServiceImpl implements BasicItemService {
 			basicItemDao.update(obj);
 		}	
 		
+		//如果是引用属性
+		if (String.valueOf(ValueType.REFERENCE.getIndex()).equals(dataType)) {
+			//引用类型   默认存放在  t_sc_bi_ref_attr  这个表中
+			biRefAttr.setCode(obj.getCode());
+			biRefAttrService.saveOrUpdate(biRefAttr);
+		}	
+		
 		return obj;
-	}
+	} 
 
+	
 	/**
 	 * 创建实体编辑时间的属性
 	 * @param obj
