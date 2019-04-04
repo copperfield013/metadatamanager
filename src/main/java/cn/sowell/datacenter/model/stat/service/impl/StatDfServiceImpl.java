@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import cn.sowell.datacenter.admin.controller.dictionary.BasicItemContext;
 import cn.sowell.datacenter.model.dictionary.pojo.BasicItem;
+import cn.sowell.datacenter.model.dictionary.pojo.BiRefAttr;
 import cn.sowell.datacenter.model.dictionary.pojo.OneLevelItem;
 import cn.sowell.datacenter.model.dictionary.service.BasicItemService;
 import cn.sowell.datacenter.model.stat.dao.StatDfDao;
@@ -62,11 +63,11 @@ public class StatDfServiceImpl implements StatDfService {
 	}
 
 	@Override
-	public void saveOrUpdate(BasicItem basicItem, OneLevelItem oneLevelItem, Integer cascadedict, StatDf creteria)
+	public void saveOrUpdate(BasicItem basicItem, OneLevelItem oneLevelItem, Integer cascadedict, StatDf creteria, BiRefAttr biRefAttr)
 			throws Exception {
 		BasicItem group = basicItemService.getGroup(basicItem.getParent());
 		oneLevelItem.setGroupName(group.getCode());
-		BasicItem saveBasicItem = new BasicItemContext().saveBasicItem(basicItemService, basicItem, oneLevelItem, cascadedict);
+		BasicItem saveBasicItem = new BasicItemContext().saveBasicItem(basicItemService, basicItem, oneLevelItem, cascadedict, biRefAttr);
 		
 		creteria.setBiCode(saveBasicItem.getCode());
 		if (creteria.getId() == null) {
@@ -74,9 +75,6 @@ public class StatDfServiceImpl implements StatDfService {
 		} else {
 			statDfDao.update(creteria);
 		}
-		
 	}
-
-	
 	
 }
