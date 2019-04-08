@@ -6,6 +6,8 @@ import java.util.List;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.abc.util.ValueType;
+
 import cn.sowell.copframe.dto.page.PageInfo;
 import cn.sowell.datacenter.model.dictionary.criteria.BasicItemCriteria;
 import cn.sowell.datacenter.model.dictionary.pojo.BasicItem;
@@ -184,18 +186,29 @@ public interface BasicItemDao {
  * @throws Exception
  */
 	void delCascaseAttrChild(String code, String casCode) throws Exception;
+	
 	/**
-	 * 根据实体id, 获取实体下所有的级联属性
+	 *  获取指定类型的属性
+	 * @param parentCode   父code
+	 * @param valueType    指定的类型
+	 * @return
+	 */
+	List getAppointTypeAttr(String parentCode, ValueType valueType);
+	
+	/**
+	 *	 根据实体id, 获取实体下所有的级联属性
 	 * @param entityId
 	 * @return
 	 */
+	@Deprecated
 	List getGroupCascaseAttr(String entityId);
 
 	/**
-	 * 根据多值属性的id， 获取多值属性下的级联属性
+	 * 	根据多值属性的id， 获取多值属性下的级联属性
 	 * @param parentId
 	 * @return
 	 */
+	@Deprecated
 	List getMoreCascaseAttr(String parentId);
 
 	/**

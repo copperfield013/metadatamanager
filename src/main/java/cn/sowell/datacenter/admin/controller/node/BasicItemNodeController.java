@@ -91,6 +91,7 @@ public class BasicItemNodeController {
 	RecordRelationTypeService recordRelationTypeService;
 	@Resource
 	CascadedictBasicItemService cascadedictBasicItemService;
+	
 	 @ApiOperation(value = "获取实体列表信息", nickname = "list", notes = "获取实体列表", response = ModelAndView.class, tags={ "configurationFiles", })
 	    @ApiResponses(value = { 
 	        @ApiResponse(code = 200, message = "OK", response = ModelAndView.class),
@@ -484,84 +485,10 @@ public class BasicItemNodeController {
 	}
     
     
-    /**
-     * 获取当前实体下， 所有分组的级联属性
-     * @param entityId  实体id
-     * @return
-     */
-    @ResponseBody
-	@RequestMapping("/getGroupCascaseAttr")
-	public String getGroupCascaseAttr(String entityId){
-		Map<String, Object> map = new HashMap<String, Object>();
-		JSONObject jobj = new JSONObject(map);
-		try {
-			List list =  basicItemService.getGroupCascaseAttr(entityId);
-			map.put("code", 200);
-			map.put("msg", "success");
-			map.put("groupCascaseAttr", list);
-			return jobj.toString();
-		} catch (Exception e) {
-			logger.error("添加失败", e);
-			map.put("code", 400);
-			map.put("msg", "error");
-			return jobj.toString();
-		}
-	}
-    
+   
     
     /**
-     * 获取当前实体下， 当前多值属性里面的级联属性
-     * @param entityId  实体id
-     * @return
-     */
-    @ResponseBody
-	@RequestMapping("/getMoreCascaseAttr")
-	public String getMoreCascaseAttr(String repeatId){
-		Map<String, Object> map = new HashMap<String, Object>();
-		JSONObject jobj = new JSONObject(map);
-		try {
-			BasicItem basicItem = basicItemService.getBasicItem(repeatId);
-			List list =  basicItemService.getMoreCascaseAttr(basicItem.getParent()+ "_" + basicItem.getCode());
-			map.put("code", 200);
-			map.put("msg", "success");
-			map.put("moreCascaseAttr", list);
-			return jobj.toString();
-		} catch (Exception e) {
-			logger.error("添加失败", e);
-			map.put("code", 400);
-			map.put("msg", "error");
-			return jobj.toString();
-		}
-	}
-    
-    
-    /**
-     * 根据实体Code , 获取实体对应的唯一标签pojo
-     * @param entityId  实体id
-     * @return
-     */
-    @ResponseBody
-	@RequestMapping("/getLableObj")
-	public String getLableObj(String entityId){
-		Map<String, Object> map = new HashMap<String, Object>();
-		JSONObject jobj = new JSONObject(map);
-		try {
-			BasicItem lableObj = basicItemService.getLableObj(entityId);
-			map.put("code", 200);
-			map.put("msg", "操作成功！");
-			map.put("lableObj", lableObj);
-			return jobj.toString();
-		} catch (Exception e) {
-			logger.error("添加失败", e);
-			map.put("code", 400);
-			map.put("msg", "操作失败！");
-			return jobj.toString();
-		}
-	}
-    
-    
-    /**
-     * 获取所有配置文件
+     * 	获取所有配置文件
      * @param entityId  实体id
      * @return
      */
@@ -585,7 +512,7 @@ public class BasicItemNodeController {
 	}
     
     /**
-     * 复制配置文件
+     * 	复制配置文件
      * @param entityId  实体id
      * @return
      */
@@ -604,9 +531,8 @@ public class BasicItemNodeController {
 		}
 	}
     
-    
     /**
-     * 根据实体id直接生成配置文件
+     * 	根据实体id直接生成配置文件
      * @param entityId  实体id
      * @return
      */

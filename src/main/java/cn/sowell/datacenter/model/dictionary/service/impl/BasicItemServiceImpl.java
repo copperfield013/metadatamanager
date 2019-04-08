@@ -141,7 +141,7 @@ public class BasicItemServiceImpl implements BasicItemService {
 
 	@Override
 	public void delete(BasicItem basicItem) throws Exception {
-		BasicItemDelContext btDelContext = new BasicItemDelContext(basicItemDao);
+		BasicItemDelContext btDelContext = new BasicItemDelContext(basicItemDao, biRefAttrService);
 		btDelContext.delBItem(basicItem);
 	}
 	

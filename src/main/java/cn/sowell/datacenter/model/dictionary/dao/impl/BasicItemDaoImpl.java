@@ -560,7 +560,20 @@ public class BasicItemDaoImpl implements BasicItemDao {
 				.setParameter("code", code)
 				.setParameter("casCode", casCode).executeUpdate();
 	}
+	
+	@Override
+	public List getAppointTypeAttr(String parentCode, ValueType valueType) {
+		
+		String sql = "SELECT a.c_code, a.c_cn_name, b.c_data_type FROM t_sc_basic_item a "
+				+ " inner join t_sc_bi_onelevel b on a.c_code=b.c_code "
+				+ "WHERE a.c_parent=:parentCode AND b.c_data_type=:dataType";
+		return sFactory.getCurrentSession().createSQLQuery(sql)
+				.setParameter("parentCode", parentCode)
+				.setParameter("dataType", ValueType.CASCADETYPE.getIndex()).list();
+	}
 
+	
+	//获取实体下指定类型的数据
 	@Override
 	public List getGroupCascaseAttr(String entityId) {
 		String sql = "SELECT a.c_code, a.c_cn_name, b.c_data_type FROM t_sc_basic_item a "
@@ -731,6 +744,7 @@ public class BasicItemDaoImpl implements BasicItemDao {
 				" WHERE c_parent=:parrentCode AND b.c_data_type='16'";
 		return (BasicItem) sFactory.getCurrentSession().createSQLQuery(sql).addEntity(BasicItem.class).setParameter("parrentCode", parrentCode).uniqueResult();
 	}
-
+	
+	
 
 }

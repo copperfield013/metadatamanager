@@ -1,10 +1,8 @@
 package cn.sowell.datacenter.admin.controller.dictionary.strategy;
 
-import com.abc.util.AttributeParter;
-import com.abc.util.ValueType;
-
 import cn.sowell.datacenter.model.dictionary.dao.BasicItemDao;
 import cn.sowell.datacenter.model.dictionary.pojo.BasicItem;
+import cn.sowell.datacenter.model.dictionary.pojo.BiRefAttr;
 import cn.sowell.datacenter.model.dictionary.service.BiRefAttrService;
 
 /**
@@ -13,19 +11,12 @@ import cn.sowell.datacenter.model.dictionary.service.BiRefAttrService;
  * @author so-well
  *
  */
-public class RepeatDelStrategy implements BasicItemDelStrategy {
+public class ReferenceDelStrategy implements BasicItemDelStrategy {
+	
 	@Override
 	public void delete(BasicItemDao basicItemDao, BiRefAttrService biRefAttrService, BasicItem basicItem) {
-		BasicItem btp = basicItemDao.get(BasicItem.class,  AttributeParter.getLeafKeyName(basicItem.getCode()));
-		BasicItem btEd = basicItemDao.get(BasicItem.class,  AttributeParter.getLeafEditTimeName(basicItem.getCode()));
-		
-		if (btp != null) {
-			basicItemDao.delete(btp);
-		} 
-		if (btEd != null) {
-			basicItemDao.delete(btEd);
-		}
-		
+		BiRefAttr biRefAttr = new BiRefAttr();
+		biRefAttr.setCode(basicItem.getCode());
+		biRefAttrService.delete(biRefAttr);
 	}
-
 }

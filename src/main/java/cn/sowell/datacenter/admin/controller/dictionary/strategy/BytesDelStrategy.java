@@ -1,20 +1,19 @@
 package cn.sowell.datacenter.admin.controller.dictionary.strategy;
 
-import javax.annotation.Resource;
-
 import com.abc.util.AttributeParter;
 
 import cn.sowell.datacenter.model.dictionary.dao.BasicItemDao;
 import cn.sowell.datacenter.model.dictionary.pojo.BasicItem;
+import cn.sowell.datacenter.model.dictionary.service.BiRefAttrService;
 
 /**
- * 重复类型删除策略和枚举类型多选
+ *    ValueType.BYTES	文件型 数据删除策略
  * @author so-well
  *
  */
 public class BytesDelStrategy implements BasicItemDelStrategy {
 	@Override
-	public void delete(BasicItemDao basicItemDao, BasicItem basicItem) {
+	public void delete(BasicItemDao basicItemDao, BiRefAttrService biRefAttrService, BasicItem basicItem) {
 		BasicItem btKey =basicItemDao.get(BasicItem.class, AttributeParter.getFileKeyName(basicItem.getCode()));
         BasicItem btSuffix = basicItemDao.get(BasicItem.class, AttributeParter.getFileSuffixName(basicItem.getCode()));
         BasicItem btKBSize = basicItemDao.get(BasicItem.class, AttributeParter.getFileKBSizeName(basicItem.getCode()));

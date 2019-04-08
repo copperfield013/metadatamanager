@@ -670,6 +670,56 @@ public class BasicItemController {
 			} 
 		}
 	    
+	    /**
+	     * 	获取当前实体下， 所有分组的级联属性
+	     * @param entityId  实体id
+	     * @return
+	     */
+	    @ResponseBody
+		@RequestMapping("/getGroupCascaseAttr")
+		public String getGroupCascaseAttr(String entityId){
+			Map<String, Object> map = new HashMap<String, Object>();
+			JSONObject jobj = new JSONObject(map);
+			try {
+				List list =  basicItemService.getGroupCascaseAttr(entityId);
+				map.put("code", 200);
+				map.put("msg", "success");
+				map.put("groupCascaseAttr", list);
+				return jobj.toString();
+			} catch (Exception e) {
+				logger.error("添加失败", e);
+				map.put("code", 400);
+				map.put("msg", "error");
+				return jobj.toString();
+			}
+		}
+	    
+	    
+	    /**
+	     * 获取当前实体下， 当前多值属性里面的级联属性
+	     * @param repeatId  多值属性id
+	     * @return
+	     */
+	    @ResponseBody
+		@RequestMapping("/getMoreCascaseAttr")
+		public String getMoreCascaseAttr(String repeatId){
+			Map<String, Object> map = new HashMap<String, Object>();
+			JSONObject jobj = new JSONObject(map);
+			try {
+				BasicItem basicItem = basicItemService.getBasicItem(repeatId);
+				List list =  basicItemService.getMoreCascaseAttr(basicItem.getParent()+ "_" + basicItem.getCode());
+				map.put("code", 200);
+				map.put("msg", "success");
+				map.put("moreCascaseAttr", list);
+				return jobj.toString();
+			} catch (Exception e) {
+				logger.error("添加失败", e);
+				map.put("code", 400);
+				map.put("msg", "error");
+				return jobj.toString();
+			}
+		}
+	    
 	    //这里获取实体选择的那个标签
 	    @ResponseBody
 		@RequestMapping("/getLableObj")
@@ -783,5 +833,7 @@ public class BasicItemController {
 				return jobj.toString();
 			}
 		}
+	    
+	    
 	    
 }
