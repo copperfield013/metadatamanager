@@ -980,15 +980,10 @@ public class BasicItemServiceImpl implements BasicItemService {
 			basicItemDao.updateCasCadeLevel((String)str[0], (String)str[1], count);
 		}
 	}
-
+	
 	@Override
-	public List getGroupCascaseAttr(String entityId) {
-		return basicItemDao.getGroupCascaseAttr(entityId);
-	}
-
-	@Override
-	public List getMoreCascaseAttr(String parentId) {
-		return basicItemDao.getMoreCascaseAttr(parentId);
+	public List getAppointTypeAttr(String parentCode, ValueType valueType) {
+		return basicItemDao.getAppointTypeAttr(parentCode, valueType);
 	}
 
 	@Override
@@ -1057,4 +1052,5 @@ public class BasicItemServiceImpl implements BasicItemService {
 		String[] split = parentEntityCode.split("_");
 		return split[0];
 	}
+
 }

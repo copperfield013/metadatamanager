@@ -671,20 +671,32 @@ public class BasicItemController {
 		}
 	    
 	    /**
-	     * 	获取当前实体下， 所有分组的级联属性
+	     * 	获取当前实体下, 指定多值或者是指定实体下 指定类型的数据
 	     * @param entityId  实体id
 	     * @return
 	     */
 	    @ResponseBody
-		@RequestMapping("/getGroupCascaseAttr")
-		public String getGroupCascaseAttr(String entityId){
+		@RequestMapping("/getAppointTypeAttr")
+		public String getAppointTypeAttr(String parentCode, Integer dataType){
+	    	// 获取指定类型的枚举
+	    	ValueType valueType = ValueType.getValueType(dataType);
+	    	
+	    	//这里判断是实体， 还是多值属性
+	    	BasicItem basicItem = basicItemService.getBasicItem(parentCode);
+	    	String dataType2 = basicItem.getOneLevelItem().getDataType();
+	    	boolean equals = dataType2.equals(ValueType.REPEAT.getIndex()+"");
+	    	
+	    	if (equals) {
+	    		parentCode = basicItem.getParent() + "_" + basicItem.getCode();
+	    	}
+	    	
 			Map<String, Object> map = new HashMap<String, Object>();
 			JSONObject jobj = new JSONObject(map);
 			try {
-				List list =  basicItemService.getGroupCascaseAttr(entityId);
+				List list =  basicItemService.getAppointTypeAttr(parentCode, valueType);
 				map.put("code", 200);
 				map.put("msg", "success");
-				map.put("groupCascaseAttr", list);
+				map.put("appointTypeAttr", list);
 				return jobj.toString();
 			} catch (Exception e) {
 				logger.error("添加失败", e);
@@ -696,10 +708,37 @@ public class BasicItemController {
 	    
 	    
 	    /**
-	     * 获取当前实体下， 当前多值属性里面的级联属性
+	     * 	获取当前实体下， 所有分组的级联属性
+	     * @param entityId  实体id
+	     * @return
+	     */
+	    /*@Deprecated
+	    @ResponseBody
+		@RequestMapping("/getGroupCascaseAttr")
+		public String getGroupCascaseAttr(String entityId){
+			Map<String, Object> map = new HashMap<String, Object>();
+			JSONObject jobj = new JSONObject(map);
+			try {
+				List list =  basicItemService.getAppointTypeAttr(entityId, ValueType.CASCADETYPE);
+				map.put("code", 200);
+				map.put("msg", "success");
+				map.put("groupCascaseAttr", list);
+				return jobj.toString();
+			} catch (Exception e) {
+				logger.error("添加失败", e);
+				map.put("code", 400);
+				map.put("msg", "error");
+				return jobj.toString();
+			}
+		}*/
+	    
+	    
+	    /**
+	     * 	获取当前实体下， 当前多值属性里面的级联属性
 	     * @param repeatId  多值属性id
 	     * @return
 	     */
+	   /* @Deprecated
 	    @ResponseBody
 		@RequestMapping("/getMoreCascaseAttr")
 		public String getMoreCascaseAttr(String repeatId){
@@ -707,7 +746,7 @@ public class BasicItemController {
 			JSONObject jobj = new JSONObject(map);
 			try {
 				BasicItem basicItem = basicItemService.getBasicItem(repeatId);
-				List list =  basicItemService.getMoreCascaseAttr(basicItem.getParent()+ "_" + basicItem.getCode());
+				List list =  basicItemService.getAppointTypeAttr(basicItem.getParent()+ "_" + basicItem.getCode(), ValueType.CASCADETYPE);
 				map.put("code", 200);
 				map.put("msg", "success");
 				map.put("moreCascaseAttr", list);
@@ -718,7 +757,7 @@ public class BasicItemController {
 				map.put("msg", "error");
 				return jobj.toString();
 			}
-		}
+		}*/
 	    
 	    //这里获取实体选择的那个标签
 	    @ResponseBody

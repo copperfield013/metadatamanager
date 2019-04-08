@@ -4,6 +4,8 @@ import java.math.BigInteger;
 import java.util.List;
 import java.util.Map;
 
+import com.abc.util.ValueType;
+
 import cn.sowell.copframe.dto.ajax.AjaxPageResponse;
 import cn.sowell.datacenter.model.cascadedict.pojo.CascadedictBasicItem;
 import cn.sowell.datacenter.model.dictionary.criteria.BasicItemCriteria;
@@ -144,19 +146,14 @@ public interface BasicItemService {
 	 */
 	void deleteCascaseAttrChild(String code, String casCode) throws Exception;
 
+	
 	/**
-	 * 根据实体id， 获取所有分组里面的级联属性
-	 * @param entityId
+	 * 	获取指定类型的属性
+	 * @param parentCode   父code
+	 * @param valueType    指定的类型
 	 * @return
 	 */
-	List getGroupCascaseAttr(String entityId);
-
-	/**
-	 * 根据多值属性的id，获取多值属性下的级联属性
-	 * @param string
-	 * @return
-	 */
-	List getMoreCascaseAttr(String parentId);
+	List getAppointTypeAttr(String parentCode, ValueType valueType);
 
 	/**
 	 * 级联属性还可以添加几个孩子

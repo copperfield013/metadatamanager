@@ -107,6 +107,8 @@ public class BasicItemNodeServiceImpl implements BasicItemNodeService {
 			case MULTIATTRIBUTE:
 			case CASATTRIBUTE:
 			case RELATION:
+			case REFATTRIBUTE:
+			case RREFATTRIBUTE:
 				basicItemNodeDao.delete(btn);
 				break;
 			case NONO:

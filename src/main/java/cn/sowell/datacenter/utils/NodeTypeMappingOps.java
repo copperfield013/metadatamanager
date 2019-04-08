@@ -69,6 +69,16 @@ public class NodeTypeMappingOps {
 		opsMapping.put(NodeType.FILTERS, opsTypes);
 		opsTypes.add(NodeOpsType.READ);
 		opsTypes.add(NodeOpsType.WRITE);
+		
+		opsTypes = new HashSet();
+		opsMapping.put(NodeType.REFATTRIBUTE, opsTypes);
+		opsTypes.add(NodeOpsType.READ);
+		opsTypes.add(NodeOpsType.WRITE);
+		
+		opsTypes = new HashSet();
+		opsMapping.put(NodeType.RREFATTRIBUTE, opsTypes);
+		opsTypes.add(NodeOpsType.READ);
+		opsTypes.add(NodeOpsType.WRITE);
 	}
 	
 	//返回true：可以修改， false：不可以修改

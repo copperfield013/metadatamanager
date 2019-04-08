@@ -563,35 +563,12 @@ public class BasicItemDaoImpl implements BasicItemDao {
 	
 	@Override
 	public List getAppointTypeAttr(String parentCode, ValueType valueType) {
-		
 		String sql = "SELECT a.c_code, a.c_cn_name, b.c_data_type FROM t_sc_basic_item a "
 				+ " inner join t_sc_bi_onelevel b on a.c_code=b.c_code "
 				+ "WHERE a.c_parent=:parentCode AND b.c_data_type=:dataType";
 		return sFactory.getCurrentSession().createSQLQuery(sql)
 				.setParameter("parentCode", parentCode)
-				.setParameter("dataType", ValueType.CASCADETYPE.getIndex()).list();
-	}
-
-	
-	//获取实体下指定类型的数据
-	@Override
-	public List getGroupCascaseAttr(String entityId) {
-		String sql = "SELECT a.c_code, a.c_cn_name, b.c_data_type FROM t_sc_basic_item a "
-				+ " inner join t_sc_bi_onelevel b on a.c_code=b.c_code "
-				+ "WHERE a.c_parent=:entityId AND b.c_data_type=:dataType";
-		return sFactory.getCurrentSession().createSQLQuery(sql)
-				.setParameter("entityId", entityId)
-				.setParameter("dataType", ValueType.CASCADETYPE.getIndex()).list();
-	}
-
-	@Override
-	public List getMoreCascaseAttr(String parentId) {
-		String sql = "SELECT a.c_code, a.c_cn_name, b.c_data_type FROM t_sc_basic_item a "
-				+ " inner join t_sc_bi_onelevel b on a.c_code=b.c_code "
-				+ " WHERE a.c_parent=:parentId AND b.c_data_type=:dataType";
-		return sFactory.getCurrentSession().createSQLQuery(sql)
-				.setParameter("parentId", parentId)
-				.setParameter("dataType", ValueType.CASCADETYPE.getIndex()).list();
+				.setParameter("dataType", valueType.getIndex()).list();
 	}
 
 	@Override
