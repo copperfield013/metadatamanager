@@ -251,7 +251,8 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 						dataType:11
 					}, function(data) {	
 						var refattributeList = data.appointTypeAttr;
-					debugger;
+					Ajax.ajax('admin/node/basicItemNode/getAllAbcNode', '', function(data1) {
+			             var allAbc = data1.allAbc;
 					
 					//获取对一的关系
 					Ajax.ajax('admin/dictionary/recordRelationType/getRelation', {
@@ -366,7 +367,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 					 initRattr(abcattrCode,dataType, id, name, opt, order, parent, commList, subdomain, relationList);
 				 }else if(data[i].type == 9) {	
 					 var relAbcnodeId = data[i].relAbcnodeId;
-					 initRabc(id, name, order, parent, relAbcnodeId);
+					 initRabc(id, name, order, parent, relAbcnodeId, allAbc);
 				 } else if(data[i].type == 14) {	
 					 var relAbcnodeId = data[i].relAbcnodeId;
 					 
@@ -382,7 +383,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 						abcattrCode = data[i].basicItemCode;
 					}
 					
-					initRefattribute(abcattr,abcattrCode,dataType, id, name, opt, order, parent, refattributeList, relAbcnodeId);
+					initRefattribute(abcattr,abcattrCode,dataType, id, name, opt, order, parent, refattributeList, relAbcnodeId, allAbc);
 				 }
 				 
 			 }				 
@@ -392,6 +393,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 			 
 			 $CPF.closeLoading();
 	    }, {async: false});	 
+		})
 		})
 		})
 		})
@@ -887,7 +889,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
     
     
     //rabc初始化方法
-    function  initRabc(id, name, order, parent,relAbcnodeId) {
+    function  initRabc(id, name, order, parent,relAbcnodeId, allAbc) {
     	var dragWrapLen = $(".dragEdit-wrap", $page).length + 1 ;
     	var abcHtml = "<li class='entity-ch-wrap rabc'>" +
         "<div class='attr-abc-title collapse-header' data-order='"+order+"' data-id='"+id+"'>" +
@@ -896,9 +898,6 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
         "</div>" +
         "<div class='label-bar rabc al-save' data-id='"+id+"'>";
          
-        Ajax.ajax('admin/node/basicItemNode/getAllAbcNode', '', function(data1) {
-        var allAbc = data1.allAbc;
-        
         abcHtml += "<input class='edit-input text' value='"+name+"'>"+
         "<select disabled class='relAbcnodeId'>";
         
@@ -924,11 +923,10 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
         "</li>"	    
 	    var $html = $(abcHtml).appendTo($(parent));	    
 	    $html.find("select").css({"width":"15%","marginLeft":"60px"}).select2();
-        })
     }
     
   //普通 引用属性初始化方法
-    function initRefattribute(abcattr,abcattrCode,dataType,id,name,opt,order,parent,commList, relAbcnodeId) {  
+    function initRefattribute(abcattr,abcattrCode,dataType,id,name,opt,order,parent,commList, relAbcnodeId, allAbc) {  
     	var dataTypeList = dataTypeCASCADETYPEList;
 			var attrHtml = "<li class='add-attr clear-fix'>"
 				+"<div class='icon-label attr' data-type='14'>";
@@ -994,15 +992,13 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 		        };
 		        attrHtml += "</select>";
 		        attrHtml += "<select disabled class='relAbcnodeId'>";
-		        Ajax.ajax('admin/node/basicItemNode/getAllAbcNode', '', function(data1) {
-		             var allAbc = data1.allAbc;
-				    for(var i=0; i<allAbc.length; i++) {
-				    	if (relAbcnodeId == allAbc[i].id) {
-				    		attrHtml += "<option selected='selected' value='"+allAbc[i].id+"'>"+allAbc[i].name+"</option>"; 
-				    	} else {
-				    		attrHtml += "<option value='"+allAbc[i].id+"'>"+allAbc[i].name+"</option>"; 
-				    	}
-			         };
+			    for(var i=0; i<allAbc.length; i++) {
+			    	if (relAbcnodeId == allAbc[i].id) {
+			    		attrHtml += "<option selected='selected' value='"+allAbc[i].id+"'>"+allAbc[i].name+"</option>"; 
+			    	} else {
+			    		attrHtml += "<option value='"+allAbc[i].id+"'>"+allAbc[i].name+"</option>"; 
+			    	}
+		         };
 			         
 		        attrHtml += "</select>";
 		        attrHtml += "<div class='btn-wrap'>" +
@@ -1014,7 +1010,6 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 		        "</li>";		           		        
 		        var $html = $(attrHtml).prependTo($(parent));
 		        $html.find("select").css({"width":"11%","marginLeft":"16px"}).select2();
-		  })
     }
     
     //普通级联属性初始化方法
