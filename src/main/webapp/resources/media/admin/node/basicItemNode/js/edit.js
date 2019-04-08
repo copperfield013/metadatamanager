@@ -384,7 +384,23 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 					}
 					
 					initRefattribute(abcattr,abcattrCode,dataType, id, name, opt, order, parent, refattributeList, relAbcnodeId, allAbc);
-				 }
+				 } else if(data[i].type == 15) {	
+					 var relAbcnodeId = data[i].relAbcnodeId;
+					 
+					 var abcattr;
+					 var abcattrCode;
+					 var abcattrCode = data[i].abcattrCode;
+                     var basicItemCode = data[i].basicItemCode;
+					if (basicItemCode == undefined) {
+						abcattr = "";
+						abcattrCode = "";
+					} else {
+						abcattr = data[i].basicItemCnName;
+						abcattrCode = data[i].basicItemCode;
+					}
+					
+					initrRefattribute(abcattr,abcattrCode,dataType, id, name, opt, order, parent, commList, relAbcnodeId, allAbc, subdomain, refattributeList);
+				 } 
 				 
 			 }				 
 			 if(data.length !=3 && isRelative === true) {	
@@ -991,6 +1007,100 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 		            	          
 		        };
 		        attrHtml += "</select>";
+		        attrHtml += "<select disabled class='relAbcnodeId'>";
+			    for(var i=0; i<allAbc.length; i++) {
+			    	if (relAbcnodeId == allAbc[i].id) {
+			    		attrHtml += "<option selected='selected' value='"+allAbc[i].id+"'>"+allAbc[i].name+"</option>"; 
+			    	} else {
+			    		attrHtml += "<option value='"+allAbc[i].id+"'>"+allAbc[i].name+"</option>"; 
+			    	}
+		         };
+			         
+		        attrHtml += "</select>";
+		        attrHtml += "<div class='btn-wrap'>" +
+		        "<i class='icon icon-save'></i>" +
+		        "<i class='icon icon-trash-sm'></i>" +
+		        "<i class='icon-simulate-trashsm'></i>" +
+		        "</div>" +
+		        "</div>" +
+		        "</li>";		           		        
+		        var $html = $(attrHtml).prependTo($(parent));
+		        $html.find("select").css({"width":"11%","marginLeft":"16px"}).select2();
+    }
+    
+    
+  //普通 引用属性初始化方法
+    function initrRefattribute(abcattr,abcattrCode,dataType,id,name,opt,order,parent,commList, relAbcnodeId, allAbc, subdomain, rRefattributeList) {  
+    	var dataTypeList = dataTypeCASCADETYPEList;
+			var attrHtml = "<li class='add-attr clear-fix'>"
+				+"<div class='icon-label attr' data-type='15'>";
+            if(abcattrCode=="") {
+            	attrHtml=attrHtml+"<i class='icon icon-error-cross'></i>";
+            }
+            attrHtml=attrHtml+"<i class='icon icon-attr'></i>" +
+            "<span class='text'>R引用属性</span>" +
+            "</div>" +
+            "<div class='label-bar refattribute-attr al-save' data-type='15'  data-order='"+order+"' data-id='"+id+"'>" +
+            "<input type='text' disabled class='edit-input text' value='"+name+"'>" +
+            "<select disabled class='abc-attr'>"            
+            for(var i=0; i<commList.length; i++) {  
+            	if(commList[i][0] == abcattrCode) {
+            		attrHtml += "<option item-data-type='"+commList[i][2]+"' data-id='"+commList[i][0]+"' value='"+commList[i][1]+"' selected>"+commList[i][1]+"</option>";
+            		
+            		if ("5" == commList[i][2]) {
+    					dataTypeList=dataTypeSTRINGList;
+    				} else if ("6"== commList[i][2]) {
+    					dataTypeList=dataTypeDATEList;
+    				}else if ("7"== commList[i][2]) {
+    					dataTypeList=dataTypeTIMEList;
+    				}else if ("1"== commList[i][2]) {
+    					dataTypeList=dataTypeINTList;
+    				}else if ("15"== commList[i][2]) {
+    					dataTypeList=dataTypeDOUBLEList;
+    				}else if ("11"== commList[i][2]) {
+    					dataTypeList=dataTypeREFERENCEList;
+    				}else if ("8"== commList[i][2]) {
+    					dataTypeList=dataTypeFILEList;
+    				}else if ("14"== commList[i][2]) {
+    					dataTypeList=dataTypeENUMList;
+    				}else if ("17"== commList[i][2]) {
+    					dataTypeList=dataTypeCASCADETYPEList;
+    				}
+            	}else {
+            		attrHtml += "<option item-data-type='"+commList[i][2]+"' data-id='"+commList[i][0]+"' value='"+commList[i][1]+"'>"+commList[i][1]+"</option>";
+            	}
+            	
+            }
+			attrHtml += "</select>";
+			attrHtml += "<select disabled class='data-type attr-type'>";    
+			
+		    	for(var i=0; i<dataTypeList.length; i++) {
+		    		if(dataTypeList[i][0] == dataType) {
+		    			attrHtml += "<option value='"+dataTypeList[i][0]+"' selected>"+dataTypeList[i][1]+"</option>";
+		    		}else {
+		    			attrHtml += "<option value='"+dataTypeList[i][0]+"'>"+dataTypeList[i][1]+"</option>";
+		    		}
+	            	          
+	            };
+	            attrHtml += "</select>";
+				attrHtml += "<select disabled class='node-ops-type'>";	
+				var nodePosType=nodePosTypeREFATTRIBUTE;
+			    for(var i=0; i<nodePosType.length; i++) {
+			    	if(nodePosType[i] == opt) {
+			    		attrHtml += "<option value='"+nodePosType[i]+"' selected>"+nodePosType[i]+"</option>";
+			    	}else {
+			    		attrHtml += "<option value='"+nodePosType[i]+"'>"+nodePosType[i]+"</option>";
+			    	}
+		            	          
+		        };
+		        attrHtml += "</select>";
+		        
+		        attrHtml +="<select disabled class='subdomain'>"
+		        	for(var i=0; i<rRefattributeList.length; i++) {            	
+		             	attrHtml += "<option data-id='"+rRefattributeList[i][0]+"' value='"+rRefattributeList[i][1]+"' item-data-type='"+rRefattributeList[i][2]+"'>"+rRefattributeList[i][1]+"</option>";                
+		             }
+		 			attrHtml += "</select>";
+		        
 		        attrHtml += "<select disabled class='relAbcnodeId'>";
 			    for(var i=0; i<allAbc.length; i++) {
 			    	if (relAbcnodeId == allAbc[i].id) {
@@ -1710,6 +1820,10 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
                 "<i class='icon icon-card-attr'></i>" +
                 "<span class='text'>添加引用属性</span>" +
                 "</li>" +
+                "<li class='card-list add-rRefattribute-attr'>" +
+                "<i class='icon icon-card-attr'></i>" +
+                "<span class='text'>添加引用->引用属性</span>" +
+                "</li>" +
                 "<li class='card-list add-attr-group'>" +
                 "<i class='icon icon-card-attr-group'></i>" +
                 "<span class='text'>添加属性组</span>" +
@@ -1770,6 +1884,10 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
                 "<i class='icon icon-card-attr'></i>" +
                 "<span class='text'>添加引用属性</span>" +
                 "</li>" +
+                "<li class='card-list add-rRefattribute-attr'>" +
+                "<i class='icon icon-card-attr'></i>" +
+                "<span class='text'>添加引用->引用属性</span>" +
+                "</li>" +
                 "<li class='card-list add-filters' source='moreAttr'>" +
                 "<i class='icon icon-card-relative'></i>" +
                 "<span class='text'>添加过滤条件</span>" +
@@ -1791,6 +1909,10 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
                 "<li class='card-list add-refattribute-attr'>" +
                 "<i class='icon icon-card-attr'></i>" +
                 "<span class='text'>添加引用属性</span>" +
+                "</li>" +
+                "<li class='card-list add-rRefattribute-attr'>" +
+                "<i class='icon icon-card-attr'></i>" +
+                "<span class='text'>添加引用->引用属性</span>" +
                 "</li>" +
                 "<li class='card-list add-rattr-attr'>" +
                 "<i class='icon icon-card-attr'></i>" +
@@ -2246,6 +2368,110 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
         addUnfold(el)
     };
     
+    
+    /**
+     * 添加引用->引用属性方法
+      */
+    function addrRefattributeAttr(el) {
+    	$CPF.showLoading();
+        var $content = $(el).closest(".collapse-header").siblings(".collapse-content");
+        var entityId = $(el).closest(".collapse-header").attr("data-abcattrcode");
+        if (entityId == undefined) {
+        	entityId = $(el).closest(".collapse-header").closest(".collapse-content").siblings(".collapse-header").attr("data-abcattrcode");
+        }
+        
+		Ajax.ajax('admin/dictionary/basicItem/getComm', {
+			entityId: entityId,
+		}, function(data) {	
+			if (data.code == 400) {
+				Dialog.notice("操作失败！刷新后重试", "warning");
+				$CPF.closeLoading();		
+				return;
+			}
+			var data = data.commList;
+			if(data.length == 0) {
+				Dialog.notice("没有属性可选， 请在模型中添加属性", "warning");
+				$CPF.closeLoading();		
+				return;
+			}
+			
+			var attrHtml = "<li class='add-attr clear-fix'>" +
+            "<div class='icon-label attr' data-type='15' data-order='' data-id=''>" +
+            "<i class='icon icon-attr'></i>" +
+            "<span class='text'>R引用属性</span>" +
+            "</div>" +
+            "<div class='label-bar rRefattribute-attr edit' data-type='15' data-order='' data-id=''>" +
+            "<input type='text' class='edit-input text' value='"+data[0][1]+"'>" +
+            "<select class='abc-attr'>"       
+            for(var i=0; i<data.length; i++) {            	
+            	attrHtml += "<option data-id='"+data[i][0]+"' value='"+data[i][1]+"' item-data-type='"+data[i][2]+"'>"+data[i][1]+"</option>";                
+            }
+			attrHtml += "</select>";
+			attrHtml += "<select class='data-type attr-type'>";     
+			
+		   Ajax.ajax('admin/node/basicItemNode/getDataType', {
+			   dataType:data[0][2]
+		   }, function(data){		    	
+		    	var dataTypeList = data.dataType;
+		    	for(var i=0; i<dataTypeList.length; i++) {
+		    		if(dataTypeList[i][0] === "STRING") {
+		    			attrHtml += "<option value='"+dataTypeList[i][0]+"' selected>"+dataTypeList[i][1]+"</option>"; 	
+		    		}else {
+		    			attrHtml += "<option value='"+dataTypeList[i][0]+"'>"+dataTypeList[i][1]+"</option>"; 
+		    		}	            	        
+	            };
+	            attrHtml += "</select>";
+				attrHtml += "<select class='node-ops-type'>";	
+				var nodePosType = nodePosTypeREFATTRIBUTE;
+			    for(var i=0; i<nodePosType.length; i++) {
+			    	if(nodePosType[i] === "写") {
+			    		attrHtml += "<option value='"+nodePosType[i]+"' selected>"+nodePosType[i]+"</option>";  	
+			    	}else {
+			    		attrHtml += "<option value='"+nodePosType[i]+"'>"+nodePosType[i]+"</option>"; 
+			    	}
+		            	         
+		         };
+		         attrHtml += "</select>";
+		         
+		         
+		         attrHtml +="<select class='subdomain'>"
+		       //获取引用类型
+		        	 Ajax.ajax('admin/dictionary/basicItem/getAppointTypeAttr', {
+				 			parentCode: entityId,
+				 			dataType :11
+				 		}, function(data2) {
+				 			
+				 			var appointTypeAttr = data2.appointTypeAttr;
+		 			 for(var i=0; i<appointTypeAttr.length; i++) {            	
+		             	attrHtml += "<option data-id='"+appointTypeAttr[i][0]+"' value='"+appointTypeAttr[i][1]+"' item-data-type='"+appointTypeAttr[i][2]+"'>"+appointTypeAttr[i][1]+"</option>";                
+		             }
+		 			attrHtml += "</select>";
+		         attrHtml += "<select class='relAbcnodeId'>";
+		         Ajax.ajax('admin/node/basicItemNode/getAllAbcNode', '', function(data1) {
+		             var allAbc = data1.allAbc;
+		             
+					    for(var i=0; i<allAbc.length; i++) {
+					    	attrHtml += "<option value='"+allAbc[i].id+"'>"+allAbc[i].name+"</option>"; 
+				         };
+				         attrHtml += "</select>";
+		         
+		         attrHtml += "<div class='btn-wrap'>" +
+		         "<i class='icon icon-save'></i>" +
+		         "<i class='icon icon-trash-sm'></i>" +
+		         "<i class='icon-simulate-trashsm'></i>" +
+		         "</div>" +
+		         "</div>" +
+		         "</li>";
+		         var $html = $(attrHtml).prependTo($content);
+		         $html.find("select").css({"width":"9%","marginLeft":"16px"}).select2();		            
+		         addUnfold(el);
+		         $CPF.closeLoading();	
+		         })
+		 		})
+		    })
+	    });		                      
+    };
+    
     /**
      * 添加引用属性方法
       */
@@ -2557,6 +2783,87 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 		});
     };
     
+    
+  //引用->引用属性保存修改方法
+    function rRefattributeAttrSave(el) {
+    	var $attrBar = $(el).closest(".label-bar");
+    	var type = $attrBar.attr("data-type");
+    	var dataType = $attrBar.children(".data-type").find("option:selected").val();
+    	var opt = $attrBar.children(".node-ops-type").find("option:selected").val();
+    	var name = $attrBar.children(".edit-input").val();    	
+    	var order = $attrBar.attr("data-order");
+    	var id = $attrBar.attr("data-id");
+    	var parentId = $attrBar.closest(".collapse-content").prev(".collapse-header")
+    						.attr("data-id"); 
+    	var abcattr = $attrBar.children(".abc-attr").find("option:selected").val();
+    	var abcattrCode = $attrBar.children(".abc-attr").find("option:selected").attr("data-id");
+    	var relAbcnodeId = $attrBar.children(".relAbcnodeId").find("option:selected").val();
+    	var subdomain = $attrBar.children(".subdomain").find("option:selected").val();
+    	debugger;
+    	switch (opt) {
+	        case "读":
+	            opt = 1;
+	            break;
+	        case "写":
+	            opt = 2;
+	            break;
+	        case "补":
+	            opt = 3;
+	            break;
+	        case "增":
+	            opt = 4;
+	            break;
+	        case "并":
+	            opt = 5;
+	            break;
+	        default:
+	            break;
+	    }
+    	$CPF.showLoading();
+    	Ajax.ajax('admin/node/basicItemNode/saveOrUpdate', {
+			 type: type,
+			 name: name,
+			 abcattr: abcattr,
+			 abcattrCode: abcattrCode,
+			 dataType: dataType,
+			 opt: opt,
+			 order: order,
+			 parentId: parentId,
+			 id: id,
+			 relAbcnodeId:relAbcnodeId,
+			 subdomain:subdomain
+		 }, function(data) {
+			 if(data.state == "400") {
+				 Dialog.notice(data.msg, "warning");
+				 $CPF.closeLoading();
+				 return;
+			 }
+			 var data = data.node;
+			 //设置当前节点order和id
+			 var order = data.order;
+			 var id = data.id;
+			 $attrBar.attr("data-order",order)
+			 	.attr("data-id", id);
+			 saveSuccess(el)
+			 $CPF.closeLoading();
+		});
+    };
+    
+    //引用-> 引用属性删除方法
+    function rRefattributeAttrDelete(el) {    	
+    	var $attrBar = $(el).closest(".label-bar");    	
+    	var id = $attrBar.attr("data-id");
+    	var isDelChil = false;
+    	var callback = function() {
+    		$attrBar.parent(".add-attr").remove();    		
+    	}; 
+    	if($attrBar.hasClass("al-save")) {
+    		deleteAjax(id, isDelChil, callback);
+    	}else {
+    		callback();
+    		removePop();
+    	}    	
+    }
     
     //引用属性保存修改方法
     function refattributeAttrSave(el) {
@@ -4548,6 +4855,8 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
         	addrFilter(el);
         }  else if ($(this).hasClass("add-refattribute-attr")) {
         	addRefattributeAttr(el);//添加引用属性方法
+        } else if ($(this).hasClass("add-rRefattribute-attr")) {
+        	addrRefattributeAttr(el);//添加引用->引用属性方法
         }  
         
         removePop();
@@ -4696,8 +5005,9 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
         	filterSave(this);
         } else if(labelBar.hasClass("refattribute-attr")) {
         	refattributeAttrSave(this);//引用属性保存
+        } else if(labelBar.hasClass("rRefattribute-attr")) {
+        	rRefattributeAttrSave(this);//引用->引用属性保存
         }
-
     });
     
     //删除-全部
@@ -4738,6 +5048,8 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
         	filtersDelete(el);
         } else if (labelBar.hasClass("refattribute-attr")) {
         	refattributeAttrDelete(el);
+        } else if (labelBar.hasClass("rRefattribute-attr")) {
+        	rRefattributeAttrDelete(el);
         }
     })
     
