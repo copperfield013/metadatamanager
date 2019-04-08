@@ -232,13 +232,13 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 			}, function(data) {			
 				var repeatChildList = data.repeatChild;	
 			//获取当前实体下， 所有分组的级联属性
-			Ajax.ajax('admin/node/basicItemNode/getGroupCascaseAttr', {
+			Ajax.ajax('admin/dictionary/basicItem/getGroupCascaseAttr', {
 				entityId: entityId
 			}, function(data) {	
 				var groupCascaseAttrList = data.groupCascaseAttr;
 				
 				//获取当前实体下， 当前多值属性里面的级联属性
-				Ajax.ajax('admin/node/basicItemNode/getMoreCascaseAttr', {
+				Ajax.ajax('admin/dictionary/basicItem/getMoreCascaseAttr', {
 					repeatId: entityId
 				}, function(data) {	
 					var moreCascaseAttrList = data.moreCascaseAttr;
@@ -1580,6 +1580,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
      * @param {当前点击元素,dom对象} el 
      */
     function pop(el) {
+    	
         var relativeLength = $(el).closest(".collapse-header")
             .siblings(".collapse-content")
             .children(".attr-relative").length;
@@ -1595,6 +1596,10 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
                 "<li class='card-list add-cascade-attr'>" +
                 "<i class='icon icon-card-attr'></i>" +
                 "<span class='text'>添加级联属性</span>" +
+                "</li>" +
+                "<li class='card-list add-refattribute-attr'>" +
+                "<i class='icon icon-card-attr'></i>" +
+                "<span class='text'>添加引用属性</span>" +
                 "</li>" +
                 "<li class='card-list add-attr-group'>" +
                 "<i class='icon icon-card-attr-group'></i>" +
@@ -1615,6 +1620,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
                 "<li class='card-list add-filters' source='sourceEntity'>" +
                 "<i class='icon icon-card-relative'></i>" +
                 "<span class='text'>添加过滤条件</span>" +
+                
                 "</li>" +
                 "</ul>";
         
@@ -1651,6 +1657,10 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
                 "<i class='icon icon-card-attr'></i>" +
                 "<span class='text'>添加级联属性</span>" +
                 "</li>" +
+                "<li class='card-list add-refattribute-attr'>" +
+                "<i class='icon icon-card-attr'></i>" +
+                "<span class='text'>添加引用属性</span>" +
+                "</li>" +
                 "<li class='card-list add-filters' source='moreAttr'>" +
                 "<i class='icon icon-card-relative'></i>" +
                 "<span class='text'>添加过滤条件</span>" +
@@ -1668,6 +1678,10 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
                 "<li class='card-list add-cascade-attr'>" +
                 "<i class='icon icon-card-attr'></i>" +
                 "<span class='text'>添加级联属性</span>" +
+                "</li>" +
+                "<li class='card-list add-refattribute-attr'>" +
+                "<i class='icon icon-card-attr'></i>" +
+                "<span class='text'>添加引用属性</span>" +
                 "</li>" +
                 "<li class='card-list add-rattr-attr'>" +
                 "<i class='icon icon-card-attr'></i>" +
@@ -2122,6 +2136,85 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
     	$html.find("select").css({"width":"7%","marginLeft":"2px"}).select2();
         addUnfold(el)
     };
+    
+    /**
+     * 添加引用属性方法
+      */
+    function addRefattributeAttr(el) {
+    	
+        var $content = $(el).closest(".collapse-header").siblings(".collapse-content");
+        var entityId = $(el).closest(".collapse-header").attr("data-abcattrcode");
+        if (entityId == undefined) {
+            entityId = $(el).closest(".collapse-header").closest(".collapse-content").siblings(".collapse-header").attr("data-abcattrcode");
+        }
+        $CPF.showLoading();
+		Ajax.ajax('admin/dictionary/basicItem/getGroupCascaseAttr', {
+			entityId: entityId
+		}, function(data) {	
+			
+			if (data.code == 400) {
+				Dialog.notice("操作失败！刷新后重试", "warning");
+				$CPF.closeLoading();		
+				return;
+			}
+			var data = data.groupCascaseAttr;
+			if(data.length == 0) {
+				Dialog.notice("没有级联属性可选， 请在模型中添加级联属性", "warning");
+				$CPF.closeLoading();		
+				return;
+			}
+			
+			var attrHtml = "<li class='add-attr clear-fix'>" +
+            "<div class='icon-label attr' data-type='14' data-order='' data-id=''>" +
+            "<i class='icon icon-attr'></i>" +
+            "<span class='text'>引用属性</span>" +
+            "</div>" +
+            "<div class='label-bar cascade-attr edit' data-type='14' data-order='' data-id=''>" +
+            "<input type='text' class='edit-input text' value='"+data[0][1]+"'>" +
+            "<select class='abc-attr'>"            
+            for(var i=0; i<data.length; i++) {            	
+            	attrHtml += "<option data-id='"+data[i][0]+"' value='"+data[i][1]+"' item-data-type='"+data[i][2]+"'>"+data[i][1]+"</option>";                
+            }
+			attrHtml += "</select>";
+			attrHtml += "<select class='data-type attr-type'>";     
+			
+		   Ajax.ajax('admin/node/basicItemNode/getDataType', {
+			   dataType:data[0][2]
+		   }, function(data){		    	
+		    	var dataTypeList = data.dataType;
+		    	for(var i=0; i<dataTypeList.length; i++) {
+		    		if(dataTypeList[i][0] === "STRING") {
+		    			attrHtml += "<option value='"+dataTypeList[i][0]+"' selected>"+dataTypeList[i][1]+"</option>"; 	
+		    		}else {
+		    			attrHtml += "<option value='"+dataTypeList[i][0]+"'>"+dataTypeList[i][1]+"</option>"; 
+		    		}	            	        
+	            };
+	            attrHtml += "</select>";
+				attrHtml += "<select class='node-ops-type'>";	
+				var nodePosType = nodePosTypeCASATTRIBUTE;
+			    for(var i=0; i<nodePosType.length; i++) {
+			    	if(nodePosType[i] === "写") {
+			    		attrHtml += "<option value='"+nodePosType[i]+"' selected>"+nodePosType[i]+"</option>";  	
+			    	}else {
+			    		attrHtml += "<option value='"+nodePosType[i]+"'>"+nodePosType[i]+"</option>"; 
+			    	}
+		            	         
+		         };
+		         attrHtml += "</select>";
+		         attrHtml += "<div class='btn-wrap'>" +
+		         "<i class='icon icon-save'></i>" +
+		         "<i class='icon icon-trash-sm'></i>" +
+		         "<i class='icon-simulate-trashsm'></i>" +
+		         "</div>" +
+		         "</div>" +
+		         "</li>";
+		         var $html = $(attrHtml).prependTo($content);
+		         $html.find("select").css({"width":"15%","marginLeft":"16px"}).select2();		            
+		         addUnfold(el);
+		         $CPF.closeLoading();			    			    
+		    })
+	    });		                      
+    };
 
     
     /**
@@ -2134,7 +2227,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
             entityId = $(el).closest(".collapse-header").closest(".collapse-content").siblings(".collapse-header").attr("data-abcattrcode");
         }
         $CPF.showLoading();
-		Ajax.ajax('admin/node/basicItemNode/getGroupCascaseAttr?entityId', {
+		Ajax.ajax('admin/dictionary/basicItem/getGroupCascaseAttr', {
 			entityId: entityId
 		}, function(data) {	
 			
@@ -2212,7 +2305,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 					.find("option:selected")
 					.attr("data-id");
         $CPF.showLoading();
-		Ajax.ajax('admin/node/basicItemNode/getMoreCascaseAttr?repeatId', {
+		Ajax.ajax('admin/dictionary/basicItem/getMoreCascaseAttr', {
 			repeatId: repeatId
 		}, function(data) {	
 			if (data.code == 400) {
@@ -3171,8 +3264,8 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
          }
          var abcattrCode = "";
         
-		 Ajax.ajax(' admin/node/basicItemNode/getLableObj', {
-       	 entityId:entityCode
+		 Ajax.ajax(' admin/dictionary/basicItem/getLableObj', {
+       	 code:entityCode
 		 }, function(data) {
 			var lableObj = data.lableObj; 
 			
@@ -4252,7 +4345,10 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
         	addFilter(el);
         } else if ($(this).hasClass("add-rFilter")) {
         	addrFilter(el);
-        } 
+        }  else if ($(this).hasClass("add-refattribute-attr")) {
+        	addRefattributeAttr(el);//添加引用属性方法
+        }  
+        
         removePop();
         $(el).removeClass("active");
     });

@@ -614,7 +614,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
             entityId = $(el).closest(".collapse-header").closest(".collapse-content").siblings(".collapse-header").attr("data-abcattrcode");
         }
         $CPF.showLoading();
-		Ajax.ajax('admin/node/basicItemNode/getGroupCascaseAttr?entityId', {
+		Ajax.ajax('admin/dictionary/basicItem/getGroupCascaseAttr', {
 			entityId: entityId
 		}, function(data) {			
 			
@@ -692,10 +692,9 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 					.find("option:selected")
 					.attr("data-id");
         $CPF.showLoading();
-		Ajax.ajax('admin/node/basicItemNode/getMoreCascaseAttr?repeatId', {
+		Ajax.ajax('admin/dictionary/basicItem/getMoreCascaseAttr', {
 			repeatId: repeatId
 		}, function(data) {			
-			
 			
 			if (data.code == 400) {
 				Dialog.notice("操作失败！刷新后重试", "warning");
@@ -1147,8 +1146,8 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
         }
         var abcattrCode = "";
        
-		 Ajax.ajax(' admin/node/basicItemNode/getLableObj', {
-      	 entityId:entityCode
+		 Ajax.ajax(' admin/dictionary/basicItem/getLableObj', {
+      	 code:entityCode
 		 }, function(data) {
 			var lableObj = data.lableObj; 
     	
