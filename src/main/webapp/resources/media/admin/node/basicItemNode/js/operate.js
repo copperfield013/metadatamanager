@@ -614,8 +614,9 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
             entityId = $(el).closest(".collapse-header").closest(".collapse-content").siblings(".collapse-header").attr("data-abcattrcode");
         }
         $CPF.showLoading();
-		Ajax.ajax('admin/dictionary/basicItem/getGroupCascaseAttr', {
-			entityId: entityId
+		Ajax.ajax('admin/dictionary/basicItem/getAppointTypeAttr', {
+			parentCode: entityId,
+			dataType:17
 		}, function(data) {			
 			
 			if (data.code == 400) {
@@ -623,7 +624,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 				$CPF.closeLoading();		
 				return;
 			}
-			var data = data.groupCascaseAttr;
+			var data = data.appointTypeAttr;
 			if(data.length == 0) {
 				Dialog.notice("没有级联属性可选， 请在模型中添加级联属性", "warning");
 				$CPF.closeLoading();		
@@ -692,8 +693,9 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 					.find("option:selected")
 					.attr("data-id");
         $CPF.showLoading();
-		Ajax.ajax('admin/dictionary/basicItem/getMoreCascaseAttr', {
-			repeatId: repeatId
+		Ajax.ajax('admin/dictionary/basicItem/getAppointTypeAttr', {
+			parentCode: repeatId,
+			dataType:17
 		}, function(data) {			
 			
 			if (data.code == 400) {
@@ -701,7 +703,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 				$CPF.closeLoading();		
 				return;
 			}
-			var data = data.moreCascaseAttr;
+			var data = data.appointTypeAttr;
 			if(data.length == 0) {
 				Dialog.notice("没有级联属性可选， 请在模型中添加级联属性", "warning");
 				$CPF.closeLoading();		

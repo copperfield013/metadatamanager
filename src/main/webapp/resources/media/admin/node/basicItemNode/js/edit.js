@@ -110,6 +110,15 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 	    	$CPF.closeLoading();
 	    }, {async: true})
 	    
+	     //引用属性
+	     Ajax.ajax('admin/node/basicItemNode/getNodeOpsType', {
+	    	opsCode:14
+	    }, function(data){		    	
+	    	var data = data.nodeOpsType;
+	    	nodePosTypeREFATTRIBUTE = data;
+	    	$CPF.closeLoading();
+	    }, {async: true})
+	    
 	}	
 	
 	function getDataType() {
@@ -193,7 +202,6 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 	
     //获取孩子的方法   entityId: 此为实体id
 	function getChild(nodeId, isRelative, bar, entityId, source) {
-		
 		 //这里加载filters
 		Ajax.ajax('admin/node/binFilterBody/getFilters', {
 			nodeId: nodeId
@@ -229,19 +237,21 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 			//获取所点击的多值属性对应的孩子
 			Ajax.ajax('admin/dictionary/basicItem/getRepeatChild', {
 	    		repeatId: entityId
-			}, function(data) {			
+			}, function(data) {	
 				var repeatChildList = data.repeatChild;	
 			//获取当前实体下， 所有分组的级联属性
-			Ajax.ajax('admin/dictionary/basicItem/getGroupCascaseAttr', {
-				entityId: entityId
+			Ajax.ajax('admin/dictionary/basicItem/getAppointTypeAttr', {
+				parentCode: entityId,
+				dataType:17
 			}, function(data) {	
-				var groupCascaseAttrList = data.groupCascaseAttr;
-				
-				//获取当前实体下， 当前多值属性里面的级联属性
-				Ajax.ajax('admin/dictionary/basicItem/getMoreCascaseAttr', {
-					repeatId: entityId
-				}, function(data) {	
-					var moreCascaseAttrList = data.moreCascaseAttr;
+				var cascaseAttrList = data.appointTypeAttr;
+					//获取当前实体下， 所有分组的引用类型
+					Ajax.ajax('admin/dictionary/basicItem/getAppointTypeAttr', {
+						parentCode: entityId,
+						dataType:11
+					}, function(data) {	
+						var refattributeList = data.appointTypeAttr;
+					debugger;
 					
 					//获取对一的关系
 					Ajax.ajax('admin/dictionary/recordRelationType/getRelation', {
@@ -336,11 +346,14 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 							abcattr = data[i].basicItemCnName;
 							abcattrCode = data[i].basicItemCode;
 						}
-						if(isAttrM) {	
-							initCascadeAttrM(abcattr,abcattrCode,dataType, id, name, opt, order, parent,moreCascaseAttrList);
+						
+						initCascadeAttr(abcattr,abcattrCode,dataType, id, name, opt, order, parent, cascaseAttrList);
+						
+						/*if(isAttrM) {	
+							initCascadeAttrM(abcattr,abcattrCode,dataType, id, name, opt, order, parent,cascaseAttrList);
 						 }else {
-							 initCascadeAttr(abcattr,abcattrCode,dataType, id, name, opt, order, parent, groupCascaseAttrList);
-						 }
+							 initCascadeAttr(abcattr,abcattrCode,dataType, id, name, opt, order, parent, cascaseAttrList);
+						 }*/
 				 }	else if(data[i].type == 8) {	
 					 var abcattrCode = data[i].abcattrCode;
                      var basicItemCode = data[i].basicItemCode;
@@ -354,6 +367,22 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 				 }else if(data[i].type == 9) {	
 					 var relAbcnodeId = data[i].relAbcnodeId;
 					 initRabc(id, name, order, parent, relAbcnodeId);
+				 } else if(data[i].type == 14) {	
+					 var relAbcnodeId = data[i].relAbcnodeId;
+					 
+					 var abcattr;
+					 var abcattrCode;
+					 var abcattrCode = data[i].abcattrCode;
+                     var basicItemCode = data[i].basicItemCode;
+					if (basicItemCode == undefined) {
+						abcattr = "";
+						abcattrCode = "";
+					} else {
+						abcattr = data[i].basicItemCnName;
+						abcattrCode = data[i].basicItemCode;
+					}
+					
+					initRefattribute(abcattr,abcattrCode,dataType, id, name, opt, order, parent, refattributeList, relAbcnodeId);
 				 }
 				 
 			 }				 
@@ -601,6 +630,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 		 })
 	}
 	
+	//关系孩子
 	function addRelativeChildren(bar) {	
 		 var dragWrapLen = $(".dragEdit-wrap").length + 1 ;
 		 var abcattr = $(bar).find("select.abc-attr").children("option:selected").attr("value");
@@ -859,11 +889,6 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
     //rabc初始化方法
     function  initRabc(id, name, order, parent,relAbcnodeId) {
     	var dragWrapLen = $(".dragEdit-wrap", $page).length + 1 ;
-    	/*var chLength = $(".entity-ch-wrap", $page).length;*/
-		/* var nest = "no-repeat";
-		 if(chLength >= 2) {
-			 nest = "repeat"
-		 }*/
     	var abcHtml = "<li class='entity-ch-wrap rabc'>" +
         "<div class='attr-abc-title collapse-header' data-order='"+order+"' data-id='"+id+"'>" +
         "<div class='icon-label rabc'>" +
@@ -902,7 +927,97 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
         })
     }
     
-  //普通级联属性初始化方法
+  //普通 引用属性初始化方法
+    function initRefattribute(abcattr,abcattrCode,dataType,id,name,opt,order,parent,commList, relAbcnodeId) {  
+    	var dataTypeList = dataTypeCASCADETYPEList;
+			var attrHtml = "<li class='add-attr clear-fix'>"
+				+"<div class='icon-label attr' data-type='14'>";
+            if(abcattrCode=="") {
+            	attrHtml=attrHtml+"<i class='icon icon-error-cross'></i>";
+            }
+            attrHtml=attrHtml+"<i class='icon icon-attr'></i>" +
+            "<span class='text'>引用属性</span>" +
+            "</div>" +
+            "<div class='label-bar refattribute-attr al-save' data-type='14'  data-order='"+order+"' data-id='"+id+"'>" +
+            "<input type='text' disabled class='edit-input text' value='"+name+"'>" +
+            "<select disabled class='abc-attr'>"            
+            for(var i=0; i<commList.length; i++) {  
+            	
+            	if(commList[i][0] == abcattrCode) {
+            		attrHtml += "<option item-data-type='"+commList[i][2]+"' data-id='"+commList[i][0]+"' value='"+commList[i][1]+"' selected>"+commList[i][1]+"</option>";
+            		
+            		if ("5" == commList[i][2]) {
+    					dataTypeList=dataTypeSTRINGList;
+    				} else if ("6"== commList[i][2]) {
+    					dataTypeList=dataTypeDATEList;
+    				}else if ("7"== commList[i][2]) {
+    					dataTypeList=dataTypeTIMEList;
+    				}else if ("1"== commList[i][2]) {
+    					dataTypeList=dataTypeINTList;
+    				}else if ("15"== commList[i][2]) {
+    					dataTypeList=dataTypeDOUBLEList;
+    				}else if ("11"== commList[i][2]) {
+    					dataTypeList=dataTypeREFERENCEList;
+    				}else if ("8"== commList[i][2]) {
+    					dataTypeList=dataTypeFILEList;
+    				}else if ("14"== commList[i][2]) {
+    					dataTypeList=dataTypeENUMList;
+    				}else if ("17"== commList[i][2]) {
+    					dataTypeList=dataTypeCASCADETYPEList;
+    				}
+            	}else {
+            		attrHtml += "<option item-data-type='"+commList[i][2]+"' data-id='"+commList[i][0]+"' value='"+commList[i][1]+"'>"+commList[i][1]+"</option>";
+            	}
+            	
+            }
+			attrHtml += "</select>";
+			attrHtml += "<select disabled class='data-type attr-type'>";    
+			
+		    	for(var i=0; i<dataTypeList.length; i++) {
+		    		if(dataTypeList[i][0] == dataType) {
+		    			attrHtml += "<option value='"+dataTypeList[i][0]+"' selected>"+dataTypeList[i][1]+"</option>";
+		    		}else {
+		    			attrHtml += "<option value='"+dataTypeList[i][0]+"'>"+dataTypeList[i][1]+"</option>";
+		    		}
+	            	          
+	            };
+	            attrHtml += "</select>";
+				attrHtml += "<select disabled class='node-ops-type'>";	
+				var nodePosType=nodePosTypeREFATTRIBUTE;
+			    for(var i=0; i<nodePosType.length; i++) {
+			    	if(nodePosType[i] == opt) {
+			    		attrHtml += "<option value='"+nodePosType[i]+"' selected>"+nodePosType[i]+"</option>";
+			    	}else {
+			    		attrHtml += "<option value='"+nodePosType[i]+"'>"+nodePosType[i]+"</option>";
+			    	}
+		            	          
+		        };
+		        attrHtml += "</select>";
+		        attrHtml += "<select disabled class='relAbcnodeId'>";
+		        Ajax.ajax('admin/node/basicItemNode/getAllAbcNode', '', function(data1) {
+		             var allAbc = data1.allAbc;
+				    for(var i=0; i<allAbc.length; i++) {
+				    	if (relAbcnodeId == allAbc[i].id) {
+				    		attrHtml += "<option selected='selected' value='"+allAbc[i].id+"'>"+allAbc[i].name+"</option>"; 
+				    	} else {
+				    		attrHtml += "<option value='"+allAbc[i].id+"'>"+allAbc[i].name+"</option>"; 
+				    	}
+			         };
+			         
+		        attrHtml += "</select>";
+		        attrHtml += "<div class='btn-wrap'>" +
+		        "<i class='icon icon-save'></i>" +
+		        "<i class='icon icon-trash-sm'></i>" +
+		        "<i class='icon-simulate-trashsm'></i>" +
+		        "</div>" +
+		        "</div>" +
+		        "</li>";		           		        
+		        var $html = $(attrHtml).prependTo($(parent));
+		        $html.find("select").css({"width":"11%","marginLeft":"16px"}).select2();
+		  })
+    }
+    
+    //普通级联属性初始化方法
     function initCascadeAttr(abcattr,abcattrCode,dataType,id,name,opt,order,parent,commList) {  
     	var dataTypeList = dataTypeCASCADETYPEList;
 			var attrHtml = "<li class='add-attr clear-fix'>"
@@ -980,7 +1095,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
     }
     
   //多值属性下的级联属性初始化方法
-    function initCascadeAttrM(abcattr,abcattrCode,dataType,id,name,opt,order,parent,moreCascaseAttrList) {  
+    /*function initCascadeAttrM(abcattr,abcattrCode,dataType,id,name,opt,order,parent,moreCascaseAttrList) {  
     	
     	var dataTypeList = dataTypeCASCADETYPEList;
 			var attrHtml = "<li class='add-attr clear-fix'>"
@@ -1057,7 +1172,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 		        "</li>";		           		        
 		        var $html = $(attrHtml).prependTo($(parent));
 		        $html.find("select").css({"width":"15%","marginLeft":"16px"}).select2();
-    }
+    }*/
     
     //普通属性初始化方法
     function initAttr(abcattr,abcattrCode,dataType,id,name,opt,order,parent,commList) {  
@@ -1147,7 +1262,6 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
     
     //关系属性初始化方法
     function initRattr(abcattrCode,dataType, id, name, opt, order, parent, commList, subdomain, relationList) {  
-    	debugger;
     	var dataTypeList = dataTypeSTRINGList;
     	var rightRecordType;
 			var attrHtml = "<li class='add-attr clear-fix'>"
@@ -2141,25 +2255,26 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
      * 添加引用属性方法
       */
     function addRefattributeAttr(el) {
-    	
         var $content = $(el).closest(".collapse-header").siblings(".collapse-content");
         var entityId = $(el).closest(".collapse-header").attr("data-abcattrcode");
         if (entityId == undefined) {
             entityId = $(el).closest(".collapse-header").closest(".collapse-content").siblings(".collapse-header").attr("data-abcattrcode");
         }
+        
         $CPF.showLoading();
-		Ajax.ajax('admin/dictionary/basicItem/getGroupCascaseAttr', {
-			entityId: entityId
+        //获取引用类型
+		Ajax.ajax('admin/dictionary/basicItem/getAppointTypeAttr', {
+			parentCode: entityId,
+			dataType :11
 		}, function(data) {	
-			
 			if (data.code == 400) {
 				Dialog.notice("操作失败！刷新后重试", "warning");
 				$CPF.closeLoading();		
 				return;
 			}
-			var data = data.groupCascaseAttr;
+			var data = data.appointTypeAttr;
 			if(data.length == 0) {
-				Dialog.notice("没有级联属性可选， 请在模型中添加级联属性", "warning");
+				Dialog.notice("没有引用属性可选， 请在模型中添加引用属性", "warning");
 				$CPF.closeLoading();		
 				return;
 			}
@@ -2169,9 +2284,9 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
             "<i class='icon icon-attr'></i>" +
             "<span class='text'>引用属性</span>" +
             "</div>" +
-            "<div class='label-bar cascade-attr edit' data-type='14' data-order='' data-id=''>" +
+            "<div class='label-bar refattribute-attr edit' data-type='14' data-order='' data-id=''>" +
             "<input type='text' class='edit-input text' value='"+data[0][1]+"'>" +
-            "<select class='abc-attr'>"            
+            "<select class='abc-attr'>"       
             for(var i=0; i<data.length; i++) {            	
             	attrHtml += "<option data-id='"+data[i][0]+"' value='"+data[i][1]+"' item-data-type='"+data[i][2]+"'>"+data[i][1]+"</option>";                
             }
@@ -2191,7 +2306,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 	            };
 	            attrHtml += "</select>";
 				attrHtml += "<select class='node-ops-type'>";	
-				var nodePosType = nodePosTypeCASATTRIBUTE;
+				var nodePosType = nodePosTypeREFATTRIBUTE;
 			    for(var i=0; i<nodePosType.length; i++) {
 			    	if(nodePosType[i] === "写") {
 			    		attrHtml += "<option value='"+nodePosType[i]+"' selected>"+nodePosType[i]+"</option>";  	
@@ -2201,6 +2316,15 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 		            	         
 		         };
 		         attrHtml += "</select>";
+		         attrHtml += "<select class='relAbcnodeId'>";
+		         Ajax.ajax('admin/node/basicItemNode/getAllAbcNode', '', function(data1) {
+		             var allAbc = data1.allAbc;
+		             
+					    for(var i=0; i<allAbc.length; i++) {
+					    	attrHtml += "<option value='"+allAbc[i].id+"'>"+allAbc[i].name+"</option>"; 
+				         };
+				         attrHtml += "</select>";
+		         
 		         attrHtml += "<div class='btn-wrap'>" +
 		         "<i class='icon icon-save'></i>" +
 		         "<i class='icon icon-trash-sm'></i>" +
@@ -2209,13 +2333,13 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 		         "</div>" +
 		         "</li>";
 		         var $html = $(attrHtml).prependTo($content);
-		         $html.find("select").css({"width":"15%","marginLeft":"16px"}).select2();		            
+		         $html.find("select").css({"width":"11%","marginLeft":"16px"}).select2();		            
 		         addUnfold(el);
-		         $CPF.closeLoading();			    			    
+		         $CPF.closeLoading();	
+		         })
 		    })
 	    });		                      
     };
-
     
     /**
      * 添加级联属性方法
@@ -2227,8 +2351,9 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
             entityId = $(el).closest(".collapse-header").closest(".collapse-content").siblings(".collapse-header").attr("data-abcattrcode");
         }
         $CPF.showLoading();
-		Ajax.ajax('admin/dictionary/basicItem/getGroupCascaseAttr', {
-			entityId: entityId
+		Ajax.ajax('admin/dictionary/basicItem/getAppointTypeAttr', {
+			parentCode: entityId,
+			dataType: 17
 		}, function(data) {	
 			
 			if (data.code == 400) {
@@ -2236,7 +2361,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 				$CPF.closeLoading();		
 				return;
 			}
-			var data = data.groupCascaseAttr;
+			var data = data.appointTypeAttr;
 			if(data.length == 0) {
 				Dialog.notice("没有级联属性可选， 请在模型中添加级联属性", "warning");
 				$CPF.closeLoading();		
@@ -2305,15 +2430,16 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 					.find("option:selected")
 					.attr("data-id");
         $CPF.showLoading();
-		Ajax.ajax('admin/dictionary/basicItem/getMoreCascaseAttr', {
-			repeatId: repeatId
+		Ajax.ajax('admin/dictionary/basicItem/getAppointTypeAttr', {
+			parentCode: repeatId,
+			dataType:17
 		}, function(data) {	
 			if (data.code == 400) {
 				Dialog.notice("操作失败！刷新后重试", "warning");
 				$CPF.closeLoading();		
 				return;
 			}
-			var data = data.moreCascaseAttr;
+			var data = data.appointTypeAttr;
 			if(data.length == 0) {
 				Dialog.notice("没有级联属性可选， 请在模型中添加级联属性", "warning");
 				$CPF.closeLoading();		
@@ -2435,6 +2561,86 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 			 $CPF.closeLoading();
 		});
     };
+    
+    
+    //引用属性保存修改方法
+    function refattributeAttrSave(el) {
+    	var $attrBar = $(el).closest(".label-bar");
+    	var type = $attrBar.attr("data-type");
+    	var dataType = $attrBar.children(".data-type").find("option:selected").val();
+    	var opt = $attrBar.children(".node-ops-type").find("option:selected").val();
+    	var name = $attrBar.children(".edit-input").val();    	
+    	var order = $attrBar.attr("data-order");
+    	var id = $attrBar.attr("data-id");
+    	var parentId = $attrBar.closest(".collapse-content").prev(".collapse-header")
+    						.attr("data-id"); 
+    	var abcattr = $attrBar.children(".abc-attr").find("option:selected").val();
+    	var abcattrCode = $attrBar.children(".abc-attr").find("option:selected").attr("data-id");
+    	var relAbcnodeId = $attrBar.children(".relAbcnodeId").find("option:selected").val();
+    	debugger;
+    	switch (opt) {
+	        case "读":
+	            opt = 1;
+	            break;
+	        case "写":
+	            opt = 2;
+	            break;
+	        case "补":
+	            opt = 3;
+	            break;
+	        case "增":
+	            opt = 4;
+	            break;
+	        case "并":
+	            opt = 5;
+	            break;
+	        default:
+	            break;
+	    }
+    	$CPF.showLoading();
+    	Ajax.ajax('admin/node/basicItemNode/saveOrUpdate', {
+			 type: type,
+			 name: name,
+			 abcattr: abcattr,
+			 abcattrCode: abcattrCode,
+			 dataType: dataType,
+			 opt: opt,
+			 order: order,
+			 parentId: parentId,
+			 id: id,
+			 relAbcnodeId:relAbcnodeId
+		 }, function(data) {
+			 if(data.state == "400") {
+				 Dialog.notice(data.msg, "warning");
+				 $CPF.closeLoading();
+				 return;
+			 }
+			 var data = data.node;
+			 //设置当前节点order和id
+			 var order = data.order;
+			 var id = data.id;
+			 $attrBar.attr("data-order",order)
+			 	.attr("data-id", id);
+			 saveSuccess(el)
+			 $CPF.closeLoading();
+		});
+    };
+    
+    //引用属性删除方法
+    function refattributeAttrDelete(el) {    	
+    	var $attrBar = $(el).closest(".label-bar");    	
+    	var id = $attrBar.attr("data-id");
+    	var isDelChil = false;
+    	var callback = function() {
+    		$attrBar.parent(".add-attr").remove();    		
+    	}; 
+    	if($attrBar.hasClass("al-save")) {
+    		deleteAjax(id, isDelChil, callback);
+    	}else {
+    		callback();
+    		removePop();
+    	}    	
+    }
     
     //级联属性保存修改方法
     function cascadeAttrSave(el) {
@@ -4493,6 +4699,8 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
         	rFilterSave(this);
         } else if(labelBar.hasClass("filter")) {
         	filterSave(this);
+        } else if(labelBar.hasClass("refattribute-attr")) {
+        	refattributeAttrSave(this);//引用属性保存
         }
 
     });
@@ -4521,7 +4729,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
         	tagDelete(el);
         } else if (labelBar.hasClass("cascade-attr")) {
         	cascadeAttrDelete(el);
-        }else if (labelBar.hasClass("rabc")) {
+        } else if (labelBar.hasClass("rabc")) {
         	rabcDelete(el);
         }else if (labelBar.hasClass("rattr")) {
         	rAttrDelete(el);
@@ -4533,7 +4741,9 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
         	filtersDelete(el);
         } else if (labelBar.hasClass("filter")) {
         	filtersDelete(el);
-        } 
+        } else if (labelBar.hasClass("refattribute-attr")) {
+        	refattributeAttrDelete(el);
+        }
     })
     
     //删除-仅组
