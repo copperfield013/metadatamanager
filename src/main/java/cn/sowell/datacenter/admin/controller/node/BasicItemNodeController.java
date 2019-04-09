@@ -47,6 +47,7 @@ import cn.sowell.datacenter.admin.controller.node.api.InlineResponse200;
 import cn.sowell.datacenter.admin.controller.node.api.InlineResponse2001;
 import cn.sowell.datacenter.admin.controller.node.api.InlineResponse2002;
 import cn.sowell.datacenter.admin.controller.node.api.RecordRelationTypes;
+import cn.sowell.datacenter.model.buildproject.service.BuildProjectService;
 import cn.sowell.datacenter.model.cascadedict.pojo.CascadedictBasicItem;
 import cn.sowell.datacenter.model.cascadedict.service.CascadedictBasicItemService;
 import cn.sowell.datacenter.model.demo.pojo.PlainDemo;
@@ -484,9 +485,6 @@ public class BasicItemNodeController {
 		return null;
 	}
     
-    
-   
-    
     /**
      * 	获取所有配置文件
      * @param entityId  实体id
@@ -630,4 +628,5 @@ public class BasicItemNodeController {
 		btn.setBasicItem(basicItem);
 		return btn;
 	}
+	
 }

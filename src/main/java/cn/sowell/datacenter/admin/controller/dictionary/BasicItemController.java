@@ -1,7 +1,9 @@
 package cn.sowell.datacenter.admin.controller.dictionary;
 
+import java.io.File;
 import java.math.BigInteger;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -9,10 +11,13 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.ServletRequestDataBinder;
@@ -36,6 +41,7 @@ import cn.sowell.datacenter.admin.controller.node.api.InlineResponse2002;
 import cn.sowell.datacenter.admin.controller.node.api.InlineResponse2003;
 import cn.sowell.datacenter.admin.controller.node.api.InlineResponse2004;
 import cn.sowell.datacenter.admin.controller.node.api.InlineResponse2005;
+import cn.sowell.datacenter.model.buildproject.service.BuildProjectService;
 import cn.sowell.datacenter.model.cascadedict.pojo.CascadedictBasicItem;
 import cn.sowell.datacenter.model.cascadedict.service.CascadedictBasicItemService;
 import cn.sowell.datacenter.model.dictionary.criteria.BasicItemCriteria;
@@ -881,7 +887,4 @@ public class BasicItemController {
 				return jobj.toString();
 			}
 		}
-	    
-	    
-	    
 }

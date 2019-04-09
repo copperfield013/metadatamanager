@@ -374,6 +374,23 @@ public class BasicItemNodeServiceImpl implements BasicItemNodeService {
 		FileManager.writeFileContent(file, endStr);
 	}
 	
+	
+	private void createrRefattribute(File file, BasicItemNodeCriteria bn, String prefix, NodeType nodeType) throws IOException {
+		String str = "";
+		str = prefix + "<"+nodeType.getName()+" name=\""+bn.getName()+"\" relAbcnodeId=\""+bn.getRelAbcnodeId()+"\">"+"\r\n";
+		FileManager.writeFileContent(file, str);
+		String endStr = prefix + "</"+nodeType.getName()+">";
+		FileManager.writeFileContent(file, endStr);
+	}
+
+	private void createRefattribute(File file, BasicItemNodeCriteria bn, String prefix, NodeType nodeType) throws IOException {
+		String str = "";
+		str = prefix + "<"+nodeType.getName()+" name=\""+bn.getName()+"\" relAbcnodeId=\""+bn.getRelAbcnodeId()+"\">"+"\r\n";
+		FileManager.writeFileContent(file, str);
+		String endStr = prefix + "</"+nodeType.getName()+">";
+		FileManager.writeFileContent(file, endStr);
+	}
+	
 	/**
 	 * 根据本身type, 进行分流操作
 	 * @param basicItemNode
@@ -410,6 +427,12 @@ public class BasicItemNodeServiceImpl implements BasicItemNodeService {
 		case RABCNODE:
 			createRabcnode(file, basicItemNode, prefix, nodeType);
 			break;
+		case REFATTRIBUTE:
+			createRefattribute(file, basicItemNode, prefix, nodeType);
+			break;
+		case RREFATTRIBUTE:
+			createrRefattribute(file, basicItemNode, prefix, nodeType);
+			break;	
 		case NONO:
 			break;
 		default:

@@ -43,6 +43,9 @@ public interface AdminConstants {
 	final String URI_CASCADEDICT = URI_BASE + "/cascadedict"; 
 	
 	final String URI_STAT = URI_BASE + "/stat"; 
+	
+	
+	
 	/**
 	 * 管理端jsp资源的基本路径
 	 */

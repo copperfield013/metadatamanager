@@ -25,16 +25,18 @@ public interface BuildProjectService {
 	void createItemFile(File file, String fileName, String entityCode, String entityPrefix);
 	 
 	 /**
-	  * 建立项目
+	  *	 建立项目
 	  * @return
 	  */
-	 String buildProject(List<String> entityCodes);
+	File buildProject(List<String> entityCodes);
 	 
 	 /**
 	  * 压缩文件
+	  * @param zipFileName     压缩后路径
+	  * @param sourceFileName   待压缩文件路径
 	  * @return
 	  */
-	 String zipCompress();
+	 boolean zipCompress(String zipFilePath, String sourceFilePath);
 			 
 	 
 }

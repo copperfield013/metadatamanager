@@ -10,16 +10,16 @@ import java.util.zip.ZipOutputStream;
 
 public class ZipCompress {
 	private String zipFileName; // 目的地Zip文件
-	private String sourceFileName; // 源文件（带压缩的文件或文件夹）
+	private String sourceFileName; // 源文件（待压缩的文件或文件夹）
 
 	public ZipCompress(String zipFileName, String sourceFileName) {
 		this.zipFileName = zipFileName;
 		this.sourceFileName = sourceFileName;
 	}
 
-	public void zip() throws Exception {
+	public boolean zip() throws Exception {
 		// File zipFile = new File(zipFileName);
-		System.out.println("压缩中...");
+		//System.out.println("压缩中...");
 
 		// 创建zip输出流
 		ZipOutputStream out = new ZipOutputStream(new FileOutputStream(zipFileName));
@@ -34,7 +34,9 @@ public class ZipCompress {
 
 		bos.close();
 		out.close();
-		System.out.println("压缩完成");
+		
+		return true;
+		//System.out.println("压缩完成");
 
 	}
 
@@ -72,12 +74,12 @@ public class ZipCompress {
 		}
 	}
 
-	public static void main(String[] args) {
+	/*public static void main(String[] args) {
 		ZipCompress zipCom = new ZipCompress("F:\\zip\\baseProject.zip", "F:\\社区信息收集");
 		try {
 			zipCom.zip();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-	}
+	}*/
 }

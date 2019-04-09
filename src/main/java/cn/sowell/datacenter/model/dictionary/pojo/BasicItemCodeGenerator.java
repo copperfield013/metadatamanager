@@ -36,6 +36,13 @@ public class BasicItemCodeGenerator {
 		return String.format("%03d", this.id); 
 	}
 	
+	
+	//获取实体前缀
+	public String getprefix(String entityCode) {
+		String[] split = entityCode.split(BasicItemCodeGenerator.ENTITYINFIX);
+		return split[0];
+	}
+	
 	/**
 	 * 输入前缀，组合需要的code
 	 * @param prefix
