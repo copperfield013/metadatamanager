@@ -1,0 +1,50 @@
+
+div .buildproject {
+    position: absolute;
+    left: center;
+    /* width: 95px; */
+    /* height: 80px; */
+    bottom: 50px;
+    left: 130px;
+}
+.buildproject  a{
+	display:inline-block;
+	margin-right:30px;
+	height: 40px;
+	line-height: 40px;
+	border: 1px solid #d9d9d9;
+	padding: 0 5.1em;
+	color: #f3eaea;
+	background-color: #007bff;
+}
+
+div .entityItems{
+	background-color: red;
+}
+
+.entityItems .entity_attr {
+    color: rgb(48, 123, 137);
+    border-width: 1px;
+    border-style: solid;
+    border-color: rgb(38, 163, 154);
+    border-image: initial;
+}
+
+.entityItems .entity_attr {
+    position: relative;
+    float: left;
+    height: 2.2em;
+    line-height: 2.2em;
+    color: rgb(48, 123, 137);
+    cursor: pointer;
+    border-width: 1px;
+    border-style: solid;
+    border-color: rgb(217, 217, 217);
+    border-image: initial;
+    padding: 0px 1.1em;
+    margin: 0px 0px 1.8em 1.8em;
+}
+
+.entityItems .inse {
+	background-color: #00ffe587;
+}
