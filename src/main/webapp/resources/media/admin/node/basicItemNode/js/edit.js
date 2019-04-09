@@ -399,7 +399,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 						abcattrCode = data[i].basicItemCode;
 					}
 					
-					initrRefattribute(abcattr,abcattrCode,dataType, id, name, opt, order, parent, commList, relAbcnodeId, allAbc, subdomain, refattributeList);
+					 initrRefattribute(abcattr,abcattrCode,dataType, id, name, opt, order, parent, commList, relAbcnodeId, allAbc, subdomain, refattributeList);
 				 } 
 				 
 			 }				 
@@ -1029,7 +1029,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
     }
     
     
-  //普通 引用属性初始化方法
+  //普通 引用->引用属性初始化方法
     function initrRefattribute(abcattr,abcattrCode,dataType,id,name,opt,order,parent,commList, relAbcnodeId, allAbc, subdomain, rRefattributeList) {  
     	var dataTypeList = dataTypeCASCADETYPEList;
 			var attrHtml = "<li class='add-attr clear-fix'>"
@@ -2383,6 +2383,7 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 		Ajax.ajax('admin/dictionary/basicItem/getComm', {
 			entityId: entityId,
 		}, function(data) {	
+			
 			if (data.code == 400) {
 				Dialog.notice("操作失败！刷新后重试", "warning");
 				$CPF.closeLoading();		
