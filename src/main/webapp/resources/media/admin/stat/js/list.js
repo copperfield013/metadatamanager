@@ -3206,13 +3206,13 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
      * 添加过滤条件 filter
       */
     function addFilter(el) {
+    	$CPF.showLoading();
         var $content = $(el).closest(".collapse-header").siblings(".collapse-content");
         
-        var entityId = $(el).closest(".collapse-header").attr("entityId");
-        var source = $(el).closest(".collapse-header").attr("source");
+        
         
         var dragWrapLen = $(".dragEdit-wrap").length + 1 ;
-        $CPF.showLoading();
+        
             var relativeHtml = "<li class='attr-relative'>" +
             "<div class='attr-relative-title collapse-header' source='"+source+"' entityId='"+entityId+"' data-order='' data-id=''>" +
             "<div class='icon-label attr-relative-dict attr-relative'>" +
@@ -3221,25 +3221,34 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
             "<div class='label-bar filter edit'>" +
             "<input type='text' class='edit-input filterName text' value='filter名称'>";
             
-            relativeHtml += "<select class='abcattrCodeData'>";	
+            	
             //getCriteriaSymbol
-    	    Ajax.ajax('admin/node/basicItemNode/getComm', {
+            
+            var entityId = $(el).closest(".collapse-header").attr("entityId");
+            var source = $(el).closest(".collapse-header").attr("source");
+            relativeHtml += "<select class='abcattrCodeData'>";
+    	    Ajax.ajax('admin/dictionary/basicItem/getComm', {
     	    	entityId:entityId
     	    }, function(data){		
-    	    	var entityData = data.comm;
-    	    	 Ajax.ajax('admin/node/basicItemNode/getRepeatChild', {
+    	    	var entityData = data.commList;
+    	    	
+    	    	
+    	    	 /*Ajax.ajax('admin/dictionary/basicItem/getRepeatChild', {
     	    		 repeatId:entityId
-    	    	    }, function(data){		
-    	    	    	var repeatData = data.repeatChild;
-    	    	if (source == "moreAttr") {
+    	    	    }, function(data){	
+    	    	    	
+    	    	    	var repeatData = data.repeatChild;*/
+    	    	    	
+    	    	    	
+    	    	/*if (source == "moreAttr") {
     	    		 for(var key in repeatData) {
     	 		    	relativeHtml += "<option value='"+repeatData[key].code+"'>"+repeatData[key].cnName+"</option>"; 
     	 	         };
-    	    	} else {
+    	    	} else {*/
     	    		 for(var key in entityData) {
     	 		    	relativeHtml += "<option value='"+entityData[key][0]+"'>"+entityData[key][1]+"</option>"; 
     	 	         };
-    	    	}
+    	    	/*}*/
 		   
 	        relativeHtml += "</select>";
             
@@ -3279,7 +3288,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
             addUnfold(el);
 		   /* drag($(".dragEdit-wrap").length);*/
 		    $CPF.closeLoading();	
-    	    })
+    	   /* })*/
     	    })
     	    })
     }; 
@@ -3989,11 +3998,11 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
             
             relativeHtml += "<select disabled class='abcattrCodeData'>";	
          
-            Ajax.ajax('admin/node/basicItemNode/getComm', {
+            Ajax.ajax('admin/dictionary/basicItem/getComm', {
     	    	entityId:enID
     	    }, function(data){		
-    	    	var entityData = data.comm;
-    	    	 Ajax.ajax('admin/node/basicItemNode/getRepeatChild', {
+    	    	var entityData = data.commList;
+    	    	 /*Ajax.ajax('admin/dictionary/basicItem/getRepeatChild', {
     	    		 repeatId:enID
     	    	    }, function(data){		
     	    	    	var repeatData = data.repeatChild;
@@ -4005,7 +4014,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
     	    				 relativeHtml += "<option value='"+repeatData[key].code+"'>"+repeatData[key].cnName+"</option>";
     	    			 }
     	 	         }
-    	    	} else {
+    	    	} else {*/
     	    		 for(var key in entityData) {
     	    			 if (filterBodyList.abcattrCode == entityData[key].code) {
     	    				 relativeHtml += "<option selected value='"+entityData[key][0]+"'>"+entityData[key][1]+"</option>"; 
@@ -4013,7 +4022,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
     	    				 relativeHtml += "<option value='"+entityData[key][0]+"'>"+entityData[key][1]+"</option>"; 
     	    			 }
     	    		 }
-    	    	}
+    	    	/*}*/
 	        relativeHtml += "</select>";
             
             relativeHtml += "<select disabled class='node-Symbol-type'>";	
@@ -4057,7 +4066,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
             $html.find("select").css({"width":"13%","marginLeft":"16px"}).select2();
             $html.find("select.node-ops-type").css({"width":"8%","marginLeft":"16px"}).select2();
             
-    	    })
+    	    /*})*/
     	     })
     	    })
 	}
