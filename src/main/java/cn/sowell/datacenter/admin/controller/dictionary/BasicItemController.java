@@ -840,6 +840,15 @@ public class BasicItemController {
 			Map<String, Object> map = new HashMap<String, Object>();
 			JSONObject jobj = new JSONObject(map);
 			try {
+				//这里判断是实体， 还是多值属性
+		    	BasicItem basicItem = basicItemService.getBasicItem(entityId);
+		    	String dataType2 = basicItem.getOneLevelItem().getDataType();
+		    	boolean equals = dataType2.equals(ValueType.REPEAT.getIndex()+"");
+		    	
+		    	if (equals) {
+		    		entityId = basicItem.getParent() + "_" + basicItem.getCode();
+		    	}
+				
 				List commList = basicItemService.getComm(entityId);
 				map.put("code", 200);
 				map.put("msg", "操作成功");
