@@ -83,3 +83,17 @@
         </li>
     </ul>
 </li>
+<li>
+    <a href="#" class="menu-dropdown">
+        <i class="menu-icon fa fa-bookmark"></i>
+        <span class="menu-text">建立项目</span>
+        <i></i>
+    </a>
+    <ul class="submenu">
+        <li>
+            <a class="tab" href="admin/buildproject/list" target="buildproject_list" title="建立项目">
+                <span class="menu-text">建立项目</span>
+            </a>
+        </li>
+    </ul>
+</li>
