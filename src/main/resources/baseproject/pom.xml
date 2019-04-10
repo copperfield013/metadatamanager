@@ -341,6 +341,7 @@
 							<obfuscate>true</obfuscate>
 							<injar>\${project.build.finalName}-release\${project.build.finalName}\classes</injar>
 							<outjar>${project.build.finalName}.jar</outjar>
+							<addMavenDescriptor>true</addMavenDescriptor><!-- pom.xml -->
 							<options>
 								<option>-dontshrink</option>
 								<option>-dontwarn</option>
