@@ -110,7 +110,7 @@
 				return;
 			}
 			
-			Dialog.confirm('选中实体数量为: "'+length+'", 是否确认下载项目？', function(yes){
+			Dialog.confirm('选中实体数量为: "'+length+'", 是否确认下载？', function(yes){
 	        	if(yes){
 	        		$childs.each(function(){
 					    var entityCode = $(this).attr("entityId");
