@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kmodule xmlns="http://www.drools.org/xsd/kmodule">
+	
+	
+	<!-- people -->
+	<kbase name="peopleidtquery" packages="kie.people.identity.query">
+		<ksession name="ks-people-idt-query" />
+	</kbase>
+	<kbase name="peopleipmtimer" packages="kie.people.ipm.ipmTimer">
+		<ksession name="ks-people-ipm-ipmTimer" />
+	</kbase>
+	<kbase name="peoplepreipm" packages="kie.people.preipm">
+		<ksession name="ks-people-preipm" />
+	</kbase>
+	<kbase name="peopleipm" packages="kie.people.ipm, kie.people.ipm.ipmTimer">
+		<ksession name="ks-people-ipm" />
+	</kbase>
+	<kbase name="peoplePostIMP" packages="kie.people.postimp">
+		<ksession name="ks-people-postimp" />
+	</kbase>
+	
+	<kbase name="peopleSecondIPM" packages="kie.people.secondipm, kie.people.secondipm.secondipmTimer">
+		<ksession name="ks-people-secondipm" />
+	</kbase>
+	<kbase name="peopleSecondIPMTimer" packages="kie.people.secondipm.secondipmTimer">
+		<ksession name="ks-people-secondipm-secondipmTimer" />
+	</kbase>
+	
+	
+</kmodule>

@@ -1,0 +1,27 @@
+package com.abc.rule.people.identity.query
+
+import com.abc.rrc.query.queryrecord.criteria.Criteria;
+
+import com.abc.fuse.improve.attribute.FuseAttribute;
+import com.abc.fuse.improve.attribute.leaf.FuseLeafAttribute;
+import com.abc.rrc.query.queryrecord.criteria.CriteriaFactory;
+import com.zhsq.biz.common.CommonCalculation;
+import com.zhsq.biz.constant.EnumKeyValue;
+import com.abc.rrc.query.criteria.CommonSymbol;
+
+global java.lang.String recordName;
+global com.abc.rrc.query.criteria.BizzCriteriaFactory bizzCriteriaFactory;
+
+/**
+rule "姓名 and 身份证号 criteria" 
+	activation-group "people查询条件"
+	salience 9  
+when
+    $nameFB:FuseAttribute(name==PeopleItem.姓名,CommonCalculation.isBasicLawful(value));
+    FuseLeafAttribute(name==PeopleItem.证件信息_证件类型,CommonCalculation.isBasicLawful(sqlValue), sqlValue == EnumKeyValue.ENUM_证件类型_身份证, $leafCode:leafCode);
+	$IdFB: FuseLeafAttribute(name==PeopleItem.证件信息_证件号码,CommonCalculation.isBasicLawful(sqlValue), $leafCode==leafCode);
+then 
+	bizzCriteriaFactory.addCriteria($nameFB.getAttribute(), CommonSymbol.EQUAL);
+	bizzCriteriaFactory.addCriteria($IdFB.getAttribute(), CommonSymbol.EQUAL);
+end
+**/
