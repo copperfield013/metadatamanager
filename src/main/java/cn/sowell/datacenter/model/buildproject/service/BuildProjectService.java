@@ -38,5 +38,10 @@ public interface BuildProjectService {
 	  */
 	 boolean zipCompress(String zipFilePath, String sourceFilePath);
 			 
-	 
+	 /**
+	  * 初始化项目
+	  * @param path
+	  * @return
+	  */
+	 boolean initializeProject();
 }

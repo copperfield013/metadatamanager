@@ -52,6 +52,7 @@ public class BuildProjectController {
 	   
 	   byte[] readFileToByteArray = FileUtils.readFileToByteArray(buildProject);
 	   	buildProject.delete();
+	   	buildProjectService.initializeProject();
 		HttpHeaders headers = new HttpHeaders();  
 	    String downloadFileName = new String(buildProject.getName().getBytes("UTF-8"),"iso-8859-1");//设置编码
 	    headers.setContentDispositionFormData("attachment", downloadFileName);

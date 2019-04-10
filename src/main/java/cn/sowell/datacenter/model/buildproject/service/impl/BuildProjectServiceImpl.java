@@ -2,6 +2,9 @@ package cn.sowell.datacenter.model.buildproject.service.impl;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.util.Enumeration;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -17,8 +20,19 @@ import cn.sowell.datacenter.utils.ZipCompress;
 
 @Service
 public class BuildProjectServiceImpl implements BuildProjectService {
+	
+	
+	private static final String CONSTANTPATH = "\\src\\main\\java\\com\\zhsq\\biz\\constant";
+	private static final String ITEMPATH = CONSTANTPATH + "\\item"; 
 	@Resource
 	BuildProjectDao buildProjectDao;
+	
+	
+	private String getProjectPath() {
+		 ClassLoader classLoader = BuildProjectServiceImpl.class.getClassLoader();
+		URL resource = classLoader.getResource("baseproject");
+		return resource.getPath();
+	}
 	
 	 /**
 	  * 	建立项目
@@ -30,15 +44,17 @@ public class BuildProjectServiceImpl implements BuildProjectService {
 		  String  relationTypeFileName = "RelationType";
 		  String  itemFileName = "Item";
 		  String  fileNmaeSuffix = ".java";
-		  String path = "F:\\zip\\baseproject";
-		 String  zipFilePath = "F:\\zip\\baseproject.zip";
-		 String sourceFilePath = path;
-		 //获取类路径   D:\eclipse-workspace\metadatamanager
-		//String property = System.getProperty("user.dir");
-		
-		File rootPath = new File(path);
-		String constantPath = rootPath + "\\src\\main\\java\\com\\zhsq\\biz\\constant";
-		String itemPath = constantPath + "\\item"; 
+		  
+		String path = getProjectPath();
+		  
+		// String path = "F:\\zip\\baseproject";
+		String sourceFilePath = path;
+		path = path.substring(0, path.length()-1);
+		 String  zipFilePath = path + ".zip";
+		 
+		//File rootPath = new File(path);
+		String constantPath = path + CONSTANTPATH;
+		String itemPath = path + ITEMPATH;
 		//获取枚举数据  生成文件， 写入文件夹
 		 try {
 			//往文件写入枚举数据
@@ -125,6 +141,14 @@ public class BuildProjectServiceImpl implements BuildProjectService {
             e.printStackTrace();
         }
 		return isTrue;
+	}
+
+	@Override
+	public boolean initializeProject() {
+		String projectPath = getProjectPath();
+		String path = projectPath+ CONSTANTPATH;
+		boolean deleteFile = FileManager.deleteFile(path);
+		return deleteFile;
 	}
 	
 }
