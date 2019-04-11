@@ -6,6 +6,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.annotation.Resource;
 
@@ -131,6 +133,11 @@ public class CascadedictBasicItemController {
 	@RequestMapping("/do_add")
 	public AjaxPageResponse doAdd(CascadedictBasicItem creteria){
 		try {
+			
+			boolean checkName = checkName(creteria.getName());
+			if (!checkName) {
+				return AjaxPageResponse.FAILD("名称只能输入中文、英文、下划线、中英括号！");
+			}
 			cascadedictBasicItemService.create(creteria);
 			return AjaxPageResponse.CLOSE_AND_REFRESH_PAGE("添加成功", "cascadedictBasicItem_list");
 		} catch (Exception e) {
@@ -145,6 +152,14 @@ public class CascadedictBasicItemController {
 		Map<String, Object> map = new HashMap<String, Object>();
 		JSONObject jobj = new JSONObject(map);
 		try {
+			
+			boolean checkName = checkName(creteria.getName());
+			if (!checkName) {
+				map.put("code", 400);
+				map.put("msg", "名称只能输入中文、英文、下划线、中英括号！");
+				return jobj.toString();
+			}
+			
 			if (creteria.getOrder() == null) {
 				creteria.setOrder(1);
 			}
@@ -177,6 +192,12 @@ public class CascadedictBasicItemController {
 	@RequestMapping("/do_update")
 	public AjaxPageResponse doUpdate(CascadedictBasicItem criteria){
 		try {
+			
+			boolean checkName = checkName(criteria.getName());
+			if (!checkName) {
+				return AjaxPageResponse.FAILD("名称只能输入中文、英文、下划线、中英括号！");
+			}
+			
 			cascadedictBasicItemService.update(criteria);
 			return AjaxPageResponse.CLOSE_AND_REFRESH_PAGE("修改成功", "cascadedictBasicItem_list");
 		} catch (Exception e) {
@@ -229,6 +250,25 @@ public class CascadedictBasicItemController {
 			map.put("msg", "删除失败");
 			return jobj.toString();
 		}
+	}
+	
+	//验证数据
+	private boolean checkName(String name) {
+		// 名称只能输入中文、英文、下划线、中英括号！
+		// 匹配含有非以上的字符
+		String reg = "[\\u4e00-\\u9fa5 \\w \\(（）\\)]{0,}";
+		
+		boolean matches = Pattern.matches(reg, name);
+		
+		return matches;
+	}
+	
+	public static void main(String[] args) {
+		String pattern = "[\\u4e00-\\u9fa5 \\w \\(（）\\)]{0,}";
+		//String pattern = "^[\\u4e00-\\u9fa5]{0,}";
+		String name = "我为_";
+	 boolean matches = Pattern.matches(pattern, name);
+		System.out.println(matches);
 	}
 
 }

@@ -28,7 +28,10 @@ public class BuildProjectDaoImpl implements BuildProjectDao {
 		 StringBuffer sb = new StringBuffer(100);
 		 sb.append("SELECT ")
 		 .append("  CONCAT('public static final Integer ENUM_',")
-		 .append(" b.c_name, '_', a.c_name, '=', a.id, ';')")
+		 .append(" replace(replace(replace(replace(b.c_name, '（', '_'), '）', '_'), '(', '_'), ')', '_'), ")
+		 .append(" '_', ")
+		 .append(" replace(replace(replace(replace(a.c_name, '（', '_'), '）', '_'), '(', '_'), ')', '_'), ")
+		 .append(" '=', a.id, ';')")
 		 .append(" FROM")
 		 .append(" t_sc_cascadedict_basic_item a")
 		 .append(" LEFT JOIN")
