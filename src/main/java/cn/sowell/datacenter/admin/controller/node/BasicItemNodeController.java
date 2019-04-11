@@ -88,6 +88,7 @@ public class BasicItemNodeController {
 
 	@Resource
 	BasicItemService basicItemService;
+	
 	@Resource
 	RecordRelationTypeService recordRelationTypeService;
 	@Resource
@@ -435,20 +436,17 @@ public class BasicItemNodeController {
 	
 	@RequestMapping(value="/download")
     public ResponseEntity<byte[]> download(Integer nodeId)throws Exception {
-    	BasicItemNode bn = basicItemNodeService.getOne(nodeId);
-    	String fileName = bn.getName()+".xml";
-    	File file = File.createTempFile(bn.getName(), ".xml");
 		//创建ABC配置文件
-		basicItemNodeService.getConfigFile(file, bn);
+		File file = basicItemNodeService.getConfigFile(nodeId);
        HttpHeaders headers = new HttpHeaders();  
-       String downloadFileName = new String(fileName.getBytes("UTF-8"),"iso-8859-1");//设置编码
+       String downloadFileName = new String(file.getName().getBytes("UTF-8"),"iso-8859-1");//设置编码
        headers.setContentDispositionFormData("attachment", downloadFileName);
        headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
        byte[] readFileToByteArray = FileUtils.readFileToByteArray(file);
       // 如果文件路径所对应的文件存在，并且是一个文件，则直接删除
       if (file.exists() && file.isFile()) {
     	//在程序退出时删除临时文件
-    	 	file.delete();
+    	 file.delete();
       } 
        return new ResponseEntity<byte[]>(readFileToByteArray,    
                headers, HttpStatus.OK);  
@@ -460,16 +458,12 @@ public class BasicItemNodeController {
         @ApiResponse(code = 401, message = "操作失败") })
     @RequestMapping(value = "/preview",
         method = RequestMethod.POST)
-	public ModelAndView preview(String nodeId) {
+	public ModelAndView preview(Integer nodeId) {
     	
 		try {
-			BasicItemNode bn = basicItemNodeService.getOne(Integer.parseInt(nodeId));
-	    	String fileName = bn.getName()+".xml";
-	    	File file = File.createTempFile(bn.getName(), ".xml");
-	    	
 	    	//创建ABC配置文件
 			//bn.getConfigFile(file);
-			basicItemNodeService.getConfigFile(file, bn);
+			File file = basicItemNodeService.getConfigFile(nodeId);
 			ModelAndView mv = new ModelAndView();
 			mv.addObject("file", FileUtils.readFileToString(file, "UTF-8"));
 			mv.setViewName(AdminConstants.JSP_NODE + "/basicItemNode/preview.jsp");
@@ -538,51 +532,7 @@ public class BasicItemNodeController {
 	@RequestMapping("/createConfigFile")
 	public AjaxPageResponse createConfigFile(String entityId){
 		try {
-			//生成配置文件的根节点
-			BasicItem basicItem = basicItemService.getBasicItem(entityId);
-			String name = "【" +basicItem.getCnName() + "】自动生成" + System.currentTimeMillis();
-			BasicItemNode pbtn = createBasicItemNode(NodeType.ABC.getCode(), name, ValueType.STRING.getName(), null, NodeOpsType.WRITE.getIndex()+"", null, basicItem);
-			basicItemNodeService.saveOrUpdate(pbtn);
-			
-			//获取模型数据
-			Map<String, List> attrByPid = basicItemService.getAttrByPid(entityId);
-			List commonList = attrByPid.get("commonProper");//普通属性
-			List moreList = attrByPid.get("moreProper");//多值属性
-			List relaList = attrByPid.get("entityRela");//实体关系
-			
-			Iterator iterator = commonList.iterator();
-			//生成属性组及其孩子节点
-			while (iterator.hasNext()) {
-				BasicItem bt = (BasicItem)iterator.next();//获取的是实体的普通分组
-				//生成属性组btn
-				BasicItemNode groupBtn = createBasicItemNode(NodeType.ATTRGROUP.getCode(), bt.getCnName(), ValueType.STRING.getName(), null, NodeOpsType.WRITE.getIndex()+"", pbtn.getId(), null);
-				basicItemNodeService.saveOrUpdate(groupBtn);
-				
-				List childList = bt.getChildList();//分组下的所有孩子
-				Iterator childIter = childList.iterator();
-				while (childIter.hasNext()) {
-					BasicItem childBt = (BasicItem)childIter.next();
-					createAttribute(groupBtn, childBt);
-				}
-			}
-			
-			
-			//生成多值属性及其孩子节点
-			Iterator moreIter = moreList.iterator();
-			while (moreIter.hasNext()) {
-				BasicItem moreBt = (BasicItem) moreIter.next();//获取的实体的多值类型
-				BasicItemNode moreBtn = createBasicItemNode(NodeType.MULTIATTRIBUTE.getCode(), moreBt.getCnName(), ValueType.STRING.getName(), null, NodeOpsType.WRITE.getIndex()+"", pbtn.getId(), moreBt);
-				basicItemNodeService.saveOrUpdate(moreBtn);
-				
-				List childMoreList = moreBt.getChildList();
-				Iterator childMoreIter = childMoreList.iterator();
-				
-				while (childMoreIter.hasNext()) {
-					BasicItem childBt = (BasicItem)childMoreIter.next();
-					createAttribute(moreBtn, childBt);
-				}
-			}
-			
+			boolean isTrue = basicItemNodeService.createConfigFile(entityId);
 			return AjaxPageResponse.CLOSE_AND_REFRESH_PAGE("操作成功！", "basicItemNode_list");
 		}catch (Exception e) {
 			logger.error("操作失败！", e);
@@ -590,43 +540,4 @@ public class BasicItemNodeController {
 		}
 	}
     
-    /**生成普通属性和级联属性
-	 * @param parrentBtn
-	 * @param childBt
-	 * @throws NumberFormatException
-	 */
-	private void createAttribute(BasicItemNode parrentBtn, BasicItem childBt) throws NumberFormatException {
-		String dataType = childBt.getOneLevelItem().getDataType();
-		
-		ValueType valueType = ValueType.getValueType(Integer.parseInt(dataType));
-
-		Collection<ValueType> canTransType = ValueTypeMapping.getCanTransType(valueType);
-		ValueType next = ValueType.STRING;
-		if (!canTransType.isEmpty()) {
-			 next = canTransType.iterator().next();
-		}
-		
-		//级联属性
-		if(ValueType.CASCADETYPE.equals(valueType)) {
-			BasicItemNode casAttr = createBasicItemNode(NodeType.CASATTRIBUTE.getCode(), childBt.getCnName(), next.getName(), null, NodeOpsType.WRITE.getIndex()+"", parrentBtn.getId(), childBt);
-			basicItemNodeService.saveOrUpdate(casAttr);
-		} else {//普通属性
-			BasicItemNode attr = createBasicItemNode(NodeType.ATTRIBUTE.getCode(), childBt.getCnName(), next.getName(), null, NodeOpsType.WRITE.getIndex()+"", parrentBtn.getId(), childBt);
-			basicItemNodeService.saveOrUpdate(attr);
-		}
-	}
-	
-	//生成btn对象
-	private BasicItemNode createBasicItemNode(Integer type, String name, String dataType, String subdomain, String opt, Integer parentId, BasicItem basicItem) {
-		BasicItemNode btn = new BasicItemNode();
-		btn.setType(type);
-		btn.setName(name);
-		btn.setDataType(dataType);
-		btn.setSubdomain(subdomain);
-		btn.setOpt(opt);
-		btn.setParentId(parentId);
-		btn.setBasicItem(basicItem);
-		return btn;
-	}
-	
 }

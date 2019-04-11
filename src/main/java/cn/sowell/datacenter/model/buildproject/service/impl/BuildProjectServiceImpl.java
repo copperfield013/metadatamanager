@@ -40,10 +40,10 @@ public class BuildProjectServiceImpl implements BuildProjectService {
 	  */
 	 public File buildProject(List<String> entityCodes) {
 		 
-		  String  enumFileName = "EnumKeyValue";
-		  String  relationTypeFileName = "RelationType";
-		  String  itemFileName = "Item";
-		  String  fileNmaeSuffix = ".java";
+		 String  enumFileName = "EnumKeyValue";
+		 String  relationTypeFileName = "RelationType";
+		 String  itemFileName = "Item";
+		 String  fileNmaeSuffix = ".java";
 		  
 		String path = getProjectPath();
 		  

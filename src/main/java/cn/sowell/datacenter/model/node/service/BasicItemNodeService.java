@@ -109,9 +109,9 @@ public interface BasicItemNodeService {
 	/**
 	 * 生成配置文件入口
 	 * @param file
-	 * @param btn
+	 * @param nodeId  节点id
 	 */
-	void getConfigFile(File file, BasicItemNode btn) throws IOException;
+	File getConfigFile(Integer nodeId) throws IOException;
 
 	/**
 	 * 根据父id， 获取孩子的opt集合
@@ -127,5 +127,17 @@ public interface BasicItemNodeService {
 	 */
 	public List<BasicItemNode> getChildByParent(Integer parentId);
 
+	/**
+	 * 复制配置文件
+	 * @param nodeId
+	 * @throws Exception
+	 */
 	void copyNode(Integer nodeId) throws Exception;
+	
+	/**
+	 * 根据实体id， 生成配置文件
+	 * @param entityId
+	 * @return
+	 */
+	boolean createConfigFile(String entityId);
 }

@@ -192,5 +192,4 @@ public interface BasicItemService {
 	 * @return
 	 */
 	String getEntityCode(String parentEntityCode);
-	
 }

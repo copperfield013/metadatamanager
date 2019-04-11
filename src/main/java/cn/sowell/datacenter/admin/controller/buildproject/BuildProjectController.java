@@ -2,7 +2,6 @@ package cn.sowell.datacenter.admin.controller.buildproject;
 
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -107,7 +106,7 @@ public class BuildProjectController {
 	      }
 	   	
 		HttpHeaders headers = new HttpHeaders();  
-	    String downloadFileName = new String(fileName.getBytes("UTF-8"),"iso-8859-1");//设置编码
+	    String downloadFileName = new String(fileName.getBytes("UTF-8"),"iso-8859-1");
 	    headers.setContentDispositionFormData("attachment", downloadFileName);
 	    headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
 	    
@@ -135,7 +134,7 @@ public class BuildProjectController {
 	      }
 	   	
 		HttpHeaders headers = new HttpHeaders();  
-	    String downloadFileName = new String(fileName.getBytes("UTF-8"),"iso-8859-1");//设置编码
+	    String downloadFileName = new String(fileName.getBytes("UTF-8"),"iso-8859-1");
 	    headers.setContentDispositionFormData("attachment", downloadFileName);
 	    headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
 	    

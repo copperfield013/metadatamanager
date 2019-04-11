@@ -136,7 +136,7 @@ public class CascadedictBasicItemController {
 			
 			boolean checkName = checkName(creteria.getName());
 			if (!checkName) {
-				return AjaxPageResponse.FAILD("名称只能输入中文、英文、下划线、中英括号！");
+				return AjaxPageResponse.FAILD("名称只能输入中文、英文、数字、下划线、中英括号！");
 			}
 			cascadedictBasicItemService.create(creteria);
 			return AjaxPageResponse.CLOSE_AND_REFRESH_PAGE("添加成功", "cascadedictBasicItem_list");
@@ -156,7 +156,7 @@ public class CascadedictBasicItemController {
 			boolean checkName = checkName(creteria.getName());
 			if (!checkName) {
 				map.put("code", 400);
-				map.put("msg", "名称只能输入中文、英文、下划线、中英括号！");
+				map.put("msg", "名称只能输入中文、英文、数字、下划线、中英括号！");
 				return jobj.toString();
 			}
 			
@@ -195,7 +195,7 @@ public class CascadedictBasicItemController {
 			
 			boolean checkName = checkName(criteria.getName());
 			if (!checkName) {
-				return AjaxPageResponse.FAILD("名称只能输入中文、英文、下划线、中英括号！");
+				return AjaxPageResponse.FAILD("名称只能输入中文、英文、数字、下划线、中英括号！");
 			}
 			
 			cascadedictBasicItemService.update(criteria);
@@ -254,21 +254,13 @@ public class CascadedictBasicItemController {
 	
 	//验证数据
 	private boolean checkName(String name) {
-		// 名称只能输入中文、英文、下划线、中英括号！
+		// 名称只能输入中文、英文、数字、下划线、中英括号！
 		// 匹配含有非以上的字符
 		String reg = "[\\u4e00-\\u9fa5 \\w \\(（）\\)]{0,}";
 		
 		boolean matches = Pattern.matches(reg, name);
 		
 		return matches;
-	}
-	
-	public static void main(String[] args) {
-		String pattern = "[\\u4e00-\\u9fa5 \\w \\(（）\\)]{0,}";
-		//String pattern = "^[\\u4e00-\\u9fa5]{0,}";
-		String name = "我为_";
-	 boolean matches = Pattern.matches(pattern, name);
-		System.out.println(matches);
 	}
 
 }

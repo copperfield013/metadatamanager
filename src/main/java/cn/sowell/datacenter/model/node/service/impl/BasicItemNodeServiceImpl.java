@@ -3,8 +3,11 @@ package cn.sowell.datacenter.model.node.service.impl;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.Collection;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -14,6 +17,8 @@ import org.hibernate.Transaction;
 import org.springframework.stereotype.Service;
 
 import cn.sowell.copframe.dto.page.PageInfo;
+import cn.sowell.datacenter.model.dictionary.pojo.BasicItem;
+import cn.sowell.datacenter.model.dictionary.service.BasicItemService;
 import cn.sowell.datacenter.model.node.criteria.BasicItemNodeCriteria;
 import cn.sowell.datacenter.model.node.dao.BasicItemNodeDao;
 import cn.sowell.datacenter.model.node.pojo.BasicItemNode;
@@ -23,8 +28,10 @@ import cn.sowell.datacenter.model.node.service.BasicItemNodeService;
 import cn.sowell.datacenter.model.node.service.BinFilterBodyService;
 import cn.sowell.datacenter.utils.FileManager;
 
+import com.abc.mapping.ValueTypeMapping;
 import com.abc.mapping.node.NodeOpsType;
 import com.abc.mapping.node.NodeType;
+import com.abc.util.ValueType;
 
 @Service
 public class BasicItemNodeServiceImpl implements BasicItemNodeService {
@@ -37,6 +44,9 @@ public class BasicItemNodeServiceImpl implements BasicItemNodeService {
 	
 	@Resource
 	BinFilterBodyService binFilterBodyService;
+	
+	@Resource
+	BasicItemService basicItemService;
 	
 	@Override
 	public List<BasicItemNode> queryList(BasicItemNodeCriteria criteria, PageInfo pageInfo) {
@@ -237,7 +247,13 @@ public class BasicItemNodeServiceImpl implements BasicItemNodeService {
 	}
 
 	@Override
-	public void getConfigFile(File file, BasicItemNode btn) throws IOException {
+	public File getConfigFile(Integer nodeId) throws IOException {
+		
+		BasicItemNode btn = getOne(nodeId);
+		
+		String fileName = btn.getName();
+    	File file = File.createTempFile(fileName, ".xml");
+		
 		String prefix = "  ";
 		String head = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
 		FileManager.writeFileContent(file, head);
@@ -277,6 +293,8 @@ public class BasicItemNodeServiceImpl implements BasicItemNodeService {
 		
 		String endStr = "</"+NodeType.ABC.getName()+">";
 		FileManager.writeFileContent(file, endStr);
+		
+		return file;
 	}
 	
 	
@@ -594,4 +612,93 @@ public class BasicItemNodeServiceImpl implements BasicItemNodeService {
 			copyNode(pid, newbt.getId());
 		}
 	}
+
+	@Override
+	public boolean createConfigFile(String entityId) {
+		
+		//生成配置文件的根节点
+		BasicItem basicItem = basicItemService.getBasicItem(entityId);
+		String name = "【" +basicItem.getCnName() + "】自动生成" + System.currentTimeMillis();
+		BasicItemNode pbtn = createBasicItemNode(NodeType.ABC.getCode(), name, ValueType.STRING.getName(), null, NodeOpsType.WRITE.getIndex()+"", null, basicItem);
+		saveOrUpdate(pbtn);
+		
+		//获取模型数据
+		Map<String, List> attrByPid = basicItemService.getAttrByPid(entityId);
+		List commonList = attrByPid.get("commonProper");//普通属性
+		List moreList = attrByPid.get("moreProper");//多值属性
+		List relaList = attrByPid.get("entityRela");//实体关系
+		
+		Iterator iterator = commonList.iterator();
+		//生成属性组及其孩子节点
+		while (iterator.hasNext()) {
+			BasicItem bt = (BasicItem)iterator.next();//获取的是实体的普通分组
+			//生成属性组btn
+			BasicItemNode groupBtn = createBasicItemNode(NodeType.ATTRGROUP.getCode(), bt.getCnName(), ValueType.STRING.getName(), null, NodeOpsType.WRITE.getIndex()+"", pbtn.getId(), null);
+			saveOrUpdate(groupBtn);
+			
+			List childList = bt.getChildList();//分组下的所有孩子
+			Iterator childIter = childList.iterator();
+			while (childIter.hasNext()) {
+				BasicItem childBt = (BasicItem)childIter.next();
+				createAttribute(groupBtn, childBt);
+			}
+		}
+		
+		//生成多值属性及其孩子节点
+		Iterator moreIter = moreList.iterator();
+		while (moreIter.hasNext()) {
+			BasicItem moreBt = (BasicItem) moreIter.next();//获取的实体的多值类型
+			BasicItemNode moreBtn = createBasicItemNode(NodeType.MULTIATTRIBUTE.getCode(), moreBt.getCnName(), ValueType.STRING.getName(), null, NodeOpsType.WRITE.getIndex()+"", pbtn.getId(), moreBt);
+			saveOrUpdate(moreBtn);
+			
+			List childMoreList = moreBt.getChildList();
+			Iterator childMoreIter = childMoreList.iterator();
+			
+			while (childMoreIter.hasNext()) {
+				BasicItem childBt = (BasicItem)childMoreIter.next();
+				createAttribute(moreBtn, childBt);
+			}
+		}
+		
+		return false;
+	}
+	
+	 /**生成普通属性和级联属性
+		 * @param parrentBtn
+		 * @param childBt
+		 * @throws NumberFormatException
+		 */
+		private void createAttribute(BasicItemNode parrentBtn, BasicItem childBt) throws NumberFormatException {
+			String dataType = childBt.getOneLevelItem().getDataType();
+			
+			ValueType valueType = ValueType.getValueType(Integer.parseInt(dataType));
+
+			Collection<ValueType> canTransType = ValueTypeMapping.getCanTransType(valueType);
+			ValueType next = ValueType.STRING;
+			if (!canTransType.isEmpty()) {
+				 next = canTransType.iterator().next();
+			}
+			
+			//级联属性
+			if(ValueType.CASCADETYPE.equals(valueType)) {
+				BasicItemNode casAttr = createBasicItemNode(NodeType.CASATTRIBUTE.getCode(), childBt.getCnName(), next.getName(), null, NodeOpsType.WRITE.getIndex()+"", parrentBtn.getId(), childBt);
+				saveOrUpdate(casAttr);
+			} else {//普通属性
+				BasicItemNode attr = createBasicItemNode(NodeType.ATTRIBUTE.getCode(), childBt.getCnName(), next.getName(), null, NodeOpsType.WRITE.getIndex()+"", parrentBtn.getId(), childBt);
+				saveOrUpdate(attr);
+			}
+		}
+		
+		//生成btn对象
+		private BasicItemNode createBasicItemNode(Integer type, String name, String dataType, String subdomain, String opt, Integer parentId, BasicItem basicItem) {
+			BasicItemNode btn = new BasicItemNode();
+			btn.setType(type);
+			btn.setName(name);
+			btn.setDataType(dataType);
+			btn.setSubdomain(subdomain);
+			btn.setOpt(opt);
+			btn.setParentId(parentId);
+			btn.setBasicItem(basicItem);
+			return btn;
+		}
 }
