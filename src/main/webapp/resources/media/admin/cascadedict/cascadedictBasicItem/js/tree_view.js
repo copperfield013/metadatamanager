@@ -881,6 +881,15 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
         	entitySave(this);
         	return;
         }
+        var nameValue = labelBar.children(".name").val();
+        
+        var reg = /[^\u4e00-\u9fa5 \w \(（）\)]/;
+        var istrue = reg.test(nameValue);
+        if (istrue) {
+        	Dialog.notice("名称只能输入中文、英文、下划线、中英括号！", "warning");
+        	return;
+        }
+        
         if(labelBar.hasClass("tag")) {        	
         	tagSave(this);
         }else if(labelBar.hasClass("attr")) {

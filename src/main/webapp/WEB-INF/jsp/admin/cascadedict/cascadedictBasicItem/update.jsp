@@ -16,7 +16,7 @@
 					<div class="form-group">
 						<label class="col-lg-2 control-label" for="name" >名称</label>
 						<div class="col-lg-5">
-							<input type="text" placeholder="名字不能为空"  data-bv-notempty="true" data-bv-notempty-message="名字不能为空"  class="form-control" name="name" value="${dictBasicItem.name }" />
+							<input type="text" placeholder="名字不能为空"  data-bv-notempty="true" data-bv-notempty-message="名字不能为空" onblur="checkName()"  class="name form-control" name="name" value="${dictBasicItem.name }" />
 						</div>
 					</div>
 					<div class="form-group">
@@ -51,3 +51,18 @@
 		</div>
 	</div>
 </div>
+<script>
+/* function checkName() {
+	var $cnName = $("form").find(".name");
+	var nameValue = $cnName.val();
+	
+	var reg = /[^\u4e00-\u9fa5 \w \(（）\)]/;
+    var istrue = reg.test(nameValue);
+    $cnName.siblings("#req").remove();
+    if (istrue) {
+    	$cnName.after(" <span id=\"req\" style=\"color: red;\">名称只能输入中文、英文、下划线、中英括号！</span>");
+    	return;
+    } 
+} */
+
+</script>
