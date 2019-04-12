@@ -28,6 +28,7 @@ import cn.sowell.datacenter.model.cascadedict.pojo.CascadedictBasicItem;
 import cn.sowell.datacenter.model.cascadedict.service.CascadedictBasicItemService;
 import cn.sowell.datacenter.model.dictionary.criteria.BasicItemCriteria;
 import cn.sowell.datacenter.model.dictionary.dao.BasicItemDao;
+import cn.sowell.datacenter.model.dictionary.pojo.BasicChange;
 import cn.sowell.datacenter.model.dictionary.pojo.BasicItem;
 import cn.sowell.datacenter.model.dictionary.pojo.BiRefAttr;
 import cn.sowell.datacenter.model.dictionary.pojo.CascadeAttr;
@@ -35,6 +36,7 @@ import cn.sowell.datacenter.model.dictionary.pojo.OneLevelItem;
 import cn.sowell.datacenter.model.dictionary.pojo.RecordRelationType;
 import cn.sowell.datacenter.model.dictionary.pojo.Towlevelattr;
 import cn.sowell.datacenter.model.dictionary.pojo.TowlevelattrMultiattrMapping;
+import cn.sowell.datacenter.model.dictionary.service.BasicChangeService;
 import cn.sowell.datacenter.model.dictionary.service.BasicItemCodeGeneratorService;
 import cn.sowell.datacenter.model.dictionary.service.BasicItemService;
 import cn.sowell.datacenter.model.dictionary.service.BiRefAttrService;
@@ -65,6 +67,9 @@ public class BasicItemServiceImpl implements BasicItemService {
 	BiRefAttrService biRefAttrService;
 	
 	@Resource
+	BasicChangeService basicChangeService;
+	
+	@Resource
 	SessionFactory sFactory;
 	
 	
@@ -81,6 +86,11 @@ public class BasicItemServiceImpl implements BasicItemService {
 	@Override
 	public BasicItem getBasicItem(String id) {
 		BasicItem basicItem = basicItemDao.get(BasicItem.class, id);
+		
+		if (basicItem == null) {
+			return null;
+		}
+		
 		OneLevelItem oneLevelItem = basicItemDao.get(OneLevelItem.class, id);
 		basicItem.setOneLevelItem(oneLevelItem);
 		return basicItem;
@@ -164,6 +174,7 @@ public class BasicItemServiceImpl implements BasicItemService {
 						String[] str = next.split("_");
 						if (str[2].startsWith(ibt.toLowerCase())) {
 							BasicItem item = this.getBasicItem(str[2]);
+							
 							status = 1;
 							pastDue(item, status);
 						}
@@ -441,6 +452,16 @@ public class BasicItemServiceImpl implements BasicItemService {
 			biRefAttr.setCode(obj.getCode());
 			biRefAttrService.saveOrUpdate(biRefAttr);
 		}	
+		
+		BasicChange basicChange = null;
+		if (String.valueOf(ValueType.RECORD.getIndex()).equals(dataType)) {
+			basicChange = new BasicChange();
+			basicChange.setCode(obj.getCode());
+		} else {
+			 basicChange = new BasicChange();
+			basicChange.setCode(getEntityCode(obj.getParent()));
+		}
+		basicChangeService.create(basicChange);
 		
 		return obj;
 	} 
@@ -817,7 +838,7 @@ public class BasicItemServiceImpl implements BasicItemService {
 		}
 		
 		//创建索引表
-		 List queryCreateIndexTbl = basicItemDao.queryCreateIndexTbl();
+		/* List queryCreateIndexTbl = basicItemDao.queryCreateIndexTbl();
 		for (Object object : queryCreateIndexTbl) {
 			try {
 				basicItemDao.excuteBySql(object.toString());
@@ -825,7 +846,7 @@ public class BasicItemServiceImpl implements BasicItemService {
 				e.printStackTrace();
 				continue;
 			}
-		}
+		}*/
 		
 		//创建标签表
 		List queryCreLable = basicItemDao.queryCreLable();

@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import cn.sowell.datacenter.model.buildproject.dao.BuildProjectDao;
 import cn.sowell.datacenter.model.buildproject.service.BuildProjectService;
 import cn.sowell.datacenter.model.dictionary.pojo.BasicItemCodeGenerator;
+import cn.sowell.datacenter.model.dictionary.service.BasicChangeService;
 import cn.sowell.datacenter.utils.FileManager;
 import cn.sowell.datacenter.utils.ZipCompress;
 
@@ -26,6 +27,9 @@ public class BuildProjectServiceImpl implements BuildProjectService {
 	private static final String ITEMPATH = CONSTANTPATH + "\\item"; 
 	@Resource
 	BuildProjectDao buildProjectDao;
+	
+	@Resource
+	BasicChangeService basicChangeService;
 	
 	
 	private String getProjectPath() {
@@ -115,6 +119,10 @@ public class BuildProjectServiceImpl implements BuildProjectService {
 	@Override
 	public void createItemFile(File file, String fileName, String entityCode, String entityPrefix) {
 		try {
+			
+			basicChangeService.delete(entityCode);
+			
+			
 			FileManager.writeFileContent(file, "package com.zhsq.biz.constant.item;");
 			FileManager.writeFileContent(file, "public class "+fileName+" {");
 			List<String> itemData = buildProjectDao.getItemData(entityCode, entityPrefix);
