@@ -29,6 +29,11 @@
 		    
 		    var $div = $(".entityItems");
 		    //  获取实体列表
+		     Ajax.ajax('admin/buildproject/getBasicChangeList', {
+		    }, function(data1){	
+		    	var basicChangeList = data1.basicChangeList;
+		    
+		    	
 		    Ajax.ajax('admin/dictionary/basicItem/entityList', {
 		    }, function(data){		    	
 		    	var entityList = data.entity;
@@ -36,8 +41,14 @@
 		    	for(var key in entityList) {
 		    		var cnName = entityList[key].cnName;
 		    		var code = entityList[key].code;
-		    		str+="<div entityId='"+code+"' class='entity_attr' >" + cnName;
-		    		str +="</div>";
+		    		
+		    		str+="<div entityId='"+code+"' class='entity_attr' > <font color='";
+		    		for(var k in basicChangeList) {
+		    			if (code == basicChangeList[k].code) {
+		    				str+="red";
+		    			} 
+		    		}
+		    		str +="'>" + cnName + "</font></div>";
 		    	}
 		    	$(str).prependTo($div);
 		    	
@@ -46,7 +57,7 @@
 		    
 		    $CPF.closeLoading();
 		    })
-		    
+		 })	
 		    //选中实体
 		    $(".entityItems", $page).on("click", ".entity_attr", function (e) {
 		    	var $this = $(this);
