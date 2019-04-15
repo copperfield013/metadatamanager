@@ -34,4 +34,6 @@ public interface BasicChangeService {
 	 * @param id
 	 */
 	void delete(String code);
+	
+	BasicChange getOne(String code);
 }

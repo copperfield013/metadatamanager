@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import cn.sowell.datacenter.model.buildproject.dao.BuildProjectDao;
 import cn.sowell.datacenter.model.buildproject.service.BuildProjectService;
+import cn.sowell.datacenter.model.dictionary.pojo.BasicChange;
 import cn.sowell.datacenter.model.dictionary.pojo.BasicItemCodeGenerator;
 import cn.sowell.datacenter.model.dictionary.service.BasicChangeService;
 import cn.sowell.datacenter.utils.FileManager;
@@ -89,6 +90,9 @@ public class BuildProjectServiceImpl implements BuildProjectService {
 	@Override
 	public void createEnumFile(File file, String fileName) {
 		try {
+			
+			basicChangeService.delete(BasicChange.CASCADEDICT);
+			
 			FileManager.writeFileContent(file, "package com.zhsq.biz.constant;");
 			FileManager.writeFileContent(file, "public class "+fileName+" {");
 			List<String> enumData = buildProjectDao.getEnumData();
@@ -96,6 +100,7 @@ public class BuildProjectServiceImpl implements BuildProjectService {
 				FileManager.writeFileContent(file, data);
 			}
 			FileManager.writeFileContent(file, "}");
+			
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -104,6 +109,9 @@ public class BuildProjectServiceImpl implements BuildProjectService {
 	@Override
 	public void createRelationFile(File file, String fileName) {
 		try {
+			
+			basicChangeService.delete(BasicChange.RECORDRELATION);
+			
 			FileManager.writeFileContent(file, "package com.zhsq.biz.constant;");
 			FileManager.writeFileContent(file, "public class "+fileName+" {");
 			List<String> relationData = buildProjectDao.getRelationData();

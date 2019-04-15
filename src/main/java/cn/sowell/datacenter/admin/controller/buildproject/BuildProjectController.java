@@ -174,6 +174,25 @@ public class BuildProjectController {
 			return jobj.toString();
 		}
 	}
+    
+    @ResponseBody
+   	@RequestMapping("/getBasicChange")
+   	public String getBasicChange(String code){
+   		Map<String, Object> map = new HashMap<String, Object>();
+   		JSONObject jobj = new JSONObject(map);
+   		try {
+   			BasicChange basicChange = basicChangeService.getOne(code);
+   			
+   			map.put("code", 200);
+   			map.put("msg", "操作成功");
+   			map.put("basicChange", basicChange);
+   			return jobj.toString();
+   		} catch (Exception e) {
+   			map.put("code", 400);
+   			map.put("msg", "操作失败");
+   			return jobj.toString();
+   		}
+   	}
 	
 }
 	

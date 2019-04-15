@@ -46,6 +46,11 @@ public class BasicChangeServiceImpl implements BasicChangeService {
 			basicChangeDao.delete(basicChange2);
 		}
 	}
+
+	@Override
+	public BasicChange getOne(String code) {
+		return basicChangeDao.get(BasicChange.class, code);
+	}
 	
 
 

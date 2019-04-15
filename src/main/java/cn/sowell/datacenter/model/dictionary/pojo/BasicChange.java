@@ -16,10 +16,22 @@ import org.hibernate.annotations.GenericGenerator;
 @Table(name = "t_sc_basic_change")
 public class BasicChange {
 
+	public static final String  RECORDRELATION = "recordrelation";
+	public static final String  CASCADEDICT = "cascadedict";
+	
 	  @Id
 	  @Column(name="c_code")
 	  @GenericGenerator(name = "system-uuid", strategy = "uuid")
 	  private String code;//单独生成规则
+	  
+	  public BasicChange() {
+		 
+	  }
+	  
+	  public BasicChange(String code) {
+		  this.code = code;
+	  }
+	  
 
 	public String getCode() {
 		return code;

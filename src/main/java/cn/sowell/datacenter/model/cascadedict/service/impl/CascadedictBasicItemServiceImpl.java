@@ -14,12 +14,17 @@ import cn.sowell.datacenter.model.cascadedict.dao.CascadedictBasicItemDao;
 import cn.sowell.datacenter.model.cascadedict.pojo.CascadedictBasicItem;
 import cn.sowell.datacenter.model.cascadedict.pojo.CascadedictCodeGenerator;
 import cn.sowell.datacenter.model.cascadedict.service.CascadedictBasicItemService;
+import cn.sowell.datacenter.model.dictionary.pojo.BasicChange;
+import cn.sowell.datacenter.model.dictionary.service.BasicChangeService;
 
 @Service
 public class CascadedictBasicItemServiceImpl implements CascadedictBasicItemService {
 
 	@Resource
 	CascadedictBasicItemDao dictionaryBasicItemDao;
+	
+	@Resource
+	BasicChangeService basicChangeService;
 	
 	@Override
 	public List<CascadedictBasicItem> queryList(CascadedictBasicItemCriteria criteria, PageInfo pageInfo) throws Exception{
@@ -38,6 +43,9 @@ public class CascadedictBasicItemServiceImpl implements CascadedictBasicItemServ
 		dictionaryBasicItemDao.insert(cc);
 		dictParentItem.setId(cc.getId());
 		dictionaryBasicItemDao.insert(dictParentItem);
+		
+		BasicChange basicChange = new BasicChange(BasicChange.CASCADEDICT);
+		basicChangeService.create(basicChange);
 	}
 
 	@Override
@@ -50,6 +58,9 @@ public class CascadedictBasicItemServiceImpl implements CascadedictBasicItemServ
 		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		dictParentItem.setUpdateTime(df.format(new Date()));
 		dictionaryBasicItemDao.update(dictParentItem);
+		
+		BasicChange basicChange = new BasicChange(BasicChange.CASCADEDICT);
+		basicChangeService.create(basicChange);
 	}
 
 	@Override
@@ -82,6 +93,8 @@ public class CascadedictBasicItemServiceImpl implements CascadedictBasicItemServ
 			dictionaryBasicItemDao.update(basicItem);
 		}
 		
+		BasicChange basicChange = new BasicChange(BasicChange.CASCADEDICT);
+		basicChangeService.create(basicChange);
 	}
 
 	@Override

@@ -13,7 +13,9 @@ import cn.sowell.copframe.dto.page.PageInfo;
 import cn.sowell.datacenter.admin.controller.dictionary.Constants;
 import cn.sowell.datacenter.model.dictionary.criteria.RecordRelationTypeCriteria;
 import cn.sowell.datacenter.model.dictionary.dao.RecordRelationTypeDao;
+import cn.sowell.datacenter.model.dictionary.pojo.BasicChange;
 import cn.sowell.datacenter.model.dictionary.pojo.RecordRelationType;
+import cn.sowell.datacenter.model.dictionary.service.BasicChangeService;
 import cn.sowell.datacenter.model.dictionary.service.BasicItemCodeGeneratorService;
 import cn.sowell.datacenter.model.dictionary.service.RecordRelationTypeService;
 
@@ -26,6 +28,9 @@ public class RecordRelationTypeServiceImpl implements RecordRelationTypeService 
 	@Resource
 	BasicItemCodeGeneratorService btCodeGenerService;
 	
+	@Resource
+	BasicChangeService basicChangeService;
+	
 	@Override
 	public List<RecordRelationType> queryList(RecordRelationTypeCriteria criteria, PageInfo pageInfo) {
 		return dictionaryParentItemDao.queryList(criteria, pageInfo);
@@ -34,6 +39,9 @@ public class RecordRelationTypeServiceImpl implements RecordRelationTypeService 
 	@Override
 	public void create(RecordRelationType dictParentItem) {
 		dictionaryParentItemDao.insert(dictParentItem);
+		
+		BasicChange basicChange = new BasicChange(BasicChange.RECORDRELATION);
+		basicChangeService.create(basicChange);
 	}
 
 	@Override
@@ -44,6 +52,8 @@ public class RecordRelationTypeServiceImpl implements RecordRelationTypeService 
 	@Override
 	public void update(RecordRelationType dictParentItem) {
 		dictionaryParentItemDao.update(dictParentItem);
+		BasicChange basicChange = new BasicChange(BasicChange.RECORDRELATION);
+		basicChangeService.create(basicChange);
 	}
 
 	@Override
@@ -103,6 +113,9 @@ public class RecordRelationTypeServiceImpl implements RecordRelationTypeService 
 				dictionaryParentItemDao.insert(lefRrecordType);
 				dictionaryParentItemDao.insert(rightRrecordType);
 			}
+			
+			BasicChange basicChange = new BasicChange(BasicChange.RECORDRELATION);
+			basicChangeService.create(basicChange);
 		
 	}
 
