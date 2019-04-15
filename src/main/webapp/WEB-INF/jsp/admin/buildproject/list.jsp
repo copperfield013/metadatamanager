@@ -25,15 +25,8 @@
 		
 		 $(function(){
 			 loadItems();
-			 
-			 
 			 loadEnum();
 			 loadRelation();  
-			    
-			    
-			 
-			
-			 
 		 })	
 		 
 		  function loadRelation() {
@@ -42,10 +35,10 @@
 			    }, function(data1){	
 			    	var basicChange = data1.basicChange;
 			    	
-			    	if (basicChange != undefined) {
-			    		$("#downloadRelationFile").html("<font color='red'>下载关系文件</font>");
-			    	} else {
+			    	if (basicChange == undefined) {
 			    		$("#downloadRelationFile").html("下载关系文件");
+			    	} else {
+			    		$("#downloadRelationFile").html("<font color='red'>下载关系文件</font>");
 			    	}
 			    })
 		 }
@@ -56,10 +49,10 @@
 			    }, function(data1){	
 			    	var basicChange = data1.basicChange;
 			    	
-			    	if (basicChange != undefined) {
-			    		$("#downloadEnumFile").html("<font color='red'>下载枚举文件</font>");
-			    	} else {
+			    	if (basicChange == undefined) {
 			    		$("#downloadEnumFile").html("下载枚举文件");
+			    	} else {
+			    		$("#downloadEnumFile").html("<font color='red'>下载枚举文件</font>");
 			    	}
 			    })
 		 }
