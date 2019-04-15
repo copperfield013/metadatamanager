@@ -3,7 +3,7 @@
 <link rel="stylesheet" href="media/admin/buildproject/css/list.css">
 <div id="buildproject-list">
 	<nav>
-		<form class="form-inline" action="admin/module/configModule/list">
+		<form class="form-inline" action="#">
 		</form>
 	</nav>
 	
@@ -23,41 +23,85 @@
 	seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF){
 		var $page = $('#buildproject-list');
 		
-		
 		 $(function(){
-		    $CPF.showLoading();
-		    
-		    var $div = $(".entityItems");
-		    //  获取实体列表
-		     Ajax.ajax('admin/buildproject/getBasicChangeList', {
-		    }, function(data1){	
-		    	var basicChangeList = data1.basicChangeList;
-		    
-		    	
-		    Ajax.ajax('admin/dictionary/basicItem/entityList', {
-		    }, function(data){		    	
-		    	var entityList = data.entity;
-		    	var str = "";
-		    	for(var key in entityList) {
-		    		var cnName = entityList[key].cnName;
-		    		var code = entityList[key].code;
-		    		
-		    		str+="<div entityId='"+code+"' class='entity_attr' > <font color='";
-		    		for(var k in basicChangeList) {
-		    			if (code == basicChangeList[k].code) {
-		    				str+="red";
-		    			} 
-		    		}
-		    		str +="'>" + cnName + "</font></div>";
-		    	}
-		    	$(str).prependTo($div);
-		    	
-		    	$CPF.closeLoading();
-		    }, {async: true})
-		    
-		    $CPF.closeLoading();
-		    })
+			 loadItems();
+			 
+			 
+			 loadEnum();
+			 loadRelation();  
+			    
+			    
+			 
+			
+			 
 		 })	
+		 
+		  function loadRelation() {
+			 Ajax.ajax('admin/buildproject/getBasicChange', {
+				  code:"recordrelation"
+			    }, function(data1){	
+			    	var basicChange = data1.basicChange;
+			    	
+			    	if (basicChange != undefined) {
+			    		$("#downloadRelationFile").html("<font color='red'>下载关系文件</font>");
+			    	} else {
+			    		$("#downloadRelationFile").html("下载关系文件");
+			    	}
+			    })
+		 }
+		 
+		 function loadEnum() {
+			 Ajax.ajax('admin/buildproject/getBasicChange', {
+				  code:"cascadedict"
+			    }, function(data1){	
+			    	var basicChange = data1.basicChange;
+			    	
+			    	if (basicChange != undefined) {
+			    		$("#downloadEnumFile").html("<font color='red'>下载枚举文件</font>");
+			    	} else {
+			    		$("#downloadEnumFile").html("下载枚举文件");
+			    	}
+			    })
+		 }
+		 
+		 function loadItems() {
+			 $CPF.showLoading();
+			    
+			    var $div = $(".entityItems");
+			    
+			    $div.empty();
+			    
+			    //  获取实体列表
+			     Ajax.ajax('admin/buildproject/getBasicChangeList', {
+			    }, function(data1){	
+			    	var basicChangeList = data1.basicChangeList;
+			    
+			    	
+			    Ajax.ajax('admin/dictionary/basicItem/entityList', {
+			    }, function(data){		    	
+			    	var entityList = data.entity;
+			    	var str = "";
+			    	for(var key in entityList) {
+			    		var cnName = entityList[key].cnName;
+			    		var code = entityList[key].code;
+			    		
+			    		str+="<div entityId='"+code+"' class='entity_attr' > <font color='";
+			    		for(var k in basicChangeList) {
+			    			if (code == basicChangeList[k].code) {
+			    				str+="red";
+			    			} 
+			    		}
+			    		str +="'>" + cnName + "</font></div>";
+			    	}
+			    	$(str).prependTo($div);
+			    	
+			    	$CPF.closeLoading();
+			    }, {async: true})
+			    
+			    $CPF.closeLoading();
+			    })
+		 }
+		 
 		    //选中实体
 		    $(".entityItems", $page).on("click", ".entity_attr", function (e) {
 		    	var $this = $(this);
@@ -96,6 +140,8 @@
 	        	if(yes){
 	        		var url="admin/buildproject/downloadEnumFile";
 	        		Ajax.download(url);
+	        		
+	        		 loadEnum();
 	        	}
 			});
 			
@@ -106,6 +152,8 @@
 	        	if(yes){
 	        		var url="admin/buildproject/downloadRelationFile";
 	        		Ajax.download(url);
+	        		
+	        		loadRelation();  
 	        	}
 			});
 			
@@ -128,6 +176,9 @@
 					    var url="admin/buildproject/downloadItemFile?entityCode=" + entityCode;
 		        		Ajax.download(url);
 					  });
+	        		
+	        		loadItems();
+	        		
 	        	}
 			});
 			
