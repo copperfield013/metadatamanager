@@ -2,6 +2,7 @@ package cn.sowell.datacenter.admin.controller.buildproject;
 
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -57,6 +58,11 @@ public class BuildProjectController {
 	   
     	String[] split = entityCodes.split(",");
     	List<String> asList = Arrays.asList(split);
+    	
+    	if (entityCodes == "") {
+    		asList = new ArrayList();
+    	}
+    	
     	File buildProject = buildProjectService.buildProject(asList);
 	   
 	   byte[] readFileToByteArray = FileUtils.readFileToByteArray(buildProject);

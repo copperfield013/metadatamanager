@@ -1746,7 +1746,6 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
         var refCodeRecognition = $(this).closest('.opera_comm').find("#refCodeRecognition").val();
         
         
-        
         if (typeof(dictParentId) == "undefined") {
             dictParentId = "";
         }      
