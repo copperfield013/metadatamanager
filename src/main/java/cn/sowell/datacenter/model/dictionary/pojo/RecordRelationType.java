@@ -7,7 +7,8 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
 
-import com.abc.util.RelationType;
+import com.abc.model.enun.RelationType;
+import com.abc.model.enun.ValueType;
 
 @Entity
 @Table(name = "t_sc_record_relation_type")

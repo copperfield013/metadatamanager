@@ -17,7 +17,7 @@ import org.hibernate.Transaction;
 import org.springframework.stereotype.Service;
 
 import com.abc.util.AttributeParter;
-import com.abc.util.ValueType;
+import com.abc.model.enun.ValueType;
 
 import cn.sowell.copframe.dto.ajax.NoticeType;
 import cn.sowell.datacenter.admin.controller.dictionary.strategy.BasicItemDelContext;

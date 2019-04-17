@@ -6,8 +6,10 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 
-import com.abc.mapping.node.NodeOpsType;
-import com.abc.mapping.node.NodeType;
+import com.abc.model.enun.NodeOpsType;
+import com.abc.model.enun.NodeType;
+
+
 
 public class NodeTypeMappingOps {
 	private static Map<NodeType, Collection<NodeOpsType>> opsMapping = new HashMap();

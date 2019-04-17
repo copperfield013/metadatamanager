@@ -9,8 +9,8 @@ import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.abc.mapping.node.NodeOpsType;
-import com.abc.mapping.node.NodeType;
+import com.abc.model.enun.NodeOpsType;
+import com.abc.model.enun.NodeType;
 
 import cn.sowell.datacenter.entityResolver.config.ModuleConfigureMediator;
 import cn.sowell.datacenter.model.dictionary.service.BasicItemService;

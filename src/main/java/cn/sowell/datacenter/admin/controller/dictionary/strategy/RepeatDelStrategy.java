@@ -1,7 +1,6 @@
 package cn.sowell.datacenter.admin.controller.dictionary.strategy;
 
 import com.abc.util.AttributeParter;
-import com.abc.util.ValueType;
 
 import cn.sowell.datacenter.model.dictionary.dao.BasicItemDao;
 import cn.sowell.datacenter.model.dictionary.pojo.BasicItem;

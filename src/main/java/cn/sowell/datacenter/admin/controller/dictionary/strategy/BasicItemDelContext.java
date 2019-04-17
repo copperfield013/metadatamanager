@@ -3,7 +3,7 @@ package cn.sowell.datacenter.admin.controller.dictionary.strategy;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.abc.util.ValueType;
+import com.abc.model.enun.ValueType;
 
 import cn.sowell.datacenter.model.dictionary.dao.BasicItemDao;
 import cn.sowell.datacenter.model.dictionary.pojo.BasicItem;

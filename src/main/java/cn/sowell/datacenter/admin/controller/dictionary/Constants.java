@@ -3,7 +3,7 @@ package cn.sowell.datacenter.admin.controller.dictionary;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.abc.util.ValueType;
+import com.abc.model.enun.ValueType;
 
 public interface Constants {
 	

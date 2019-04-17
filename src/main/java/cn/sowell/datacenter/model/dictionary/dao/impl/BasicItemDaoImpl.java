@@ -18,7 +18,7 @@ import org.hibernate.jdbc.Work;
 import org.springframework.stereotype.Repository;
 
 import com.abc.util.AttributeParter;
-import com.abc.util.ValueType;
+import com.abc.model.enun.ValueType;
 
 import cn.sowell.copframe.dao.deferedQuery.ColumnMapResultTransformer;
 import cn.sowell.copframe.dao.deferedQuery.SimpleMapWrapper;

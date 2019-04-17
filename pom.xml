@@ -12,6 +12,7 @@
 		<version.kie>6.5.0.Final</version.kie>
 		<version.cpfweb>0.2.11</version.cpfweb>
 		<version.abcutil>0.0.29</version.abcutil> 
+		<version.abcmodel>0.2</version.abcmodel>
 		 <version.jackson>2.4.4</version.jackson>
 		 <cxf.version>3.2.2</cxf.version>
 		 <version.entityResolver>2.34</version.entityResolver>
@@ -40,8 +41,8 @@
 		</dependency>
 		<dependency>
 			<groupId>com.abc</groupId>
-			<artifactId>util</artifactId>
-			<version>${version.abcutil}</version>
+			<artifactId>model</artifactId>
+			<version>${version.abcmodel}</version>
 		</dependency>
 
 		<dependency>

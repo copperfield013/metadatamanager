@@ -1,6 +1,6 @@
 package cn.sowell.datacenter.model.dictionary.service;
 
-import com.abc.util.ValueType;
+import com.abc.model.enun.ValueType;
 
 public interface BasicItemCodeGeneratorService {
 	

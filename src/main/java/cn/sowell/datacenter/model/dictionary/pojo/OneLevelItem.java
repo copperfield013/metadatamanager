@@ -8,7 +8,7 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
 
-import com.abc.util.ValueType;
+import com.abc.model.enun.ValueType;
 
 import io.swagger.annotations.ApiModelProperty;
 

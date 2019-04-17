@@ -6,7 +6,7 @@ import java.util.Map;
 import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
-import com.abc.util.ValueType;
+import com.abc.model.enun.ValueType;
 import cn.sowell.datacenter.model.dictionary.dao.BasicItemCodeGeneratorDao;
 import cn.sowell.datacenter.model.dictionary.pojo.BasicItemCodeGenerator;
 import cn.sowell.datacenter.model.dictionary.service.BasicItemCodeGeneratorService;

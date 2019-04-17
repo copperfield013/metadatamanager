@@ -30,9 +30,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.abc.mapping.ValueTypeMapping;
-import com.abc.mapping.node.NodeOpsType;
-import com.abc.mapping.node.NodeType;
-import com.abc.util.ValueType;
+import com.abc.model.enun.NodeOpsType;
+import com.abc.model.enun.NodeType;
+import com.abc.model.enun.ValueType;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 

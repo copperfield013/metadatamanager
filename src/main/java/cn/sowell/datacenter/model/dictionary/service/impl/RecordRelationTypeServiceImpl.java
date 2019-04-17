@@ -7,7 +7,7 @@ import javax.annotation.Resource;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
-import com.abc.util.RelationType;
+import com.abc.model.enun.ValueType;
 
 import cn.sowell.copframe.dto.page.PageInfo;
 import cn.sowell.datacenter.admin.controller.dictionary.Constants;

@@ -21,9 +21,9 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.abc.mapping.ValueTypeMapping;
-import com.abc.mapping.node.NodeOpsType;
-import com.abc.mapping.node.NodeType;
-import com.abc.util.ValueType;
+import com.abc.model.enun.NodeOpsType;
+import com.abc.model.enun.NodeType;
+import com.abc.model.enun.ValueType;
 import com.alibaba.fastjson.JSONObject;
 
 import cn.sowell.datacenter.model.dictionary.pojo.BasicItem;

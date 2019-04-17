@@ -1,6 +1,7 @@
 package cn.sowell.datacenter.admin.controller.dictionary;
 
-import com.abc.util.ValueType;
+
+import com.abc.model.enun.ValueType;
 
 import cn.sowell.datacenter.model.dictionary.pojo.BasicItem;
 import cn.sowell.datacenter.model.dictionary.pojo.BiRefAttr;

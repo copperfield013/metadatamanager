@@ -20,9 +20,9 @@ import org.springframework.web.bind.ServletRequestDataBinder;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.abc.mapping.node.NodeOpsType;
-import com.abc.mapping.node.NodeType;
-import com.abc.util.CriteriaSymbol;
+import com.abc.model.enun.CriteriaSymbol;
+import com.abc.model.enun.NodeOpsType;
+import com.abc.model.enun.NodeType;
 import com.alibaba.fastjson.JSONObject;
 
 import cn.sowell.datacenter.admin.controller.AdminConstants;

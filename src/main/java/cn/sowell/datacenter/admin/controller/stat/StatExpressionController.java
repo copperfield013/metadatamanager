@@ -16,7 +16,7 @@ import org.springframework.web.bind.ServletRequestDataBinder;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.abc.stat.enun.SQLFunctionType;
+import com.abc.model.enun.AggregateFunctionType;
 import com.alibaba.fastjson.JSONObject;
 
 import cn.sowell.datacenter.admin.controller.AdminConstants;
@@ -90,9 +90,9 @@ public class StatExpressionController {
 		Map<String, Object> map = new HashMap<String, Object>();
 		JSONObject jobj = new JSONObject(map);
 		try {
-			SQLFunctionType[] values = SQLFunctionType.values();
+			AggregateFunctionType[] values = AggregateFunctionType.values();
 				List list = new ArrayList();
-			for (SQLFunctionType sqlFunctionType : values) {
+			for (AggregateFunctionType sqlFunctionType : values) {
 				List newList = new ArrayList();
 				newList.add(sqlFunctionType.getName());
 				newList.add(sqlFunctionType.getIndex());
