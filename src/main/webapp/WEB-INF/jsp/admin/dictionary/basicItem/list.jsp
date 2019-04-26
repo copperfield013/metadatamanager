@@ -82,7 +82,8 @@
 				<form id="group_opera_form1" class="opera_entity_form">
 						<input type="hidden" name="code" id="code"/>
 					<input type="hidden" id="group_parent" name="parent" value="">
-					<input type="hidden" name="dataType" value="16">
+					<input type="hidden" id="dataType" name="dataType" value="16">
+					<input type="hidden" id="dataRange" name="dataRange" value="group">
 					<div>
 						<span class="opera_entity_label">中文名称<span style="color: red;">*</span></span>
 						<input type="text" name="cnName" id="cnName"/>
@@ -113,7 +114,7 @@
 				<form id="more_opera_form1" class="opera_entity_form">
 						<input type="hidden" name="code" id="code"/>
 					<input type="hidden" id="more_parent" name="parent" value="">
-					<input type="hidden" name="dataType" value="9">
+					<input type="hidden" id="dataType" name="dataType" value="9">
 					<div>
 						<span class="opera_entity_label">中文名称<span style="color: red;">*</span></span>
 						<input type="text" name="cnName" id="cnName"/><br>
@@ -137,6 +138,43 @@
 				</div>
 			</div>
 		</div>
+		<!-- 聚合属性 start -->
+		
+		<div class="aggregate_proper entity" parentId="">
+		     <div class="entity_ch_head">		           
+			      <img src="media/admin/dictionary/basicItem/images/common.png">
+			      <span>聚合属性</span>		           	
+		          <div class="entity_ch_opera" id="add_aggregate_group" >
+		               <img src="media/admin/dictionary/basicItem/images/add-common.png">
+		               <span>添加聚合分组</span>
+		          </div>
+		     </div>
+		     <div class="opera_group">
+				<img class="opera_entity_img" src="media/admin/dictionary/basicItem/images/info.png">
+				<span class="opera_entity_img" id="add_group_mes"></span>
+				<form id="group_opera_form1" class="opera_entity_form">
+					<input type="hidden" name="code" id="code"/>
+					<input type="hidden" id="group_parent" name="parent" value="">
+					<input type="hidden" id="dataType" name="dataType" value="16">
+					<input type="hidden" id="dataRange" name="dataRange" value="aggregate">
+					<div>
+						<span class="opera_entity_label">中文名称<span style="color: red;">*</span></span>
+						<input type="text" name="cnName" id="cnName"/>
+					</div>	
+					<div>
+						<span class="opera_entity_label">描述</span>
+						<textarea name="description" id="description" rows="" cols=""></textarea>
+					</div>						
+				</form>
+				<div class="opera_entity_btn">
+					<span class="entity-btn-cancel" id="group_but_cancel">取消</span>
+					<span class="entity-btn-confirm" id="group_but_confirm">确认</span>
+				</div>
+			</div>			
+		</div>
+		
+		<!-- 聚合属性  end -->
+		
 		<div class="entity_relation entity" entityId="">
 		           <div class="entity_ch_head">
 				        <img src="media/admin/dictionary/basicItem/images/relative.png">

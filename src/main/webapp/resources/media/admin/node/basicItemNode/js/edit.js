@@ -4336,7 +4336,8 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 			 id: id,
 			 isFilters: true,
 			 dataType: 10,
-			 opt:opt
+			 opt:opt,
+			 signFilter: "nodeFilter"
 		 }, function(data) {
 			if(data.code == "400") {
 				 Dialog.notice(data.msg, "warning");
@@ -4374,7 +4375,8 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 			 id: id,
 			 isFilters: false,
 			 dataType: 11,
-			 opt:opt
+			 opt:opt,
+			 signFilter: "nodeFilter"
 		 }, function(data) {
 			if(data.code == "400") {
 				 Dialog.notice(data.msg, "warning");
@@ -4418,7 +4420,8 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 			 opt:opt,
 			 filterType: filterType,
 			 value:valueStr,
-			 abcattrCode:abcattrCode
+			 abcattrCode:abcattrCode,
+			 signFilter: "nodeFilter"
 		 }, function(data) {
 			if(data.code == "400") {
 				 Dialog.notice(data.msg, "warning");
@@ -4460,7 +4463,8 @@ seajs.use(['dialog','utils', 'ajax', '$CPF'], function(Dialog, Utils, Ajax, $CPF
 			 dataType: 13,
 			 opt:opt,
 			 filterType: filterType,
-			 subdomain:relationData
+			 subdomain:relationData,
+			 signFilter: "nodeFilter"
 		 }, function(data) {
 			if(data.code == "400") {
 				 Dialog.notice(data.msg, "warning");

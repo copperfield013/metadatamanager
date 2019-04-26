@@ -179,19 +179,28 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
    
  //删除分组
    $(".common_proper", $page).on("click", "#group_but_del", function() {
-      var $form = $(this).closest(".opera_group").find("#group_opera_form1");
-      var groupId = $form.find("#code").val();
-      var entityId = $(".common_proper").attr("parentid");
-       Dialog.confirm("删除可能会引起数据错误， 是否确认删除", function(isYes) {
-            if (isYes) {
-                Ajax.ajax('admin/dictionary/basicItem/delete', {
-                   id:groupId
-               }, function(data) {
-            	   $form.parent().parent().remove();    
-               });
-            }
-       });
+	   delGroup(this);
    });
+   
+ //删除分组
+   $(".aggregate_proper", $page).on("click", "#group_but_del", function() {
+	   delGroup(this);
+   });
+   
+   function delGroup(s) {
+	   var $form = $(s).closest(".opera_group").find("#group_opera_form1");
+	      var groupId = $form.find("#code").val();
+	      var entityId = $(".common_proper").attr("parentid");
+	       Dialog.confirm("删除可能会引起数据错误， 是否确认删除", function(isYes) {
+	            if (isYes) {
+	                Ajax.ajax('admin/dictionary/basicItem/delete', {
+	                   id:groupId
+	               }, function(data) {
+	            	   $form.parent().parent().remove();    
+	               });
+	            }
+	       });
+   }
    
  //删除多值属性本身
    $(".more_proper", $page).on("click", "#more_but_del", function() {
@@ -296,7 +305,6 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
 		  Ajax.ajax('admin/dictionary/recordRelationType/getRelationType', '', function(data2) {
           	var reTypeMap = data2.reTypeMap;
               for (var h in reTypeMap) { //遍历json数组时，这么写p为索引，0,1
-            	  debugger;
              	 if (reTypeMap[h] == data.recordRelationType.relationType) {
              		strl = strl + "<option selected value=\"" + h + "\">" + reTypeMap[h] + "</option>"; 
              	 } else {
@@ -380,6 +388,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
         });          
     	  $(".common_proper").hide();
           $(".more_proper").hide();
+          $(".aggregate_proper").hide();
           $(".entity_relation").hide();
         $("#add_entity_mes").html("");
         $("#add_entity_mes").html("添加实体信息");
@@ -387,12 +396,22 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
     });
     //点击 添加分组 显示div
     $("#add_group", $page).click(function() {
-    	$opera = $(this).closest('.entity_ch_head').siblings('.opera_group');
+    	showGroup(this);
+    });
+    
+    //聚合属性添加分组
+    $("#add_aggregate_group", $page).click(function() {
+    	showGroup(this);
+    });
+    
+    function showGroup(s) {
+    	$opera = $(s).closest('.entity_ch_head').siblings('.opera_group');
     	$opera.find("#add_group_mes").html("");
     	$opera.find("#add_group_mes").html("添加分组信息");
     	$opera.find("#group_opera_form1").find("#cnName").val("");
     	$opera.show();
-    });
+    }
+ 
     //点击 添加 多值属性 自身显示div
     $("#add_more", $page).click(function() {
     	$opera = $(this).closest('.entity_ch_head').siblings('.opera_more');
@@ -409,14 +428,23 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
     
     //选中数据类型为  枚举   触发事件   普通属性
     $(".common_proper", $page).on("change", ".enum_dataType_one", function() {  
-    	var $this = $(this);
+    	enumComOne(this);
+    });
+    
+  //选中数据类型为  枚举   触发事件   普通属性
+    $(".aggregate_proper", $page).on("change", ".enum_dataType_one", function() {  
+    	enumComOne(this);
+    });
+    
+    function enumComOne(s) {
+    	var $this = $(s);
     	var dataType = $this.val();
     	var options=$(".enum_dataType_one option:selected");  //获取选中的项
     	var $form = $this.closest(".opera_comm").find("#comm_opera_form1");
 		
 	    // 当数据类型变动的时候
         enumDataTypeChange($form, dataType);
-    });
+    }
     
     function enumDataTypeChange($form, dataType) {
     	$form.find("#cn_needHistory").hide();
@@ -925,9 +953,153 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
         }*/
     });
     
+    $(".aggregate_proper", $page).on("click", "#AggregateAttrExpression", function() {
+    	
+    	var $this = $(this);
+    	var $form = $this.closest("#comm_opera_form1");
+    	var aggregateAttrType = $form.find("#AggregateAttrType").val();
+    	var $aggExpression = $form.find("#AggregateAttrExpression");
+    	var aggExpressionV = $aggExpression.val();
+    	var aggregateAttrRelCode = $form.find("#aggregateAttrRelCode").val();
+    	var $relCode = $form.find("#aggregateAttrRelCode option:selected");
+    	var relcodeV = $relCode.attr("relCode");
+    	
+        Dialog.openDialog("admin/dictionary/basicItem/addExpression?sourcecode=" + relcodeV +"&expressionId=" + aggExpressionV, "表达式", "", {
+            width :920,
+            height : 400,
+            events		: {
+				afterSave	: function(expressionId){
+					if(expressionId){
+						console.log(expressionId);
+						$aggExpression.val(expressionId);
+					}
+				}
+			}
+        });
+    	
+    });
+    
+    //过滤条件弹出框
+    $(".aggregate_proper", $page).on("click", "#aggregateAttrFilters", function() {
+    	
+    	var $this = $(this);
+    	var $form = $this.closest("#comm_opera_form1");
+    	var aggregateAttrType = $form.find("#AggregateAttrType").val();
+    	var $aggFilters = $form.find("#aggregateAttrFilters");
+    	var aggFiltersV = $aggFilters.val();
+    	var aggregateAttrRelCode = $form.find("#aggregateAttrRelCode").val();
+    	var $relCode = $form.find("#aggregateAttrRelCode option:selected");
+    	var relcodeV = $relCode.attr("relCode");
+    	
+        Dialog.openDialog("admin/dictionary/basicItem/addFilters?sourcecode=" + relcodeV +"&filtersId=" + aggFiltersV, "过滤条件", "", {
+            width :920,
+            height : 400,
+            events		: {
+				afterSave	: function(filtersId){
+					debugger;
+					if(filtersId){
+						console.log(filtersId);
+						$aggFilters.val(filtersId);
+					}
+				}
+			}
+        });
+    	
+    });
+    
+    
     //点击 添加普通属性加号 显示div
     $(".common_proper", $page).on("click", ".add_comm", function() {
+    	addComm(this);
+    });
+    
+    //点击 添加普通属性加号 显示div
+    $(".aggregate_proper", $page).on("click", ".add_comm", function() {
+    	addComm(this);
+    	
     	var $this = $(this);
+    	var entityCode = $this.closest(".aggregate_proper").attr("parentid");
+    	
+    	var $newAdd = $this.closest(".new_add");
+    	var $form = $newAdd.find(".opera_comm").find("#comm_opera_form1");
+    	var $select =  $form.find("#AggregateAttrType");
+    	var $selectRelCode =  $form.find("#aggregateAttrRelCode");
+    	$select.html("");
+    	$selectRelCode.html("");
+    	 Ajax.ajax('admin/dictionary/aggregateAttr/getAggregateAttrType', '', function(data) { 
+    		 
+    		 var data = data.aggregateAttrTypeMap;
+    		 var str = "";
+             for (var key in data) {
+                str = str + " <option value =\"" + key + "\">" + data[key] + "</option>";
+             }  
+             $select.append(str).css("width","30%").select2();
+             
+             Ajax.ajax('admin/dictionary/basicItem/getOne', {
+     			id:entityCode
+     		}, function(data) { 
+     			 var relCodeStr = " <option selected relCode='"+entityCode+"' value =\"" + entityCode + "\">" + data.cnName + "</option>";
+     			 $selectRelCode.removeAttr("multiple");
+                  $selectRelCode.append(relCodeStr).css("width","50%").select2();
+     		});
+    	 });
+    	
+    });
+    
+    
+  //  聚合类型改变的时候
+    $(".aggregate_proper", $page).on("change", "#AggregateAttrType", function() {  
+    	var $this = $(this);
+    	
+    	var entityCode = $this.closest(".aggregate_proper").attr("parentid");
+    	
+    	var $form = $this.closest("#comm_opera_form1");
+    	var $selectRelCode =  $form.find("#aggregateAttrRelCode");
+    	var aggregateAttrType = $this.val();
+    	$selectRelCode.html("");
+    	
+    	if (aggregateAttrType ==1) { // 获取实体本身
+    		Ajax.ajax('admin/dictionary/basicItem/getOne', {
+    			id:entityCode
+    		}, function(data) { 
+    			 var relCodeStr = " <option relCode='"+entityCode+"' selected value =\"" + entityCode + "\">" + data.cnName + "</option>";
+    			 $selectRelCode.removeAttr("multiple");
+                 $selectRelCode.append(relCodeStr).css("width","50%").select2();
+    		});
+    	} else if (aggregateAttrType == 2) {// 获取实体下的多值属性
+    		Ajax.ajax('admin/dictionary/basicItem/getRepeat', {
+    			entityId:entityCode
+    		}, function(data) { 
+    			var repeat = data.repeat;
+    			var relCodeStr = "";
+    			for (var key in repeat) {
+    				relCodeStr += " <option relCode='"+repeat[key].code+"' value =\"" + repeat[key].code + "\">" +  repeat[key].cnName  + "</option>";
+    			}
+    			
+    			$selectRelCode.removeAttr("multiple");
+                $selectRelCode.append(relCodeStr).css("width","50%").select2();
+    		});
+    	} else if (aggregateAttrType == 3) { // 获取实体下的关系
+    		Ajax.ajax('admin/dictionary/recordRelationType/getRelation', {
+    			leftRecordType:entityCode,
+    			relationType:""
+    		}, function(data) { 
+    			var relationList = data.relationList;
+    			var relCodeStr = "";
+    			for (var key in relationList) {
+    				relCodeStr += " <option relCode='"+relationList[key].rightRecordType+"' value =\"" + relationList[key].typeCode + "\">" +  relationList[key].name +"->"+relationList[key].rightRecordType + "</option>";
+    			}
+    			
+    			$selectRelCode.attr("placeholder", "必须选右实体相同的关系");
+    			$selectRelCode.attr("multiple", "multiple");
+    			$selectRelCode.append(relCodeStr).css("width","50%").select2();
+    		});
+    	}
+    	
+    });
+    
+    function addComm(s) {
+    	var $this = $(s);
     	var $newAdd = $this.closest(".new_add");
     	var $form = $newAdd.find(".opera_comm").find("#comm_opera_form1");
     	var $select =  $form.find("#dataType");
@@ -976,7 +1148,9 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
         $form.find("#cn_needHistory").hide();
 		$form.find("#needHistory").find("option[value='1']").attr("selected",true);
         $form.find("#needHistory").find("option[value='0']").removeAttr("selected");
-    });
+    }
+    
+    
     //点击 添加多值属性孩子加号 显示div
     $(".more_proper", $page).on("click", ".add_more_child", function() {
     	var $this = $(this);
@@ -1508,12 +1682,23 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
     });
     //点击取消 ， 取消添加分组
     $(".common_proper", $page).on("click", "#group_but_cancel", function() {    	
-        var $form1 = $(this).closest(".opera_group").find('form');
+    	cancelGroup(this);
+    });
+    
+    //点击取消 ， 取消添加聚合分组
+    $(".aggregate_proper", $page).on("click", "#group_but_cancel", function() {    	
+    	cancelGroup(this);
+    });
+    
+    //取消分组
+    function cancelGroup(s) {
+    	var $form1 = $(s).closest(".opera_group").find('form');
         $form1.find("#code").removeAttr("readonly");
         $form1.find("#cnName").val("");
         $form1.find("#code").val("");
-        $(this).closest(".opera_group").hide();
-    });
+        $(s).closest(".opera_group").hide();
+    }
+    
     //点击取消 ， 取消添加多值属性自身
     $(".more_proper", $page).on("click", "#more_but_cancel", function() {
         var $form1 = $(this).closest(".opera_more").find("form");
@@ -1526,15 +1711,26 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
     });
     //点击取消 ， 取消添加普通属性
     $(".common_proper", $page).on("click", "#comm_but_cancel", function() {
-        var $form1 = $(this).closest(".opera_comm").find("form");        
-        $(this).closest('.new_add').find('.entity_attr').removeClass('pitch');
-        $form1.find("#code").removeAttr("readonly");
-        $form1.find("#cnName").val("");
-        $form1.find("#code").val("");
-        $form1.find("#enName").val("");
-        $form1.find("#dataRange").val("");
-        $(this).closest(".opera_comm").hide();
+    	commCancel(this);
     });
+    
+  //点击取消 ， 取消添加普通属性
+    $(".aggregate_proper", $page).on("click", "#comm_but_cancel", function() {
+    	commCancel(this);
+    });
+    
+    //点击取消 ， 取消添加普通属性
+    function commCancel(s) {
+    	 var $form1 = $(s).closest(".opera_comm").find("form");        
+         $(s).closest('.new_add').find('.entity_attr').removeClass('pitch');
+         $form1.find("#code").removeAttr("readonly");
+         $form1.find("#cnName").val("");
+         $form1.find("#code").val("");
+         $form1.find("#enName").val("");
+         $form1.find("#dataRange").val("");
+         $(s).closest(".opera_comm").hide();
+    }
+    
     //点击取消 ， 取消添加多值属性的孩子
     $(".more_proper", $page).on("click", "#more_child_but_cancel", function() {
         var $form1 = $(this).parent();
@@ -1555,19 +1751,49 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
         $form1.find("#valueAttr").val("");
         $(this).parent().parent().hide();
     });
+    
+    
     //点击确认， 进行添加分组和修改分組
     $(".common_proper", $page).on("click", "#group_but_confirm", function() {
-    	var $form = $(this).closest(".opera_group").find("#group_opera_form1");
-    	var formdom = $(this).closest(".opera_group").find("#group_opera_form1")[0];
+    	saveOrUpdateGroup(this);
+    });
+    
+    //点击确认， 进行添加分组和修改分組
+    $(".aggregate_proper", $page).on("click", "#group_but_confirm", function() {
+    	saveOrUpdateGroup(this);
+    });
+    
+    //添加 、修改   普通分组和聚合分组
+    function saveOrUpdateGroup(s) {
+    	 var $operaGroup =  $(s).closest(".opera_group");
+    	 var $groupPro = $operaGroup.closest(".entity");
+    	var $form = $operaGroup.find("#group_opera_form1");
     	var code = $form.children("#code").val();
-        var fData = new FormData(formdom);
-        var entityId = $(".common_proper").attr("parentid");
-        var $form = $(this).closest(".opera_group").find("#group_opera_form1");
+    	var cnName = $form.find("#cnName").val();
+    	var description = $form.find("#description").val();
+    	var group_parent = $form.children("#group_parent").val();
+        var entityId = $groupPro.attr("parentid");
+        var dataRange = $form.children("#dataRange").val();
+        var istyue = $groupPro.hasClass("common_proper");
+        if (istyue) {
+        	dataRange = "group";
+        } else {
+        	dataRange = "aggregate";
+        }
+       
         //验证表单不能为空
         if(checkForm($form)) {
         	 $CPF.showLoading();
-        	 Ajax.ajax('admin/dictionary/basicItem/do_add', fData, function(data) {
-             	$(".opera_group").hide();
+        	 Ajax.ajax('admin/dictionary/basicItem/do_add', {
+        		 code:code,
+        		 parent:group_parent,
+        		 dataType:16,
+        		 dataRange:dataRange,
+        		 cnName:cnName,
+        		 description:description
+        	 }, function(data) {
+        		 $operaGroup.hide();
+        		 
              	//------------------------
              	if ("" == code) {
              		 var str = "<div data-code-id=\""+data.code+"\" class=\"new_add clear-fix\">" + 
@@ -1589,11 +1815,11 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
 						
 						
 						str = str + "<div class=\"opera_comm\"><img class=\"opera_entity_img\" src=\"media/admin/dictionary/basicItem/images/info.png\"><span id=\"add_comm_mes\"></span><form groupName="+data.cnName+"  groupId="+data.code+"   id=\"comm_opera_form1\" class=\"opera_entity_form\"><input type=\"hidden\" id=\"groupName\" name=\"groupName\" value=\"\"><input type=\"hidden\" id=\"comm_parent\" name=\"parent\" value=\"\"><input type=\"hidden\" id=\"edit_dataType\" value=\"\"><input type=\"hidden\" id=\"edit_dictParentId\" value=\"\"><input type=\"hidden\" name=\"code\" id=\"code\" /><div><span class=\"opera_entity_label\">中文名称<span style=\"color: red;\">*</span></span><input type=\"text\" name=\"cnName\" id=\"cnName\" /></div><div><span class=\"opera_entity_label\">英文名称</span><input type=\"text\" name=\"enName\" id=\"enName\" /></div><div class=\"select-wrap\"><span class=\"opera_entity_label\" id=\"cn_dataType\">数据类型<span style=\"color: red;\">*</span></span><select id=\"dataType\" class=\"enum_dataType_one\" name=\"dataType\"></select><span style='display:none;' class=\"opera_entity_label\" id=\"cn_needHistory\">记录历史</span><select style='width: 30%; display: none;' id=\"needHistory\" class=\"needHistory\" name=\"needHistory\"><option value='1' selected='selected'>是</option><option value='0'>否</option></select></div><div><span class=\"opera_entity_label\" id=\"cn_dataRange\">数据长度<span style=\"color: red;\">*</span></span><input type=\"text\" name=\"dataRange\" id=\"dataRange\"></div><div><span class=\"opera_entity_label\">描述</span><textarea name=\"description\" id=\"description\"></textarea></div></form><div class=\"opera_entity_btn\"><span class=\"entity-btn-cancel\" id=\"comm_but_cancel\">取消</span><span class=\"entity-btn-confirm\" id=\"comm_but_confirm\">确认</span></div></div>";
-			         str = str + "<div class=\"opera_group\"><img class=\"opera_entity_img\" src=\"media/admin/dictionary/basicItem/images/info.png\"><span class=\"opera_entity_img\" id=\"add_group_mes\"></span><form id=\"group_opera_form1\" class=\"opera_entity_form\"><input type=\"hidden\" name=\"code\" id=\"code\" /><input type=\"hidden\" id=\"group_parent\" name=\"parent\" value=\"\"><input type=\"hidden\" name=\"dataType\" value=\"16\"><div><span class=\"opera_entity_label\">中文名称<span style=\"color: red;\">*</span></span><input type=\"text\" name=\"cnName\" id=\"cnName\" /></div><div><span class=\"opera_entity_label\">描述</span><textarea name=\"description\" id=\"description\"></textarea></div></form><div class=\"opera_entity_btn\"><span class=\"entity-btn-cancel\" id=\"group_but_cancel\">取消</span><span class=\"entity-btn-confirm\" id=\"group_but_confirm\">确认</span><span class=\"entity-btn-confirm\" id=\"group_but_del\">删除</span></div></div>";
+			         str = str + "<div class=\"opera_group\"><img class=\"opera_entity_img\" src=\"media/admin/dictionary/basicItem/images/info.png\"><span class=\"opera_entity_img\" id=\"add_group_mes\"></span><form id=\"group_opera_form1\" class=\"opera_entity_form\"><input type=\"hidden\" name=\"code\" id=\"code\" /><input type=\"hidden\" id=\"group_parent\" name=\"parent\" value=\"\"><input type=\"hidden\" id=\"dataType\" name=\"dataType\" value=\"16\"> <input type=\"hidden\" id=\"dataRange\" name=\"dataRange\" value=\"group\"><div><span class=\"opera_entity_label\">中文名称<span style=\"color: red;\">*</span></span><input type=\"text\" name=\"cnName\" id=\"cnName\" /></div><div><span class=\"opera_entity_label\">描述</span><textarea name=\"description\" id=\"description\"></textarea></div></form><div class=\"opera_entity_btn\"><span class=\"entity-btn-cancel\" id=\"group_but_cancel\">取消</span><span class=\"entity-btn-confirm\" id=\"group_but_confirm\">确认</span><span class=\"entity-btn-confirm\" id=\"group_but_del\">删除</span></div></div>";
 			         str = str + "<i class=\"icon status newadd\"></div>";
-			         $(".common_proper").append(str);
+			         $groupPro.append(str);
              	} else {
-             		var $sp = $(".common_proper").children("[data-code-id='"+code+"']").children(".new_add_title").find("span");
+             		var $sp = $groupPro.children("[data-code-id='"+code+"']").children(".new_add_title").find("span");
              		var titlestr="code:"+data.code+",中文名称："+data.cnName+"";
              		$sp.attr("title", titlestr);
              		$sp.text(data.cnName);
@@ -1602,7 +1828,10 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
                  $CPF.closeLoading();
              });
         }
-    });
+    }
+    
+    
+  
     //点击确认， 进行添加多值属性自身
     $(".more_proper", $page).on("click", "#more_but_confirm", function() {
     	var formdom = $(this).closest(".opera_more").find("#more_opera_form1")[0];
@@ -1724,42 +1953,59 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
     
     //点击确认， 进行添加普通属性
     $(".common_proper", $page).on("click", "#comm_but_confirm", function() {
-        //comm_opera_form1
+    	commConfirm(this);
+    });
+    
+    //点击确认， 进行添加普通属性
+    $(".aggregate_proper", $page).on("click", "#comm_but_confirm", function() {
+    	commConfirm(this);
+    });
+    
+    // 添加普通属性
+    function commConfirm(s) {
+    	 //comm_opera_form1
         //设置隐藏元素的值
-        var parentId = $(".common_proper").attr("parentId");
-        var groupId = $(this).closest('.opera_comm').find('.opera_entity_form').attr("groupId");
-        $(this).closest('.opera_comm').find("#comm_parent").val(parentId);
-        $(this).closest('.opera_comm').find("#groupName").val(groupId);
-        var formId = $(this).parent().attr("id");
+        var parentId = $(s).closest(".entity").attr("parentId");
+        var groupId = $(s).closest('.opera_comm').find('.opera_entity_form').attr("groupId");
+        $(s).closest('.opera_comm').find("#comm_parent").val(parentId);
+        $(s).closest('.opera_comm').find("#groupName").val(groupId);
+        var formId = $(s).parent().attr("id");
         //var fData = new FormData(document.querySelector("#"+formId));
-        var code = $(this).closest('.opera_comm').find("#code").val();
-        var cnName = $(this).closest('.opera_comm').find("#cnName").val();
-        var enName = $(this).closest('.opera_comm').find("#enName").val();
-        var dataType = $(this).closest('.opera_comm').find("#dataType").val();
-        var dataRange = $(this).closest('.opera_comm').find("#dataRange").val();
-        var dictParentId = $(this).closest('.opera_comm').find("#dictParentId").val();
-        var groupName = $(this).closest('.opera_comm').find("#groupName").val();
-        var parent = $(this).closest('.opera_comm').find("#comm_parent").val();
-        var description = $(this).closest('.opera_comm').find("#description").val();
-        var refType = $(this).closest('.opera_comm').find("#refType").val();
-        var refCodeShow = $(this).closest('.opera_comm').find("#refCodeShow").val();
-        var refCodeRecognition = $(this).closest('.opera_comm').find("#refCodeRecognition").val();
+        var code = $(s).closest('.opera_comm').find("#code").val();
+        var cnName = $(s).closest('.opera_comm').find("#cnName").val();
+        var enName = $(s).closest('.opera_comm').find("#enName").val();
+        var dataType = $(s).closest('.opera_comm').find("#dataType").val();
+        var dataRange = $(s).closest('.opera_comm').find("#dataRange").val();
+        var dictParentId = $(s).closest('.opera_comm').find("#dictParentId").val();
+        var groupName = $(s).closest('.opera_comm').find("#groupName").val();
+        var parent = $(s).closest('.opera_comm').find("#comm_parent").val();
+        var description = $(s).closest('.opera_comm').find("#description").val();
+        var refType = $(s).closest('.opera_comm').find("#refType").val();
+        var refCodeShow = $(s).closest('.opera_comm').find("#refCodeShow").val();
+        var refCodeRecognition = $(s).closest('.opera_comm').find("#refCodeRecognition").val();
+        //聚合属性开始
+        var aggregateAttrCode = $(s).closest('.opera_comm').find("#aggregateAttrCode").val();
+        var aggregateAttrType = $(s).closest('.opera_comm').find("#AggregateAttrType").val();
+        var aggregateAttrRelCode = $(s).closest('.opera_comm').find("#aggregateAttrRelCode").val();
+        var aggregateAttrExpression = $(s).closest('.opera_comm').find("#AggregateAttrExpression").val();
+        var aggregateAttrFilters = $(s).closest('.opera_comm').find("#aggregateAttrFilters").val();
         
-        
+        //聚合属性结束
+        debugger;
         if (typeof(dictParentId) == "undefined") {
             dictParentId = "";
         }      
         
-        var needHistory = $(this).closest('.opera_comm').find("#needHistory").val();
-        var entityId = $(".common_proper").attr("parentId");
-        var $form = $(this).closest(".opera_comm").find("#comm_opera_form1");
+        var needHistory = $(s).closest('.opera_comm').find("#needHistory").val();
+        var entityId = $(s).closest(".entity").attr("parentId");
+        var $form = $(s).closest(".opera_comm").find("#comm_opera_form1");
         
         var $commlist = $form.parent().siblings(".comm_list ");//普通属性列表
         
         //验证表单
         if (checkForm($form)) {
         	$CPF.showLoading();
-        	
+        	debugger;
             	Ajax.ajax('admin/dictionary/basicItem/do_add', {
                     code: code,
                     cnName: cnName,
@@ -1773,9 +2019,14 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
                     refType:refType,
                     refCodeShow:refCodeShow,
                     refCodeRecognition:refCodeRecognition,
-                    needHistory:needHistory
+                    needHistory:needHistory,
+                    aggregateAttrCode:aggregateAttrCode, 
+                    aggregateAttrType:aggregateAttrType,   
+        			aggregateAttrRelCode:aggregateAttrRelCode,
+                	 aggregateAttrExpressionId:aggregateAttrExpression,
+                	 aggregateAttrFiltersId:aggregateAttrFilters
                 }, function(data) {
-                	$(this).closest('.opera_comm').hide();
+                	$(s).closest('.opera_comm').hide();
                 	
                 	 var cnNameStr =data.cnName;
                 	 
@@ -1815,7 +2066,8 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
             	
             	 $CPF.closeLoading();
         }
-    });
+    }
+    
     
     //点击确认， 进行添加多值属性的孩子
     $(".more_proper", $page).on("click", "#more_child_but_confirm", function() {
@@ -1939,7 +2191,17 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
     })
     //普通属性显示 ul
     $(".common_proper", $page).on("click", ".entity_attr", function() {
-    	var $this = $(this).closest(".entity_attr");
+    	showUl(this);
+    });
+    
+  //普通属性显示 ul
+    $(".aggregate_proper", $page).on("click", ".entity_attr", function() {
+    	showUl(this);
+    });
+    
+    //显示普通属性ul
+    function showUl(s) {
+    	var $this = $(s).closest(".entity_attr");
     	if($this.hasClass("entity_attr_img")){
     		$this.addClass('pitch').siblings()
     		.removeClass('pitch')
@@ -1951,8 +2213,9 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
         		$this.addClass('active')
             	.siblings().removeClass('active');
         	}
-    	}    	
-    });
+    	}    
+    }
+    
     //多值属性显示 ul
     $(".more_proper", $page).on("click", ".entity_attr", function() {
     	var $this = $(this).closest(".entity_attr");
@@ -1985,6 +2248,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
         var entityId = $(this).parent().parent().attr("entityId");
         $(".common_proper").hide();
         $(".more_proper").hide();
+        $(".aggregate_proper").hide();
         $(".entity_relation").hide();
         
         //$(".opera_entity").show();
@@ -2360,7 +2624,125 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
     
     //编辑普通属性获取 id    
     $(".common_proper", $page).on("click", ".edit_common", function() {
-    	var $this = $(this); 
+    	showEditCom(this);
+    });
+    
+  //编辑普通属性获取 id    
+    $(".aggregate_proper", $page).on("click", ".edit_common", function() {
+    	showEditCom(this);
+    	
+    	
+    	var $this = $(this);
+    	var entityCode = $this.closest(".aggregate_proper").attr("parentid");//实体id
+    	 var entityId = $this.closest('.entity_ul').attr("entityid");//本身id
+    	var $newAdd = $this.closest(".new_add");
+    	var $form = $newAdd.find(".opera_comm").find("#comm_opera_form1");
+    	var $select =  $form.find("#AggregateAttrType");
+    	var $selectRelCode =  $form.find("#aggregateAttrRelCode");
+    	
+    	var $AggregateAttrExpression =  $form.find("#AggregateAttrExpression");
+    	var $aggregateAttrFilters =  $form.find("#aggregateAttrFilters");
+    	
+    	$select.html("");
+    	$selectRelCode.html("");
+    	
+    	
+    	
+    	
+    	 Ajax.ajax('admin/dictionary/aggregateAttr/getAggregateAttr', {
+    		 code:entityId
+    	 }, function(data1) { 
+    		 var aggregateAttr = data1.aggregateAttr;
+    		 
+    		 $AggregateAttrExpression.val(aggregateAttr.expressionId);
+    		 $aggregateAttrFilters.val(aggregateAttr.filtersId);
+    		 
+    	 Ajax.ajax('admin/dictionary/aggregateAttr/getAggregateAttrType', '', function(data) { 
+    		 
+    		 var data = data.aggregateAttrTypeMap;
+    		 var str = "";
+    		 debugger;
+             for (var key in data) {
+            	 
+            	 if (aggregateAttr.type == key) {
+            		 str = str + " <option selected value =\"" + key + "\">" + data[key] + "</option>";
+            	 } else {
+            		 str = str + " <option value =\"" + key + "\">" + data[key] + "</option>";
+            	 }
+               
+             }  
+             $select.append(str).css("width","30%").select2();
+             
+             /*Ajax.ajax('admin/dictionary/basicItem/getOne', {
+     			id:entityCode
+     		}, function(data) { 
+     			 var relCodeStr = " <option selected relCode='"+entityCode+"' value =\"" + entityCode + "\">" + data.cnName + "</option>";
+     			 $selectRelCode.removeAttr("multiple");
+                  $selectRelCode.append(relCodeStr).css("width","50%").select2();
+     		});*/
+             
+             if (aggregateAttr.type ==1) { // 获取实体本身
+         		Ajax.ajax('admin/dictionary/basicItem/getOne', {
+         			id:entityCode
+         		}, function(data) { 
+         			 var relCodeStr = " <option relCode='"+data.code+"' selected value =\"" + data.code + "\">" + data.cnName + "</option>";
+         			 $selectRelCode.removeAttr("multiple");
+                      $selectRelCode.append(relCodeStr).css("width","50%").select2();
+         		});
+         	} else if (aggregateAttr.type == 2) {// 获取实体下的多值属性
+         		Ajax.ajax('admin/dictionary/basicItem/getRepeat', {
+         			entityId:entityCode
+         		}, function(data) { 
+         			var repeat = data.repeat;
+         			var relCodeStr = "";
+         			
+         			debugger;
+         			for (var key in repeat) {
+         				if(aggregateAttr.relCode == repeat[key].code) {
+         					relCodeStr += " <option selected relCode='"+repeat[key].code+"' value =\"" + repeat[key].code + "\">" +  repeat[key].cnName  + "</option>";
+         				} else {
+         					relCodeStr += " <option relCode='"+repeat[key].code+"' value =\"" + repeat[key].code + "\">" +  repeat[key].cnName  + "</option>";
+         				}
+         				
+         			}
+         			
+         			$selectRelCode.removeAttr("multiple");
+                     $selectRelCode.append(relCodeStr).css("width","50%").select2();
+         		});
+         	} else if (aggregateAttr.type == 3) { // 获取实体下的关系
+         		Ajax.ajax('admin/dictionary/recordRelationType/getRelation', {
+         			leftRecordType:entityCode,
+         			relationType:""
+         		}, function(data) { 
+         			var relationList = data.relationList;
+         			var relCodeStr = "";
+         			
+         	
+         			debugger;
+         			for (var key in relationList) {
+         				
+         				if (aggregateAttr.relCode.indexOf(relationList[key].typeCode) >-1) {
+         					relCodeStr += " <option selected relCode='"+relationList[key].rightRecordType+"' value =\"" + relationList[key].typeCode + "\">" +  relationList[key].name +"->"+relationList[key].rightRecordType + "</option>";
+         				} else {
+         					relCodeStr += " <option relCode='"+relationList[key].rightRecordType+"' value =\"" + relationList[key].typeCode + "\">" +  relationList[key].name +"->"+relationList[key].rightRecordType + "</option>";
+         				}
+         				
+         			}
+         			
+         			$selectRelCode.attr("placeholder", "必须选右实体相同的关系");
+         			$selectRelCode.attr("multiple", "multiple");
+         			$selectRelCode.append(relCodeStr).css("width","50%").select2();
+         		});
+         	}
+             
+    	 });
+    	 });
+     	
+    });
+    
+    //编辑属性
+    function showEditCom(s) {
+    	var $this = $(s); 
     	var $newAdd = $this.closest(".new_add");
     	var $form1 =$newAdd.find("form");
         var entityId = $this.closest('.entity_ul').attr("entityid");
@@ -2372,7 +2754,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
         $newAdd.find("#add_comm_mes").html("");
         $newAdd.find("#add_comm_mes").html("编辑属性");        
         $newAdd.find(".opera_comm").show();
-    });
+    }
     
     //编辑多值属性的孩子  获取 id    
     $(".more_proper", $page).on("click", ".edit_more_child", function() {
@@ -2397,23 +2779,33 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
     
     //编辑分组 获取 id
     $(".common_proper", $page).on("click", "#edit_group", function() {
-    	
-        var groupId = $(this).attr("groupId");
-        var $this = $(this);
-        var $form1 = $this.closest('.new_add').find("#group_opera_form1");
-        Ajax.ajax('admin/dictionary/basicItem/getOne', {
-            id: groupId
-        }, function(jsonData) {            
-            $form1.find("#description").val(jsonData.description);
-             $form1.find("#code").val(jsonData.code);
-            $form1.find("#code").attr("readonly", "readonly");
-            $form1.find("#cnName").val(jsonData.cnName);
-            $form1.find("#group_parent").val(jsonData.parent);
-            $this.closest('.new_add').find("#add_group_mes").html("");
-            $this.closest('.new_add').find("#add_group_mes").html("编辑分组信息");
-            $this.closest('.new_add').find(".opera_group").show();
-        });
+    	updateGroup(this);
     });
+    
+    //编辑分组 获取 id
+    $(".aggregate_proper", $page).on("click", "#edit_group", function() {
+    	updateGroup(this);
+    });
+    
+    //显示普通分组和聚合分组
+    function updateGroup(s) {
+    	 var groupId = $(s).attr("groupId");
+         var $this = $(s);
+         var $form1 = $this.closest('.new_add').find("#group_opera_form1");
+         Ajax.ajax('admin/dictionary/basicItem/getOne', {
+             id: groupId
+         }, function(jsonData) {            
+             $form1.find("#description").val(jsonData.description);
+              $form1.find("#code").val(jsonData.code);
+             $form1.find("#code").attr("readonly", "readonly");
+             $form1.find("#cnName").val(jsonData.cnName);
+             $form1.find("#group_parent").val(jsonData.parent);
+             $this.closest('.new_add').find("#add_group_mes").html("");
+             $this.closest('.new_add').find("#add_group_mes").html("编辑分组信息");
+             $this.closest('.new_add').find(".opera_group").show();
+         });
+    }
+    
     //编辑多值属性自身 获取id
     $(".more_proper", $page).on("click", "#edit_more", function() {
     	var $this = $(this);
@@ -2443,11 +2835,23 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
     });
     //过期普通属性
     $(".common_proper", $page).on("click", ".common_change_status", function() {
-        var commId = $(this).closest('.entity_ul').attr("entityid");        
-        var status = $(this).closest('.entity_ul').attr("status");        
-        var entityId = $(".common_proper").attr("parentid");
-        saveStatus(commId, status, entityId, this);
+    	comChanStat(this);
     });
+    
+    //过期普通属性
+    $(".aggregate_proper", $page).on("click", ".common_change_status", function() {
+    	comChanStat(this);
+    });
+    
+    //过期属性
+    function comChanStat(s) {
+    	 var commId = $(s).closest('.entity_ul').attr("entityid");        
+         var status = $(s).closest('.entity_ul').attr("status");        
+         var entityId = $(".common_proper").attr("parentid");
+         saveStatus(commId, status, entityId, s);
+    }
+    
+    
     //过期 多值属性 属性
     $(".more_proper", $page).on("click", ".more_child_change_status", function() {
         var commId = $(this).parent().parent().attr("entityid");
@@ -2511,12 +2915,15 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
         $(".opera_entity").hide();
         $(".common_proper").show();
         $(".more_proper").show();
+        $(".aggregate_proper").show();
         $(".entity_relation").show();
         $(".common_proper").attr("parentId", entityId);
         $(".more_proper").attr("parentId", entityId);
+        $(".aggregate_proper").attr("parentId", entityId);
         $(".entity_relation").attr("entityId", entityId);
-        $("#group_parent").val(entityId);
+        $(".common_proper").find("#group_parent").val(entityId);
         $("#more_parent").val(entityId);
+        $(".aggregate_proper").find("#group_parent").val(entityId);
         $(".new_add").remove();
         enityAttr(entityId, status);//初始化所有数据
         
@@ -2595,8 +3002,8 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
         Ajax.ajax('admin/dictionary/basicItem/attrByPid?uuid='+uuid, {
             parentId: entityId
         }, function(jsonData) {
-            var commonArr = jsonData.commonProper; //普通属性
-            
+        	var attrByPid = jsonData.attrByPid;
+            var commonArr = attrByPid.commonProper; //普通属性
             for (var i = 0; i < commonArr.length; i++) {
                 var str = "<div data-code-id=\""+commonArr[i].code+"\" class=\"new_add clear-fix\">" + 
                 			"<div class=\"new_add_title\">" + "<span title=\"code:"+commonArr[i].code+",中文名称："+commonArr[i].cnName+"\">" +commonArr[i].cnName+ "</span>"
@@ -2672,7 +3079,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
  			    str = str + "<div style='padding-left: 1.8em;display: none;' class=\"cascadeAttr_child_show\"><img class=\"opera_entity_img\" src=\"media/admin/dictionary/basicItem/opera_entity_icon.png\"><span class=\"opera_entity_img\">级联属性孩子</span><form  id=\"cascadeAttr_form1\" class=\"opera_entity_form\"><input type=\"hidden\" id=\"id\" name=\"id\" value=\"\"><div><span class=\"opera_entity_label\">中文名称<span style=\"color: red;\">*</span></span><input type=\"text\" name=\"cnName\" id=\"cnName\" /></div><div><span class=\"opera_entity_label\">描述</span><textarea name=\"description\" id=\"description\"></textarea></div><div class=\"select-wrap\"></div></form><div class=\"opera_entity_btn\"><span class=\"entity-btn-cancel\" id=\"cascadeAttr_child_but_cancel\">取消</span><span class=\"entity-btn-confirm\" id=\"cascadeAttr_child_but_confirm\">确认</span></div></div>";
 				
 				str = str + "<div class=\"opera_comm\"><img class=\"opera_entity_img\" src=\"media/admin/dictionary/basicItem/images/info.png\"><span id=\"add_comm_mes\"></span><form groupName="+commonArr[i].cnName+"  groupId="+commonArr[i].code+"   id=\"comm_opera_form1\" class=\"opera_entity_form\"><input type=\"hidden\" id=\"groupName\" name=\"groupName\" value=\"\"><input type=\"hidden\" id=\"comm_parent\" name=\"parent\" value=\"\"><input type=\"hidden\" id=\"edit_dataType\" value=\"\"><input type=\"hidden\" id=\"edit_dictParentId\" value=\"\"><input type=\"hidden\" name=\"code\" id=\"code\" /><div><span class=\"opera_entity_label\">中文名称<span style=\"color: red;\">*</span></span><input type=\"text\" name=\"cnName\" id=\"cnName\" /></div><div><span class=\"opera_entity_label\">英文名称</span><input type=\"text\" name=\"enName\" id=\"enName\" /></div><div class=\"select-wrap\"><span class=\"opera_entity_label\" id=\"cn_dataType\">数据类型<span style=\"color: red;\">*</span></span><select id=\"dataType\" class=\"enum_dataType_one\" name=\"dataType\"></select> <span style='display:none;' class=\"opera_entity_label\" id=\"cn_needHistory\">记录历史</span><select style='display:none;' id=\"needHistory\" class=\"needHistory\" name=\"needHistory\"><option value='1' selected='selected'>是</option><option value='0'>否</option></select></div><div><span class=\"opera_entity_label\" id=\"cn_dataRange\">数据长度<span style=\"color: red;\">*</span></span><input type=\"text\" name=\"dataRange\" id=\"dataRange\"></div><div><span class=\"opera_entity_label\">描述</span><textarea name=\"description\" id=\"description\"></textarea></div></form><div class=\"opera_entity_btn\"><span class=\"entity-btn-cancel\" id=\"comm_but_cancel\">取消</span><span class=\"entity-btn-confirm\" id=\"comm_but_confirm\">确认</span></div></div>";
-                str = str + "<div class=\"opera_group\"><img class=\"opera_entity_img\" src=\"media/admin/dictionary/basicItem/images/info.png\"><span class=\"opera_entity_img\" id=\"add_group_mes\"></span><form id=\"group_opera_form1\" class=\"opera_entity_form\"><input type=\"hidden\" name=\"code\" id=\"code\" /><input type=\"hidden\" id=\"group_parent\" name=\"parent\" value=\"\"><input type=\"hidden\" name=\"dataType\" value=\"16\"><div><span class=\"opera_entity_label\">中文名称<span style=\"color: red;\">*</span></span><input type=\"text\" name=\"cnName\" id=\"cnName\" /></div><div><span class=\"opera_entity_label\">描述</span><textarea name=\"description\" id=\"description\"></textarea></div></form><div class=\"opera_entity_btn\"><span class=\"entity-btn-cancel\" id=\"group_but_cancel\">取消</span><span class=\"entity-btn-confirm\" id=\"group_but_confirm\">确认</span><span class=\"entity-btn-confirm\" id=\"group_but_del\">删除</span></div></div>";
+                str = str + "<div class=\"opera_group\"><img class=\"opera_entity_img\" src=\"media/admin/dictionary/basicItem/images/info.png\"><span class=\"opera_entity_img\" id=\"add_group_mes\"></span><form id=\"group_opera_form1\" class=\"opera_entity_form\"><input type=\"hidden\" name=\"code\" id=\"code\" /><input type=\"hidden\" id=\"group_parent\" name=\"parent\" value=\"\"><input type=\"hidden\" name=\"dataType\" value=\"16\"><input type=\"hidden\" id=\"dataRange\" name=\"dataRange\" value=\"group\"> <div><span class=\"opera_entity_label\">中文名称<span style=\"color: red;\">*</span></span><input type=\"text\" name=\"cnName\" id=\"cnName\" /></div><div><span class=\"opera_entity_label\">描述</span><textarea name=\"description\" id=\"description\"></textarea></div></form><div class=\"opera_entity_btn\"><span class=\"entity-btn-cancel\" id=\"group_but_cancel\">取消</span><span class=\"entity-btn-confirm\" id=\"group_but_confirm\">确认</span><span class=\"entity-btn-confirm\" id=\"group_but_del\">删除</span></div></div>";
                 if(commonArr[i].usingState == '0'){
                 	str = str + "<i class=\"icon status newadd\"></div>";
                 } else if(commonArr[i].usingState == '2'){
@@ -2686,7 +3093,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
                 $(".common_proper").append(str);
             }
             
-            var moreArr = jsonData.moreProper; //多值属性
+            var moreArr = attrByPid.moreProper; //多值属性
             for (var i = 0; i < moreArr.length; i++) {
                 var str = "<div data-code-id=\""+moreArr[i].code+"\" class=\"new_add clear-fix\">" + 
                 			"<div  class=\"new_add_title\">" + "<span title=\"code:"+moreArr[i].code+", 中文名称："+moreArr[i].cnName+", 英文名称："+moreArr[i].enName+", 表描述:"+moreArr[i].oneLevelItem.tableNameDescription+"\">" + moreArr[i].cnName+ "</span>"
@@ -2792,9 +3199,103 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
                 }
                 $(".more_proper").append(str);
             }
+            
+            //聚合属性
+            var aggregateProper = attrByPid.aggregateProper; //普通属性
+            
+            for (var i = 0; i < aggregateProper.length; i++) {
+                var str = "<div data-code-id=\""+aggregateProper[i].code+"\" class=\"new_add clear-fix\">" + 
+                			"<div class=\"new_add_title\">" + "<span title=\"code:"+aggregateProper[i].code+",中文名称："+aggregateProper[i].cnName+"\">" +aggregateProper[i].cnName+ "</span>"
+                			if (statusStr != 2) {
+                				str = str + "<img id=\"edit_group\" groupId=\"" + aggregateProper[i].code + "\" src=\"media/admin/dictionary/basicItem/images/edit_ch.png\">"
+                				/*str = str + "<div class=\"two-level-attr\" id=\"add_cascade_attr\" ><a href=\"javascript:void(0)\"\">添加级联属性</a></div>"
+                			*/}
+			            		
+                			str = str + "</div><div class=\"comm_list clear-fix\">";                		    
+                for (var j = 0; j < aggregateProper[i].childList.length; j++) {   
+                	
+                	var cnNameStr = aggregateProper[i].childList[j].cnName;
+                	
+                	if (aggregateProper[i].childList[j].oneLevelItem.dataType == '17') {
+                		cnNameStr = "<font color='red'>CM </font>" + cnNameStr;
+                	}
+                	
+                    if (aggregateProper[i].childList[j].usingState == '0') {
+                    	
+                        str = str + "<div data-code-id=\""+aggregateProper[i].childList[j].code+"\" title=\"code:"+aggregateProper[i].childList[j].code+", 中文名称:"+aggregateProper[i].childList[j].cnName+",  英文名称:"+aggregateProper[i].childList[j].enName+",数据类型："+aggregateProper[i].childList[j].oneLevelItem.dataTypeCName+", 数据长度："+aggregateProper[i].childList[j].oneLevelItem.dataRange+", 字典序："+ aggregateProper[i].childList[j].oneLevelItem.dictParentId  +"  \" class=\"entity_attr newadd\">" + cnNameStr
+	                        if (statusStr != 2) {
+	                        	str = str +"<ul class=\"entity_ul\" entityId=\"" + aggregateProper[i].childList[j].code + "\" status=\"" + aggregateProper[i].childList[j].usingState + "\">" + "<li><a href=\"javascript:void(0)\" class=\"edit_common\"><i class=\"icon edit-entity\"></i>编辑属性</a></li>" + "<li><a href=\"javascript:void(0)\" class=\"common_change_status\"><i class=\"icon stale-entity\"></i>过期实体</a></li>" 
+	                        }
+                        } else if (aggregateProper[i].childList[j].usingState == '2') {
+                        str = str + "<div data-code-id=\""+aggregateProper[i].childList[j].code+"\" title=\"code:"+aggregateProper[i].childList[j].code+", 中文名称:"+aggregateProper[i].childList[j].cnName+",  英文名称:"+aggregateProper[i].childList[j].enName+",数据类型："+aggregateProper[i].childList[j].oneLevelItem.dataTypeCName+", 数据长度："+aggregateProper[i].childList[j].oneLevelItem.dataRange+", 字典序："+ aggregateProper[i].childList[j].oneLevelItem.dictParentId  +"  \" class=\"entity_attr stale\">" + cnNameStr
+	                        if (statusStr != 2) {
+	                        	str = str +"<ul class=\"entity_ul\" entityId=\"" + aggregateProper[i].childList[j].code + "\" status=\"" + aggregateProper[i].childList[j].usingState + "\">" 
+	                        	if (aggregateProper[i].childList[j].usingState != '2') {
+	                        		str = str + "<li><a href=\"javascript:void(0)\" class=\"edit_common\"><i class=\"icon edit-entity\"></i>编辑属性</a></li>" 
+	                        	}
+	                        	str = str + "<li><a href=\"javascript:void(0)\" class=\"common_change_status\"><i class=\"icon stale-entity\"></i>解除过期</a></li>" 
+	                        }
+                        } else if (aggregateProper[i].childList[j].usingState == '-1') {
+	                        str = str + "<div data-code-id=\""+aggregateProper[i].childList[j].code+"\" title=\"code:"+aggregateProper[i].childList[j].code+", 中文名称:"+aggregateProper[i].childList[j].cnName+",  英文名称:"+aggregateProper[i].childList[j].enName+",数据类型："+aggregateProper[i].childList[j].oneLevelItem.dataTypeCName+", 数据长度："+aggregateProper[i].childList[j].oneLevelItem.dataRange+", 字典序："+ aggregateProper[i].childList[j].oneLevelItem.dictParentId  +"  \" class=\"entity_attr inerror\">" + cnNameStr 
+	                        if (statusStr != 2) {
+	                        	str = str +"<ul class=\"entity_ul\" entityId=\"" + aggregateProper[i].childList[j].code + "\" status=\"" + aggregateProper[i].childList[j].usingState + "\">" + "<li><a href=\"javascript:void(0)\" class=\"edit_common\"><i class=\"icon edit-entity\"></i>编辑属性</a></li>" + "<li><a href=\"javascript:void(0)\" class=\"common_change_status\"><i class=\"icon stale-entity\"></i>过期实体</a></li>" 
+	                        }
+                       } else if (aggregateProper[i].childList[j].usingState == '1') {
+	                        str = str + "<div data-code-id=\""+aggregateProper[i].childList[j].code+"\" title=\"code:"+aggregateProper[i].childList[j].code+", 中文名称:"+aggregateProper[i].childList[j].cnName+",  英文名称:"+aggregateProper[i].childList[j].enName+",数据类型："+aggregateProper[i].childList[j].oneLevelItem.dataTypeCName+", 数据长度："+aggregateProper[i].childList[j].oneLevelItem.dataRange+", 字典序："+ aggregateProper[i].childList[j].oneLevelItem.dictParentId  +"  \" class=\"entity_attr inuse\">" + cnNameStr
+	                        
+	                        if (statusStr != 2) {
+	                        	str = str +"<ul class=\"entity_ul\" entityId=\"" + aggregateProper[i].childList[j].code + "\" status=\"" + aggregateProper[i].childList[j].usingState + "\">" + "<li><a href=\"javascript:void(0)\" class=\"edit_common\"><i class=\"icon edit-entity\"></i>编辑属性</a></li>" + "<li><a href=\"javascript:void(0)\" class=\"common_change_status\"><i class=\"icon stale-entity\"></i>过期实体</a></li>" 
+	                        }
+                        }
+	                    if (statusStr != 2) {
+	                    str = str+"<li><a href=\"javascript:void(0)\" patentId=\""+aggregateProper[i].childList[j].parent+"\" class=\"delete_attr\"><i class=\"icon edit-entity\"></i>删除属性</a></li>" 
+	                    }
+	                    
+	                    if (statusStr != 2 && aggregateProper[i].childList[j].oneLevelItem.dataType == '17') {
+		                    str = str+"<li><a href=\"javascript:void(0)\" patentId=\""+aggregateProper[i].childList[j].parent+"\" class=\"show_cascadeAttr_child\"><i class=\"icon edit-entity\"></i>查看级联属性孩子</a></li>";
+		                 }
+	                    if (statusStr != 2) {
+		                    str = str+  "</ul>"; 
+		                   }
+	                    
+                    	str = str + "<i class=\"icon status\"></i>" +"</div>";
+                  
+                }
+                if (statusStr != 2) {
+                	str = str + "<div class=\"entity_attr entity_attr_img add_comm\">" +
+						    "<img alt=\"添加普通属性\" src=\"media/admin/dictionary/basicItem/addEntity_icon.png\">" +
+						"</div>"
+                }	
+				str = str + "</div>"	
+				
+				//查看级联属性的孩子start
+				str = str + "<div style='display: none;' class=\"entity_list cascadeAttr_child clear-fix\"><div class=\"new_add_title\"><span>级联属性孩子</span>" 
+                str = str +"</div><div class=\"clear-fix\"></div>"
+                str = str +"</div>"
+				//end
+                
+              //添加编辑级联属性的孩子  div		
+ 			    str = str + "<div style='padding-left: 1.8em;display: none;' class=\"cascadeAttr_child_show\"><img class=\"opera_entity_img\" src=\"media/admin/dictionary/basicItem/opera_entity_icon.png\"><span class=\"opera_entity_img\">级联属性孩子</span><form  id=\"cascadeAttr_form1\" class=\"opera_entity_form\"><input type=\"hidden\" id=\"id\" name=\"id\" value=\"\"><div><span class=\"opera_entity_label\">中文名称<span style=\"color: red;\">*</span></span><input type=\"text\" name=\"cnName\" id=\"cnName\" /></div><div><span class=\"opera_entity_label\">描述</span><textarea name=\"description\" id=\"description\"></textarea></div><div class=\"select-wrap\"></div></form><div class=\"opera_entity_btn\"><span class=\"entity-btn-cancel\" id=\"cascadeAttr_child_but_cancel\">取消</span><span class=\"entity-btn-confirm\" id=\"cascadeAttr_child_but_confirm\">确认</span></div></div>";
+				
+				str = str + "<div class=\"opera_comm\"><img class=\"opera_entity_img\" src=\"media/admin/dictionary/basicItem/images/info.png\"><span id=\"add_comm_mes\"></span><form groupName="+aggregateProper[i].cnName+"  groupId="+aggregateProper[i].code+"   id=\"comm_opera_form1\" class=\"opera_entity_form\"><input type=\"hidden\" id=\"groupName\" name=\"groupName\" value=\"\"><input type=\"hidden\" id=\"comm_parent\" name=\"parent\" value=\"\"><input type=\"hidden\" id=\"edit_dataType\" value=\"\"><input type=\"hidden\" id=\"edit_dictParentId\" value=\"\"><input type=\"hidden\" name=\"code\" id=\"code\" /><input type=\"hidden\" name=\"aggregateAttrCode\" id=\"aggregateAttrCode\" /><div><span class=\"opera_entity_label\">中文名称<span style=\"color: red;\">*</span></span><input type=\"text\" name=\"cnName\" id=\"cnName\" /></div><div><span class=\"opera_entity_label\">英文名称</span><input type=\"text\" name=\"enName\" id=\"enName\" /></div><div class=\"select-wrap\"><span class=\"opera_entity_label\" id=\"cn_dataType\">数据类型<span style=\"color: red;\">*</span></span><select id=\"dataType\" class=\"enum_dataType_one\" name=\"dataType\"></select> <span style='display:none;' class=\"opera_entity_label\" id=\"cn_needHistory\">记录历史</span><select style='display:none;' id=\"needHistory\" class=\"needHistory\" name=\"needHistory\"><option value='1' selected='selected'>是</option><option value='0'>否</option></select></div><div><span class=\"opera_entity_label\" id=\"cn_dataRange\">数据长度<span style=\"color: red;\">*</span></span><input type=\"text\" name=\"dataRange\" id=\"dataRange\"></div><div><span class=\"opera_entity_label\">描述</span><textarea name=\"description\" id=\"description\"></textarea></div><div class='select-wrap'> <span class=\"opera_entity_label\" id=\"xxx\">聚合类型<font color='red'>*  </font></span><select id='AggregateAttrType' name=\"AggregateAttrType\" ></select></div><div class='select-wrap'><span >选择relCode<font color='red' >*</font></span><select multiple='multiple' id='aggregateAttrRelCode' name=\"aggregateAttrRelCode\" ></select></div><div class='select-wrap'><span >表达式<font color='red' >*</font></span><input id='AggregateAttrExpression' type='text' value=''></div> <div class='select-wrap'><span >过滤条件<font color='red' >*</font></span><input id='aggregateAttrFilters' type='text' value=''></div></form><div class=\"opera_entity_btn\"><span class=\"entity-btn-cancel\" id=\"comm_but_cancel\">取消</span><span class=\"entity-btn-confirm\" id=\"comm_but_confirm\">确认</span></div></div>";
+                str = str + "<div class=\"opera_group\"><img class=\"opera_entity_img\" src=\"media/admin/dictionary/basicItem/images/info.png\"><span class=\"opera_entity_img\" id=\"add_group_mes\"></span><form id=\"group_opera_form1\" class=\"opera_entity_form\"><input type=\"hidden\" name=\"code\" id=\"code\" /><input type=\"hidden\" id=\"group_parent\" name=\"parent\" value=\"\"><input type=\"hidden\" name=\"dataType\" value=\"16\"><input type=\"hidden\" id=\"dataRange\" name=\"dataRange\" value=\"group\"> <div><span class=\"opera_entity_label\">中文名称<span style=\"color: red;\">*</span></span><input type=\"text\" name=\"cnName\" id=\"cnName\" /></div><div><span class=\"opera_entity_label\">描述</span><textarea name=\"description\" id=\"description\"></textarea></div></form><div class=\"opera_entity_btn\"><span class=\"entity-btn-cancel\" id=\"group_but_cancel\">取消</span><span class=\"entity-btn-confirm\" id=\"group_but_confirm\">确认</span><span class=\"entity-btn-confirm\" id=\"group_but_del\">删除</span></div></div>";
+                if(aggregateProper[i].usingState == '0'){
+                	str = str + "<i class=\"icon status newadd\"></div>";
+                } else if(aggregateProper[i].usingState == '2'){
+                	str = str + "<i class=\"icon status stale\"></div>";
+                } else if(aggregateProper[i].usingState == '-1'){
+                	str = str + "<i class=\"icon status inerror\"></div>";
+                } else if(aggregateProper[i].usingState == '1'){
+                	str = str + "<i class=\"icon status inuse\"></div>";
+                }
+                
+                $(".aggregate_proper").append(str);
+            }
+            
+            
             //实体关系
             $(".entity_relation_list").find(".entity_attr").not(".entity_attr_img").remove(); 
-            var entityRelation = jsonData.entityRela; 
+            var entityRelation = attrByPid.entityRela; 
             
             var str = "";
             for (var i = 0; i < entityRelation.length; i++) {

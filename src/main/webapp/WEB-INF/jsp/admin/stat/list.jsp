@@ -276,12 +276,11 @@
 	  </div>    
 		    
 		</div>
-		<div class="entity_relation properOperate entity" parentId="" sourcecode="">
+		<div class="entity_relation properOperate entity" parentId="" sourcecode="" >
 		           <div class="entity_ch_head">
 				        <img src="media/admin/stat/images/relative.png">
 				        <span>filters管理</span>
 				   </div>
-				   
 				   
 				    <%--  tree   start --%>
 			    <div id="tree_view_panel">
@@ -326,78 +325,7 @@
     </div>
 			     <%--  tree   end --%>
 				   
-				   
-		          <!--  <div class="statEntity_list entity_relation_list clear-fix">
-		           		<div class="entity_attr entity_attr_img add_entity_relation">
-		           			<img alt="添加关系" src="media/admin/stat/addEntity_icon.png">		           			
-		           		</div>	
-		           </div> -->
-		          <!-- <div class="opera_relation">
-				    <img class="opera_entity_img" src="media/admin/stat/images/info.png">
-				    <span id="add_relation_mes"></span>
-				    <form id="entity_relation_opera_form" class="opera_entity_form">
-				        <input type="hidden" name="leftRecordType" id="leftRecordType">
-				         <input type="hidden" name="symmetry" id="symmetry">
-				         
-				         <div class="col-xs-4 opera_entity_label">
-					    	<label>
-					       		 <input id="add_rela_symmetry" class="checkbox-slider slider-icon colored-blue" type="checkbox">
-					       		 <span class="text">添加对称关系</span>
-					   		</label>
-						</div>
-				        <div class="select-wrap" id="rela_right">
-				            <span class="opera_entity_label">选择右实体<span style="color: red;">*</span></span>
-				            <select id="rightRecordType" name="rightRecordType" style="width:30%">
-				            </select>
-				        </div>
-				          <input type="hidden" name="typeCode" id="typeCode" />
-				          <input type="hidden" name="reverseCode" id="reverseCode" />
-				        <div class="col-xs-4 opera_entity_label">
-				            <span class="opera_entity_label">关系名称<span style="color: red;">*</span></span>
-				            <input type="text" name="leftName" id="leftName" />
-				        </div>
-				         <div  class="select-wrap">
-				            <span class="opera_entity_label">关系类型<span style="color: red;">*</span></span>
-				           	<select id="leftRelationType" name="leftRelationType" style="width:30%">
-				            </select>
-				        </div>
-				        <div id="rela_ni_name">
-				            <span class="opera_entity_label">逆向关系名称<span style="color: red;">*</span></span>
-				            <input type="text" name="rightName" id="rightName" />
-				        </div>
-				         <div  class="select-wrap">
-				            <span class="opera_entity_label">逆向关系类型<span style="color: red;">*</span></span>
-				           	<select id="rightRelationType" name="rightRelationType" style="width:30%">
-				            </select>
-				        </div>
-				       
-				    </form>
-				    <div class="opera_entity_btn">
-				        <span class="entity-btn-cancel" id="relation_but_cancel">取消</span>
-				        <span class="entity-btn-confirm" id="relation_but_confirm">确认</span>
-				    </div>
-				</div> -->
-				<!-- 编辑关系名称 -->
-				<!-- <div class="opera_relation_edit" style="display: none;">
-				    <img class="opera_entity_img" src="media/admin/stat/images/info.png">
-				    <span id="add_relation_mes">编辑关系名称</span>
-				    <form id="entity_relation_form_edit" class="opera_entity_form">
-				          <input type="hidden" name="typeCode" id="typeCode" />
-				        <div>
-				            <span class="opera_entity_label">关系名称<span style="color: red;">*</span></span>
-				            <input type="text" name="name" id="name" />
-				        </div>
-				         <div  class="select-wrap">
-				            <span class="opera_entity_label">关系类型<span style="color: red;">*</span></span>
-				           	<select id="relationType" name="relationType" style="width:30%">
-				            </select>
-				        </div>
-				    </form>
-				    <div class="opera_entity_btn">
-				        <span class="entity-btn-cancel" id="relation_but_cancel_edit">取消</span>
-				        <span class="entity-btn-confirm" id="relation_but_confirm_edit">确认</span>
-				    </div>
-				</div> -->
+				  
 		 </div>
 	</div>	    
 </div>
