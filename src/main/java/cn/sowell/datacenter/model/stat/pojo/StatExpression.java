@@ -12,7 +12,7 @@ import org.hibernate.annotations.GenericGenerator;
 import io.swagger.annotations.ApiModelProperty;
 
 @Entity
-@Table(name = "t_sc_stat_expression")
+@Table(name = "t_sc_bi_agg_expression")
 public class StatExpression {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -85,13 +85,6 @@ public interface BasicItemDao {
 	List queryNewAddCol();
 	
 	/**
-	 * 创建索引表
-	 * @return
-	 */
-	@Deprecated
-	List queryCreateIndexTbl();
-	
-	/**
 	 * 查询需要更新的字段语句
 	 * 页面修改的属性， 需要重新  更新实体存储
 	 * @return

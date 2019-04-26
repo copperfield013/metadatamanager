@@ -127,7 +127,7 @@ public class BinFilterBodyController {
 	 */
 	@ResponseBody
 	@RequestMapping("/saveOrUpdate")
-	public String saveOrUpdate(BinFilterBody criteria, boolean isFilters, boolean isStat, String bieCode){
+	public String saveOrUpdate(BinFilterBody criteria, boolean isFilters, String signFilter, String bieCode){
 		Map<String, Object> map = new HashMap<String, Object>();
 		JSONObject jobj = new JSONObject(map);
 		try {
@@ -146,19 +146,17 @@ public class BinFilterBodyController {
 				binFilterBodyService.insert(criteria);
 				
 				if (isFilters) {//是filters
-					if (isStat) {
+					if (signFilter == "statFilter") {
 						//这里添加统计实体的权限
 						StatFilter sf = new StatFilter();
 						sf.setFiltersId(criteria.getId());
 						sf.setBieCode(bieCode);
 						statFilterService.insert(sf);
-					} else {
+					} else if (signFilter == "nodeFilter"){
 						binFilter = new BinFilter(criteria.getId(), parentId);
 						binFilterBodyService.insert(binFilter);
-					}
+					}//  if (signFilter =="aggregateAttrFilter"){}
 				} 
-				
-				
 				
 			} else { //更新
 				binFilterBodyService.update(criteria);
@@ -280,5 +278,24 @@ public class BinFilterBodyController {
 		}
 	}
 	
+	
+	@ResponseBody
+	@RequestMapping("/getBinFilterBody")
+	public String getBinFilterBody(Integer filtersId){
+		Map<String, Object> map = new HashMap<String, Object>();
+		JSONObject jobj = new JSONObject(map);
+		try {
+			 BinFilterBody binFilterBody = binFilterBodyService.getBinFilterBody(filtersId);
+			map.put("binFilterBody", binFilterBody);
+			map.put("code", 200);
+			map.put("msg", "操作成功！");
+			return jobj.toJSONString();
+		}catch (Exception e) {
+			logger.debug(e);
+			map.put("code", 400);
+			map.put("msg", "操作失败！");
+			return jobj.toJSONString();
+		}
+	}
 
 }

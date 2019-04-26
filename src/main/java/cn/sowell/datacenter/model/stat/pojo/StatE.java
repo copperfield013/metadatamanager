@@ -12,7 +12,7 @@ import org.hibernate.annotations.GenericGenerator;
 import io.swagger.annotations.ApiModelProperty;
 
 @Entity
-@Table(name = "t_sc_stat_e")
+@Table(name = "t_sc_bi_stat_e")
 public class StatE {
 	
 	@Id

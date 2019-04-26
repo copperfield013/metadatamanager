@@ -42,7 +42,7 @@ public class StatFilterDaoImpl implements StatFilterDao {
 
 	@Override
 	public void delete(Integer id) throws Exception {
-		String sql = "DELETE FROM t_sc_stat_filter WHERE id=:id";
+		String sql = "DELETE FROM t_sc_bi_stat_filter WHERE id=:id";
 		sFactory.getCurrentSession().createSQLQuery(sql).setParameter("id", id).executeUpdate();
 	}
 

@@ -42,7 +42,7 @@ public class StatExpressionDaoImpl implements StatExpressionDao {
 
 	@Override
 	public void delete(Integer id) throws Exception {
-		String sql = "DELETE FROM t_sc_stat_expression WHERE id=:id";
+		String sql = "DELETE FROM t_sc_bi_agg_expression WHERE id=:id";
 		sFactory.getCurrentSession().createSQLQuery(sql).setParameter("id", id).executeUpdate();
 	}
 

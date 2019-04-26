@@ -14,7 +14,7 @@ import cn.sowell.datacenter.model.dictionary.service.BiRefAttrService;
  */
 public class RepeatDelStrategy implements BasicItemDelStrategy {
 	@Override
-	public void delete(BasicItemDao basicItemDao, BiRefAttrService biRefAttrService, BasicItem basicItem) {
+	public void delete(BasicItemDelContext context, BasicItemDao basicItemDao, BiRefAttrService biRefAttrService, BasicItem basicItem) {
 		BasicItem btp = basicItemDao.get(BasicItem.class,  AttributeParter.getLeafKeyName(basicItem.getCode()));
 		BasicItem btEd = basicItemDao.get(BasicItem.class,  AttributeParter.getLeafEditTimeName(basicItem.getCode()));
 		

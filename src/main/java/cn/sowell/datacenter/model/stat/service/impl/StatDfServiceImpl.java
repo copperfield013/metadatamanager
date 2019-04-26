@@ -67,7 +67,7 @@ public class StatDfServiceImpl implements StatDfService {
 			throws Exception {
 		BasicItem group = basicItemService.getGroup(basicItem.getParent());
 		oneLevelItem.setGroupName(group.getCode());
-		BasicItem saveBasicItem = new BasicItemContext().saveBasicItem(basicItemService, basicItem, oneLevelItem, cascadedict, biRefAttr);
+		BasicItem saveBasicItem = new BasicItemContext().saveBasicItem(basicItemService, basicItem, oneLevelItem, cascadedict, biRefAttr, null);
 		
 		creteria.setBiCode(saveBasicItem.getCode());
 		if (creteria.getId() == null) {

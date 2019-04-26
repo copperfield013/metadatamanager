@@ -42,7 +42,7 @@ public class StatDfDaoImpl implements StatDfDao {
 
 	@Override
 	public void delete(Integer id) throws Exception {
-		String sql = "DELETE FROM t_sc_stat_df WHERE id=:id";
+		String sql = "DELETE FROM t_sc_bi_stat_df WHERE id=:id";
 		sFactory.getCurrentSession().createSQLQuery(sql).setParameter("id", id).executeUpdate();
 	}
 
@@ -51,7 +51,7 @@ public class StatDfDaoImpl implements StatDfDao {
 		StringBuffer sb = new StringBuffer();
 		sb.append(" SELECT d.id statDfId, d.type, d.bi_code,  b.c_cn_name, b.c_en_name, b.c_parent, b.c_using_state, o.*")
 		.append(" FROM `t_sc_basic_item` b ")
-		.append(" join t_sc_stat_df d on b.c_code=d.bi_code ")
+		.append(" join t_sc_bi_stat_df d on b.c_code=d.bi_code ")
 		.append("  join t_sc_bi_onelevel o on  b.c_code=o.c_code")
 		.append(" WHERE b.c_parent=:bieCode");
 		

@@ -28,6 +28,7 @@ import cn.sowell.datacenter.model.cascadedict.pojo.CascadedictBasicItem;
 import cn.sowell.datacenter.model.cascadedict.service.CascadedictBasicItemService;
 import cn.sowell.datacenter.model.dictionary.criteria.BasicItemCriteria;
 import cn.sowell.datacenter.model.dictionary.dao.BasicItemDao;
+import cn.sowell.datacenter.model.dictionary.pojo.AggregateAttr;
 import cn.sowell.datacenter.model.dictionary.pojo.BasicChange;
 import cn.sowell.datacenter.model.dictionary.pojo.BasicItem;
 import cn.sowell.datacenter.model.dictionary.pojo.BiRefAttr;
@@ -36,6 +37,7 @@ import cn.sowell.datacenter.model.dictionary.pojo.OneLevelItem;
 import cn.sowell.datacenter.model.dictionary.pojo.RecordRelationType;
 import cn.sowell.datacenter.model.dictionary.pojo.Towlevelattr;
 import cn.sowell.datacenter.model.dictionary.pojo.TowlevelattrMultiattrMapping;
+import cn.sowell.datacenter.model.dictionary.service.AggregateAttrService;
 import cn.sowell.datacenter.model.dictionary.service.BasicChangeService;
 import cn.sowell.datacenter.model.dictionary.service.BasicItemCodeGeneratorService;
 import cn.sowell.datacenter.model.dictionary.service.BasicItemService;
@@ -43,6 +45,8 @@ import cn.sowell.datacenter.model.dictionary.service.BiRefAttrService;
 import cn.sowell.datacenter.model.dictionary.service.RecordRelationTypeService;
 import cn.sowell.datacenter.model.dictionary.service.TowlevelattrMultiattrMappingService;
 import cn.sowell.datacenter.model.dictionary.service.TowlevelattrService;
+import cn.sowell.datacenter.model.node.service.BinFilterBodyService;
+import cn.sowell.datacenter.model.stat.service.StatExpressionService;
 import cn.sowell.datacenter.utils.Message;
 
 @Service
@@ -68,6 +72,13 @@ public class BasicItemServiceImpl implements BasicItemService {
 	
 	@Resource
 	BasicChangeService basicChangeService;
+	@Resource
+	AggregateAttrService aggregateAttrService;
+	
+	@Resource
+	BinFilterBodyService binFilterBodyService;
+	@Resource
+	StatExpressionService statExpressionService;
 	
 	@Resource
 	SessionFactory sFactory;
@@ -101,6 +112,9 @@ public class BasicItemServiceImpl implements BasicItemService {
 		List moreList = new ArrayList(); 
 		//按分组存放普通属性 
 		List attrList = new ArrayList(); 
+		//聚合分组
+		List aggregateList = new ArrayList();
+		
 		//根据parentId获取下面所有的孩子   包括普通属性和多值属性
 		List<BasicItem> chilAll = basicItemDao.getDataByPId(parentId, ValueType.REPEAT.getIndex()+"");
 		List<BasicItem> chilAll2 = basicItemDao.getDataByPId(parentId, ValueType.GROUP.getIndex() + "");
@@ -126,7 +140,13 @@ public class BasicItemServiceImpl implements BasicItemService {
 					List<BasicItem> childList = basicItemDao.getDataByPId(bt.getParent() + "_"+ bt.getCode(), null);
 					bt.setChildList(childList);
 				} else if (String.valueOf(ValueType.GROUP.getIndex()).equals(oneLevelItem.getDataType())) {//分组数据
-					attrList.add(bt);
+					
+					if ("aggregate".equals(bt.getOneLevelItem().getDataRange())) {
+						aggregateList.add(bt);
+					} else {
+						attrList.add(bt);
+					}
+					
 					List childList = basicItemDao.getAttrByPidGroupName(bt.getParent(), bt.getCode(),"");
 					bt.setChildList(childList);
 				}
@@ -138,8 +158,10 @@ public class BasicItemServiceImpl implements BasicItemService {
 		
 		Map<String, List> jsonMap = new HashMap<String, List>();
 		jsonMap.put("commonProper", attrList);//普通属性
+		jsonMap.put("aggregateProper", aggregateList);//聚合属性
 		jsonMap.put("moreProper", moreList);//多值属性
 		jsonMap.put("entityRela", relationList);//实体关系
+		
 		return jsonMap;
 	}
 	
@@ -151,7 +173,9 @@ public class BasicItemServiceImpl implements BasicItemService {
 
 	@Override
 	public void delete(BasicItem basicItem) throws Exception {
-		BasicItemDelContext btDelContext = new BasicItemDelContext(basicItemDao, biRefAttrService);
+		
+		BasicItemDelContext btDelContext = new BasicItemDelContext(basicItemDao, biRefAttrService, aggregateAttrService, binFilterBodyService, statExpressionService);
+		
 		btDelContext.delBItem(basicItem);
 	}
 	
@@ -298,7 +322,7 @@ public class BasicItemServiceImpl implements BasicItemService {
 	}
 
 	@Override
-	public BasicItem saveOrUpdate(BasicItem obj, String flag, String comm, Integer cascadedict, BiRefAttr biRefAttr) throws Exception {
+	public BasicItem saveOrUpdate(BasicItem obj, String flag, String comm,String groupType, Integer cascadedict, BiRefAttr biRefAttr, AggregateAttr aggregateAttr) throws Exception {
 		//生成code 规则：实体code IBTE0001 开始  其他code规则 IBT00001开始
 		if ("add".equals(flag)) {
 			ValueType valueType = ValueType.getValueType(Integer.valueOf(obj.getOneLevelItem().getDataType()));
@@ -462,6 +486,16 @@ public class BasicItemServiceImpl implements BasicItemService {
 			basicChange.setCode(getEntityCode(obj.getParent()));
 		}
 		basicChangeService.create(basicChange);
+		
+		if (groupType == "aggregate") {
+			if ("add".equals(flag)) {
+				aggregateAttr.setCode(obj.getCode());
+				aggregateAttrService.create(aggregateAttr);
+			} else {
+				aggregateAttr.setCode(obj.getCode());
+				aggregateAttrService.update(aggregateAttr);
+			}
+		}
 		
 		return obj;
 	} 
@@ -836,17 +870,6 @@ public class BasicItemServiceImpl implements BasicItemService {
 				continue;
 			}
 		}
-		
-		//创建索引表
-		/* List queryCreateIndexTbl = basicItemDao.queryCreateIndexTbl();
-		for (Object object : queryCreateIndexTbl) {
-			try {
-				basicItemDao.excuteBySql(object.toString());
-			} catch (Exception e) {
-				e.printStackTrace();
-				continue;
-			}
-		}*/
 		
 		//创建标签表
 		List queryCreLable = basicItemDao.queryCreLable();

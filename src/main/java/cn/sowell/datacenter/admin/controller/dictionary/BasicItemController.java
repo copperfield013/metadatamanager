@@ -1,9 +1,7 @@
 package cn.sowell.datacenter.admin.controller.dictionary;
 
-import java.io.File;
 import java.math.BigInteger;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -11,21 +9,20 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.ServletRequestDataBinder;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.abc.model.enun.AggregateAttrType;
 import com.abc.model.enun.ValueType;
 import com.alibaba.fastjson.JSONObject;
 import com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException;
@@ -38,12 +35,11 @@ import cn.sowell.datacenter.admin.controller.node.api.BasicItems;
 import cn.sowell.datacenter.admin.controller.node.api.InlineResponse2001;
 import cn.sowell.datacenter.admin.controller.node.api.InlineResponse2002;
 import cn.sowell.datacenter.admin.controller.node.api.InlineResponse2003;
-import cn.sowell.datacenter.admin.controller.node.api.InlineResponse2004;
 import cn.sowell.datacenter.admin.controller.node.api.InlineResponse2005;
-import cn.sowell.datacenter.model.buildproject.service.BuildProjectService;
 import cn.sowell.datacenter.model.cascadedict.pojo.CascadedictBasicItem;
 import cn.sowell.datacenter.model.cascadedict.service.CascadedictBasicItemService;
 import cn.sowell.datacenter.model.dictionary.criteria.BasicItemCriteria;
+import cn.sowell.datacenter.model.dictionary.pojo.AggregateAttr;
 import cn.sowell.datacenter.model.dictionary.pojo.BasicItem;
 import cn.sowell.datacenter.model.dictionary.pojo.BiRefAttr;
 import cn.sowell.datacenter.model.dictionary.pojo.CascadeAttr;
@@ -54,6 +50,8 @@ import cn.sowell.datacenter.model.dictionary.service.BasicItemService;
 import cn.sowell.datacenter.model.dictionary.service.BiRefAttrService;
 import cn.sowell.datacenter.model.dictionary.service.TowlevelattrMultiattrMappingService;
 import cn.sowell.datacenter.model.dictionary.service.TowlevelattrService;
+import cn.sowell.datacenter.model.stat.pojo.StatExpression;
+import cn.sowell.datacenter.model.stat.service.StatExpressionService;
 import cn.sowell.datacenter.utils.Message;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -90,6 +88,9 @@ public class BasicItemController {
 	
 	@Resource
 	BiRefAttrService biRefAttrService;
+	
+	@Resource
+	StatExpressionService statExpressionService;
 	
 	@ApiOperation(value = "跳转到list页面获取实体信息", nickname = "list", notes = "跳转到list页面获取实体信息", response = ModelAndView.class, tags={ "entityManager", })
     @ApiResponses(value = { 
@@ -191,12 +192,22 @@ public class BasicItemController {
         @ApiResponse(code = 401, message = "操作失败") })
     @RequestMapping(value = "/do_add",
         method = RequestMethod.POST)
-	public ResponseEntity doAdd(@ApiParam(name="BasicItem", value="传入json格式", required=true)BasicItem basicItem, OneLevelItem oneLevelItem, Integer cascadedict, BiRefAttr biRefAttr){
+	public ResponseEntity doAdd(@ApiParam(name="BasicItem", value="传入json格式", required=true)BasicItem basicItem, OneLevelItem oneLevelItem,
+			Integer cascadedict, BiRefAttr biRefAttr,
+			String aggregateAttrCode, 
+			Integer aggregateAttrType,   
+			String aggregateAttrRelCode,
+        	Integer aggregateAttrExpressionId,
+        	Integer aggregateAttrFiltersId){
+		
                 try {
                 	
+                	AggregateAttr aggregateAttr = new AggregateAttr(aggregateAttrCode, aggregateAttrType, aggregateAttrRelCode, aggregateAttrExpressionId, aggregateAttrFiltersId, null, null);
+                	
+                	//刚刚做到这里
                 	basicItem.setCnName(basicItem.getCnName().trim());
                 	
-                	new BasicItemContext().saveBasicItem(basicItemService, basicItem, oneLevelItem, cascadedict, biRefAttr);
+                	new BasicItemContext().saveBasicItem(basicItemService, basicItem, oneLevelItem, cascadedict, biRefAttr,aggregateAttr);
         			if (String.valueOf(ValueType.RECORD.getIndex()).equals(basicItem.getOneLevelItem().getDataType())) {
         				return new ResponseEntity<AjaxPageResponse>(AjaxPageResponse.CLOSE_AND_REFRESH_PAGE("操作成功", "basicItem_list"), HttpStatus.OK);
         			} else {
@@ -251,22 +262,24 @@ public class BasicItemController {
 	
 	//根据实体id， 获取实体下面的普通属性， 多值属性 和实体关系
 	@ResponseBody
-	@ApiOperation(value = "属性管理", nickname = "attrByPid", notes = "根据实体id， 获取实体下面的普通属性， 多值属性 和实体关系", response = InlineResponse2004.class, tags={ "entityManager", })
-    @ApiResponses(value = { 
-        @ApiResponse(code = 200, message = "操作成功", response = InlineResponse2004.class),
-        @ApiResponse(code = 404, message = "操作失败") })
 	@RequestMapping(value="/attrByPid", method=RequestMethod.POST)
-	public ResponseEntity<InlineResponse2004> attrByPid(String parentId) {
-        try {
-        	Map<String, List> attrByPid = basicItemService.getAttrByPid(parentId);
-        	InlineResponse2004 inline = new InlineResponse2004();
-    		inline.commonProper(attrByPid.get("commonProper"));//普通属性
-    		inline.moreProper(attrByPid.get("moreProper"));//多值属性
-    		inline.entityRela(attrByPid.get("entityRela"));//实体关系
-            return new ResponseEntity<InlineResponse2004>(inline, HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<InlineResponse2004>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+	public String attrByPid(String parentId) {
+		
+		Map<String, Object> map = new HashMap<String, Object>();
+		JSONObject jobj = new JSONObject(map);
+		try {
+			Map<String, List> attrByPid = basicItemService.getAttrByPid(parentId);
+			map.put("code", 200);
+			map.put("msg", "操作成功");
+			map.put("attrByPid", attrByPid);
+			return jobj.toString();
+		} catch (Exception e) {
+			logger.error("操作失败", e);
+			map.put("code", 400);
+			map.put("msg", "操作失败");
+			return jobj.toString();
+		}
+		
 	}
 	
 	//过期实体or正常  普通属性和多值属性
@@ -874,7 +887,7 @@ public class BasicItemController {
 			Map<String, Object> map = new HashMap<String, Object>();
 			JSONObject jobj = new JSONObject(map);
 			try {
-				  BiRefAttr biRefAttr = biRefAttrService.getOne(refTypeCode);
+				BiRefAttr biRefAttr = biRefAttrService.getOne(refTypeCode);
 				map.put("code", 200);
 				map.put("msg", "操作成功");
 				map.put("biRefAttr", biRefAttr);
@@ -886,4 +899,25 @@ public class BasicItemController {
 				return jobj.toString();
 			}
 		}
+	    
+	    //跳转到添加表达式页面
+	    @RequestMapping("/addExpression")
+		public String addExpression(String sourcecode, String expressionId ,Model model) {
+				model.addAttribute("sourcecode", sourcecode);
+				model.addAttribute("expressionId", expressionId);
+				return AdminConstants.JSP_DICTIONARY + "/basicItem/expression/expression.jsp";
+		}
+	    
+	    
+	    //跳转到添加过滤条件页面
+	    @RequestMapping("/addFilters")
+		public String addFilters(String sourcecode, String filtersId ,Model model) {
+				model.addAttribute("sourcecode", sourcecode);
+				model.addAttribute("filtersId", filtersId);
+				return AdminConstants.JSP_DICTIONARY + "/basicItem/expression/filters.jsp";
+		}
+	    
+	    
+	    
+	    
 }

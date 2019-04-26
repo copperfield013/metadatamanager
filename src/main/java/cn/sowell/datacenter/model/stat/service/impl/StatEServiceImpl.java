@@ -32,7 +32,7 @@ public class StatEServiceImpl implements StatEService {
 
 	@Override
 	public void insert(BasicItem basicItem, OneLevelItem oneLevelItem, Integer cascadedict,StatE obj, BiRefAttr biRefAttr) throws Exception {
-		BasicItem saveBasicItem = new BasicItemContext().saveBasicItem(basicItemService, basicItem, oneLevelItem, cascadedict, biRefAttr);
+		BasicItem saveBasicItem = new BasicItemContext().saveBasicItem(basicItemService, basicItem, oneLevelItem, cascadedict, biRefAttr, null);
 		
 		//默认生成一个分组
 		BasicItem group = new BasicItem();
@@ -47,7 +47,7 @@ public class StatEServiceImpl implements StatEService {
 		btItem.setDictParentId(0);
 		btItem.setNeedHistory(1);
 		
-		 new BasicItemContext().saveBasicItem(basicItemService, group, group.getOneLevelItem(), null, null);
+		 new BasicItemContext().saveBasicItem(basicItemService, group, group.getOneLevelItem(), null, null,null);
 		
 		obj.setBieCode(saveBasicItem.getCode());
 		statEDao.insert(obj);

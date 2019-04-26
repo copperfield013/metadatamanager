@@ -3,6 +3,7 @@ package cn.sowell.datacenter.admin.controller.dictionary;
 
 import com.abc.model.enun.ValueType;
 
+import cn.sowell.datacenter.model.dictionary.pojo.AggregateAttr;
 import cn.sowell.datacenter.model.dictionary.pojo.BasicItem;
 import cn.sowell.datacenter.model.dictionary.pojo.BiRefAttr;
 import cn.sowell.datacenter.model.dictionary.pojo.OneLevelItem;
@@ -10,10 +11,11 @@ import cn.sowell.datacenter.model.dictionary.service.BasicItemService;
 
 public class BasicItemContext {
 	
-	public BasicItem saveBasicItem(BasicItemService basicItemService,BasicItem basicItem, OneLevelItem oneLevelItem, Integer cascadedict, BiRefAttr biRefAttr) throws Exception {
+	public BasicItem saveBasicItem(BasicItemService basicItemService,BasicItem basicItem, OneLevelItem oneLevelItem, Integer cascadedict, BiRefAttr biRefAttr, AggregateAttr aggregateAttr) throws Exception {
 		
 		String dType = oneLevelItem.getDataType();
 		String comm = null;
+		String groupType = null;
 		
 		if ("5".equals(dType)) {
 			oneLevelItem.setDictParentId(0);
@@ -62,6 +64,13 @@ public class BasicItemContext {
 			} else {//普通属性
 				oneLevelItem.setTableName("t_" + basicItem.getParent() + "_" + oneLevelItem.getGroupName());
 				comm = "comm";
+				
+				BasicItem groupItem = basicItemService.getBasicItem(oneLevelItem.getGroupName());
+				
+				if ("aggregate".equals(groupItem.getOneLevelItem().getDataRange())) {
+					groupType = "aggregate";
+				}
+				
 			}
 		}
 		basicItem.setUsingState(0);
@@ -73,7 +82,7 @@ public class BasicItemContext {
 		
 		basicItem.setOneLevelItem(oneLevelItem);
 		
-        BasicItem saveOrUpdate = basicItemService.saveOrUpdate(basicItem, flag, comm, cascadedict, biRefAttr);
+        BasicItem saveOrUpdate = basicItemService.saveOrUpdate(basicItem, flag, comm,groupType, cascadedict, biRefAttr, aggregateAttr);
         return saveOrUpdate;
 	}
 }

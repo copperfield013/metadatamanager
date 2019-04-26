@@ -9,6 +9,7 @@ import com.abc.model.enun.ValueType;
 import cn.sowell.copframe.dto.ajax.AjaxPageResponse;
 import cn.sowell.datacenter.model.cascadedict.pojo.CascadedictBasicItem;
 import cn.sowell.datacenter.model.dictionary.criteria.BasicItemCriteria;
+import cn.sowell.datacenter.model.dictionary.pojo.AggregateAttr;
 import cn.sowell.datacenter.model.dictionary.pojo.BasicItem;
 import cn.sowell.datacenter.model.dictionary.pojo.BiRefAttr;
 import cn.sowell.datacenter.model.dictionary.pojo.CascadeAttr;
@@ -74,7 +75,7 @@ public interface BasicItemService {
 	 * @param cascadedict   生成实体，选择一个字典标签
 	 * @throws Exception
 	 */
-	 BasicItem saveOrUpdate(BasicItem obj, String flag, String comm, Integer cascadedict, BiRefAttr biRefAttr)  throws Exception ;
+	 BasicItem saveOrUpdate(BasicItem obj, String flag, String comm,String groupType, Integer cascadedict, BiRefAttr biRefAttr, AggregateAttr aggregateAttr)  throws Exception ;
 
 	/**
 	 * 根据实体code， 分组code， 获取分组下的属性

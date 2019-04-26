@@ -10,7 +10,7 @@ import javax.persistence.Table;
 import io.swagger.annotations.ApiModelProperty;
 
 @Entity
-@Table(name = "t_sc_stat_df")
+@Table(name = "t_sc_bi_stat_df")
 public class StatDf {
 	
 	@Id
