@@ -12,7 +12,7 @@
             <div class="entity-title collapse-header al-save need-ajax edit" data-id="" data-parentId="">
 	            <div class="icon-label-master">
 	                <i class="icon-root icon"></i>
-	                <span class="text">表达式</span>
+	                <span class="text"  style="cursor: pointer;" id="showExpression">表达式: </span>
 	            </div>
 	            
                 <div class="btn-wrap">

@@ -28,6 +28,29 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
 	    })
 	    
 	    
+	     $(".tree_view_panel", $page).on("click", "#showExpression", function (e) {
+	    	 
+	    	 var $this = $(this);
+	    	 
+	    	 var entityTitle = $this.closest(".entity-title");
+	    	 var expressionId = entityTitle.siblings(".collapse-content").children(".attr-relative").attr("data-id"); 
+
+	    	 Ajax.ajax('admin/stat/statExpression/getExpressionStr', {
+	    		 expressionId:expressionId
+              }, function(data) {  
+            	  $this.html("表达式:" + data.expressionStr);
+              })
+	    	 
+	     });
+	    
+	    //显示表达式
+	    function xxxx() {
+		 
+		 
+	  	}
+	    
+	    
+	    
 	     /**
      * 加载本身节点
      */
