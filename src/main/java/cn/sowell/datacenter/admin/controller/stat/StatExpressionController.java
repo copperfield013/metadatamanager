@@ -173,4 +173,24 @@ public class StatExpressionController {
 		}
 	}
 	
+	//根据id， 获取最终的表达式   AVG(XXXX)
+	@ResponseBody
+	@RequestMapping("/getExpressionStr")
+	public String getExpressionStr(Integer expressionId){
+		Map<String, Object> map = new HashMap<String, Object>();
+		JSONObject jobj = new JSONObject(map);
+		try {
+			String expressionStr = statExpressionService.getExpressionStr(expressionId);
+			map.put("expressionStr", expressionStr);
+			map.put("code", 200);
+			map.put("msg", "success");
+			return jobj.toString();
+		}  catch (Exception e) {
+			logger.error("操作失败", e);
+			map.put("code", 400);
+			map.put("msg", "操作失败");
+			return jobj.toString();
+		}
+	}
+	
 }

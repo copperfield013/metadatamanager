@@ -51,4 +51,12 @@ public interface StatExpressionService {
 	 */
 	void delete(Integer id) throws Exception;
 	
+	
+	/**
+	 * 获取表达式最终结果  avg(xxxx)
+	 * @param expressionId
+	 * @return
+	 */
+	String getExpressionStr(Integer expressionId);
+	
 }

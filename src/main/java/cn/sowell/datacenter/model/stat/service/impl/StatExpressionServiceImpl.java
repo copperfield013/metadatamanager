@@ -4,6 +4,10 @@ import java.util.List;
 import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 
+import com.abc.exface.dto.AggregateExpressionDTO;
+import com.abc.model.AggregateExpression;
+import com.abc.model.IAggregateExpressionDAO;
+
 import cn.sowell.datacenter.model.stat.dao.StatExpressionDao;
 import cn.sowell.datacenter.model.stat.pojo.StatExpression;
 import cn.sowell.datacenter.model.stat.service.StatExpressionService;
@@ -56,6 +60,37 @@ public class StatExpressionServiceImpl implements StatExpressionService {
 			statExpressionDao.insert(creteria);
 		}
 		
+	}
+
+	@Override
+	public String getExpressionStr(Integer expressionId) {
+
+		AggregateExpression aggregateExpression=new AggregateExpression(expressionId,new IAggregateExpressionDAO() {
+
+			@Override
+			public AggregateExpressionDTO query(Integer id) {
+				AggregateExpressionDTO a= null;
+				try {
+					StatExpression statExpression = statExpressionDao.get(StatExpression.class, id);
+					a= new AggregateExpressionDTO();
+					a.setId(id);
+					a.setType(statExpression.getType());
+					a.setFunction_type(statExpression.getFunctionType());
+					a.setParameter0(statExpression.getParameter0());
+					a.setParameter1(statExpression.getParameter1());
+					a.setParameter2(statExpression.getParameter2());
+					a.setParameter3(statExpression.getParameter3());
+					a.setC_order(statExpression.getOrder());
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				
+				return a;
+			}
+			
+		});
+		String expression = aggregateExpression.getExpression();
+		return expression;
 	}
 
 	
