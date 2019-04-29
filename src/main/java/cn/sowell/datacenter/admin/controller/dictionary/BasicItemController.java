@@ -200,30 +200,31 @@ public class BasicItemController {
         	Integer aggregateAttrExpressionId,
         	Integer aggregateAttrFiltersId){
 		
-                try {
-                	
-                	AggregateAttr aggregateAttr = new AggregateAttr(aggregateAttrCode, aggregateAttrType, aggregateAttrRelCode, aggregateAttrExpressionId, aggregateAttrFiltersId, null, null);
-                	
-                	//刚刚做到这里
-                	basicItem.setCnName(basicItem.getCnName().trim());
-                	
-                	new BasicItemContext().saveBasicItem(basicItemService, basicItem, oneLevelItem, cascadedict, biRefAttr,aggregateAttr);
-        			if (String.valueOf(ValueType.RECORD.getIndex()).equals(basicItem.getOneLevelItem().getDataType())) {
-        				return new ResponseEntity<AjaxPageResponse>(AjaxPageResponse.CLOSE_AND_REFRESH_PAGE("操作成功", "basicItem_list"), HttpStatus.OK);
-        			} else {
-        				AjaxPageResponse response = new AjaxPageResponse();
-        				response.setNotice("操作成功");
-        				response.setNoticeType(NoticeType.SUC);
-        				return new ResponseEntity(basicItem, HttpStatus.OK);
-        			}
-                } catch (DataIntegrityViolationException e) {
-                         return new ResponseEntity<AjaxPageResponse>(AjaxPageResponse.FAILD("主键重复或者名称重复, 请重新添加"), HttpStatus.OK);
-                } catch (Exception e) {
-                	if (e.getMessage().contains("ids")) {
-                		return new ResponseEntity<AjaxPageResponse>(AjaxPageResponse.FAILD("t_sc_basic_item_fix：没有可用数据"), HttpStatus.OK);
-                   	}
-                    return new ResponseEntity<AjaxPageResponse>(AjaxPageResponse.FAILD("操作失败"), HttpStatus.OK);
-                }           
+            try {
+            	
+            	AggregateAttr aggregateAttr = new AggregateAttr(aggregateAttrCode, aggregateAttrType, aggregateAttrRelCode, aggregateAttrExpressionId, aggregateAttrFiltersId, null, null);
+            	
+            	//刚刚做到这里
+            	basicItem.setCnName(basicItem.getCnName().trim());
+            	
+            	basicItem.setOneLevelItem(oneLevelItem);
+                BasicItem saveOrUpdate = basicItemService.saveOrUpdate(basicItem, cascadedict, biRefAttr, aggregateAttr);
+    			if (String.valueOf(ValueType.RECORD.getIndex()).equals(basicItem.getOneLevelItem().getDataType())) {
+    				return new ResponseEntity<AjaxPageResponse>(AjaxPageResponse.CLOSE_AND_REFRESH_PAGE("操作成功", "basicItem_list"), HttpStatus.OK);
+    			} else {
+    				AjaxPageResponse response = new AjaxPageResponse();
+    				response.setNotice("操作成功");
+    				response.setNoticeType(NoticeType.SUC);
+    				return new ResponseEntity(basicItem, HttpStatus.OK);
+    			}
+            } catch (DataIntegrityViolationException e) {
+                     return new ResponseEntity<AjaxPageResponse>(AjaxPageResponse.FAILD("主键重复或者名称重复, 请重新添加"), HttpStatus.OK);
+            } catch (Exception e) {
+            	if (e.getMessage().contains("ids")) {
+            		return new ResponseEntity<AjaxPageResponse>(AjaxPageResponse.FAILD("t_sc_basic_item_fix：没有可用数据"), HttpStatus.OK);
+               	}
+                return new ResponseEntity<AjaxPageResponse>(AjaxPageResponse.FAILD("操作失败"), HttpStatus.OK);
+            }           
 	}
 	
 	
