@@ -7,7 +7,6 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 
 import cn.sowell.copframe.dto.page.PageInfo;
-import cn.sowell.datacenter.admin.controller.dictionary.BasicItemContext;
 import cn.sowell.datacenter.model.dictionary.pojo.BasicItem;
 import cn.sowell.datacenter.model.dictionary.pojo.BiRefAttr;
 import cn.sowell.datacenter.model.dictionary.pojo.OneLevelItem;
@@ -32,8 +31,8 @@ public class StatEServiceImpl implements StatEService {
 
 	@Override
 	public void insert(BasicItem basicItem, OneLevelItem oneLevelItem, Integer cascadedict,StatE obj, BiRefAttr biRefAttr) throws Exception {
-		BasicItem saveBasicItem = new BasicItemContext().saveBasicItem(basicItemService, basicItem, oneLevelItem, cascadedict, biRefAttr, null);
-		
+		basicItem.setOneLevelItem(oneLevelItem);
+		BasicItem saveBasicItem = basicItemService.saveOrUpdate(basicItem, cascadedict, biRefAttr, null);
 		//默认生成一个分组
 		BasicItem group = new BasicItem();
 		
@@ -47,8 +46,7 @@ public class StatEServiceImpl implements StatEService {
 		btItem.setDictParentId(0);
 		btItem.setNeedHistory(1);
 		
-		 new BasicItemContext().saveBasicItem(basicItemService, group, group.getOneLevelItem(), null, null,null);
-		
+		basicItemService.saveOrUpdate(basicItem, null, null, null);
 		obj.setBieCode(saveBasicItem.getCode());
 		statEDao.insert(obj);
 	}
