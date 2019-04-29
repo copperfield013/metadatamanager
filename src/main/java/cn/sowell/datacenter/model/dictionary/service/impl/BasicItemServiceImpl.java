@@ -6,8 +6,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Consumer;
-import java.util.stream.Stream;
 
 import javax.annotation.Resource;
 
@@ -20,10 +18,6 @@ import com.abc.util.AttributeParter;
 import com.abc.model.enun.ValueType;
 
 import cn.sowell.copframe.dto.ajax.NoticeType;
-import cn.sowell.datacenter.admin.controller.dictionary.strategy.BasicItemDelContext;
-import cn.sowell.datacenter.admin.controller.dictionary.strategy.BytesDelStrategy;
-import cn.sowell.datacenter.admin.controller.dictionary.strategy.RecordDelStrategy;
-import cn.sowell.datacenter.admin.controller.dictionary.strategy.RepeatDelStrategy;
 import cn.sowell.datacenter.model.cascadedict.pojo.CascadedictBasicItem;
 import cn.sowell.datacenter.model.cascadedict.service.CascadedictBasicItemService;
 import cn.sowell.datacenter.model.dictionary.criteria.BasicItemCriteria;
@@ -45,6 +39,7 @@ import cn.sowell.datacenter.model.dictionary.service.BiRefAttrService;
 import cn.sowell.datacenter.model.dictionary.service.RecordRelationTypeService;
 import cn.sowell.datacenter.model.dictionary.service.TowlevelattrMultiattrMappingService;
 import cn.sowell.datacenter.model.dictionary.service.TowlevelattrService;
+import cn.sowell.datacenter.model.dictionary.strategy.BasicItemStrategyContext;
 import cn.sowell.datacenter.model.node.service.BinFilterBodyService;
 import cn.sowell.datacenter.model.stat.service.StatExpressionService;
 import cn.sowell.datacenter.utils.Message;
@@ -173,9 +168,7 @@ public class BasicItemServiceImpl implements BasicItemService {
 
 	@Override
 	public void delete(BasicItem basicItem) throws Exception {
-		
-		BasicItemDelContext btDelContext = new BasicItemDelContext(basicItemDao, biRefAttrService, aggregateAttrService, binFilterBodyService, statExpressionService);
-		
+		BasicItemStrategyContext btDelContext = new BasicItemStrategyContext(basicItemDao, biRefAttrService, aggregateAttrService, binFilterBodyService, statExpressionService, this);
 		btDelContext.delBItem(basicItem);
 	}
 	
@@ -322,180 +315,32 @@ public class BasicItemServiceImpl implements BasicItemService {
 	}
 
 	@Override
-	public BasicItem saveOrUpdate(BasicItem obj, String flag, String comm,String groupType, Integer cascadedict, BiRefAttr biRefAttr, AggregateAttr aggregateAttr) throws Exception {
+	public BasicItem saveOrUpdate(BasicItem obj, Integer cascadedict, BiRefAttr biRefAttr, AggregateAttr aggregateAttr) throws Exception {
+		String dType = obj.getOneLevelItem().getDataType();
+		String flag = null;
 		//生成code 规则：实体code IBTE0001 开始  其他code规则 IBT00001开始
-		if ("add".equals(flag)) {
-			ValueType valueType = ValueType.getValueType(Integer.valueOf(obj.getOneLevelItem().getDataType()));
+		if (obj.getCode()== null ||obj.getCode() == "" || obj.getCode().length()<1) {
+			flag = "add";
+			ValueType valueType = ValueType.getValueType(Integer.valueOf(dType));
 			//获取Code
 			String basicItemCode = btCodeGenerService.getBasicItemCode(valueType, getEntityCode(obj.getParent()));
 			obj.setCode(basicItemCode);
 			obj.getOneLevelItem().setCode(basicItemCode);
 		}
 		
-		if (String.valueOf(ValueType.REPEAT.getIndex()).equals(obj.getOneLevelItem().getDataType())) {
-			obj.getOneLevelItem().setTableName("t_" + obj.getParent() +"_"+ obj.getCode() +"_"+ obj.getCode());
-		}
+		BasicItemStrategyContext btDelContext = new BasicItemStrategyContext(basicItemDao, biRefAttrService, aggregateAttrService, binFilterBodyService, statExpressionService, this);
+		btDelContext.saveOrUpdateBItem(obj, flag, cascadedict, biRefAttr, aggregateAttr);
 		
-			//如果是文件类型， 默认生成四个半生记录
-			if ("add".equals(flag)) {
-				if (String.valueOf(ValueType.BYTES.getIndex()).equals(obj.getOneLevelItem().getDataType())) {
-					fileAssociatProper(obj);//生成文件伴生属性
-				} 
-			} else {//如果是编辑， 
-				BasicItem basicItem = this.getBasicItem(obj.getCode());
-				if (String.valueOf(ValueType.BYTES.getIndex()).equals(basicItem.getOneLevelItem().getDataType())) {//之前是文件型
-					BasicItem btKey =this.getBasicItem(AttributeParter.getFileKeyName(obj.getCode()));
-					BasicItem btSuffix = this.getBasicItem(AttributeParter.getFileSuffixName(obj.getCode()));
-					BasicItem btKBSize = this.getBasicItem(AttributeParter.getFileKBSizeName(obj.getCode()));
-				    BasicItem btName = this.getBasicItem(AttributeParter.getFileNameName(obj.getCode()));
-					    
-					if (!String.valueOf(ValueType.BYTES.getIndex()).equals(obj.getOneLevelItem().getDataType())) {
-						if (btKey != null) {
-                            basicItemDao.delete(btKey);
-                       }
-                       if (btSuffix != null) {
-                           basicItemDao.delete(btSuffix);                      
-                       }
-                       if (btKBSize != null) {
-                           basicItemDao.delete(btKBSize);
-                       }
-                       if (btName != null) {
-                           basicItemDao.delete(btName);
-                       }
-					} else {
-						btKey.setCnName(AttributeParter.getFileKeyCNName(obj.getCnName()));
-						btKey.getOneLevelItem().setTableName(obj.getOneLevelItem().getTableName());
-						btKey.setEnName(obj.getEnName());
-						btKey.setParent(obj.getParent());
-						btKey.setUsingState(0);
-						btKey.getOneLevelItem().setGroupName(obj.getOneLevelItem().getGroupName());
-						btKey.getOneLevelItem().setDictParentId(0);
-						btKey.getOneLevelItem().setNeedHistory(obj.getOneLevelItem().getNeedHistory());
-						
-						btSuffix.setCnName(AttributeParter.getFileSuffixCNName(obj.getCnName()));
-						btSuffix.getOneLevelItem().setTableName(obj.getOneLevelItem().getTableName());
-						btSuffix.setEnName(obj.getEnName());
-						btSuffix.setParent(obj.getParent());
-						btSuffix.setUsingState(0);
-						btSuffix.getOneLevelItem().setGroupName(obj.getOneLevelItem().getGroupName());
-						btSuffix.getOneLevelItem().setDictParentId(0);
-						btSuffix.getOneLevelItem().setNeedHistory(obj.getOneLevelItem().getNeedHistory());
-						
-						btKBSize.setCnName(AttributeParter.getFileKBSizeCNName(obj.getCnName()));
-						btKBSize.getOneLevelItem().setTableName(obj.getOneLevelItem().getTableName());
-						btKBSize.setEnName(obj.getEnName());
-						btKBSize.setParent(obj.getParent());
-						btKBSize.setUsingState(0);
-						btKBSize.getOneLevelItem().setGroupName(obj.getOneLevelItem().getGroupName());
-						btKBSize.getOneLevelItem().setDictParentId(0);
-						btKBSize.getOneLevelItem().setNeedHistory(obj.getOneLevelItem().getNeedHistory());
-						
-						btName.setCnName(AttributeParter.getFileNameCNName(obj.getCnName()));
-						btName.getOneLevelItem().setTableName(obj.getOneLevelItem().getTableName());
-						btName.setEnName(obj.getEnName());
-						btName.setParent(obj.getParent());
-						btName.setUsingState(0);
-						btName.getOneLevelItem().setGroupName(obj.getOneLevelItem().getGroupName());
-						btName.getOneLevelItem().setDictParentId(0);
-						btName.getOneLevelItem().setNeedHistory(obj.getOneLevelItem().getNeedHistory());
-						
-						basicItemDao.update(btKey);
-						basicItemDao.update(btSuffix);
-						basicItemDao.update(btKBSize);
-						basicItemDao.update(btName);
-					}
-				} else {//之前不是文件型
-					if (String.valueOf(ValueType.BYTES.getIndex()).equals(obj.getOneLevelItem().getDataType())) {//现在是文件型
-						fileAssociatProper(obj);//生成文件伴生属性
-					}
-				}
-				
-				sFactory.getCurrentSession().evict(basicItem);//session 关联两个相同id的对象， 解除一个	
-			}
-		
-		
-		//保存更改
-		basicItemDao.saveOrUpdate(obj, flag);
-		//basicItemDao.saveOrUpdate(oneLevelItem, flag);
-		
-		//如果是记录类型， 选择一个标签字典， 生成一条标签字典类
-		String dataType = obj.getOneLevelItem().getDataType();
-		if (String.valueOf(ValueType.RECORD.getIndex()).equals(dataType)) {
-			
-			
-			
-		if ("add".equals(flag)) {
-			//这里生成abcde010_ED这个属性， 
-			BasicItem btItem = createRecordEditeTime(obj);
-			
-			basicItemDao.insert(btItem);
-			//生成标签
-			BasicItem bt = createLable(obj, cascadedict);
-			basicItemDao.insert(bt);
-		} else {
-			BasicItem basicItem = basicItemDao.get(BasicItem.class, AttributeParter.getLeafEditTimeName(obj.getCode()));
-			
-			if (basicItem == null) {
-				BasicItem btItem = createRecordEditeTime(obj);
-				basicItemDao.insert(btItem);
-			}
-			
-			//编辑记录类型， 确认字典是否编辑了， 如果编辑了则修改
-			BasicItem one = basicItemDao.getLableObj(obj.getCode());
-			if (one == null) {
-				BasicItem bt = createLable(obj, cascadedict);
-				basicItemDao.insert(bt);
-			} else {
-				if (!one.getOneLevelItem().getDictParentId().equals(cascadedict)) {
-					one.getOneLevelItem().setDictParentId(cascadedict);
-					basicItemDao.update(one);
-				}
-			}
-		}
-	}	
-		//如果是重复类型， 默认生成两个孩子， 
-		if (String.valueOf(ValueType.REPEAT.getIndex()).equals(obj.getOneLevelItem().getDataType()) && "add".equals(flag)) {
-			createAttr(obj, AttributeParter.getLeafEditTimeCNName(null), AttributeParter.getLeafKeyCNName(null));
-		}
-		
-		//如果是枚举类型多选
-		if (String.valueOf(ValueType.ENUMTYPE_MULTI.getIndex()).equals(dataType)) {
-			
-			obj.getOneLevelItem().setTableName("t_" + obj.getParent()+ "_" + obj.getCode());
-			
-			if ("add".equals(flag)) {
-				List<BasicItem> attrList = createAttr(obj, AttributeParter.getLeafEditTimeCNName(obj.getCnName()), AttributeParter.getLeafKeyCNName(obj.getCnName()));//枚举类型多选，生成伴生属性
-			} 
-			
-			basicItemDao.update(obj);
-		}	
-		
-		//如果是引用属性
-		if (String.valueOf(ValueType.REFERENCE.getIndex()).equals(dataType)) {
-			//引用类型   默认存放在  t_sc_bi_ref_attr  这个表中
-			biRefAttr.setCode(obj.getCode());
-			biRefAttrService.saveOrUpdate(biRefAttr);
-		}	
-		
+		//下面的先不用管
 		BasicChange basicChange = null;
-		if (String.valueOf(ValueType.RECORD.getIndex()).equals(dataType)) {
+		if (String.valueOf(ValueType.RECORD.getIndex()).equals(obj.getOneLevelItem().getDataType())) {
 			basicChange = new BasicChange();
 			basicChange.setCode(obj.getCode());
 		} else {
-			 basicChange = new BasicChange();
+			basicChange = new BasicChange();
 			basicChange.setCode(getEntityCode(obj.getParent()));
 		}
 		basicChangeService.create(basicChange);
-		
-		if (groupType == "aggregate") {
-			if ("add".equals(flag)) {
-				aggregateAttr.setCode(obj.getCode());
-				aggregateAttrService.create(aggregateAttr);
-			} else {
-				aggregateAttr.setCode(obj.getCode());
-				aggregateAttrService.update(aggregateAttr);
-			}
-		}
 		
 		return obj;
 	} 
@@ -506,7 +351,7 @@ public class BasicItemServiceImpl implements BasicItemService {
 	 * @param obj
 	 * @return
 	 */
-	private BasicItem createRecordEditeTime(BasicItem obj) {
+	public BasicItem createRecordEditeTime(BasicItem obj) {
 		BasicItem btItem = new BasicItem();//实体编辑时间
 		OneLevelItem oneLevelItem = new OneLevelItem();
 		btItem.setOneLevelItem(oneLevelItem);
@@ -573,8 +418,8 @@ public class BasicItemServiceImpl implements BasicItemService {
 	 * @return
 	 * @throws Exception 
 	 */
-	private BasicItem createLable(BasicItem obj, Integer cascadedict) throws Exception {
-		String attrCode = btCodeGenerService.getBasicItemCode(ValueType.LABLETYPE, getEntityCode(obj.getCode()));
+	public BasicItem createLable(BasicItem obj, Integer cascadedict) throws Exception {
+		String attrCode = btCodeGenerService.getBasicItemCode(ValueType.LABLETYPE, obj.getCode());
 		BasicItem bt = new BasicItem();
 		OneLevelItem twoItem = new OneLevelItem();
 		bt.setOneLevelItem(twoItem);
@@ -599,7 +444,6 @@ public class BasicItemServiceImpl implements BasicItemService {
 		BasicItem btKey = new BasicItem();
 		OneLevelItem twoItem = new OneLevelItem();
 		btKey.setOneLevelItem(twoItem);
-		
 		
 		btKey.setCode(AttributeParter.getFileKeyName(obj.getCode()));
 		btKey.getOneLevelItem().setCode(AttributeParter.getFileKeyName(obj.getCode()));
@@ -1093,8 +937,19 @@ public class BasicItemServiceImpl implements BasicItemService {
 
 	@Override
 	public String getEntityCode(String parentEntityCode) {
+		
+		if (parentEntityCode == null) {
+			return null;
+		}
+		
 		String[] split = parentEntityCode.split("_");
-		return split[0];
+		BasicItem basicItem = getBasicItem(split[0]);
+		Integer dataType = Integer.parseInt(basicItem.getOneLevelItem().getDataType());
+		if (ValueType.RECORD.getIndex() != dataType) {
+			BasicItem basicItem2 = getBasicItem(basicItem.getParent());
+			return basicItem2.getCode();
+		}
+		return basicItem.getCode();
 	}
 
 

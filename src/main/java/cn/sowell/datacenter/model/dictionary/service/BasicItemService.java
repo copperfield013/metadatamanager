@@ -75,7 +75,7 @@ public interface BasicItemService {
 	 * @param cascadedict   生成实体，选择一个字典标签
 	 * @throws Exception
 	 */
-	 BasicItem saveOrUpdate(BasicItem obj, String flag, String comm,String groupType, Integer cascadedict, BiRefAttr biRefAttr, AggregateAttr aggregateAttr)  throws Exception ;
+	 BasicItem saveOrUpdate(BasicItem obj, Integer cascadedict, BiRefAttr biRefAttr, AggregateAttr aggregateAttr)  throws Exception ;
 
 	/**
 	 * 根据实体code， 分组code， 获取分组下的属性
@@ -193,4 +193,27 @@ public interface BasicItemService {
 	 * @return
 	 */
 	String getEntityCode(String parentEntityCode);
+	
+	/**
+	 * 创建标签对象
+	 * @param obj
+	 * @param cascadedict
+	 * @return
+	 * @throws Exception
+	 */
+	public BasicItem createLable(BasicItem obj, Integer cascadedict) throws Exception;
+	
+	
+	/**
+	 * 创建实体编辑时间的属性
+	 * @param obj
+	 * @return
+	 */
+	public BasicItem createRecordEditeTime(BasicItem obj);
+	
+	/**
+	 * 生成文件的伴生属性
+	 * @param obj
+	 */
+	public void fileAssociatProper(BasicItem obj);
 }

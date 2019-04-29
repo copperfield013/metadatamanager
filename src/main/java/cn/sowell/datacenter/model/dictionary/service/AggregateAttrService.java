@@ -32,4 +32,6 @@ public interface AggregateAttrService {
 	void delete(String code);
 	
 	AggregateAttr getOne(String code);
+	
+	void saveOrUpdate(AggregateAttr aggregateAttr);
 }

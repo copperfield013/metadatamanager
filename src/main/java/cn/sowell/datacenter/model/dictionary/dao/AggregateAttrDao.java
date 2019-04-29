@@ -35,4 +35,6 @@ public interface AggregateAttrDao {
 	 * @param pojo
 	 */
 	void delete(Object pojo);
+	
+	public Object getAggregateAttr(String code);
 }

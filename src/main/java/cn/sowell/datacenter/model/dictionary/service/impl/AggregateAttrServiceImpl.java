@@ -43,6 +43,16 @@ public class AggregateAttrServiceImpl implements AggregateAttrService {
 	public AggregateAttr getOne(String code) {
 		return aggregateAttrDao.get(AggregateAttr.class, code);
 	}
+
+	@Override
+	public void saveOrUpdate(AggregateAttr aggregateAttr) {
+		Object aggregateAttr2 = aggregateAttrDao.getAggregateAttr(aggregateAttr.getCode());
+		if (aggregateAttr2 == null) {
+			this.create(aggregateAttr);
+		} else {
+			this.update(aggregateAttr);
+		}
+	}
 	
 
 

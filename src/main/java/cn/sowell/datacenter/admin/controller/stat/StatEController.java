@@ -1,7 +1,6 @@
 package cn.sowell.datacenter.admin.controller.stat;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -13,31 +12,18 @@ import org.apache.log4j.Logger;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.ServletRequestDataBinder;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.abc.model.enun.ValueType;
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
 import cn.sowell.copframe.dto.ajax.AjaxPageResponse;
 import cn.sowell.copframe.dto.ajax.NoticeType;
-import cn.sowell.copframe.dto.page.PageInfo;
 import cn.sowell.datacenter.admin.controller.AdminConstants;
-import cn.sowell.datacenter.admin.controller.dictionary.BasicItemContext;
-import cn.sowell.datacenter.model.cascadedict.criteria.CascadedictBasicItemCriteria;
-import cn.sowell.datacenter.model.cascadedict.pojo.CascadedictBasicItem;
-import cn.sowell.datacenter.model.cascadedict.pojo.CascadedictSubsection;
-import cn.sowell.datacenter.model.cascadedict.service.CascadedictBasicItemService;
-import cn.sowell.datacenter.model.cascadedict.service.CascadedictSubsectionService;
 import cn.sowell.datacenter.model.dictionary.pojo.BasicItem;
 import cn.sowell.datacenter.model.dictionary.pojo.BiRefAttr;
 import cn.sowell.datacenter.model.dictionary.pojo.OneLevelItem;
@@ -45,10 +31,7 @@ import cn.sowell.datacenter.model.dictionary.service.BasicItemService;
 import cn.sowell.datacenter.model.stat.pojo.StatE;
 import cn.sowell.datacenter.model.stat.service.StatEService;
 import cn.sowell.datacenter.utils.Message;
-import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
 
 @Controller
 @RequestMapping(AdminConstants.URI_STAT + "/state")
