@@ -1990,6 +1990,22 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
         var aggregateAttrExpression = $(s).closest('.opera_comm').find("#AggregateAttrExpression").val();
         var aggregateAttrFilters = $(s).closest('.opera_comm').find("#aggregateAttrFilters").val();
         
+        if (typeof(aggregateAttrCode) == "undefined") {
+        	aggregateAttrCode = "";
+        }   
+        if (typeof(aggregateAttrType) == "undefined") {
+        	aggregateAttrType = "";
+        }   
+        if (typeof(aggregateAttrRelCode) == "undefined") {
+        	aggregateAttrRelCode = "";
+        }   
+        if (typeof(aggregateAttrExpression) == "undefined") {
+        	aggregateAttrExpression = "";
+        }   
+        if (typeof(aggregateAttrFilters) == "undefined") {
+        	aggregateAttrFilters = "";
+        }   
+        
         //聚合属性结束
         debugger;
         if (typeof(dictParentId) == "undefined") {
