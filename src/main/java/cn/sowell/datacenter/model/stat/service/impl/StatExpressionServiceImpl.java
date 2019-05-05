@@ -4,7 +4,7 @@ import java.util.List;
 import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 
-import com.abc.exface.dto.AggregateExpressionDTO;
+import com.abc.extface.dto.AggregateExpressionDTO;
 import com.abc.model.AggregateExpression;
 import com.abc.model.IAggregateExpressionDAO;
 
