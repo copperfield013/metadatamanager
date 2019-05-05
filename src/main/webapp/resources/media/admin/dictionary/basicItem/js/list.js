@@ -556,7 +556,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
                	entityId:firstCode
                }, function(data) {
                    var commList = data.commList;
-                   var str = "<span id=\"refCodeShow_enum\">refCodeShow：</span><select id=\"refCodeShow\" name=\"refCodeShow\">";
+                   var str = "<div class='select-wrap' style='margin-top: 21px;'>refCodeShow<span id=\"refCodeShow_enum\">refCodeShow：</span><select id=\"refCodeShow\" name=\"refCodeShow\">";
                	for (var p in commList) { //遍历json数组时，这么写p为索引，0,1
                        str = str + "<option value=\"" + commList[p][0] + "\">" + commList[p][1] + "</option>"; 
                    }
@@ -573,7 +573,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
                    	for (var p in commList) { //遍历json数组时，这么写p为索引，0,1
                            str = str + "<option value=\"" + commList[p][0] + "\">" + commList[p][1] + "</option>"; 
                        }
-                       str = str + "</select>";               
+                       str = str + "</select></div>";               
                        $form.find("#refCodeShow").after(str);                
                        $form.find("#refCodeRecognition").css("width","30%").select2();
                        $CPF.closeLoading();
@@ -713,7 +713,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
         	entityId:firstCode
         }, function(data) {
             var commList = data.commList;
-            var str = "<span id=\"refCodeShow_enum\">refCodeShow：</span><select id=\"refCodeShow\" name=\"refCodeShow\">";
+            var str = "<div class='select-wrap' style='margin-top: 21px;'><span id=\"refCodeShow_enum\">refCodeShow：</span><select id=\"refCodeShow\" name=\"refCodeShow\">";
         	for (var p in commList) { //遍历json数组时，这么写p为索引，0,1
                 str = str + "<option value=\"" + commList[p][0] + "\">" + commList[p][1] + "</option>"; 
             }
@@ -730,7 +730,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
             	for (var p in commList) { //遍历json数组时，这么写p为索引，0,1
                     str = str + "<option value=\"" + commList[p][0] + "\">" + commList[p][1] + "</option>"; 
                 }
-                str = str + "</select>";               
+                str = str + "</select></div>";               
                 $form.find("#refCodeShow").after(str);                
                 $form.find("#refCodeRecognition").css("width","30%").select2();
                 $CPF.closeLoading();
@@ -2473,7 +2473,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
                       	entityId:refType
                       }, function(data) {
                           var commList = data.commList;
-                          var str = "<span id=\"refCodeShow_enum\">refCodeShow：</span><select id=\"refCodeShow\" name=\"refCodeShow\">";
+                          var str = "<div class='select-wrap' style='margin-top: 21px;'><span id=\"refCodeShow_enum\">refCodeShow：</span><select id=\"refCodeShow\" name=\"refCodeShow\">";
                       	
                           for (var p in commList) { //遍历json数组时，这么写p为索引，0,1
                          	 
@@ -2484,7 +2484,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
                          	 }
                           }
                           
-                          str = str + "</select>";               
+                          str = str + "</select></div>";               
                           $form1.find("#refType").after(str);                
                           $form1.find("#refCodeShow").css("width","30%").select2();
                         
