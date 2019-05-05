@@ -691,7 +691,107 @@ public class BasicItemDaoImpl implements BasicItemDao {
 				" WHERE c_parent=:parrentCode AND b.c_data_type='16'";
 		return (BasicItem) sFactory.getCurrentSession().createSQLQuery(sql).addEntity(BasicItem.class).setParameter("parrentCode", parrentCode).uniqueResult();
 	}
-	
-	
 
+	@Override
+	public List queryCreEntityFileTbaF1() {
+		StringBuffer sb = new StringBuffer();
+		sb.append("SELECT")
+		.append(" concat( \"CREATE TABLE \", a.tablename, \"(\",")
+		.append(" \" `\",a.c_code,\"_FP` varchar(32) NOT NULL COMMENT 'code',\",")
+		.append(" \"`\",a.c_code,\"_F2` datetime(3) DEFAULT NULL COMMENT 'insert_time',\",")
+		.append(" \"`\",a.c_code,\"_F3` mediumblob DEFAULT NULL COMMENT 'content',\",")
+		.append(" \"PRIMARY KEY (`\",a.c_code,\"_FP`) USING BTREE) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC\" ) ")
+		.append(" FROM")
+		.append(" ( SELECT concat( 't_', c_code, '_f1' ) tablename, c_code FROM t_sc_bi_onelevel WHERE c_data_type = '10' ) a")
+		.append(" LEFT JOIN ( SELECT table_name FROM information_schema.TABLES t WHERE t.table_schema = '"+DataBaseName+"' ) b ON a.tablename = b.table_name ")
+		.append(" WHERE")
+		.append(" b.table_name IS NULL");
+		return sFactory.getCurrentSession().createSQLQuery(sb.toString()).list();
+	}
+
+	@Override
+	public List queryCreEntityFileTbaF2() {
+		StringBuffer sb = new StringBuffer();
+		sb.append(" SELECT")
+		.append(" concat( \"CREATE TABLE \", a.tablename, ")
+		.append(" \"(`id` bigint(20) NOT NULL AUTO_INCREMENT,\",")
+		.append(" \"`ABP0001` varchar(32) NOT NULL COMMENT 'record_code',\",")
+		.append(" \"`ABP0002` varchar(32) DEFAULT NULL COMMENT 'leaf_Code',\" ,")
+		.append(" \"`\",a.c_code,\"_FP` varchar(32) NOT NULL COMMENT 'bytes_code',\",")
+		.append(" \"`\",a.c_code,\"_F4` varchar(32) NOT NULL COMMENT 'abcattr',\",")
+		.append(" \"`\",a.c_code,\"_F5` datetime(3) NOT NULL COMMENT 'insert_time',\",")
+		.append(" \"PRIMARY KEY (`id`, `\", a.c_code,\"_F5`) USING BTREE) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC\" ) ")
+		.append(" FROM")
+		.append(" ( SELECT concat( 't_', c_code, '_f2' ) tablename, c_code FROM t_sc_bi_onelevel WHERE c_data_type = '10' ) a")
+		.append(" LEFT JOIN ( SELECT table_name FROM information_schema.TABLES t WHERE t.table_schema = '"+DataBaseName+"' ) b ON a.tablename = b.table_name ")
+		.append(" WHERE")
+		.append(" b.table_name IS NULL");
+		return sFactory.getCurrentSession().createSQLQuery(sb.toString()).list();
+	}
+
+	@Override
+	public List queryCreEntityFileTbaF3() {
+		StringBuffer sb = new StringBuffer();
+		sb.append(" SELECT")
+		.append(" concat( \"CREATE TABLE \", a.tablename, ")
+		.append(" \"(`id` bigint(20) NOT NULL AUTO_INCREMENT,\",")
+		.append(" \"`\",a.c_code,\"_HP` varchar(32) NOT NULL COMMENT 'history_code',\",")
+		.append(" \"`ABP0001` varchar(32) NOT NULL,\",")
+		.append(" \"`ABP0002` varchar(32) DEFAULT NULL,\" ,")
+		.append(" \"`\",a.c_code,\"_FP` varchar(32) NOT NULL COMMENT 'bytes_code',\",")
+		.append(" \"`\",a.c_code,\"_F4` varchar(32) NOT NULL COMMENT 'abcattr',\",")
+		.append(" \"`\",a.c_code,\"_F5` datetime(3) NOT NULL COMMENT 'insert_time',\",")
+		.append(" \"PRIMARY KEY (`id`) USING BTREE) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC\" ) ")
+		.append(" FROM")
+		.append(" ( SELECT concat( 't_', c_code, '_f3' ) tablename, c_code FROM t_sc_bi_onelevel WHERE c_data_type = '10' ) a")
+		.append(" LEFT JOIN ( SELECT table_name FROM information_schema.TABLES t WHERE t.table_schema = '"+DataBaseName+"' ) b ON a.tablename = b.table_name ")
+		.append(" WHERE	b.table_name IS NULL");
+		
+		return sFactory.getCurrentSession().createSQLQuery(sb.toString()).list();
+	}
+
+	@Override
+	public List queryCreEntityTabH1() {
+		
+		StringBuffer sb = new StringBuffer();
+		sb.append(" SELECT")
+		.append(" concat( \"CREATE TABLE \", a.tablename, \"(\",")
+		.append(" \" `\",a.c_code,\"_HP` varchar(32) NOT NULL,\",")
+		.append(" \"`ABP0001` varchar(32) DEFAULT NULL,\",")
+		.append(" \"`\",a.c_code,\"_H1` datetime(3) DEFAULT NULL,\",")
+		.append(" \"`\",a.c_code,\"_H2` varchar(32) DEFAULT NULL,\",")
+		.append(" \"`\",a.c_code,\"_H3` varchar(320) DEFAULT NULL,\",")
+		.append(" \"`\",a.c_code,\"_H4` int(2) DEFAULT 2 COMMENT '1 total,2 increment',\",")
+		.append(" \"`\",a.c_code,\"_H5` int(2) DEFAULT 0,\",")
+		.append(" \"`\",a.c_code,\"_H6` blob NOT NULL,\",")
+		.append(" \"PRIMARY KEY (`\",a.c_code,\"_HP`) USING BTREE) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC\" ) ")
+		.append(" FROM")
+		.append(" ( SELECT concat( 't_', c_code, '_h1' ) tablename, c_code FROM t_sc_bi_onelevel WHERE c_data_type = '10' ) a")
+		.append(" LEFT JOIN ( SELECT table_name FROM information_schema.TABLES t WHERE t.table_schema = '"+DataBaseName+"' ) b ON a.tablename = b.table_name ")
+		.append("WHERE	b.table_name IS NULL");
+		
+		return sFactory.getCurrentSession().createSQLQuery(sb.toString()).list();
+	}
+
+	@Override
+	public List queryCreEntityTabH2() {
+		StringBuffer sb = new StringBuffer();
+		sb.append(" SELECT")
+		.append(" concat( \"CREATE TABLE \", a.tablename, \"(\",")
+		.append(" \" `\",a.c_code,\"_HP` varchar(32) NOT NULL,\",")
+		.append(" \"`ABP0001` varchar(32) DEFAULT NULL,\",")
+		.append(" \"`\",a.c_code,\"_H1` datetime(3) NOT NULL,\",")
+		.append(" \"`\",a.c_code,\"_H2` varchar(32) DEFAULT NULL COMMENT 'usergroup_id',\",")
+		.append(" \"`\",a.c_code,\"_H3` varchar(320) DEFAULT NULL  COMMENT 'descripation',\",")
+		.append(" \"`\",a.c_code,\"_H4` int(2) DEFAULT 2 COMMENT '1 total,2 increment',\",")
+		.append(" \"`\",a.c_code,\"_H5` int(2) DEFAULT 0  COMMENT 'source',\",")
+		.append(" \"`\",a.c_code,\"_H6` blob NOT NULL  COMMENT 'content',\",")
+		.append(" \"PRIMARY KEY (`\",a.c_code,\"_HP`) USING BTREE) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC\" ) ")
+		.append(" FROM")
+		.append(" ( SELECT concat( 't_', c_code, '_h2' ) tablename, c_code FROM t_sc_bi_onelevel WHERE c_data_type = '10' ) a")
+		.append(" LEFT JOIN ( SELECT table_name FROM information_schema.TABLES t WHERE t.table_schema = '"+DataBaseName+"' ) b ON a.tablename = b.table_name ")
+		.append(" WHERE	b.table_name IS NULL");
+		
+		return sFactory.getCurrentSession().createSQLQuery(sb.toString()).list();
+	}
 }

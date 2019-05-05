@@ -727,8 +727,59 @@ public class BasicItemServiceImpl implements BasicItemService {
 		}
 		
 		//创建实体编辑时间表  t_abce001_m
-		  List editTimeTab = basicItemDao.queryCreEntityEditTimeTab();
+		List editTimeTab = basicItemDao.queryCreEntityEditTimeTab();
 		for (Object object : editTimeTab) {
+			try {
+				basicItemDao.excuteBySql(object.toString());
+			} catch (Exception e) {
+				e.printStackTrace();
+				continue;
+			}
+		}
+		
+		//创建历史表和文件表
+		List tabF1 = basicItemDao.queryCreEntityFileTbaF1();
+		for (Object object : tabF1) {
+			try {
+				basicItemDao.excuteBySql(object.toString());
+			} catch (Exception e) {
+				e.printStackTrace();
+				continue;
+			}
+		}
+		
+		List tabF2 = basicItemDao.queryCreEntityFileTbaF2();
+		for (Object object : tabF2) {
+			try {
+				basicItemDao.excuteBySql(object.toString());
+			} catch (Exception e) {
+				e.printStackTrace();
+				continue;
+			}
+		}
+		
+		List tabF3 = basicItemDao.queryCreEntityFileTbaF3();
+		for (Object object : tabF3) {
+			try {
+				basicItemDao.excuteBySql(object.toString());
+			} catch (Exception e) {
+				e.printStackTrace();
+				continue;
+			}
+		}
+		
+		List tabH1 = basicItemDao.queryCreEntityTabH1();
+		for (Object object : tabH1) {
+			try {
+				basicItemDao.excuteBySql(object.toString());
+			} catch (Exception e) {
+				e.printStackTrace();
+				continue;
+			}
+		}
+		
+		List tabH2 = basicItemDao.queryCreEntityTabH2();
+		for (Object object : tabH2) {
 			try {
 				basicItemDao.excuteBySql(object.toString());
 			} catch (Exception e) {

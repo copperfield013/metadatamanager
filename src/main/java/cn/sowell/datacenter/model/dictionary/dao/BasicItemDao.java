@@ -106,6 +106,38 @@ public interface BasicItemDao {
 	 */
 	List queryCreEntityEditTimeTab();
 	
+	
+	
+	/**
+	 * 创建实体文件表F1
+	 * @return
+	 */
+	List queryCreEntityFileTbaF1();
+	
+	/**
+	 * 创建实体文件表F2
+	 * @return
+	 */
+	List queryCreEntityFileTbaF2();
+	
+	/**
+	 * 创建实体文件表F3
+	 * @return
+	 */
+	List queryCreEntityFileTbaF3();
+	
+	/**
+	 * 创建实体历史表H1
+	 * @return
+	 */
+	List queryCreEntityTabH1();
+	/**
+	 * 创建实体历史表H2
+	 * @return
+	 */
+	List queryCreEntityTabH2();
+	
+	
 	/**
 	 * 执行传进来的sql语句
 	 * @param sql
