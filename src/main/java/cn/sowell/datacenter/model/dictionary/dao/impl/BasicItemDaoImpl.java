@@ -256,7 +256,7 @@ public class BasicItemDaoImpl implements BasicItemDao {
 		StringBuffer sb = new StringBuffer();
 		sb.append("SELECT a.c_code, ")
 			.append("concat(\"create table \", a.c_table_name,\"( `id`  bigint(20) NOT NULL AUTO_INCREMENT, ")
-			.append("`ABP0001`  varchar(32) DEFAULT NULL ,PRIMARY KEY (`id`),KEY `apb_index` (`ABP0001`) USING BTREE)\")  valstr ")
+			.append("`ABP0001`  varchar(32) DEFAULT NULL ,PRIMARY KEY (`id`),KEY `abp_index` (`ABP0001`) USING BTREE)\")  valstr ")
 			.append("FROM ")
 			.append("(SELECT ")
 			.append(" c_code,  c_table_name ")
