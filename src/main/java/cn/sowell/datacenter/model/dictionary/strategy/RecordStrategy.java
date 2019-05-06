@@ -41,7 +41,7 @@ public class RecordStrategy implements BasicItemStrategy {
 
 	@Override
 	public void logicOperate(BasicItemStrategyContext context, BasicItem basicItem, String flag, Integer cascadedict, BiRefAttr biRefAttr, AggregateAttr aggregateAttr) throws Exception {
-		basicItem.getOneLevelItem().setNeedHistory(1);
+		/*basicItem.getOneLevelItem().setNeedHistory(1);*/
 		//如果是记录类型， 选择一个标签字典， 生成一条标签字典类
 		if ("add".equals(flag)) {
 			//这里生成abcde010_ED这个属性， 

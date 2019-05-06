@@ -306,17 +306,13 @@ public class BasicItemController {
 	
 	//创建表
 	@ResponseBody
-	@ApiOperation(value = "创建表", nickname = "createTab", notes = "创建实体存储", response = AjaxPageResponse.class, tags={ "entityManager", })
-	@ApiResponses(value = { 
-    @ApiResponse(code = 200, message = "操作成功", response = AjaxPageResponse.class),
-    @ApiResponse(code = 404, message = "操作失败") })
 	@RequestMapping(value="/createTab", method=RequestMethod.POST)
-	public ResponseEntity<AjaxPageResponse> createTab(){
+	public AjaxPageResponse createTab(){
 		try {
 			basicItemService.createTabCol();
-			return new ResponseEntity<AjaxPageResponse>(AjaxPageResponse.CLOSE_AND_REFRESH_PAGE("操作成功", "basicItem_list"), HttpStatus.OK);
+			return AjaxPageResponse.CLOSE_AND_REFRESH_PAGE("操作成功", "basicItem_list");
 		} catch (Exception e) {
-		 return new ResponseEntity<AjaxPageResponse>(AjaxPageResponse.FAILD("操作失败"), HttpStatus.INTERNAL_SERVER_ERROR);
+		 return AjaxPageResponse.FAILD("操作失败");
 		}
 	}
 	
