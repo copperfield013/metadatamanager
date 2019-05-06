@@ -380,7 +380,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
             		str = str + "<option value=\"" + dataArr[p].id + "\">" + dataArr[p].name + "</option>"; 
             	}
             	$("#entity_opera_form1").find("#cascadedict").append(str);
-            	$("#entity_opera_form1").find("#cascadedict").css("width","20%").select2();
+            	$("#entity_opera_form1").find("#cascadedict").css("width","40%").select2();
             } else {
             	Dialog.notice("标签字典加载失败", "error");
             }
@@ -556,7 +556,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
                	entityId:firstCode
                }, function(data) {
                    var commList = data.commList;
-                   var str = "<div class='select-wrap' style='margin-top: 21px;'>refCodeShow<span id=\"refCodeShow_enum\">refCodeShow：</span><select id=\"refCodeShow\" name=\"refCodeShow\">";
+                   var str = "<div class='select-wrap' style='margin-top: 21px;'><span id=\"refCodeShow_enum\">展示属性：</span><select id=\"refCodeShow\" name=\"refCodeShow\">";
                	for (var p in commList) { //遍历json数组时，这么写p为索引，0,1
                        str = str + "<option value=\"" + commList[p][0] + "\">" + commList[p][1] + "</option>"; 
                    }
@@ -569,7 +569,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
                    	entityId:firstCode
                    }, function(data) {
                        var commList = data.commList;
-                       var str = "<span id=\"refCodeRecognition_enum\">refCodeRecognition：</span><select id=\"refCodeRecognition\" name=\"refCodeRecognition\">";
+                       var str = "<span id=\"refCodeRecognition_enum\">识别属性：</span><select id=\"refCodeRecognition\" name=\"refCodeRecognition\">";
                    	for (var p in commList) { //遍历json数组时，这么写p为索引，0,1
                            str = str + "<option value=\"" + commList[p][0] + "\">" + commList[p][1] + "</option>"; 
                        }
@@ -713,7 +713,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
         	entityId:firstCode
         }, function(data) {
             var commList = data.commList;
-            var str = "<div class='select-wrap' style='margin-top: 21px;'><span id=\"refCodeShow_enum\">refCodeShow：</span><select id=\"refCodeShow\" name=\"refCodeShow\">";
+            var str = "<div class='select-wrap' style='margin-top: 21px;'><span id=\"refCodeShow_enum\">展示属性：</span><select id=\"refCodeShow\" name=\"refCodeShow\">";
         	for (var p in commList) { //遍历json数组时，这么写p为索引，0,1
                 str = str + "<option value=\"" + commList[p][0] + "\">" + commList[p][1] + "</option>"; 
             }
@@ -726,7 +726,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
             	entityId:firstCode
             }, function(data) {
                 var commList = data.commList;
-                var str = "<span id=\"refCodeRecognition_enum\">refCodeRecognition：</span><select id=\"refCodeRecognition\" name=\"refCodeRecognition\">";
+                var str = "<span id=\"refCodeRecognition_enum\">识别属性：</span><select id=\"refCodeRecognition\" name=\"refCodeRecognition\">";
             	for (var p in commList) { //遍历json数组时，这么写p为索引，0,1
                     str = str + "<option value=\"" + commList[p][0] + "\">" + commList[p][1] + "</option>"; 
                 }
@@ -2181,7 +2181,8 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
         var fData = new FormData(formdom);  
         
         var $form = $(this).closest(".opera_entity").find("#entity_opera_form1");
-        
+       
+        var needHistory = $form.find("#needHistory").val();
         if (checkEntityAndMore($form)) {
         	Ajax.ajax('admin/dictionary/basicItem/do_add', fData, function(data) {});
         }
@@ -2288,7 +2289,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
                                 	 str = str + "<option value=\"" + dataArr[p].id + "\">" + dataArr[p].name + "</option>"; 
                                  }
                                  $("#entity_opera_form1").find("#cascadedict").empty().append(str);
-                                 $("#entity_opera_form1").find("#cascadedict").css("width","20%").select2();
+                                 $("#entity_opera_form1").find("#cascadedict").css("width","40%").select2();
                              } else {
                                  Dialog.notice("标签字典加载失败", "error");
                              }
@@ -2327,6 +2328,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
             $form1.find("#code").attr("readonly", "readonly");
             $form1.find("#cnName").val(jsonData.cnName);
             $form1.find("#enName").val(jsonData.enName);
+            $form1.find("#needHistory").val(jsonData.oneLevelItem.needHistory);
             $form1.find("#description").val(jsonData.description);
             $("#add_entity_mes").html("");
             $("#add_entity_mes").html("编辑实体信息");
@@ -2473,7 +2475,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
                       	entityId:refType
                       }, function(data) {
                           var commList = data.commList;
-                          var str = "<div class='select-wrap' style='margin-top: 21px;'><span id=\"refCodeShow_enum\">refCodeShow：</span><select id=\"refCodeShow\" name=\"refCodeShow\">";
+                          var str = "<div class='select-wrap' style='margin-top: 21px;'><span id=\"refCodeShow_enum\">展示属性：</span><select id=\"refCodeShow\" name=\"refCodeShow\">";
                       	
                           for (var p in commList) { //遍历json数组时，这么写p为索引，0,1
                          	 
@@ -2494,7 +2496,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
                           	entityId:refType
                           }, function(data) {
                               var commList = data.commList;
-                              var str = "<span id=\"refCodeRecognition_enum\">refCodeRecognition：</span><select id=\"refCodeRecognition\" name=\"refCodeRecognition\">";
+                              var str = "<span id=\"refCodeRecognition_enum\">识别属性：</span><select id=\"refCodeRecognition\" name=\"refCodeRecognition\">";
                           	
                               for (var p in commList) { //遍历json数组时，这么写p为索引，0,1
                              	 if (biRefAttr.refCodeRecognition == commList[p][0]) {

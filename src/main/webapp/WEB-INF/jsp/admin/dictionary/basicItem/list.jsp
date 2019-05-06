@@ -54,9 +54,16 @@
 						<span class="opera_entity_label">描述</span>
 						<textarea name="description" id="description" rows="" cols=""></textarea>
 					</div>	
-					<div style="width: 92%;">
+					<div >
 						<span class="opera_entity_label">请为标签选择字典<span style="color: red;">*</span></span>
 						<select id="cascadedict" name="cascadedict">
+						</select>
+					</div>	
+					<div >
+						<span class="opera_entity_label">是否记录历史</span>
+						<select id="needHistory" name="needHistory">
+							<option value="1">是</option>
+							<option value="0">否</option>
 						</select>
 					</div>
 				</form>
