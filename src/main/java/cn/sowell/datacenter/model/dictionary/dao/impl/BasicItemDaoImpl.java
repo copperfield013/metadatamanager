@@ -794,4 +794,18 @@ public class BasicItemDaoImpl implements BasicItemDao {
 		
 		return sFactory.getCurrentSession().createSQLQuery(sb.toString()).list();
 	}
+
+	@Override
+	public List queryCreRepeatTabIndex() {
+		StringBuffer sb = new StringBuffer();
+		sb.append(" SELECT")
+		.append(" CONCAT(\" ALTER TABLE \",a.tablename,\" ADD INDEX index_p(\",c_code,\"_P);\")")
+		.append(" FROM")
+		.append(" ( SELECT c_table_name tablename, c_code FROM t_sc_bi_onelevel WHERE c_data_type = '9' ) a")
+		.append(" LEFT JOIN ( SELECT table_name FROM information_schema.statistics  t WHERE t.table_schema = '"+DataBaseName+"'	AND INDEX_NAME='index_p') b ")
+		.append(" ON a.tablename = b.table_name ")
+		.append(" WHERE	b.table_name is NULL");
+		
+		return sFactory.getCurrentSession().createSQLQuery(sb.toString()).list();
+	}
 }

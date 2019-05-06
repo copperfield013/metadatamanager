@@ -788,6 +788,17 @@ public class BasicItemServiceImpl implements BasicItemService {
 			}
 		}
 		
+		//给多值属性添加索引
+		List repeatIndex = basicItemDao.queryCreRepeatTabIndex();
+		for (Object object : repeatIndex) {
+			try {
+				basicItemDao.excuteBySql(object.toString());
+			} catch (Exception e) {
+				e.printStackTrace();
+				continue;
+			}
+		}
+		
 		//以上程序执行完比， 应确保只有状态为1  和-1， 下面程序把所有状态为0的改为1
 		basicItemDao.excuteBySql("UPDATE t_sc_basic_item SET c_using_state=1 WHERE c_using_state=0");
 		}

@@ -107,6 +107,11 @@ public interface BasicItemDao {
 	List queryCreEntityEditTimeTab();
 	
 	
+	/**
+	 * 给多值属性表， 添加索引
+	 * @return
+	 */
+	List queryCreRepeatTabIndex();
 	
 	/**
 	 * 创建实体文件表F1
