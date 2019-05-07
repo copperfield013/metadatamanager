@@ -60,7 +60,7 @@
 						</select>
 					</div>	
 					<div >
-						<span class="opera_entity_label">是否记录历史</span>
+						<span class="opera_entity_label">记录历史</span>
 						<select id="needHistory" name="needHistory">
 							<option value="1">是</option>
 							<option value="0">否</option>

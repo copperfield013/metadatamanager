@@ -1016,7 +1016,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
     //点击 添加普通属性加号 显示div
     $(".aggregate_proper", $page).on("click", ".add_comm", function() {
     	addComm(this);
-    	
+    	debugger;
     	var $this = $(this);
     	var entityCode = $this.closest(".aggregate_proper").attr("parentid");
     	
@@ -1027,7 +1027,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
     	$select.html("");
     	$selectRelCode.html("");
     	 Ajax.ajax('admin/dictionary/aggregateAttr/getAggregateAttrType', '', function(data) { 
-    		 
+    		 debugger;
     		 var data = data.aggregateAttrTypeMap;
     		 var str = "";
              for (var key in data) {
@@ -1038,6 +1038,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
              Ajax.ajax('admin/dictionary/basicItem/getOne', {
      			id:entityCode
      		}, function(data) { 
+     			debugger;
      			 var relCodeStr = " <option selected relCode='"+entityCode+"' value =\"" + entityCode + "\">" + data.cnName + "</option>";
      			 $selectRelCode.removeAttr("multiple");
                   $selectRelCode.append(relCodeStr).css("width","50%").select2();
@@ -2310,7 +2311,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
                                 	 }
                                  }
                                  $("#entity_opera_form1").find("#cascadedict").empty().append(str);
-                                 $("#entity_opera_form1").find("#cascadedict").css("width","20%").select2();
+                                 $("#entity_opera_form1").find("#cascadedict").css("width","40%").select2();
                              } else {
                                  Dialog.notice("标签字典加载失败", "error");
                              }
