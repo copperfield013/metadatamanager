@@ -821,7 +821,7 @@ public class BasicItemDaoImpl implements BasicItemDao {
 		.append("	 \"PRIMARY KEY (`ABP0001`) USING BTREE) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC\" ) ")
 		.append(" FROM")
 		.append(" ( SELECT concat( 't_', c_code, '_d1' ) tablename, c_code FROM t_sc_bi_onelevel WHERE c_data_type = '10' ) a")
-		.append(" LEFT JOIN ( SELECT table_name FROM information_schema.TABLES t WHERE t.table_schema = 'dc_three_services' ) b ON a.tablename = b.table_name ")
+		.append(" LEFT JOIN ( SELECT table_name FROM information_schema.TABLES t WHERE t.table_schema = '"+DataBaseName+"' ) b ON a.tablename = b.table_name ")
 		.append(" WHERE	b.table_name IS NULL");
 		
 		return sFactory.getCurrentSession().createSQLQuery(sb.toString()).list();
