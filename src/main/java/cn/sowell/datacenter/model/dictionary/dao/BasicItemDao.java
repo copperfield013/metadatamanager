@@ -142,6 +142,12 @@ public interface BasicItemDao {
 	 */
 	List queryCreEntityTabH2();
 	
+	/**
+	 * 创建删除实体D1表
+	 * @return
+	 */
+	List queryCreEntityTabD1();
+	
 	
 	/**
 	 * 执行传进来的sql语句

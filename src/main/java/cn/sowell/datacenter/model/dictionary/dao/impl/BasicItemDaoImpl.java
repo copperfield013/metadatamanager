@@ -808,4 +808,22 @@ public class BasicItemDaoImpl implements BasicItemDao {
 		
 		return sFactory.getCurrentSession().createSQLQuery(sb.toString()).list();
 	}
+
+	@Override
+	public List queryCreEntityTabD1() {
+		StringBuffer sb = new StringBuffer();
+		sb.append(" SELECT")
+		.append(" concat( \"CREATE TABLE \", a.tablename, \"(\",")
+		.append("	\" `ABP0001` varchar(32) NOT NULL COMMENT 'code',\",")
+		.append("	\"`\",a.c_code,\"_DT` datetime(3) DEFAULT NULL COMMENT 'insert_time',\",")
+		.append("	\"`\",a.c_code,\"_D1` varchar(32) DEFAULT NULL COMMENT 'userid',\",")
+		.append("	\"`\",a.c_code,\"_D2` varchar(255) DEFAULT NULL COMMENT 'reason',\",")
+		.append("	 \"PRIMARY KEY (`ABP0001`) USING BTREE) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC\" ) ")
+		.append(" FROM")
+		.append(" ( SELECT concat( 't_', c_code, '_d1' ) tablename, c_code FROM t_sc_bi_onelevel WHERE c_data_type = '10' ) a")
+		.append(" LEFT JOIN ( SELECT table_name FROM information_schema.TABLES t WHERE t.table_schema = 'dc_three_services' ) b ON a.tablename = b.table_name ")
+		.append(" WHERE	b.table_name IS NULL");
+		
+		return sFactory.getCurrentSession().createSQLQuery(sb.toString()).list();
+	}
 }

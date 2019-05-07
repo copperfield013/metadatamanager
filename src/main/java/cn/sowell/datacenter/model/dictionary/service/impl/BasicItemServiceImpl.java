@@ -788,6 +788,16 @@ public class BasicItemServiceImpl implements BasicItemService {
 			}
 		}
 		
+		List tabD1 = basicItemDao.queryCreEntityTabD1();
+		for (Object object : tabD1) {
+			try {
+				basicItemDao.excuteBySql(object.toString());
+			} catch (Exception e) {
+				e.printStackTrace();
+				continue;
+			}
+		}
+		
 		//给多值属性添加索引
 		List repeatIndex = basicItemDao.queryCreRepeatTabIndex();
 		for (Object object : repeatIndex) {
