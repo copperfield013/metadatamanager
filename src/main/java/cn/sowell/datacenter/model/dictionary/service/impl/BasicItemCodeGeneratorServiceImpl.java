@@ -22,7 +22,7 @@ public class BasicItemCodeGeneratorServiceImpl implements BasicItemCodeGenerator
 	public String getRelaCode(String entityCode) throws Exception {
 		BasicItemCodeGenerator btNg = new BasicItemCodeGenerator();
 		btCodeGenDao.insert(btNg);
-		return btNg.getRelaCode(entityCode);
+		return btNg.getRelaCode(entityCode).toUpperCase();
 	}
 
 	@Override
@@ -39,7 +39,7 @@ public class BasicItemCodeGeneratorServiceImpl implements BasicItemCodeGenerator
 				map.put(entityCode, basicItemFix);
 			}
 		} 
-		return basicItemFix;
+		return basicItemFix.toUpperCase();
 	}
 
 	@Override
@@ -59,7 +59,7 @@ public class BasicItemCodeGeneratorServiceImpl implements BasicItemCodeGenerator
 			basicItemCode = btNg.getAttrCode(basicItemFix);
 			break;
 		}
-		return basicItemCode;
+		return basicItemCode.toUpperCase();
 	}
 
 	

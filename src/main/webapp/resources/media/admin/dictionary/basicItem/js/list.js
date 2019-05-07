@@ -380,7 +380,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
             		str = str + "<option value=\"" + dataArr[p].id + "\">" + dataArr[p].name + "</option>"; 
             	}
             	$("#entity_opera_form1").find("#cascadedict").append(str);
-            	$("#entity_opera_form1").find("#cascadedict").css("width","50%").select2();
+            	$("#entity_opera_form1").find("#cascadedict").css("width","70%").select2();
             } else {
             	Dialog.notice("标签字典加载失败", "error");
             }

@@ -55,17 +55,17 @@
 						<textarea name="description" id="description" rows="" cols=""></textarea>
 					</div>	
 					<div >
-						<span class="opera_entity_label">选择标签字典<span style="color: red;">*</span></span>
+						<span class='select-wrap'>选择标签<span style="color: red;">*</span></span>
 						<select id="cascadedict" name="cascadedict">
 						</select>
 					</div>	
-					<div >
-						<span class="opera_entity_label">记录历史</span>
+					 <div >
+						<span class='select-wrap'>记录历史</span>
 						<select id="needHistory" name="needHistory">
 							<option value="1">是</option>
 							<option value="0">否</option>
 						</select>
-					</div>
+					</div> 
 				</form>
 				<div class="opera_entity_btn">
 					<span class="entity-btn-cancel" id="entity_but_cancel">取消</span>
@@ -217,7 +217,7 @@
 				            </select>
 				        </div>
 				        <div  class="select-wrap">
-				            <span class="opera_entity_label">是否巨型关系<span style="color: red;">*</span></span>
+				            <span class="opera_entity_label">巨型关系<span style="color: red;">*</span></span>
 				           	<select id="leftgiant" name="leftgiant" style="width:30%">
 				           		<option value="0" selected="selected">否</option>
 				           		<option value="1">是</option>
@@ -240,7 +240,7 @@
 				            </select>
 				        </div>
 				         <div  class="select-wrap">
-				            <span class="opera_entity_label">逆向是否巨型关系<span style="color: red;">*</span></span>
+				            <span class="opera_entity_label">逆向巨型关系<span style="color: red;">*</span></span>
 				           	<select id="rightgiant" name="rightgiant" style="width:30%">
 				           		<option value="0" selected="selected">否</option>
 				           		<option value="1">是</option>
@@ -268,7 +268,7 @@
 				            </select>
 				        </div>
 				         <div  class="select-wrap">
-				            <span class="opera_entity_label">是否巨型关系<span style="color: red;">*</span></span>
+				            <span class="opera_entity_label">巨型关系<span style="color: red;">*</span></span>
 				           	<select id="giant" name="giant" style="width:30%">
 				            </select>
 				        </div>
