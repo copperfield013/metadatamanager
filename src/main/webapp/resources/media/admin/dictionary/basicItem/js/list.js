@@ -380,7 +380,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
             		str = str + "<option value=\"" + dataArr[p].id + "\">" + dataArr[p].name + "</option>"; 
             	}
             	$("#entity_opera_form1").find("#cascadedict").append(str);
-            	$("#entity_opera_form1").find("#cascadedict").css("width","70%").select2();
+            	$("#entity_opera_form1").find("#cascadedict").css("width","58%").select2();
             } else {
             	Dialog.notice("标签字典加载失败", "error");
             }
@@ -2088,7 +2088,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
                                 	 str = str + "<option value=\"" + dataArr[p].id + "\">" + dataArr[p].name + "</option>"; 
                                  }
                                  $("#entity_opera_form1").find("#cascadedict").empty().append(str);
-                                 $("#entity_opera_form1").find("#cascadedict").css("width","40%").select2();
+                                 $("#entity_opera_form1").find("#cascadedict").css("width","58%").select2();
                              } else {
                                  Dialog.notice("标签字典加载失败", "error");
                              }
@@ -2109,7 +2109,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
                                 	 }
                                  }
                                  $("#entity_opera_form1").find("#cascadedict").empty().append(str);
-                                 $("#entity_opera_form1").find("#cascadedict").css("width","40%").select2();
+                                 $("#entity_opera_form1").find("#cascadedict").css("width","58%").select2();
                              } else {
                                  Dialog.notice("标签字典加载失败", "error");
                              }
