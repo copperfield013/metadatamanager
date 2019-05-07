@@ -55,7 +55,7 @@
 						<textarea name="description" id="description" rows="" cols=""></textarea>
 					</div>	
 					<div >
-						<span class="opera_entity_label">请为标签选择字典<span style="color: red;">*</span></span>
+						<span class="opera_entity_label">选择标签字典<span style="color: red;">*</span></span>
 						<select id="cascadedict" name="cascadedict">
 						</select>
 					</div>	
