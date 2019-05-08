@@ -826,4 +826,36 @@ public class BasicItemDaoImpl implements BasicItemDao {
 		
 		return sFactory.getCurrentSession().createSQLQuery(sb.toString()).list();
 	}
+
+	@Override
+	public List queryCreEntityTabc1() {
+		StringBuffer sb = new StringBuffer();
+		sb.append(" SELECT")
+		.append(" concat( \"CREATE TABLE \", a.tablename, \"(\",")
+		.append(" \"`ABP0001` varchar(32) NOT NULL,\",")
+		.append(" \"`\",a.c_code,\"_CT` datetime(3) NOT NULL,\",")
+		.append(" \"`\",a.c_code,\"_C1` mediumblob NOT NULL,\",")
+		.append(" \"PRIMARY KEY (`ABP0001`) USING BTREE) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC\" ) ")
+		.append(" FROM")
+		.append(" ( SELECT concat( 't_', c_code, '_c1' ) tablename, c_code FROM t_sc_bi_onelevel WHERE c_data_type = '10' ) a")
+		.append(" LEFT JOIN ( SELECT table_name FROM information_schema.TABLES t WHERE t.table_schema = '"+DataBaseName+"' ) b ON a.tablename = b.table_name ")
+		.append(" WHERE	b.table_name IS NULL");
+		return sFactory.getCurrentSession().createSQLQuery(sb.toString()).list();
+	}
+
+	@Override
+	public List queryCreEntityTabc2() {
+		StringBuffer sb = new StringBuffer();
+		sb.append(" SELECT")
+		.append(" concat( \"CREATE TABLE \", a.tablename, \"(\",")
+		.append(" \"`ABP0001` varchar(32) NOT NULL,\",")
+		.append(" \"`\",a.c_code,\"_CT` datetime(3) NOT NULL,\",")
+		.append(" \"`\",a.c_code,\"_C1` mediumblob NOT NULL,\",")
+		.append(" \"PRIMARY KEY (`ABP0001`) USING BTREE) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC\" ) ")
+		.append(" FROM")
+		.append(" ( SELECT concat( 't_', c_code, '_c2' ) tablename, c_code FROM t_sc_bi_onelevel WHERE c_data_type = '10' ) a")
+		.append(" LEFT JOIN ( SELECT table_name FROM information_schema.TABLES t WHERE t.table_schema = '"+DataBaseName+"' ) b ON a.tablename = b.table_name ")
+		.append(" WHERE	b.table_name IS NULL");
+		return sFactory.getCurrentSession().createSQLQuery(sb.toString()).list();
+	}
 }

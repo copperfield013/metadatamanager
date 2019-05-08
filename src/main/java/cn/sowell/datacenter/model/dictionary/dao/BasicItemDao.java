@@ -148,6 +148,17 @@ public interface BasicItemDao {
 	 */
 	List queryCreEntityTabD1();
 	
+	/**
+	 * 创建实体c1表
+	 * @return
+	 */
+	List queryCreEntityTabc1();
+	
+	/**
+	 * 创建实体c2表
+	 * @return
+	 */
+	List queryCreEntityTabc2();
 	
 	/**
 	 * 执行传进来的sql语句
