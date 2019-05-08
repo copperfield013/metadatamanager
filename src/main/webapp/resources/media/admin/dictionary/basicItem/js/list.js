@@ -380,7 +380,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
             		str = str + "<option value=\"" + dataArr[p].id + "\">" + dataArr[p].name + "</option>"; 
             	}
             	$("#entity_opera_form1").find("#cascadedict").append(str);
-            	$("#entity_opera_form1").find("#cascadedict").css("width","58%").select2();
+            	$("#entity_opera_form1").find("#cascadedict").css("width","20%").select2();
             } else {
             	Dialog.notice("标签字典加载失败", "error");
             }
@@ -2088,7 +2088,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
                                 	 str = str + "<option value=\"" + dataArr[p].id + "\">" + dataArr[p].name + "</option>"; 
                                  }
                                  $("#entity_opera_form1").find("#cascadedict").empty().append(str);
-                                 $("#entity_opera_form1").find("#cascadedict").css("width","58%").select2();
+                                 $("#entity_opera_form1").find("#cascadedict").css("width","20%").select2();
                              } else {
                                  Dialog.notice("标签字典加载失败", "error");
                              }
@@ -2109,7 +2109,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
                                 	 }
                                  }
                                  $("#entity_opera_form1").find("#cascadedict").empty().append(str);
-                                 $("#entity_opera_form1").find("#cascadedict").css("width","58%").select2();
+                                 $("#entity_opera_form1").find("#cascadedict").css("width","20%").select2();
                              } else {
                                  Dialog.notice("标签字典加载失败", "error");
                              }
@@ -2128,6 +2128,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
             $form1.find("#cnName").val(jsonData.cnName);
             $form1.find("#enName").val(jsonData.enName);
             $form1.find("#needHistory").val(jsonData.oneLevelItem.needHistory);
+            $form1.find("#cached").val(jsonData.cached);
             $form1.find("#description").val(jsonData.description);
             $("#add_entity_mes").html("");
             $("#add_entity_mes").html("编辑实体信息");
