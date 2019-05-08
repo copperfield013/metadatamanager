@@ -20,9 +20,7 @@ import io.swagger.annotations.ApiModelProperty;
 @Table(name = "t_sc_basic_item")
 public class BasicItem {
 	
-	public BasicItem() {
-		
-	}
+	public BasicItem() {}
 	
 	public BasicItem(String code, String cnName, String dataType, Integer usingState, String groupName, String parent) {
 		this.code = code;
@@ -56,6 +54,9 @@ public class BasicItem {
 	 
 	  @Column(name="c_description")
 	  private String description;
+	  
+	  @Column(name="c_cached")
+	  private Integer cached;//缓存1 是 0 否
 	 
 	 @OneToOne(fetch = FetchType.LAZY,cascade = {CascadeType.ALL})
 	 @JoinColumn(name = "c_code")
@@ -155,6 +156,14 @@ public class BasicItem {
 
 	public void setDescription(String description) {
 		this.description = description;
+	}
+
+	public Integer getCached() {
+		return cached;
+	}
+
+	public void setCached(Integer cached) {
+		this.cached = cached;
 	}
 
 }
