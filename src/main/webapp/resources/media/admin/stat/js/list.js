@@ -1267,7 +1267,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
             $CPF.closeLoading();
         }); 
     	Ajax.ajax('admin/stat/state/getEntity', '', function(data) {
-            if (data.code == 200) {
+            if (data.code == 200) {            	
             	var allEntity = data.allEntity;
             	var str = "";
             	for (var p in allEntity) { //遍历json数组时，这么写p为索引，0,1
