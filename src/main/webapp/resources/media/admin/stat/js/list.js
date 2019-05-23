@@ -1290,7 +1290,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
     
     //点击 添加维度加号 显示div
   //点击 添加普通属性加号 显示div
-    $(".properOperate", $page).on("click", ".add_comm", function() {
+    $(".common_proper", $page).on("click", ".add_comm", function() {
     	var $this = $(this);
     	var $newAdd = $this.closest(".new_add");
     	var $form = $newAdd.find(".opera_comm").find("#comm_opera_form1");
@@ -1525,7 +1525,6 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
         var refType = $(this).closest('.opera_comm').find("#refType").val();
         var refCodeShow = $(this).closest('.opera_comm').find("#refCodeShow").val();
         var refCodeRecognition = $(this).closest('.opera_comm').find("#refCodeRecognition").val();
-        
         if (typeof(dictParentId) == "undefined") {
             dictParentId = "";
         }      
