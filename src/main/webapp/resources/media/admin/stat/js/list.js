@@ -2702,7 +2702,6 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
     	var parent = $(".entity_relation", $page).find(".collapse-content")[0];
        	$(parent).html("");
        	
-       	debugger;
     	 //这里加载filters
 		Ajax.ajax('admin/node/binFilterBody/getStatFilters', {
 			bieCode: bieCode
@@ -3907,30 +3906,17 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
             relativeHtml += "<select disabled class='abcattrCodeData'>";	
          
             Ajax.ajax('admin/dictionary/basicItem/getComm', {
-    	    	entityId:enID
+    	    	entityId:sourcecode
     	    }, function(data){		
     	    	var entityData = data.commList;
-    	    	 /*Ajax.ajax('admin/dictionary/basicItem/getRepeatChild', {
-    	    		 repeatId:enID
-    	    	    }, function(data){		
-    	    	    	var repeatData = data.repeatChild;
-    	    	if (source == "moreAttr") {
-    	    		 for(var key in repeatData) {
-    	    			 if (filterBodyList.abcattrCode == repeatData[key].code) {
-    	    				 relativeHtml += "<option selected value='"+repeatData[key].code+"'>"+repeatData[key].cnName+"</option>";
-    	    			 } else {
-    	    				 relativeHtml += "<option value='"+repeatData[key].code+"'>"+repeatData[key].cnName+"</option>";
-    	    			 }
-    	 	         }
-    	    	} else {*/
+    	    	debugger;
     	    		 for(var key in entityData) {
-    	    			 if (filterBodyList.abcattrCode == entityData[key].code) {
+    	    			 if (filterBodyList.abcattrCode == entityData[key][0]) {
     	    				 relativeHtml += "<option selected value='"+entityData[key][0]+"'>"+entityData[key][1]+"</option>"; 
     	    			 } else {
     	    				 relativeHtml += "<option value='"+entityData[key][0]+"'>"+entityData[key][1]+"</option>"; 
     	    			 }
     	    		 }
-    	    	/*}*/
 	        relativeHtml += "</select>";
             
             relativeHtml += "<select disabled class='node-Symbol-type'>";	
@@ -3979,12 +3965,11 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
     	    })
 	}
 	function initRFilter(filterBodyList,nodeId, enID, parent, source, sourcecode) {
-        var entityId = enID;
         var dragWrapLen = $(".dragEdit-wrap").length + 1 ;
         $CPF.showLoading();
         
         Ajax.ajax('admin/dictionary/recordRelationType/getRelation', {
-			leftRecordType: entityId,
+			leftRecordType: sourcecode,
 			relationType:''
 		}, function(data) {			
 			var relationList = data.relationList;
