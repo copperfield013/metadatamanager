@@ -1528,6 +1528,9 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
         var refType = $(this).closest('.opera_comm').find("#refType").val();
         var refCodeShow = $(this).closest('.opera_comm').find("#refCodeShow").val();
         var refCodeRecognition = $(this).closest('.opera_comm').find("#refCodeRecognition").val();
+        
+        var expressionId = $(this).closest('.opera_comm').find("#AggregateAttrExpression").val();
+        
         if (typeof(dictParentId) == "undefined") {
             dictParentId = "";
         }      
@@ -1540,11 +1543,6 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
         var id =  $(this).closest('.opera_comm').find("#id").val();
         var type = $form.attr("type");
         
-        var expressionId;
-        
-        $form.find("#tree_view_panel").children(".entity-edit-wrap").children("ul").children("li").each(function(){
-        	expressionId =  $(this).attr("data-id");
-		  });
         
         if (!checkForm($form)) {
         	return;
@@ -1599,8 +1597,6 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
             	
             	 $CPF.closeLoading();
     });
-    
-  //点击确认， 添加statDf 这里获取事实的form表单
     
   //添加对称关系
     $(".entity_relation", $page).on("click", "#add_rela_symmetry", function() {
