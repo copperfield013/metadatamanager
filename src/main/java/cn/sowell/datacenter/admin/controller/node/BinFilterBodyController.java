@@ -146,13 +146,13 @@ public class BinFilterBodyController {
 				binFilterBodyService.insert(criteria);
 				
 				if (isFilters) {//是filters
-					if (signFilter == "statFilter") {
+					if ("statFilter".equals(signFilter)) {
 						//这里添加统计实体的权限
 						StatFilter sf = new StatFilter();
 						sf.setFiltersId(criteria.getId());
 						sf.setBieCode(bieCode);
 						statFilterService.insert(sf);
-					} else if (signFilter == "nodeFilter"){
+					} else if ("nodeFilter".equals(signFilter)){
 						binFilter = new BinFilter(criteria.getId(), parentId);
 						binFilterBodyService.insert(binFilter);
 					}//  if (signFilter =="aggregateAttrFilter"){}

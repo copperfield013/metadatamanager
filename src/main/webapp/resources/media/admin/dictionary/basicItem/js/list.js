@@ -2491,14 +2491,6 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
              }  
              $select.append(str).css("width","30%").select2();
              
-             /*Ajax.ajax('admin/dictionary/basicItem/getOne', {
-     			id:entityCode
-     		}, function(data) { 
-     			 var relCodeStr = " <option selected relCode='"+entityCode+"' value =\"" + entityCode + "\">" + data.cnName + "</option>";
-     			 $selectRelCode.removeAttr("multiple");
-                  $selectRelCode.append(relCodeStr).css("width","50%").select2();
-     		});*/
-             
              if (aggregateAttr.type ==1) { // 获取实体本身
          		Ajax.ajax('admin/dictionary/basicItem/getOne', {
          			id:entityCode
