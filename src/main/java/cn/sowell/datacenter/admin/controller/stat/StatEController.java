@@ -119,10 +119,10 @@ public class StatEController {
 			statEService.insert(basicItem, oneLevelItem, cascadedict,creteria, biRefAttr);
 			return AjaxPageResponse.CLOSE_AND_REFRESH_PAGE("添加成功", "state_list");
 		} catch (DataIntegrityViolationException e) {
-			logger.error("该统计实体已存在", e);
+			e.printStackTrace();
 			return AjaxPageResponse.FAILD("该统计实体已存在");
 		} catch (Exception e) {
-			logger.error("添加失败", e);
+			e.printStackTrace();
 			return AjaxPageResponse.FAILD("添加失败");
 		}
 	}

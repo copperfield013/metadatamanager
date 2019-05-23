@@ -1,8 +1,6 @@
 seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
 	var $page = $("#statEntity-wrap");
 	
-	
-	
 	 $(function(){
 		  //FILTERS
 		    Ajax.ajax('admin/node/binFilterBody/getFiltersOpt', {
@@ -1747,7 +1745,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
         }
     });
     //点击确认， 进行添加操作
-    $("#entity_but_confirm", $page).click(function() {//信添加的
+    $("#entity_but_confirm", $page).click(function() {//新添加的
     	var formdom = $(this).closest(".opera_entity").find("#entity_opera_form1")[0];
         var fData = new FormData(formdom);  
        // if (checkEntityAndMore($form)) {

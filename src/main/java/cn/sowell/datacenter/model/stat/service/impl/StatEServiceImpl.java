@@ -46,7 +46,7 @@ public class StatEServiceImpl implements StatEService {
 		btItem.setDictParentId(0);
 		btItem.setNeedHistory(1);
 		
-		basicItemService.saveOrUpdate(basicItem, null, null, null);
+		basicItemService.saveOrUpdate(group, null, null, null);
 		obj.setBieCode(saveBasicItem.getCode());
 		statEDao.insert(obj);
 	}
