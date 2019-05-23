@@ -2571,7 +2571,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
       // enityAttr(bieCode);//初始化所有数据
        initStat(bieCode);//初始化所有数据
        
-       initStatFilter(bieCode);
+       initStatFilter(bieCode, sourcecode);
         if (status == 2) {
         	$("#add_group").hide();
         	$("#add_more").hide();
@@ -2697,10 +2697,12 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
     }
     
     //初始化filters
-    function initStatFilter(bieCode) {
+    function initStatFilter(bieCode, sourcecode) {
     	
     	var parent = $(".entity_relation", $page).find(".collapse-content")[0];
        	$(parent).html("");
+       	
+       	debugger;
     	 //这里加载filters
 		Ajax.ajax('admin/node/binFilterBody/getStatFilters', {
 			bieCode: bieCode
@@ -2712,7 +2714,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
 				
 				if (data.binFilterBody != undefined) {
 					var source = "sourceEntity";
-					initFilters(bieCode, data.statFilter, data.binFilterBody, source);
+					initFilters(bieCode, data.statFilter, data.binFilterBody, source, sourcecode);
 					$CPF.closeLoading();
 				}
 			}
@@ -2721,14 +2723,14 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
 		});
     }
     
-    function initFilters(entityId, statFilter, binFilterBody, source) {
+    function initFilters(entityId, statFilter, binFilterBody, source, sourcecode) {
     	
    	 var parent = $(".entity_relation", $page).find(".collapse-content")[0];
    	$(parent).html("");
         var dragWrapLen = $(".dragEdit-wrap").length + 1 ;
         $CPF.showLoading();
             var relativeHtml = "<li class='attr-relative'>" +
-            "<div class='attr-relative-title collapse-header' source='"+source+"' entityId='"+entityId+"' data-order='' data-id='"+binFilterBody.id+"'>" +
+            "<div class='attr-relative-title collapse-header' source='"+source+"' sourcecode='"+sourcecode+"'  entityId='"+entityId+"' data-order='' data-id='"+binFilterBody.id+"'>" +
             "<div class='icon-label attr-relative-dict attr-relative'>" +
             "<i class='icon icon-attr-relative'></i><span class='text'>filters</span>" +
             "</div>" +
@@ -3138,22 +3140,8 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
         }else if ($(".properOperate", $page).find(".icon-add-filter.active").length > 0) {
             var el = $(".properOperate", $page).find(".icon-add-filter.active")[0];
         }
-       /* if ($(this).hasClass("add-ATTRVAR")) {
-            addDict(el);
-        } else if ($(this).hasClass("add-CONSTANT")) {
-            addSubselection(el);
-        } else if ($(this).hasClass("add-FUNCTION")) {
-        	addSubChildDict(el);
-        }*/
         
-        
-        if ($(this).hasClass("add-ATTRVAR")) {
-        	addATTRVAR(el);
-        } else if ($(this).hasClass("add-CONSTANT")) {
-        	addCONSTANT(el);
-        } else if ($(this).hasClass("add-FUNCTION")) {
-        	addFUNCTION(el);
-        }else if ($(this).hasClass("add-filters")) {
+        if ($(this).hasClass("add-filters")) {
        	/* var filtersBar = $(el).closest(".label-bar").closest(".collapse-header").parent().find(".label-bar.filters");
     	 if(filtersBar.length > 0) {
              Dialog.notice("只能添加一个filters", "warning");
@@ -3179,6 +3167,8 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
     function addFilters(el, source) {
         var $content = $(el).closest(".collapse-header").siblings(".collapse-content");
         var entityId = $(el).closest(".properOperate").attr("parentId");
+        var sourcecode = $(el).closest(".properOperate").attr("sourcecode");
+        
        /* if($(el).closest(".properOperate").hasClass("entity-title")){
         	entityId = $(el).closest(".collapse-header").attr("data-abcattrcode");
         }else if ($(el).closest(".collapse-header").hasClass("more-attr-title")) {
@@ -3191,7 +3181,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
         var dragWrapLen = $(".dragEdit-wrap").length + 1 ;
         $CPF.showLoading();
             var relativeHtml = "<li class='attr-relative'>" +
-            "<div class='attr-relative-title collapse-header' source='"+source+"' entityId='"+entityId+"' data-order='' data-id=''>" +
+            "<div class='attr-relative-title collapse-header' source='"+source+"' entityId='"+entityId+"' sourcecode='"+sourcecode+"' data-order='' data-id=''>" +
             "<div class='icon-label attr-relative-dict attr-relative'>" +
             "<i class='icon icon-attr-relative'></i><span class='text'>filters</span>" +
             "</div>" +
@@ -3231,11 +3221,13 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
         
        var entityId = $(el).closest(".collapse-header").attr("entityId");
        var source = $(el).closest(".collapse-header").attr("source");
+       var sourcecode = $(el).closest(".properOperate").attr("sourcecode");
+       
         
         var dragWrapLen = $(".dragEdit-wrap").length + 1 ;
         $CPF.showLoading();
             var relativeHtml = "<li class='attr-relative'>" +
-            "<div class='attr-relative-title collapse-header' source='"+source+"' entityId='"+entityId+"' data-order='' data-id=''>" +
+            "<div class='attr-relative-title collapse-header' source='"+source+"' sourcecode='"+sourcecode+"' entityId='"+entityId+"' data-order='' data-id=''>" +
             "<div class='icon-label attr-relative-dict attr-relative'>" +
             "<i class='icon icon-attr-relative'></i><span class='text'>Group</span>" +
             "</div>" +
@@ -3271,13 +3263,13 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
     function addFilter(el) {
     	$CPF.showLoading();
         var $content = $(el).closest(".collapse-header").siblings(".collapse-content");
-        
-        
-        
+        var entityId = $(el).closest(".collapse-header").attr("entityId");
+        var source = $(el).closest(".collapse-header").attr("source");
+        var sourcecode = $(el).closest(".collapse-header").attr("sourcecode");
         var dragWrapLen = $(".dragEdit-wrap").length + 1 ;
-        
+        debugger;
             var relativeHtml = "<li class='attr-relative'>" +
-            "<div class='attr-relative-title collapse-header' source='"+source+"' entityId='"+entityId+"' data-order='' data-id=''>" +
+            "<div class='attr-relative-title collapse-header' source='"+source+"'  sourcecode='"+sourcecode+"' entityId='"+entityId+"' data-order='' data-id=''>" +
             "<div class='icon-label attr-relative-dict attr-relative'>" +
             "<i class='icon icon-attr-relative'></i><span class='text'>filter</span>" +
             "</div>" +
@@ -3287,11 +3279,9 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
             	
             //getCriteriaSymbol
             
-            var entityId = $(el).closest(".collapse-header").attr("entityId");
-            var source = $(el).closest(".collapse-header").attr("source");
             relativeHtml += "<select class='abcattrCodeData'>";
     	    Ajax.ajax('admin/dictionary/basicItem/getComm', {
-    	    	entityId:entityId
+    	    	entityId:sourcecode
     	    }, function(data){		
     	    	var entityData = data.commList;
     	    	
@@ -3364,11 +3354,12 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
         var $content = $(el).closest(".collapse-header").siblings(".collapse-content");
         var entityId = $(el).closest(".collapse-header").attr("entityId");
         var source = $(el).closest(".collapse-header").attr("source");
+        var sourcecode = $(el).closest(".collapse-header").attr("sourcecode");
         var dragWrapLen = $(".dragEdit-wrap").length + 1 ;
         $CPF.showLoading();
-        
+        debugger;
         Ajax.ajax('admin/dictionary/recordRelationType/getRelation', {
-			leftRecordType: entityId,
+			leftRecordType: sourcecode,
 			relationType:''
 		}, function(data) {			
 			var relationList = data.relationList;
@@ -3377,7 +3368,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
 	    }, function(data){	
 	    	
             var relativeHtml = "<li class='attr-relative'>" +
-            "<div class='attr-relative-title collapse-header' source='"+source+"' entityId='' data-order='' data-id=''>" +
+            "<div class='attr-relative-title collapse-header' source='"+source+"' sourcecode='"+sourcecode+"' entityId='"+entityId+"' data-order='' data-id=''>" +
             "<div class='icon-label attr-relative-dict attr-relative'>" +
             "<i class='icon icon-attr-relative'></i><span class='text'>rFilter</span>" +
             "</div>" +
@@ -3423,155 +3414,6 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
     	    })
 		 })
     }; 
-    
-    
-    /**
-     * 添加addCONSTANT
-      */
-    function addCONSTANT(el) {
-    	//var parentId = $(el).closest(".collapse-header").attr("data-parentid");
-    	var $content = $(el).closest(".collapse-header").siblings(".collapse-content");
-        var dragWrapLen = $(".dragEdit-wrap").length + 1 ;
-        $CPF.showLoading();
-        var nodeHtml = "<li class='attr-relative'>" + 
-			"<div class='attr-relative-title attr-relative collapse-header' data-id=''  data-parentId=''>" + 
-				"<div class='icon-label attr-relative-sub attr-relative'>" + 
-					"<i class='icon icon-attr-group'></i><span class='text'>CONSTANT</span>" +
-				"</div>" + 
-				"<div class='label-bar attr-relative CONSTANT-save  al-save edit'>"+
-						"<span id='bianhaospan' style='color: #363636;padding-right: 1em;' title='编号'></span>"+
-						"<input type='text'  class='edit-input text parameter0' name='parameter0' title='parameter0' placeholder='parameter0' value=''>" +
-					"<div class='btn-wrap'>" + 
-						"<i class='icon icon-save'></i>" +
-						/*"<i class='icon icon-add-abc abc'></i>" +*/
-						"<i class='icon icon-trash'></i>" + 
-						/*"<i class='icon icon-arrow-sm active'></i>" +*/
-					"</div>" +
-				"</div>" +
-			"</div>" +
-//			"<ul class='drag-wrap-repeat need-ajax dragEdit-wrap collapse-content collapse-content-inactive' id='dragEdit-"+dragWrapLen+"'>" +
-//			"</ul>" + 
-			
-        "</li>";       		    
-		    var $html = $(nodeHtml).prependTo($content);
-            $html.find("select").css({"width":"12%","marginLeft":"16px"}).select2();
-            addUnfold(el);
-		    $CPF.closeLoading();	
-    }
-    
-    /**
-     * 添加addFUNCTION
-      */
-    function addFUNCTION(el) {
-    	
-    	var $content = $(el).closest(".collapse-header").siblings(".collapse-content");
-        var dragWrapLen = $(".dragEdit-wrap").length + 1 ;
-    	
-    	//这里获取可以选择的字典
-    	var dictParentId = $(el).closest(".collapse-header").attr("data-parentid");
-    	
-    	$CPF.showLoading();
-    	Ajax.ajax("admin/stat/statExpression/getSQLFunctionType", {
-		},function(data){
-			var sqlFunctionType = data.sqlFunctionType;
-			if (data.code==200 && sqlFunctionType.length>0) {
-				
-		        var nodeHtml = "<li class='attr-relative'>" + 
-					"<div class='attr-relative-title attr-relative collapse-header' data-id=''  data-parentId=''>" + 
-						"<div class='icon-label attr-relative-dict attr-relative'>" + 
-							"<i class='icon icon-attr-relative'></i><span class='text'>FUNCTION</span>" +
-						"</div>" + 
-						"<div class='label-bar attr-relative  FUNCTION-save  al-save edit'>"+
-								"<span id='bianhaospan' style='color: #363636;padding-right: 1em;' title='编号'></span>"+
-								"<select name='functionType' class='abc-attr functionType'>";
-								 for (var key in sqlFunctionType){
-									 nodeHtml+="<option  title='"+sqlFunctionType[key][1]+"' paraSize='"+sqlFunctionType[key][2]+"' value='"+sqlFunctionType[key][1]+"'>"+sqlFunctionType[key][0]+"</option>";
-								 }
-								 nodeHtml +="</select>"+
-								
-				            	"<input type='text' class='edit-input text parameter1' name='parameter1' placeholder='parameter1'  title='parameter1' value=''>"+
-				            	"<input type='text'  class='edit-input text parameter2' name='parameter2' placeholder='parameter2'  title='parameter2' value=''>"+
-				            	"<input type='text' class='edit-input text parameter3' name='parameter3' placeholder='parameter3'  title='parameter3' value=''>"+
-							"<div class='btn-wrap'>" + 
-								"<i class='icon icon-save'></i>" +
-								"<i class='icon icon-add-abc abc'></i>" +
-								"<i class='icon icon-trash'></i>" + 
-								"<i class='icon icon-arrow-sm active'></i>" +
-							"</div>" +
-						"</div>" +
-					"</div>" +
-					"<ul class='drag-wrap-repeat need-ajax dragEdit-wrap collapse-content collapse-content-inactive' id='dragEdit-"+dragWrapLen+"'>" +
-					"</ul>" + 
-		        "</li>";       		    
-				    var $html = $(nodeHtml).prependTo($content);
-		            $html.find("select").css({"width":"12%","marginLeft":"16px"}).select2();
-		            addUnfold(el);
-				    $CPF.closeLoading();	
-			} else if (data.code==200 && data.sqlFunctionType.length==0) {
-				Dialog.notice("没有SQLFunctionType可供选择", "warning");
-			} else {
-				Dialog.notice("数据加载错误！", "error");
-			}
-			$CPF.closeLoading();
-		});
-    	
-    }
-	
-    /**
-     * 添加add-ATTRVAR
-     * @param el
-     * @returns
-     */
-    function addATTRVAR(el) {
-    	
-    	var sourcecode = $(el).closest(".properOperate").attr("sourcecode");
-    	
-    	var $content = $(el).closest(".collapse-header").siblings(".collapse-content");
-        var dragWrapLen = $(".dragEdit-wrap").length + 1 ;
-        $CPF.showLoading();
-        var nodeHtml = "<li class='attr-relative'>" + 
-			"<div class='attr-relative-title attr-relative-dict attr-relative collapse-header' data-id=''  data-parentId=''>" + 
-				"<div class='icon-label attr-relative-dict attr-relative'>" + 
-					"<i class='icon icon-attr-relative'></i><span class='text'>ATTRVAR</span>" +
-				"</div>" + 
-				"<div class='label-bar attr-relative ATTRVAR-save al-save edit'>"+
-				"<span id='bianhaospan' style='color: #363636;padding-right: 1em;' title='编号'></span>";
-						
-				/*
-				 * 获取来源实体的普通孩子
-				 * */
-				Ajax.ajax("admin/dictionary/basicItem/getComm", {
-					entityId:sourcecode
-				},function(data){
-					var commList = data.commList;
-					if (data.code==200) {
-						nodeHtml +="<select name='parameter0' title='parameter0' class='abc-attr parameter0'>";
-						for(var key in commList) {
-							nodeHtml +="<option value='"+commList[key][0]+"'>"+commList[key][1]+"</option>";		
-						}
-						nodeHtml+="</select>"+
-							"<div class='btn-wrap'>" + 
-								"<i class='icon icon-save'></i>" +
-								/*"<i class='icon icon-add-abc abc'></i>" +*/
-								"<i class='icon icon-trash'></i>" + 
-								/*"<i class='icon icon-arrow-sm active'></i>" +*/
-							"</div>" +
-							"</div>" +
-						"</div>" +
-//						"<ul class='drag-wrap-repeat need-ajax dragEdit-wrap collapse-content collapse-content-inactive' id='dragEdit-"+dragWrapLen+"'>" +
-//						"</ul>" + 
-			        "</li>";       		    
-					    var $html = $(nodeHtml).prependTo($content);
-			            $html.find("select").css({"width":"15%","marginLeft":"16px"}).select2();
-			            addUnfold(el);
-					    $CPF.closeLoading();
-					} else {
-						Dialog.notice("来源实体普通属性加载错误！", "error");
-					}
-	})
-    };
-	
-    
     
 	/**
      * 获取实体信息方法 示例     
@@ -3988,6 +3830,8 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
 			 
 			 $(parent).html("");
 			 var source = $(bar).closest(".collapse-header").attr("source");
+			 var sourcecode = $(bar).closest(".collapse-header").attr("sourcecode");
+			 debugger;
 			 $(parent).removeClass("need-ajax");
 			 var filterBodyList = data.filterBodyChild;
 			 if (data.code==200 && filterBodyList.length>0) {
@@ -3995,11 +3839,11 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
 					 var dataType = filterBodyList[i].dataType;
 					 
 					 if (dataType == 11) {
-						 initFilterGroup(filterBodyList[i],nodeId, enID,parent, source);
+						 initFilterGroup(filterBodyList[i],nodeId, enID,parent, source,sourcecode);
 					 } else if (dataType == 12) {
-						 initFilter(filterBodyList[i],nodeId, enID,parent,  source);
+						 initFilter(filterBodyList[i],nodeId, enID,parent,  source, sourcecode);
 					 }else if (dataType == 13) {
-						 initRFilter(filterBodyList[i],nodeId, enID,parent, source);
+						 initRFilter(filterBodyList[i],nodeId, enID,parent, source, sourcecode);
 					 }
 				 }
 				} else if (data.code==200 && filterBodyList.length==0) {
@@ -4014,12 +3858,12 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
 	}
 	
 	
-	function initFilterGroup(filterBodyList,nodeId, enID, parent, source) {
+	function initFilterGroup(filterBodyList,nodeId, enID, parent, source, sourcecode) {
 		
 	        var dragWrapLen = $(".dragEdit-wrap").length + 1 ;
 	        $CPF.showLoading();
 	            var relativeHtml = "<li class='attr-relative'>" +
-	            "<div class='attr-relative-title collapse-header' source='"+source+"'  entityId='"+enID+"' data-order='' data-id='"+filterBodyList.id+"'>" +
+	            "<div class='attr-relative-title collapse-header' source='"+source+"' sourcecode='"+sourcecode+"'  entityId='"+enID+"' data-order='' data-id='"+filterBodyList.id+"'>" +
 	            "<div class='icon-label attr-relative-dict attr-relative'>" +
 	            "<i class='icon icon-attr-relative'></i><span class='text'>Group</span>" +
 	            "</div>" +
@@ -4049,11 +3893,11 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
 			    var $html = $(relativeHtml).prependTo($(parent));
 	           $html.find("select").css({"width":"15%","marginLeft":"16px"}).select2();
 	}
-	function initFilter(filterBodyList,nodeId, enID, parent, source) {
+	function initFilter(filterBodyList,nodeId, enID, parent, source, sourcecode) {
         var dragWrapLen = $(".dragEdit-wrap").length + 1 ;
         $CPF.showLoading();
             var relativeHtml = "<li class='attr-relative'>" +
-            "<div class='attr-relative-title collapse-header' source='"+source+"' entityId='"+enID+"' data-order='' data-id='"+filterBodyList.id+"'>" +
+            "<div class='attr-relative-title collapse-header' source='"+source+"' sourcecode='"+sourcecode+"'  entityId='"+enID+"' data-order='' data-id='"+filterBodyList.id+"'>" +
             "<div class='icon-label attr-relative-dict attr-relative'>" +
             "<i class='icon icon-attr-relative'></i><span class='text'>filter</span>" +
             "</div>" +
@@ -4134,7 +3978,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
     	     })
     	    })
 	}
-	function initRFilter(filterBodyList,nodeId, enID, parent, source) {
+	function initRFilter(filterBodyList,nodeId, enID, parent, source, sourcecode) {
         var entityId = enID;
         var dragWrapLen = $(".dragEdit-wrap").length + 1 ;
         $CPF.showLoading();
@@ -4149,7 +3993,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
 	    }, function(data){	
 	    	
             var relativeHtml = "<li class='attr-relative'>" +
-            "<div class='attr-relative-title collapse-header' source='"+source+"' entityId='' data-order='' data-id='"+filterBodyList.id+"'>" +
+            "<div class='attr-relative-title collapse-header' source='"+source+"' sourcecode='"+sourcecode+"' entityId='"+enID+"' data-order='' data-id='"+filterBodyList.id+"'>" +
             "<div class='icon-label attr-relative-dict attr-relative'>" +
             "<i class='icon icon-attr-relative'></i><span class='text'>rFilter</span>" +
             "</div>" +
