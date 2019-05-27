@@ -360,7 +360,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
    });
    
     //点击 添加实体 显示div
-    $("#add_entity", $page).click(function() {
+  /*  $("#add_entity", $page).click(function() {
     	$("#entity_opera_form1").find("#code").val("");
     	$("#entity_opera_form1").find("#cnName").val("");
     	$("#entity_opera_form1").find("#enName").val("");
@@ -374,7 +374,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
             		str = str + "<option value=\"" + dataArr[p].id + "\">" + dataArr[p].name + "</option>"; 
             	}
             	$("#entity_opera_form1").find("#cascadedict").append(str);
-            	$("#entity_opera_form1").find("#cascadedict").css("width","20%").select2();
+            	$("#entity_opera_form1").find("#cascadedict").css("width","11%").select2();
             } else {
             	Dialog.notice("标签字典加载失败", "error");
             }
@@ -386,7 +386,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
         $("#add_entity_mes").html("");
         $("#add_entity_mes").html("添加实体信息");
         $(".opera_entity").show();
-    });
+    });*/
     //点击 添加分组 显示div
     $("#add_group", $page).click(function() {
     	$opera = $(this).closest('.entity_ch_head').siblings('.opera_group');
@@ -1258,7 +1258,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
             		str = str + "<option value=\"" + dataArr[p].id + "\">" + dataArr[p].name + "</option>"; 
             	}
             	$("#entity_opera_form1").find("#cascadedict").append(str);
-            	$("#entity_opera_form1").find("#cascadedict").css("width","20%").select2();
+            	$("#entity_opera_form1").find("#cascadedict").css("width","15%").select2();
             } else {
             	Dialog.notice("标签字典加载失败", "error");
             }
@@ -1274,7 +1274,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
             	}
             	
             	$("#entity_opera_form1").find("#sourceCode").append(str);
-            	$("#entity_opera_form1").find("#sourceCode").css("width","20%").select2();
+            	$("#entity_opera_form1").find("#sourceCode").css("width","15%").select2();
             } else {
             	Dialog.notice(msg, "error");
             }

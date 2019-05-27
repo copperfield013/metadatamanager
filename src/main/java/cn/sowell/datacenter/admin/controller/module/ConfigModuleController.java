@@ -52,10 +52,6 @@ public class ConfigModuleController {
 	@Resource
 	SessionFactory sFactory;
 	
-	 @ApiOperation(value = "获取模块列表信息", nickname = "list", notes = "获取模块列表", response = ModelAndView.class, tags={ "configModule", })
-    @ApiResponses(value = { 
-        @ApiResponse(code = 200, message = "操作成功", response = ModelAndView.class),
-        @ApiResponse(code = 401, message = "操作失败") })
     @RequestMapping(value = "/list",
         method = RequestMethod.POST)
 	public ModelAndView list(QueryModuleCriteria criteria, PageInfo pageInfo){
@@ -68,10 +64,6 @@ public class ConfigModuleController {
 		return mv;
 	}
 	
-	 @ApiOperation(value = "跳转到添加页面", nickname = "add", notes = "跳转到添加页面", response = ModelAndView.class, tags={ "configModule", })
-    @ApiResponses(value = { 
-        @ApiResponse(code = 200, message = "操作成功", response = ModelAndView.class),
-        @ApiResponse(code = 401, message = "操作失败") })
     @RequestMapping(value = "/add",
         method = RequestMethod.POST)
 	public ModelAndView add(){
@@ -104,12 +96,8 @@ public class ConfigModuleController {
 	}
 	
 	@ResponseBody
-	@ApiOperation(value = "创建模块", nickname = "doAdd", notes = "创建模块",response = AjaxPageResponse.class, tags={ "configModule", })
-    @ApiResponses(value = { 
-        @ApiResponse(code = 200, message = "添加成功", response = AjaxPageResponse.class),
-        @ApiResponse(code = 401, message = "添加失败") })
     @RequestMapping(value = "/do_add")
-	public ResponseEntity<AjaxPageResponse> doAdd(String moduleName, String moduleTitle, Long mappingId, String codeName, String titleName){
+	public AjaxPageResponse doAdd(String moduleName, String moduleTitle, Long mappingId, String codeName, String titleName){
 		try {
 				
 			if (codeName == null) {
@@ -125,25 +113,23 @@ public class ConfigModuleController {
 			param.setCodeName(codeName);
 			param.setTitleName(titleName);
 			dBModuleConfigMediator.createModule(param);
-			return new ResponseEntity<AjaxPageResponse>(AjaxPageResponse.CLOSE_AND_REFRESH_PAGE("添加成功", "configModule_list"), HttpStatus.OK);
+			return AjaxPageResponse.CLOSE_AND_REFRESH_PAGE("添加成功", "configModule_list");
 		} catch (Exception e) {
-			return new ResponseEntity<AjaxPageResponse>(AjaxPageResponse.FAILD("添加失败"), HttpStatus.INTERNAL_SERVER_ERROR);
+			e.printStackTrace();
+			return AjaxPageResponse.FAILD("添加失败");
 		}
 	}
 	
 	@ResponseBody
-	@ApiOperation(value = "移除模块", nickname = "doDelte", notes = "移除模块",response = AjaxPageResponse.class, tags={ "configModule", })
-    @ApiResponses(value = { 
-        @ApiResponse(code = 200, message = "删除成功", response = AjaxPageResponse.class),
-        @ApiResponse(code = 401, message = "删除失败") })
     @RequestMapping(value = "/do_delete",
         method = RequestMethod.POST)
-	public ResponseEntity<AjaxPageResponse> doDelte(String name){
+	public AjaxPageResponse doDelte(String name){
 		try {
 			dBModuleConfigMediator.removeModule(name);
-			return new ResponseEntity<AjaxPageResponse>(AjaxPageResponse.REFRESH_LOCAL("删除成功"), HttpStatus.OK);
+			return AjaxPageResponse.REFRESH_LOCAL("删除成功");
 		} catch (Exception e) {
-			return new ResponseEntity<AjaxPageResponse>(AjaxPageResponse.FAILD("删除失败"), HttpStatus.INTERNAL_SERVER_ERROR);
+			e.printStackTrace();
+			return AjaxPageResponse.FAILD("删除失败");
 		}
 	}
 	

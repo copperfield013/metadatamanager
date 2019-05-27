@@ -55,14 +55,31 @@
 						<span class="opera_entity_label">描述</span>
 						<textarea name="description" id="description" rows="" cols=""></textarea>
 					</div>	
-					<div style="width: 92%;">
+					<!-- <div style="width: 92%;">
 						<span class="opera_entity_label">请为标签选择字典<span style="color: red;">*</span></span>
 						<select id="cascadedict" name="cascadedict">
+						</select>
+						
+					</div> -->
+					
+					<div class='select-wrap'>
+						<span >选择标签<span style="color: red;">*</span></span>
+						<select id="cascadedict" name="cascadedict">
+						</select>
+						<span >记录历史</span>
+						<select id="needHistory" name="needHistory">
+							<option value="1">是</option>
+							<option value="0">否</option>
+						</select>
+						<span>缓存</span>
+						<select id="cached" name="cached">
+							<option value="1">是</option>
+							<option value="0">否</option>
 						</select>
 						<span class="opera_entity_label">来源实体<span style="color: red;">*</span></span>
 						<select id="sourceCode" name="sourceCode">
 						</select>
-					</div>
+					</div> 
 					
 				</form>
 				<div class="opera_entity_btn">

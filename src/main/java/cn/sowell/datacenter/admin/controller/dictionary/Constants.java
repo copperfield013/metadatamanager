@@ -22,12 +22,13 @@ public interface Constants {
 			put(String.valueOf(ValueType.GROUP.getIndex()), ValueType.GROUP.getCName());
 			put(String.valueOf(ValueType.ENUMTYPE.getIndex()), ValueType.ENUMTYPE.getCName());
 			put(String.valueOf(ValueType.BYTES.getIndex()), ValueType.BYTES.getCName());
+			put(String.valueOf(ValueType.PASSWORD.getIndex()), ValueType.PASSWORD.getCName());
 			put(String.valueOf(ValueType.REFERENCE.getIndex()), ValueType.REFERENCE.getCName());
 			put(String.valueOf(ValueType.CASCADETYPE.getIndex()), ValueType.CASCADETYPE.getCName());
-			
+			put(String.valueOf(ValueType.CASCADEREFTYPE.getIndex()), ValueType.CASCADEREFTYPE.getCName());
 			put(String.valueOf(ValueType.STRING_PREENUM.getIndex()), ValueType.STRING_PREENUM.getCName());
 			put(String.valueOf(ValueType.ENUMTYPE_MULTI.getIndex()), ValueType.ENUMTYPE_MULTI.getCName());
-			put(String.valueOf(ValueType.PASSWORD.getIndex()), ValueType.PASSWORD.getCName());
+			
 		}
 	};
 	

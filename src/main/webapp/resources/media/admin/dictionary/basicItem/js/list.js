@@ -441,7 +441,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
     	var dataType = $this.val();
     	var options=$(".enum_dataType_one option:selected");  //获取选中的项
     	var $form = $this.closest(".opera_comm").find("#comm_opera_form1");
-		
+    	
 	    // 当数据类型变动的时候
         enumDataTypeChange($form, dataType);
     }
@@ -539,7 +539,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
            Ajax.ajax('admin/dictionary/basicItem/referenceTypeEntityList', '', function(data) {
                var entityList = data.entity;
                
-               var str = "<span id=\"refType_enum\">引用实体：</span><select id=\"refType\" name=\"refType\">";
+               var str = "<span id=\"refType_enum\">引用实体：</span><select class=\"refType\" id=\"refType\" name=\"refType\">";
            	for (var p in entityList) { //遍历json数组时，这么写p为索引，0,1
                    str = str + "<option value=\"" + entityList[p].code + "\">" + entityList[p].cnName + "</option>"; 
                }
@@ -616,7 +616,30 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
               $form.find("#cn_dataRange").show();               
                $CPF.closeLoading();
            }); 
-   	} else if ("52" == dataType) {   //字符型预设
+   	}  else if ("1702" == dataType) {//级联类型
+   		
+   	 //如果是引用类型， 则显示下拉列表
+    	$CPF.showLoading();
+        $form.find("#dictParentId").remove();
+        $form.find("#s2id_dictParentId").remove();
+        $form.find("#span_enum").remove(); 	
+        
+       //选中  则显示下拉列表       
+       Ajax.ajax('admin/dictionary/basicItem/referenceTypeEntityList', '', function(data) {
+           var entityList = data.entity;
+           
+           var str = "<span id=\"refType_enum\">引用实体：</span><select id=\"refType\" name=\"refType\">";
+       		for (var p in entityList) { //遍历json数组时，这么写p为索引，0,1
+               str = str + "<option value=\"" + entityList[p].code + "\">" + entityList[p].cnName + "</option>"; 
+           }
+           str = str + "</select>";               
+           $form.find("#dataType").after(str);                
+           $form.find("#refType").css("width","30%").select2();
+           $form.find("#dataRange").val("32").hide();
+           $form.find("#cn_dataRange").hide();                 
+       });            
+       $CPF.closeLoading();
+   	}else if ("52" == dataType) {   //字符型预设
    		 //如果是字符型预设， 则显示下拉列表
 	    	$CPF.showLoading();
 	        $form.find("#dictParentId").remove();
@@ -684,7 +707,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
     }
     
     //引用实体改变的时候， 更改 refCodeShow  和  refCodeRecognition 对应的下拉框
-    $(".common_proper", $page).on("change", "#refType", function() {
+    $(".common_proper", $page).on("change", ".refType", function() {
     	var $this = $(this);
     	var $form = $this.closest(".opera_entity_form");
     	var firstCode = $this.val();
@@ -692,7 +715,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
     });
     
     //引用实体改变的时候， 更改 refCodeShow  和  refCodeRecognition 对应的下拉框
-    $(".more_proper", $page).on("change", "#refType", function() {
+    $(".more_proper", $page).on("change", ".refType", function() {
     	var $this = $(this);
     	var $form = $this.closest(".opera_entity_form");
     	var firstCode = $this.val();
@@ -2349,7 +2372,44 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
      	                $form1.find("#dictParentId").css("width","30%").select2();	
      	            }
      	        });
-         	} if("52" == jsonData.oneLevelItem.dataType) {
+         	}  else if ("1702" == jsonData.oneLevelItem.dataType) {//级联类型
+         		 $form1.find("#refType_enum").remove();
+	                $form1.find("#refType").remove();
+	                $form1.find("#s2id_refType").remove(); 
+	                
+	                $form1.find("#refCodeShow").remove();
+	    	        $form1.find("#refCodeShow_enum").remove(); 
+	    	        $form1.find("#s2id_refCodeShow").remove();
+	    	        
+	    	        $form1.find("#refCodeRecognition").remove();
+	    	        $form1.find("#refCodeRecognition_enum").remove(); 
+	    	        $form1.find("#s2id_refCodeRecognition").remove();
+	                
+	               var refType =  jsonData.oneLevelItem.refType;
+	               // 获取属性Code
+	               var attrCode =  $form1.find("#code").val();
+	               
+	               //如果是引用类型， 则显示下拉列表
+              Ajax.ajax('admin/dictionary/basicItem/referenceTypeEntityList', '', function(data) {
+              	
+                  var entityList = data.entity;
+                  var str = "<span id=\"refType_enum\">引用实体：</span><select id=\"refType\" name=\"refType\">";
+              	for (var p in entityList) { //遍历json数组时，这么写p为索引，0,1
+                 
+              		if (refType == entityList[p].code) {
+              			str = str + "<option selected=\"selected\" value=\"" + entityList[p].code + "\">" + entityList[p].cnName + "</option>"; 
+	                    } else {
+	                    	str = str + "<option value=\"" + entityList[p].code + "\">" + entityList[p].cnName + "</option>"; 
+	                    }
+                  }
+              	 str = str + "</select>";
+              	 $form1.find("#dataType").after(str);                
+                 $form1.find("#refType").css("width","30%").select2();
+                 $form1.find("#dataRange").val("32").hide();
+                 $form1.find("#cn_dataRange").hide();  
+               
+              });
+         	   	}  if("52" == jsonData.oneLevelItem.dataType) {
      			Ajax.ajax('admin/dictionary/basicItem/getDictPitem', '', function(data) {
      	            var dataArr = data.dictPitem;    	            
      	            var dictParentId = $form1.find("#edit_dictParentId").val();
