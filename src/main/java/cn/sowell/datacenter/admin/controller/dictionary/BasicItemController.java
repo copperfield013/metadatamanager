@@ -559,6 +559,29 @@ public class BasicItemController {
 			}
 		}
 	    
+	    
+	  //这里获取普通分组下的所有引用属性    , 级联属性专用，其他勿用
+	    @ResponseBody
+		@RequestMapping("/getRefAttrByPidGroupName")
+		public String getRefAttrByPidGroupName(String cascadeCode){
+			Map<String, Object> map = new HashMap<String, Object>();
+			JSONObject jobj = new JSONObject(map);
+			try {
+				BasicItem basicItem = basicItemService.getBasicItem(cascadeCode);
+				List attrByPidGroupName = basicItemService.getAttrByPidGroupName(basicItem.getParent(), basicItem.getOneLevelItem().getGroupName(), String.valueOf(ValueType.REFERENCE.getIndex()));
+				map.put("code", 200);
+				map.put("msg", "success");
+				map.put("commRefAttr", attrByPidGroupName);
+				return jobj.toString();
+			} catch (Exception e) {
+				logger.error("添加失败", e);
+				map.put("code", 400);
+				map.put("msg", "error");
+				return jobj.toString();
+			}
+		}
+	    
+	    
 	  //这里获取普通分组下的可选属性    , 级联属性专用，其他勿用
 	    @ResponseBody
 		@RequestMapping("/getAttrByPidGroupName")
@@ -580,7 +603,6 @@ public class BasicItemController {
 			}
 		}
 	    
-	    
 	    //这里获取多值属性下的可选属性    , 级联属性专用，其他勿用
 	    @ResponseBody
 		@RequestMapping("/getMoreAttrByPid")
@@ -593,6 +615,27 @@ public class BasicItemController {
 				map.put("code", 200);
 				map.put("msg", "success");
 				map.put("commAttr", attrByPidGroupName);
+				return jobj.toString();
+			} catch (Exception e) {
+				logger.error("添加失败", e);
+				map.put("code", 400);
+				map.put("msg", "error");
+				return jobj.toString();
+			}
+		}
+	    
+	  //这里获取多值属性下的可选属性    , 级联属性专用，其他勿用
+	    @ResponseBody
+		@RequestMapping("/getMoreRefAttrByPid")
+		public String getMoreRefAttrByPid(String cascadeCode){
+			Map<String, Object> map = new HashMap<String, Object>();
+			JSONObject jobj = new JSONObject(map);
+			try {
+				BasicItem basicItem = basicItemService.getBasicItem(cascadeCode);
+				List attrByPidGroupName = basicItemService.getDataByPId(basicItem.getParent(), String.valueOf(ValueType.REFERENCE.getIndex()));
+				map.put("code", 200);
+				map.put("msg", "success");
+				map.put("commRefAttr", attrByPidGroupName);
 				return jobj.toString();
 			} catch (Exception e) {
 				logger.error("添加失败", e);
@@ -621,6 +664,34 @@ public class BasicItemController {
 				return jobj.toString();
 			}
 		}
+	    
+	  //保存级联属性的孩子
+	    @ResponseBody
+		@RequestMapping("/saveCascaseRefAttrChild")
+		public String saveCascaseRefAttrChild(String code, String casCode){
+	    	
+	    	Map<String, Object> map = new HashMap<String, Object>();
+			JSONObject jobj = new JSONObject(map);
+			try {
+				
+				CascadeAttr cascadeAttr = basicItemService.saveCascaseAttrChild(code, casCode);
+				map.put("code", 200);
+				map.put("msg", "success");
+				map.put("cascadeAttr", cascadeAttr);
+				return jobj.toString();
+			}catch (DataIntegrityViolationException e) {
+				logger.error("添加失败", e);
+				map.put("code", 400);
+				map.put("msg", "级联属性不能重复添加");
+				return jobj.toString();
+			} catch (Exception e) {
+				logger.error("添加失败", e);
+				map.put("code", 400);
+				map.put("msg", "添加失败");
+				return jobj.toString();
+			}
+	    	
+	    }
 	    
 	  //保存级联属性的孩子
 	    @ResponseBody

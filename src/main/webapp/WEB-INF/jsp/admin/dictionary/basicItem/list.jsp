@@ -54,7 +54,7 @@
 						<span class="opera_entity_label">描述</span>
 						<textarea name="description" id="description" rows="" cols=""></textarea>
 					</div>	
-					<div class='select-wrap'>
+					<div>
 						<span >选择标签<span style="color: red;">*</span></span>
 						<select id="cascadedict" name="cascadedict">
 						</select>

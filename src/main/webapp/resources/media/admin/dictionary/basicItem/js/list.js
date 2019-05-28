@@ -618,26 +618,14 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
            }); 
    	}  else if ("1702" == dataType) {//级联类型
    		
-   	 //如果是引用类型， 则显示下拉列表
-    	$CPF.showLoading();
+   		$CPF.showLoading();
         $form.find("#dictParentId").remove();
         $form.find("#s2id_dictParentId").remove();
-        $form.find("#span_enum").remove(); 	
-        
-       //选中  则显示下拉列表       
-       Ajax.ajax('admin/dictionary/basicItem/referenceTypeEntityList', '', function(data) {
-           var entityList = data.entity;
-           
-           var str = "<span id=\"refType_enum\">引用实体：</span><select id=\"refType\" name=\"refType\">";
-       		for (var p in entityList) { //遍历json数组时，这么写p为索引，0,1
-               str = str + "<option value=\"" + entityList[p].code + "\">" + entityList[p].cnName + "</option>"; 
-           }
-           str = str + "</select>";               
-           $form.find("#dataType").after(str);                
-           $form.find("#refType").css("width","30%").select2();
-           $form.find("#dataRange").val("32").hide();
-           $form.find("#cn_dataRange").hide();                 
-       });            
+        $form.find("#span_enum").remove();
+                      
+       $form.find("#dictParentId").css("width","30%").select2();
+       $form.find("#dataRange").val("32").show();
+       $form.find("#cn_dataRange").show();               
        $CPF.closeLoading();
    	}else if ("52" == dataType) {   //字符型预设
    		 //如果是字符型预设， 则显示下拉列表
@@ -1053,6 +1041,9 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
     
   //点击 查看多值级联属性的孩子  显示div
     $(".more_proper", $page).on("click", ".more_show_cascadeAttr_child", function() {
+    	
+    	var datatype = $(this).attr("datatype");
+    	
        var code = $(this).closest('.entity_ul ').attr("entityid");
       var $casecadeNode = $(this).closest('.more_list').siblings(".more_cascadeAttr_child");
        Ajax.ajax('admin/dictionary/basicItem/getCascadeAttrChild', {
@@ -1073,7 +1064,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
                     str = str + "<div title=\"id:"+cascadeAttr[key][1]+", 名称："+cascadeAttr[key][2]+", 等级:"+cascadeAttr[key][3]+"\" class='entity_attr new_add_cascade_child inuse'>"+cascadeAttr[key][2]+"<i class=\"icon status\"></i><ul class='entity_ul'><li><a href='javascript:void(0)' code="+cascadeAttr[key][0]+" casCode="+cascadeAttr[key][1]+" class='more_delete_cascadeAttr_child'><i class='icon edit-entity'></i>删除属性</a></li></ul></div>"
                 }
             }
-        	  str = str + "<div cascadeCode='"+code+"' class=\"entity_attr new_add_cascade_child entity_attr_img  more_add_cascadeAttr_child\"><img cascadeCode=\"" + code+ "\" alt=\"添加级联属性\" src=\"media/admin/dictionary/basicItem/addEntity_icon.png\"></div>"	  
+        	  str = str + "<div datatype='"+datatype+"' cascadeCode='"+code+"' class=\"entity_attr new_add_cascade_child entity_attr_img  more_add_cascadeAttr_child\"><img cascadeCode=\"" + code+ "\" alt=\"添加级联属性\" src=\"media/admin/dictionary/basicItem/addEntity_icon.png\"></div>"	  
         	  $casecadeNode.append(str).show();	  
         	} else {
         		Dialog.notice("数据加载错误，重新点击！", "error");
@@ -1088,23 +1079,37 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
     	var $cascadeChilde = $(this).closest('.more_cascadeAttr_child').siblings(".more_cascadeAttr_child_show");
     	var $form = $cascadeChilde.find("#cascadeAttr_form1");
          var cascadeCode =  $(this).attr("cascadeCode");
+         var datatype =  $(this).attr("datatype");
          $form.attr("cascadeCode", cascadeCode);
-         $form.find("#cnName").val("");
-         $form.find("#description").val("");
-       /* Ajax.ajax('admin/dictionary/basicItem/getMoreAttrByPid', {
-        	cascadeCode:cascadeCode
-        }, function(data) {
-        	if (data.code == 200) {
-        		  var commAttr = data.commAttr;
-        		  var dictattr_enum='';
-                  for (var i = 0;i < commAttr.length;i++){
-                    dictattr_enum = dictattr_enum + " <option value =\"" + commAttr[i].code + "\">" + commAttr[i].cnName + "</option>";
-                  }
-                  $form.find("#casCode").append(dictattr_enum).css("width","30%").select2();
-        	} else {
-        		Dialog.notice("数据加载错误，重新点击！", "error");
-        	}
-        });*/
+         $form.attr("datatype", datatype);
+
+         if (datatype == "17") {
+        	 $form.find("#cnName").val("");
+             $form.find("#description").val("");
+             
+             $form.find("#div_cnName").show();
+             $form.find("#div_ref_attr").hide();
+             $form.find("#divdescription").show();
+         } else {
+        	 $form.find("#ref_attr").html("");
+        	  Ajax.ajax('admin/dictionary/basicItem/getMoreRefAttrByPid', {
+              	cascadeCode:cascadeCode
+              }, function(data) {
+              	if (data.code == 200) {
+              		  var commAttr = data.commRefAttr;
+              		  var dictattr_enum='';
+                        for (var i = 0;i < commAttr.length;i++){
+                          dictattr_enum = dictattr_enum + " <option value =\"" + commAttr[i].code + "\">" + commAttr[i].cnName + "</option>";
+                        }
+                        $form.find("#ref_attr").append(dictattr_enum).css("width","30%").select2();
+                        $form.find("#div_cnName").hide();
+                        $form.find("#div_ref_attr").show();
+                        $form.find("#divdescription").hide();
+              	} else {
+              		Dialog.notice("数据加载错误，重新点击！", "error");
+              	}
+              });
+         }
       
         $cascadeChilde.show();
     });
@@ -1138,28 +1143,53 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
     	var $casecadediv = $(this).closest(".more_cascadeAttr_child_show");
     	var $form = $(this).closest('.more_cascadeAttr_child_show').find("#cascadeAttr_form1");
     	var cascadecode = $form.attr("cascadecode");
-    	var cascadecode = $form.attr("cascadecode");
-    	var cnName = $form.find("#cnName").val();
-    	var description = $form.find("#description").val();
+    	var datatype = $form.attr("datatype");
     	
-        Ajax.ajax('admin/dictionary/basicItem/saveCascaseAttrChild', {
-        	code:cascadecode,
-        	cnName:cnName,
-        	description:description
-        }, function(data) {
-        	if (data.code == 200) {
-        		  var cascadeAttr = data.cascadeAttr;
-        		  $casecadediv.siblings(".more_list").find("[data-code-id='"+cascadecode+"']").find('.more_show_cascadeAttr_child').trigger("click");
-        		  $casecadediv.hide();
-        		  Dialog.notice("添加成功！", "success");
-        	} else {
-        		Dialog.notice(data.msg, "error");
-        	}
-        });
+    	
+    	if (datatype == "17") {
+    		
+    		var cnName = $form.find("#cnName").val();
+        	var description = $form.find("#description").val();
+    		Ajax.ajax('admin/dictionary/basicItem/saveCascaseAttrChild', {
+            	code:cascadecode,
+            	cnName:cnName,
+            	description:description
+            }, function(data) {
+            	if (data.code == 200) {
+            		  var cascadeAttr = data.cascadeAttr;
+            		  $casecadediv.siblings(".more_list").find("[data-code-id='"+cascadecode+"']").find('.more_show_cascadeAttr_child').trigger("click");
+            		  $casecadediv.hide();
+            		  Dialog.notice("添加成功！", "success");
+            	} else {
+            		Dialog.notice(data.msg, "error");
+            	}
+            });
+    	} else {
+    		var ref_attr = $form.find("#ref_attr").val();
+    		Ajax.ajax('admin/dictionary/basicItem/saveCascaseRefAttrChild', {
+            	code:cascadecode,
+            	casCode:ref_attr
+            }, function(data) {
+            	if (data.code == 200) {
+            		  var cascadeAttr = data.cascadeAttr;
+            		  $casecadediv.siblings(".more_list").find("[data-code-id='"+cascadecode+"']").find('.more_show_cascadeAttr_child').trigger("click");
+            		  $casecadediv.hide();
+            		  Dialog.notice("添加成功！", "success");
+            	} else {
+            		Dialog.notice(data.msg, "error");
+            	}
+            });
+    	}
+    	
+    	
+        
     });
     
     //点击 查看分组级联属性的孩子  显示div
     $(".common_proper", $page).on("click", ".show_cascadeAttr_child", function() {
+    	
+    	var dataType = $(this).attr("dataType");
+    	
        var code = $(this).closest('.entity_ul ').attr("entityid");
       var $casecadeNode = $(this).closest('.comm_list').siblings(".cascadeAttr_child");
        Ajax.ajax('admin/dictionary/basicItem/getCascadeAttrChild', {
@@ -1180,7 +1210,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
                     str = str + "<div title=\"id:"+cascadeAttr[key][1]+", 名称："+cascadeAttr[key][2]+", 等级:"+cascadeAttr[key][3]+"\" class='entity_attr new_add_cascade_child inuse'>"+cascadeAttr[key][2]+"<i class=\"icon status\"></i><ul class='entity_ul'><li><a href='javascript:void(0)' code="+cascadeAttr[key][0]+" casCode="+cascadeAttr[key][1]+" class='delete_cascadeAttr_child'><i class='icon edit-entity'></i>删除属性</a></li></ul></div>"
                 }
             }
-        	  str = str + "<div cascadeCode='"+code+"' class=\"entity_attr new_add_cascade_child entity_attr_img  add_cascadeAttr_child\"><img cascadeCode=\"" + code+ "\" alt=\"添加级联属性\" src=\"media/admin/dictionary/basicItem/addEntity_icon.png\"></div>"	  
+        	  str = str + "<div dataType='"+dataType+"' cascadeCode='"+code+"' class=\"entity_attr new_add_cascade_child entity_attr_img  add_cascadeAttr_child\"><img cascadeCode=\"" + code+ "\" alt=\"添加级联属性\" src=\"media/admin/dictionary/basicItem/addEntity_icon.png\"></div>"	  
         	  $casecadeNode.append(str).show();	  
         	} else {
         		Dialog.notice("数据加载错误，重新点击！", "error");
@@ -1192,27 +1222,45 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
     
     //点击 添加分组级联属性的孩子  显示div
     $(".common_proper", $page).on("click", ".add_cascadeAttr_child", function() {
+    	
+    	//此属性判断是级联枚举属性还是级联引用属性
+    	var datatype = $(this).attr("datatype");
+    	
     	var $cascadeChilde = $(this).closest('.cascadeAttr_child').siblings(".cascadeAttr_child_show");
     	var $form = $cascadeChilde.find("#cascadeAttr_form1");
          var cascadeCode =  $(this).attr("cascadeCode");
+         
          $form.attr("cascadeCode", cascadeCode);
+         $form.attr("datatype", datatype);
          $form.find("#cnName").val("");
          $form.find("#description").val("");
-        /* $form.find("#casCode").empty();
-        Ajax.ajax('admin/dictionary/basicItem/getAttrByPidGroupName', {
-        	cascadeCode:cascadeCode
-        }, function(data) {
-        	if (data.code == 200) {
-        		  var commAttr = data.commAttr;
-        		  var dictattr_enum='';
-                  for (var i = 0;i < commAttr.length;i++){
-                    dictattr_enum = dictattr_enum + " <option value =\"" + commAttr[i].code + "\">" + commAttr[i].cnName + "</option>";
-                  }
-                  $form.find("#casCode").append(dictattr_enum).css("width","30%").select2();
-        	} else {
-        		Dialog.notice("数据加载错误，重新点击！", "error");
-        	}
-        });*/
+         $form.find("#ref_attr").empty();
+    	
+    	if (datatype == "17") {//级联枚举属性
+    		
+    		 $form.find("#div_cnName").show();
+    		 $form.find("#divdescription").show();
+    		 $form.find("#div_ref_attr").hide();
+    	} else {
+    	        Ajax.ajax('admin/dictionary/basicItem/getRefAttrByPidGroupName', {
+    	        	cascadeCode:cascadeCode
+    	        }, function(data) {
+    	        	if (data.code == 200) {
+    	        		  var commAttr = data.commRefAttr;
+    	        		  var dictattr_enum='';
+    	                  for (var i = 0;i < commAttr.length;i++){
+    	                    dictattr_enum = dictattr_enum + " <option value =\"" + commAttr[i].code + "\">" + commAttr[i].cnName + "</option>";
+    	                  }
+    	                  $form.find("#ref_attr").append(dictattr_enum).css("width","30%").select2();
+    	        	} else {
+    	        		Dialog.notice("数据加载错误，重新点击！", "error");
+    	        	}
+    	        });
+    	        
+    	        $form.find("#div_ref_attr").show();
+    	        $form.find("#div_cnName").hide();
+       		 $form.find("#divdescription").hide();
+    	}
       
         $cascadeChilde.show();
     });
@@ -1244,25 +1292,50 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
     
   //点击   确认  ，添加分组级联属性的孩子
     $(".common_proper", $page).on("click", "#cascadeAttr_child_but_confirm", function() {
+    	
+    	
     	var $casecadediv = $(this).closest(".cascadeAttr_child_show");
     	var $form = $(this).closest('.cascadeAttr_child_show').find("#cascadeAttr_form1");
+    	
     	var cascadecode = $form.attr("cascadecode");
-    	var cnName = $form.find("#cnName").val();
-    	var description = $form.find("#description").val();
-        Ajax.ajax('admin/dictionary/basicItem/saveCascaseAttrChild', {
-        	code:cascadecode,
-        	cnName:cnName,
-        	description:description
-        }, function(data) {
-        	if (data.code == 200) {
-        		  var cascadeAttr = data.cascadeAttr;
-        		  $casecadediv.siblings(".comm_list").find("[data-code-id='"+cascadecode+"']").find(".show_cascadeAttr_child").trigger("click");
-        		  $casecadediv.hide();
-        		  Dialog.notice("添加成功！", "success");
-        	} else {
-        		Dialog.notice(data.msg, "error");
-        	}
-        });
+    	var datatype = $form.attr("datatype");
+    	
+    	if (datatype == "17") {
+    		var cnName = $form.find("#cnName").val();
+    		var description = $form.find("#description").val();
+            Ajax.ajax('admin/dictionary/basicItem/saveCascaseAttrChild', {
+            	code:cascadecode,
+            	cnName:cnName,
+            	description:description
+            }, function(data) {
+            	if (data.code == 200) {
+            		  var cascadeAttr = data.cascadeAttr;
+            		  $casecadediv.siblings(".comm_list").find("[data-code-id='"+cascadecode+"']").find(".show_cascadeAttr_child").trigger("click");
+            		  $casecadediv.hide();
+            		  Dialog.notice("添加成功！", "success");
+            	} else {
+            		Dialog.notice(data.msg, "error");
+            	}
+            });
+    	} else { // 添加级联引用属性
+    		var refAttr = $form.find("#ref_attr").val();
+    		Ajax.ajax('admin/dictionary/basicItem/saveCascaseRefAttrChild', {
+            	code:cascadecode,
+            	casCode:refAttr
+            }, function(data) {
+            	if (data.code == 200) {
+            		  var cascadeAttr = data.cascadeAttr;
+            		  $casecadediv.siblings(".comm_list").find("[data-code-id='"+cascadecode+"']").find(".show_cascadeAttr_child").trigger("click");
+            		  $casecadediv.hide();
+            		  Dialog.notice("添加成功！", "success");
+            	} else {
+            		Dialog.notice(data.msg, "error");
+            	}
+            });
+    	}
+    	
+    	
+    	
     });
     
     //点击 添加二级属性  显示div
@@ -1629,7 +1702,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
 						//end
 		                
 		              //添加编辑级联属性的孩子  div		
-		 			    str = str + "<div style='padding-left: 1.8em;display: none;' class=\"cascadeAttr_child_show\"><img class=\"opera_entity_img\" src=\"media/admin/dictionary/basicItem/opera_entity_icon.png\"><span class=\"opera_entity_img\">级联属性孩子</span><form  id=\"cascadeAttr_form1\" class=\"opera_entity_form\"><input type=\"hidden\" id=\"id\" name=\"id\" value=\"\"><div><span class=\"opera_entity_label\">中文名称<span style=\"color: red;\">*</span></span><input type=\"text\" name=\"cnName\" id=\"cnName\" /></div><div><span class=\"opera_entity_label\">描述</span><textarea name=\"description\" id=\"description\"></textarea></div><div class=\"select-wrap\"></div></form><div class=\"opera_entity_btn\"><span class=\"entity-btn-cancel\" id=\"cascadeAttr_child_but_cancel\">取消</span><span class=\"entity-btn-confirm\" id=\"cascadeAttr_child_but_confirm\">确认</span></div></div>";
+		 			    str = str + "<div style='padding-left: 1.8em;display: none;' class=\"cascadeAttr_child_show\"><img class=\"opera_entity_img\" src=\"media/admin/dictionary/basicItem/opera_entity_icon.png\"><span class=\"opera_entity_img\">级联属性孩子</span><form  id=\"cascadeAttr_form1\" class=\"opera_entity_form\"><input type=\"hidden\" id=\"id\" name=\"id\" value=\"\"><div><span class=\"opera_entity_label\">中文222名称<span style=\"color: red;\">*</span></span><input type=\"text\" name=\"cnName\" id=\"cnName\" /></div><div><span class=\"opera_entity_label\">描述</span><textarea name=\"description\" id=\"description\"></textarea></div><div class=\"select-wrap\"></div></form><div class=\"opera_entity_btn\"><span class=\"entity-btn-cancel\" id=\"cascadeAttr_child_but_cancel\">取消</span><span class=\"entity-btn-confirm\" id=\"cascadeAttr_child_but_confirm\">确认</span></div></div>";
 						
 			     	if (istyue) {
 			     		str = str + "<div class=\"opera_comm\"><img class=\"opera_entity_img\" src=\"media/admin/dictionary/basicItem/images/info.png\"><span id=\"add_comm_mes\"></span><form groupName="+data.cnName+"  groupId="+data.code+"   id=\"comm_opera_form1\" class=\"opera_entity_form\"><input type=\"hidden\" id=\"groupName\" name=\"groupName\" value=\"\"><input type=\"hidden\" id=\"comm_parent\" name=\"parent\" value=\"\"><input type=\"hidden\" id=\"edit_dataType\" value=\"\"><input type=\"hidden\" id=\"edit_dictParentId\" value=\"\"><input type=\"hidden\" name=\"code\" id=\"code\" /><div><span class=\"opera_entity_label\">中文名称<span style=\"color: red;\">*</span></span><input type=\"text\" name=\"cnName\" id=\"cnName\" /></div><div><span class=\"opera_entity_label\">英文名称</span><input type=\"text\" name=\"enName\" id=\"enName\" /></div><div class=\"select-wrap\"><span class=\"opera_entity_label\" id=\"cn_dataType\">数据类型<span style=\"color: red;\">*</span></span><select id=\"dataType\" class=\"enum_dataType_one\" name=\"dataType\"></select><span style='display:none;' class=\"opera_entity_label\" id=\"cn_needHistory\">记录历史</span><select style='width: 30%; display: none;' id=\"needHistory\" class=\"needHistory\" name=\"needHistory\"><option value='1' selected='selected'>是</option><option value='0'>否</option></select></div><div><span class=\"opera_entity_label\" id=\"cn_dataRange\">数据长度<span style=\"color: red;\">*</span></span><input type=\"text\" name=\"dataRange\" id=\"dataRange\"></div><div><span class=\"opera_entity_label\">描述</span><textarea name=\"description\" id=\"description\"></textarea></div></form><div class=\"opera_entity_btn\"><span class=\"entity-btn-cancel\" id=\"comm_but_cancel\">取消</span><span class=\"entity-btn-confirm\" id=\"comm_but_confirm\">确认</span></div></div>";
@@ -1868,8 +1941,12 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
                 	
                 	 var cnNameStr =data.cnName;
                 	 
-                	 if (data.oneLevelItem.dataType == "17") {
+                	 if (data.oneLevelItem.dataType == "17" ) {
                 		 cnNameStr = "<font color='red'>CM </font>" + cnNameStr;
+                	 }
+                	 
+                	 if (data.oneLevelItem.dataType=="1702") {
+                		 cnNameStr = "<font color='red'>CMR </font>" + cnNameStr;
                 	 }
                 	
                 	if ("" == code) {//新增一个属性
@@ -1877,8 +1954,8 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
      	                str = str +"<ul class=\"entity_ul\" entityId=\"" + data.code + "\" status=\"" +data.usingState + "\">" + "<li><a href=\"javascript:void(0)\" class=\"edit_common\"><i class=\"icon edit-entity\"></i>编辑属性</a></li>" + "<li><a href=\"javascript:void(0)\" class=\"common_change_status\"><i class=\"icon stale-entity\"></i>过期实体</a></li>" 
                          str = str+"<li><a href=\"javascript:void(0)\" patentId=\""+data.parent+"\" class=\"delete_attr\"><i class=\"icon edit-entity\"></i>删除属性</a></li>" 
                 		 
-                		 if (data.oneLevelItem.dataType == "17") {
-                			 str = str+"<li><a href=\"javascript:void(0)\" class=\"show_cascadeAttr_child\"><i class=\"icon edit-entity\"></i>查看级联属性孩子</a></li>";
+                		 if (data.oneLevelItem.dataType == "17" || data.oneLevelItem.dataType == "1702") {
+                			 str = str+"<li><a href=\"javascript:void(0)\" dataType='"+data.oneLevelItem.dataType+"' class=\"show_cascadeAttr_child\"><i class=\"icon edit-entity\"></i>查看级联属性孩子</a></li>";
                 		 }
                 		 str = str + "</ul><i class=\"icon status\"></i>" +"</div>";
                          $commlist.children(".add_comm").before(str);
@@ -1888,8 +1965,8 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
       	                str = str +"<ul class=\"entity_ul\" entityId=\"" + data.code + "\" status=\"" +data.usingState + "\">" + "<li><a href=\"javascript:void(0)\" class=\"edit_common\"><i class=\"icon edit-entity\"></i>编辑属性</a></li>" + "<li><a href=\"javascript:void(0)\" class=\"common_change_status\"><i class=\"icon stale-entity\"></i>过期实体</a></li>" 
                         str = str+"<li><a href=\"javascript:void(0)\" patentId=\""+data.parent+"\" class=\"delete_attr\"><i class=\"icon edit-entity\"></i>删除属性</a></li>"
                       	
-                        if (data.oneLevelItem.dataType == "17") {
-               			 str = str+"<li><a href=\"javascript:void(0)\" class=\"show_cascadeAttr_child\"><i class=\"icon edit-entity\"></i>查看级联属性孩子</a></li>";
+                        if (data.oneLevelItem.dataType == "17" || data.oneLevelItem.dataType == "1702") {
+               			 str = str+"<li><a href=\"javascript:void(0)\" dataType='"+data.oneLevelItem.dataType+"' class=\"show_cascadeAttr_child\"><i class=\"icon edit-entity\"></i>查看级联属性孩子</a></li>";
                		 	}
                         
                         str = str + "</ul><i class=\"icon status\"></i>";
@@ -1965,14 +2042,17 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
             	 if (data.oneLevelItem.dataType == '17') {
             		 cnNameStr = "<font color='red'>CM </font>" + cnNameStr;
             	 }
+            	 if (data.oneLevelItem.dataType == '1702') {
+            		 cnNameStr = "<font color='red'>CMR </font>" + cnNameStr;
+            	 }
             	 
                  if ("" == code) {//新增一个属性
                 	 var str = "<div data-code-id=\""+data.code+"\" title=\"code:"+data.code+", 中文名称:"+data.cnName+",  英文名称:"+data.enName+",数据类型："+data.oneLevelItem.dataTypeCName+", 数据长度："+data.oneLevelItem.dataRange+", 字典序："+ data.oneLevelItem.dictParentId  +"  \" class=\"entity_attr newadd\">"  + cnNameStr 
                      str = str+ "<ul class=\"entity_ul\" entityId=\"" + data.code + "\" status=\"" + data.usingState + "\">" + "<li><a href=\"javascript:void(0)\" class=\"edit_more_child\"><i class=\"icon edit-entity\"></i>编辑属性</a></li>" + "<li><a href=\"javascript:void(0)\" class=\"more_child_change_status\"><i class=\"icon stale-entity\"></i>过期实体</a></li>"
                      str = str + "<li><a href=\"javascript:void(0)\" patentId=\""+data.parent+"\" class=\"delete_attr\"><i class=\"icon edit-entity\"></i>删除属性</a></li>"
                      
-                     if (data.oneLevelItem.dataType == '17') {
-                         str = str+"<li><a href=\"javascript:void(0)\"  class=\"more_show_cascadeAttr_child\"><i class=\"icon edit-entity\"></i>查看级联属性孩子</a></li>";
+                     if (data.oneLevelItem.dataType == '17' || data.oneLevelItem.dataType == '1702') {
+                         str = str+"<li><a href=\"javascript:void(0)\" dataType='"+data.oneLevelItem.dataType+"'  class=\"more_show_cascadeAttr_child\"><i class=\"icon edit-entity\"></i>查看级联属性孩子</a></li>";
                       }
                      
                      str = str+ "</ul> <i class=\"icon status\"></i>"+ "</div>";
@@ -1982,8 +2062,8 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
             		var str = cnNameStr 
                     str = str+ "<ul class=\"entity_ul\" entityId=\"" + data.code + "\" status=\"" + data.usingState + "\">" + "<li><a href=\"javascript:void(0)\" class=\"edit_more_child\"><i class=\"icon edit-entity\"></i>编辑属性</a></li>" + "<li><a href=\"javascript:void(0)\" class=\"more_child_change_status\"><i class=\"icon stale-entity\"></i>过期实体</a></li>"
                     str = str + "<li><a href=\"javascript:void(0)\" patentId=\""+data.parent+"\" class=\"delete_attr\"><i class=\"icon edit-entity\"></i>删除属性</a></li>"
-                    if (data.oneLevelItem.dataType == '17') {
-                        str = str+"<li><a href=\"javascript:void(0)\"  class=\"more_show_cascadeAttr_child\"><i class=\"icon edit-entity\"></i>查看级联属性孩子</a></li>";
+                    if (data.oneLevelItem.dataType == '17' || data.oneLevelItem.dataType == '1702') {
+                        str = str+"<li><a href=\"javascript:void(0)\" dataType='"+data.oneLevelItem.dataType+"'  class=\"more_show_cascadeAttr_child\"><i class=\"icon edit-entity\"></i>查看级联属性孩子</a></li>";
                      }
                     str = str+ "</ul><i class=\"icon status\"></i>";
             	   $more_list.children("[data-code-id='"+code+"']").attr("title", titlestr);
@@ -2373,42 +2453,15 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
      	            }
      	        });
          	}  else if ("1702" == jsonData.oneLevelItem.dataType) {//级联类型
-         		 $form1.find("#refType_enum").remove();
-	                $form1.find("#refType").remove();
-	                $form1.find("#s2id_refType").remove(); 
-	                
-	                $form1.find("#refCodeShow").remove();
-	    	        $form1.find("#refCodeShow_enum").remove(); 
-	    	        $form1.find("#s2id_refCodeShow").remove();
-	    	        
-	    	        $form1.find("#refCodeRecognition").remove();
-	    	        $form1.find("#refCodeRecognition_enum").remove(); 
-	    	        $form1.find("#s2id_refCodeRecognition").remove();
-	                
-	               var refType =  jsonData.oneLevelItem.refType;
-	               // 获取属性Code
-	               var attrCode =  $form1.find("#code").val();
-	               
-	               //如果是引用类型， 则显示下拉列表
-              Ajax.ajax('admin/dictionary/basicItem/referenceTypeEntityList', '', function(data) {
-              	
-                  var entityList = data.entity;
-                  var str = "<span id=\"refType_enum\">引用实体：</span><select id=\"refType\" name=\"refType\">";
-              	for (var p in entityList) { //遍历json数组时，这么写p为索引，0,1
-                 
-              		if (refType == entityList[p].code) {
-              			str = str + "<option selected=\"selected\" value=\"" + entityList[p].code + "\">" + entityList[p].cnName + "</option>"; 
-	                    } else {
-	                    	str = str + "<option value=\"" + entityList[p].code + "\">" + entityList[p].cnName + "</option>"; 
-	                    }
-                  }
-              	 str = str + "</select>";
-              	 $form1.find("#dataType").after(str);                
-                 $form1.find("#refType").css("width","30%").select2();
-                 $form1.find("#dataRange").val("32").hide();
-                 $form1.find("#cn_dataRange").hide();  
-               
-              });
+     	                $form1.find("#span_enum").remove();
+     	                $form1.find("#dictParentId").remove();
+     	                $form1.find("#dataRange").show();
+     	                $form1.find("#cn_dataRange").show();
+     	                $form1.find("#s2id_dictParentId").remove(); 
+     	                $form1.find("#refType").remove();
+     	                $form1.find("#refType_enum").remove();
+     	                $form1.find("#s2id_refType").remove();
+     	                $form1.find("#dictParentId").css("width","30%").select2();	
          	   	}  if("52" == jsonData.oneLevelItem.dataType) {
      			Ajax.ajax('admin/dictionary/basicItem/getDictPitem', '', function(data) {
      	            var dataArr = data.dictPitem;    	            
@@ -2891,6 +2944,10 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
                 		cnNameStr = "<font color='red'>CM </font>" + cnNameStr;
                 	}
                 	
+                	if (commonArr[i].childList[j].oneLevelItem.dataType == '1702') {
+                		cnNameStr = "<font color='red'>CMR</font>" + cnNameStr;
+                	}
+                	
                     if (commonArr[i].childList[j].usingState == '0') {
                     	
                         str = str + "<div data-code-id=\""+commonArr[i].childList[j].code+"\" title=\"code:"+commonArr[i].childList[j].code+", 中文名称:"+commonArr[i].childList[j].cnName+",  英文名称:"+commonArr[i].childList[j].enName+",数据类型："+commonArr[i].childList[j].oneLevelItem.dataTypeCName+", 数据长度："+commonArr[i].childList[j].oneLevelItem.dataRange+", 字典序："+ commonArr[i].childList[j].oneLevelItem.dictParentId  +"  \" class=\"entity_attr newadd\">" + cnNameStr
@@ -2922,8 +2979,8 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
 	                    str = str+"<li><a href=\"javascript:void(0)\" patentId=\""+commonArr[i].childList[j].parent+"\" class=\"delete_attr\"><i class=\"icon edit-entity\"></i>删除属性</a></li>" 
 	                    }
 	                    
-	                    if (statusStr != 2 && commonArr[i].childList[j].oneLevelItem.dataType == '17') {
-		                    str = str+"<li><a href=\"javascript:void(0)\" patentId=\""+commonArr[i].childList[j].parent+"\" class=\"show_cascadeAttr_child\"><i class=\"icon edit-entity\"></i>查看级联属性孩子</a></li>";
+	                    if (statusStr != 2 && commonArr[i].childList[j].oneLevelItem.dataType == '17' || commonArr[i].childList[j].oneLevelItem.dataType == '1702') {
+		                    str = str+"<li><a href=\"javascript:void(0)\" dataType='"+commonArr[i].childList[j].oneLevelItem.dataType+"' patentId=\""+commonArr[i].childList[j].parent+"\" class=\"show_cascadeAttr_child\"><i class=\"icon edit-entity\"></i>查看级联属性孩子</a></li>";
 		                 }
 	                    if (statusStr != 2) {
 		                    str = str+  "</ul>"; 
@@ -2945,8 +3002,8 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
                 str = str +"</div>"
 				//end
                 
-              //添加编辑级联属性的孩子  div		
- 			    str = str + "<div style='padding-left: 1.8em;display: none;' class=\"cascadeAttr_child_show\"><img class=\"opera_entity_img\" src=\"media/admin/dictionary/basicItem/opera_entity_icon.png\"><span class=\"opera_entity_img\">级联属性孩子</span><form  id=\"cascadeAttr_form1\" class=\"opera_entity_form\"><input type=\"hidden\" id=\"id\" name=\"id\" value=\"\"><div><span class=\"opera_entity_label\">中文名称<span style=\"color: red;\">*</span></span><input type=\"text\" name=\"cnName\" id=\"cnName\" /></div><div><span class=\"opera_entity_label\">描述</span><textarea name=\"description\" id=\"description\"></textarea></div><div class=\"select-wrap\"></div></form><div class=\"opera_entity_btn\"><span class=\"entity-btn-cancel\" id=\"cascadeAttr_child_but_cancel\">取消</span><span class=\"entity-btn-confirm\" id=\"cascadeAttr_child_but_confirm\">确认</span></div></div>";
+                //添加编辑级联属性的孩子  div		
+ 			    str = str + "<div style='padding-left: 1.8em;display: none;' class=\"cascadeAttr_child_show\"><img class=\"opera_entity_img\" src=\"media/admin/dictionary/basicItem/opera_entity_icon.png\"><span class=\"opera_entity_img\">级联属性孩子</span><form  id=\"cascadeAttr_form1\" class=\"opera_entity_form\"><input type=\"hidden\" id=\"id\" name=\"id\" value=\"\"><div id='div_cnName' style='display:none;'><span class=\"opera_entity_label\">中文名称<span style=\"color: red;\">*</span></span><input type=\"text\" name=\"cnName\" id=\"cnName\" /></div> <div id='div_ref_attr' class='select-wrap' style='display:none;'><span class=\"opera_entity_label\" id=\"cn_ref_attr\">引用类型</span><select id=\"ref_attr\" name=\"ref_attr\"></select></div><div id='divdescription' style='display:none;'><span class=\"opera_entity_label\">描述</span><textarea name=\"description\" id=\"description\"></textarea></div><div class=\"select-wrap\"></div></form><div class=\"opera_entity_btn\"><span class=\"entity-btn-cancel\" id=\"cascadeAttr_child_but_cancel\">取消</span><span class=\"entity-btn-confirm\" id=\"cascadeAttr_child_but_confirm\">确认</span></div></div>";
 				
 				str = str + "<div class=\"opera_comm\"><img class=\"opera_entity_img\" src=\"media/admin/dictionary/basicItem/images/info.png\"><span id=\"add_comm_mes\"></span><form groupName="+commonArr[i].cnName+"  groupId="+commonArr[i].code+"   id=\"comm_opera_form1\" class=\"opera_entity_form\"><input type=\"hidden\" id=\"groupName\" name=\"groupName\" value=\"\"><input type=\"hidden\" id=\"comm_parent\" name=\"parent\" value=\"\"><input type=\"hidden\" id=\"edit_dataType\" value=\"\"><input type=\"hidden\" id=\"edit_dictParentId\" value=\"\"><input type=\"hidden\" name=\"code\" id=\"code\" /><div><span class=\"opera_entity_label\">中文名称<span style=\"color: red;\">*</span></span><input type=\"text\" name=\"cnName\" id=\"cnName\" /></div><div><span class=\"opera_entity_label\">英文名称</span><input type=\"text\" name=\"enName\" id=\"enName\" /></div><div class=\"select-wrap\"><span class=\"opera_entity_label\" id=\"cn_dataType\">数据类型<span style=\"color: red;\">*</span></span><select id=\"dataType\" class=\"enum_dataType_one\" name=\"dataType\"></select> <span style='display:none;' class=\"opera_entity_label\" id=\"cn_needHistory\">记录历史</span><select style='display:none;' id=\"needHistory\" class=\"needHistory\" name=\"needHistory\"><option value='1' selected='selected'>是</option><option value='0'>否</option></select></div><div><span class=\"opera_entity_label\" id=\"cn_dataRange\">数据长度<span style=\"color: red;\">*</span></span><input type=\"text\" name=\"dataRange\" id=\"dataRange\"></div><div><span class=\"opera_entity_label\">描述</span><textarea name=\"description\" id=\"description\"></textarea></div></form><div class=\"opera_entity_btn\"><span class=\"entity-btn-cancel\" id=\"comm_but_cancel\">取消</span><span class=\"entity-btn-confirm\" id=\"comm_but_confirm\">确认</span></div></div>";
                 str = str + "<div class=\"opera_group\"><img class=\"opera_entity_img\" src=\"media/admin/dictionary/basicItem/images/info.png\"><span class=\"opera_entity_img\" id=\"add_group_mes\"></span><form id=\"group_opera_form1\" class=\"opera_entity_form\"><input type=\"hidden\" name=\"code\" id=\"code\" /><input type=\"hidden\" id=\"group_parent\" name=\"parent\" value=\"\"><input type=\"hidden\" name=\"dataType\" value=\"16\"><input type=\"hidden\" id=\"dataRange\" name=\"dataRange\" value=\"group\"> <div><span class=\"opera_entity_label\">中文名称<span style=\"color: red;\">*</span></span><input type=\"text\" name=\"cnName\" id=\"cnName\" /></div><div><span class=\"opera_entity_label\">描述</span><textarea name=\"description\" id=\"description\"></textarea></div></form><div class=\"opera_entity_btn\"><span class=\"entity-btn-cancel\" id=\"group_but_cancel\">取消</span><span class=\"entity-btn-confirm\" id=\"group_but_confirm\">确认</span><span class=\"entity-btn-confirm\" id=\"group_but_del\">删除</span></div></div>";
@@ -2988,6 +3045,10 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
                 		cnNameStr = "<font color='red'>CM </font>" + cnNameStr;
                 	}
                 	
+                	if (moreArr[i].childList[j].oneLevelItem.dataType == '1702') {
+                		cnNameStr = "<font color='red'>CMR</font>" + cnNameStr;
+                	}
+                	
                     if (moreArr[i].childList[j].usingState == '0') {
                         str = str + "<div data-code-id=\""+moreArr[i].childList[j].code+"\" title=\"code:"+moreArr[i].childList[j].code+", 中文名称:"+moreArr[i].childList[j].cnName+",  英文名称:"+moreArr[i].childList[j].enName+",数据类型："+moreArr[i].childList[j].oneLevelItem.dataTypeCName+", 数据长度："+moreArr[i].childList[j].oneLevelItem.dataRange+", 字典序："+ moreArr[i].childList[j].oneLevelItem.dictParentId  +"  \" class=\"entity_attr newadd\">"  + cnNameStr 
                         if (statusStr != 2) {
@@ -3017,8 +3078,8 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
                     	str = str + "<li><a href=\"javascript:void(0)\" patentId=\""+moreArr[i].parent+"\"  class=\"delete_attr\"><i class=\"icon edit-entity\"></i>删除属性</a></li>"
                     }
                     
-                    if (statusStr != 2 && moreArr[i].childList[j].oneLevelItem.dataType == '17') {
-	                    str = str+"<li><a href=\"javascript:void(0)\"  class=\"more_show_cascadeAttr_child\"><i class=\"icon edit-entity\"></i>查看级联属性孩子</a></li>";
+                    if (statusStr != 2 && moreArr[i].childList[j].oneLevelItem.dataType == '17' || moreArr[i].childList[j].oneLevelItem.dataType == '1702') {
+	                    str = str+"<li><a href=\"javascript:void(0)\" dataType='"+moreArr[i].childList[j].oneLevelItem.dataType+"'  class=\"more_show_cascadeAttr_child\"><i class=\"icon edit-entity\"></i>查看级联属性孩子</a></li>";
 	                 }
                     
                     if (statusStr != 2) {
@@ -3041,7 +3102,7 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
 				//end
                 
               //添加编辑级联属性的孩子  div		
- 			    str = str + "<div style='padding-left: 1.8em;display: none;' class=\"more_cascadeAttr_child_show\"><img class=\"opera_entity_img\" src=\"media/admin/dictionary/basicItem/opera_entity_icon.png\"><span class=\"opera_entity_img\">级联属性孩子</span><form  id=\"cascadeAttr_form1\" class=\"opera_entity_form\"><input type=\"hidden\" id=\"id\" name=\"id\" value=\"\"><div><span class=\"opera_entity_label\">中文名称<span style=\"color: red;\">*</span></span><input type=\"text\" name=\"cnName\" id=\"cnName\" /></div><div><span class=\"opera_entity_label\">描述</span><textarea name=\"description\" id=\"description\"></textarea></div></form><div class=\"opera_entity_btn\"><span class=\"entity-btn-cancel\" id=\"more_cascadeAttr_child_but_cancel\">取消</span><span class=\"entity-btn-confirm\" id=\"more_cascadeAttr_child_but_confirm\">确认</span></div></div>";
+ 			    str = str + "<div style='padding-left: 1.8em;display: none;' class=\"more_cascadeAttr_child_show\"><img class=\"opera_entity_img\" src=\"media/admin/dictionary/basicItem/opera_entity_icon.png\"><span class=\"opera_entity_img\">级联属性孩子</span><form  id=\"cascadeAttr_form1\" class=\"opera_entity_form\"><input type=\"hidden\" id=\"id\" name=\"id\" value=\"\"><div id='div_cnName' style='display:none;'><span class=\"opera_entity_label\">中文名称<span style=\"color: red;\">*</span></span><input type=\"text\" name=\"cnName\" id=\"cnName\" /></div><div id='div_ref_attr' class='select-wrap' style='display:none;'><span class=\"opera_entity_label\" id=\"cn_ref_attr\">引用类型</span><select id=\"ref_attr\" name=\"ref_attr\"></select></div><div id='divdescription' style='display:none;'><span class=\"opera_entity_label\">描述</span><textarea name=\"description\" id=\"description\"></textarea></div></form><div class=\"opera_entity_btn\"><span class=\"entity-btn-cancel\" id=\"more_cascadeAttr_child_but_cancel\">取消</span><span class=\"entity-btn-confirm\" id=\"more_cascadeAttr_child_but_confirm\">确认</span></div></div>";
 				
 				
                 str = str + "<div class=\"opera_more_child\"><img class=\"opera_entity_img\" src=\"media/admin/dictionary/basicItem/images/info.png\"><span id=\"add_more_child_mes\"></span><form groupName=\"" + moreArr[i].cnName + "\" groupId=\"" + moreArr[i].code + "\" id=\"more_child_opera_form1\" class=\"opera_entity_form\"><input type=\"hidden\" id=\"groupName\" name=\"groupName\" value=\"\"><input type=\"hidden\" id=\"comm_parent\" name=\"parent\" value=\"\"><input type=\"hidden\" id=\"edit_dataType\" value=\"\"><input type=\"hidden\" id=\"edit_dictParentId\" value=\"\"><input type=\"hidden\" name=\"code\" id=\"code\"/><div><span class=\"opera_entity_label\">中文名称<span style=\"color: red;\">*</span></span><input type=\"text\" name=\"cnName\" id=\"cnName\"/></div><div><span class=\"opera_entity_label\">英文名称</span><input type=\"text\" name=\"enName\" id=\"enName\"/></div><div class=\"select-wrap\"><span class=\"opera_entity_label\" id=\"cn_dataType\">数据类型<span style=\"color: red;\">*</span></span><select id=\"dataType\" class=\"enum_daType_two\" name=\"dataType\"></select><span style='display:none;'  class=\"opera_entity_label\" id=\"cn_needHistory\">记录历史记录</span><select style='display:none;' id=\"needHistory\" name=\"needHistory\"><option value='1' selected='selected'>是</option><option value='0'>否</option></select></div><div><span class=\"opera_entity_label\" id=\"cn_dataRange\">数据长度<span style=\"color: red;\">*</span></span><input type=\"text\" name=\"dataRange\" id=\"dataRange\" /></div><div><span class=\"opera_entity_label\">描述</span><textarea name=\"description\" id=\"description\"></textarea></div></form><div class=\"opera_entity_btn\"><span class=\"entity-btn-cancel\" id=\"more_child_but_cancel\">取消</span><span class=\"entity-btn-confirm\" id=\"more_child_but_confirm\">确认</span></div></div>";                
@@ -3090,6 +3151,10 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
                 		cnNameStr = "<font color='red'>CM </font>" + cnNameStr;
                 	}
                 	
+                	if (aggregateProper[i].childList[j].oneLevelItem.dataType == '1702') {
+                		cnNameStr = "<font color='red'>CMR </font>" + cnNameStr;
+                	}
+                	
                     if (aggregateProper[i].childList[j].usingState == '0') {
                     	
                         str = str + "<div data-code-id=\""+aggregateProper[i].childList[j].code+"\" title=\"code:"+aggregateProper[i].childList[j].code+", 中文名称:"+aggregateProper[i].childList[j].cnName+",  英文名称:"+aggregateProper[i].childList[j].enName+",数据类型："+aggregateProper[i].childList[j].oneLevelItem.dataTypeCName+", 数据长度："+aggregateProper[i].childList[j].oneLevelItem.dataRange+", 字典序："+ aggregateProper[i].childList[j].oneLevelItem.dictParentId  +"  \" class=\"entity_attr newadd\">" + cnNameStr
@@ -3121,8 +3186,8 @@ seajs.use(['dialog', 'ajax', '$CPF'], function(Dialog, Ajax, $CPF) {
 	                    str = str+"<li><a href=\"javascript:void(0)\" patentId=\""+aggregateProper[i].childList[j].parent+"\" class=\"delete_attr\"><i class=\"icon edit-entity\"></i>删除属性</a></li>" 
 	                    }
 	                    
-	                    if (statusStr != 2 && aggregateProper[i].childList[j].oneLevelItem.dataType == '17') {
-		                    str = str+"<li><a href=\"javascript:void(0)\" patentId=\""+aggregateProper[i].childList[j].parent+"\" class=\"show_cascadeAttr_child\"><i class=\"icon edit-entity\"></i>查看级联属性孩子</a></li>";
+	                    if (statusStr != 2 && aggregateProper[i].childList[j].oneLevelItem.dataType == '17' || aggregateProper[i].childList[j].oneLevelItem.dataType == '1702') {
+		                    str = str+"<li><a href=\"javascript:void(0)\" dataType='"+aggregateProper[i].childList[j].oneLevelItem.dataType+"'  patentId=\""+aggregateProper[i].childList[j].parent+"\" class=\"show_cascadeAttr_child\"><i class=\"icon edit-entity\"></i>查看级联属性孩子</a></li>";
 		                 }
 	                    if (statusStr != 2) {
 		                    str = str+  "</ul>"; 

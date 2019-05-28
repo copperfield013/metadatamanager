@@ -295,7 +295,6 @@ public class BasicItemServiceImpl implements BasicItemService {
 				basicItemDao.update(basicItem);
 			}
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -944,11 +943,36 @@ public class BasicItemServiceImpl implements BasicItemService {
 		basicItemDao.saveCascaseAttrChild(cascadeAttr);
 		return cascadeAttr;
 	}
+	
+	@Override
+	public CascadeAttr saveCascaseAttrChild(String code, String casCode) throws Exception {
+		
+			CascadeAttr cascadeAttr = new CascadeAttr();
+			cascadeAttr.setCode(code);
+			cascadeAttr.setCasCode(casCode);
+			//添加的时候获取level， 编辑的时候level不能改变， 
+			List<CascadeAttr> cascadeAttrChild = basicItemDao.getCascadeAttrChild(cascadeAttr.getCode());
+			
+			if (cascadeAttrChild.isEmpty()) {
+				cascadeAttr.setLevel(1);
+			} else {
+				cascadeAttr.setLevel(cascadeAttrChild.size()+1);
+			}
+			
+			basicItemDao.saveCascaseAttrChild(cascadeAttr);
+			return cascadeAttr;
+	}
 
 	@Override
 	public void deleteCascaseAttrChild(String code, String casCode) throws Exception{
 		BasicItem basicItem = basicItemDao.get(BasicItem.class, casCode);
-		basicItemDao.delete(basicItem);
+		BasicItem bt = basicItemDao.get(BasicItem.class, code);
+		String dataType = bt.getOneLevelItem().getDataType();
+		
+		if (!(ValueType.CASCADEREFTYPE.getIndex() == Integer.parseInt(dataType))) {
+			basicItemDao.delete(basicItem);
+		}
+		
 		basicItemDao.delCascaseAttrChild(code, casCode);
 		//删除的时候按level升序重新排序
 		List cascadeAttrChildPojo = basicItemDao.getCascadeAttrChildPojo(code, casCode);

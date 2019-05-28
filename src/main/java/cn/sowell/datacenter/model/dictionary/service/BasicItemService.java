@@ -139,6 +139,14 @@ public interface BasicItemService {
 	 * @throws Exception
 	 */
 	CascadeAttr saveCascaseAttrChild(String code, String cnName, String description) throws Exception;
+	
+	/**
+	 * 保存级联属性的孩子
+	 * @param code
+	 * @param casCode
+	 * @throws Exception
+	 */
+	CascadeAttr saveCascaseAttrChild(String code, String casCode) throws Exception;
 
 	/**
 	 * 删除级联属性的孩子
